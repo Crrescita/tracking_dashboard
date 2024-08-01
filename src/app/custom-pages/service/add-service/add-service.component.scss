@@ -1,0 +1,101 @@
+.dz-preview.dz-file-preview.dz-processing.dz-success.dz-comp‌​lete {
+  display: block !important;
+}
+
+.custom-dropzone {
+  min-height: 230px !important;
+  border: 2px dashed var(--tb-border-color);
+  background: var(--tb-secondary-bg) !important;
+  border-radius: 6px !important;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 20px;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.uploaded-img {
+  min-height: 230px !important;
+  border-radius: 6px !important;
+  text-align: center;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.thumbnail-img-fluid {
+  max-width: 100%;
+  height: 274px;
+}
+
+.custom-file-input {
+  width: 100%;
+  min-height: 230px !important;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.custom-file-text {
+  font-size: 1.5rem;
+  color: #666;
+}
+
+.custom-file-text2 {
+  font-size: 0.7rem;
+  color: #b3b3b3;
+}
+
+.selected-file {
+  width: 100%;
+  min-height: 230px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.invalid-text {
+  color: #ff6c6c;
+  margin-top: 4px;
+}
+
+.file-invalid {
+  border: 2px dashed #ff6c6c;
+}
+.image-avatar{
+  width: 3rem;
+}
+
+.uploaded-image-avatar{
+  width: 5rem;
+}
+
+.findus-heading{
+  color: black;
+}
+.custom-modal-dropzone{
+  height: 150px !important;
+  border: 2px dashed var(--tb-border-color);
+  background: var(--tb-secondary-bg) !important;
+  border-radius: 6px !important;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 20px;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.edit-thumbnail-img-fluid{
+  max-width: 100%;
+}
+.custom-modalfile-input{
+  width: 100%;
+  height: 100% !important;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

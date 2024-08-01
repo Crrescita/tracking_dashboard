@@ -1,0 +1,467 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Testimonial"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card" id="coursesList">
+              <form
+                [formGroup]="sectionHeading"
+                (submit)="onSubmitHeadingForm('section-three-heading')"
+              >
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="title" class="form-label"
+                        >Title<span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        id="title"
+                        formControlName="title"
+                        class="form-control"
+                        placeholder="Enter title"
+                        [ngClass]="
+                          sOne['title'] &&
+                          sOne['title'].hasError('required') &&
+                          sOne['title'].touched
+                            ? 'is-invalid'
+                            : ''
+                        "
+                      />
+                      @if (sOne['title'] && sOne['title'].hasError('required')
+                      && sOne['title'].touched) {
+                      <div class="invalid-text">Title is required.</div>
+                      } @if(sOne['title'] && sOne['title'].hasError('maxlength')
+                      && sOne['title'].touched){
+                      <div class="invalid-text">
+                        Title must be at most 45 characters
+                      </div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="sub_title" class="form-label"
+                        >Sub title<span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        id="sub_title"
+                        formControlName="sub_title"
+                        class="form-control"
+                        placeholder="Enter Sub title"
+                        [ngClass]="
+                          sOne['sub_title'] &&
+                          sOne['sub_title'].hasError('required') &&
+                          sOne['sub_title'].touched
+                            ? 'is-invalid'
+                            : ''
+                        "
+                      />
+                      @if (sOne['sub_title'] &&
+                      sOne['sub_title'].hasError('required') &&
+                      sOne['sub_title'].touched) {
+                      <div class="invalid-text">Sub title is required.</div>
+                      } @if(sOne['sub_title'] &&
+                      sOne['sub_title'].hasError('maxlength') &&
+                      sOne['sub_title'].touched){
+                      <div class="invalid-text">
+                        Sub title must be at most 45 characters
+                      </div>
+                      }
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="mb-3">
+                      <label for="addstatus" class="form-label"
+                        >Status <span class="text-danger">*</span></label
+                      >
+                      <select
+                        class="form-control"
+                        formControlName="status"
+                        data-choices
+                        id="addstatus"
+                        [ngClass]="
+                          sOne['status'] &&
+                          sOne['status'].hasError('required') &&
+                          sOne['status'].touched
+                            ? 'is-invalid'
+                            : ''
+                        "
+                      >
+                        <option value="">Select Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                      @if (sOne['status'] && sOne['status'].hasError('required')
+                      && sOne['status'].touched) {
+                      <div class="invalid-text">Status is required.</div>
+                      }
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="hstack gap-2 justify-content-start mt-4">
+                      <button class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <hr />
+
+              <div class="card">
+                <div class="card-body ps-0">
+                  <div class="row align-items-center g-2">
+                    <div class="col-6 mt-0">
+                      <div class="card-header ps-0 pt-0">
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        ></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-5 d-flex justify-content-end">
+                      <div class="search-box">
+                        <input
+                          type="text"
+                          class="form-control search"
+                          placeholder="Search"
+                          [(ngModel)]="term"
+                          (keyup)="filterdata()"
+                        />
+                        <i class="ri-search-line search-icon"></i>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-1">
+                      <div class="hstack flex-wrap gap-2">
+                        <div>
+                          <a
+                            (click)="testimonial.show(); resetForm()"
+                            class="btn btn-secondary"
+                            ><i
+                              class="bi bi-plus-circle align-baseline me-1"
+                            ></i
+                            >Add</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive table-card">
+                    <table
+                      class="table table-bordered table-centered align-middle table-custom-effect table-nowrap mb-0"
+                    >
+                      <thead class="text-muted text-center">
+                        <tr>
+                          <th scope="col" class="cursor-pointer">S No.</th>
+                          <th scope="col" class="cursor-pointer">Name</th>
+                          <th scope="col" class="cursor-pointer">Status</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list form-check-all text-center">
+                        @for (data of testimonialData; track $index) {
+                        <tr>
+                          <td class="id">
+                            {{ $index + 1 }}
+                          </td>
+
+                          <td class="instructor">
+                            {{ data.name }}
+                          </td>
+
+                          <td class="status">
+                            <div class="form-switch form-switch-md mb-3">
+                              <input
+                                type="checkbox"
+                                class="form-check-input"
+                                [checked]="data.status === 'active'"
+                                (change)="sectionOnesetStatus(data, $event)"
+                                [id]="'customSwitchsizemddata' + $index"
+                              />
+                              <label
+                                class="form-check-label"
+                                [for]="'customSwitchsizemddata' + $index"
+                                ><span
+                                  class="badge text-capitalize"
+                                  [ngClass]="{
+                                    'bg-info-subtle text-info':
+                                      data.status === 'active',
+                                    'bg-danger-subtle text-danger':
+                                      data.status === 'inactive'
+                                  }"
+                                  >{{ data.status }}</span
+                                >
+                              </label>
+                            </div>
+                          </td>
+
+                          <td class="px-0">
+                            <ul
+                              class="d-flex justify-content-center gap-2 list-unstyled mb-0"
+                            >
+                              <!-- <li>
+                  <a
+                    [routerLink]="
+                      sectionOne.layout_type === 'layoutA'
+                        ? '/sectionOne/layout-a/' + sectionOne.id
+                        : '/sectionOne/layout-b/' + sectionOne.id
+                    "
+                    class="btn btn-subtle-dark px-2 py-1"
+                  >
+                    <i
+                      class="bi bi-plus-circle align-baseline me-1"
+                    ></i>
+                    Add Details
+                  </a>
+                </li> -->
+                              <li>
+                                <a
+                                  (click)="
+                                    testimonial.show(); editSectionOne(data)
+                                  "
+                                  class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                                  ><i class="ph-pencil fs-5"></i
+                                ></a>
+                              </li>
+                              <li>
+                                <a
+                                  (click)="delete(data.id)"
+                                  class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                                  ><i class="ph-trash fs-5"></i
+                                ></a>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+
+                    <div class="noresult" style="display: none">
+                      <div class="text-center py-4">
+                        <i class="ph-magnifying-glass fs-1 text-primary"></i>
+                        <h5 class="mt-2">Sorry! No Result Found</h5>
+                        <p class="text-muted mb-0">
+                          We did not find any Details for you search.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row align-items-center mt-4 pt-2"
+                    id="pagination-element"
+                  >
+                    <div class="col-sm">
+                      <div class="text-muted text-center text-sm-start">
+                        Showing
+                        <span class="fw-semibold">{{
+                          testimonialData?.length
+                        }}</span>
+                        of
+                        <span class="fw-semibold">{{
+                          testimonialDataList?.length
+                        }}</span>
+                        Results
+                      </div>
+                    </div>
+
+                    <div class="col-sm-auto mt-3 mt-sm-0">
+                      <pagination
+                        class="pagination-wrap hstack gap-2 justify-content-center"
+                        [totalItems]="testimonialDataList?.length"
+                        [itemsPerPage]="5"
+                        (pageChanged)="pageChanged($event)"
+                      ></pagination>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- add Modal-->
+<div bsModal #testimonial="bs-modal" class="modal fade" id="testimonial">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <div class="modal-header bg-success p-3">
+        <h5 class="modal-title text-white" id="editSection2ModalLabel">
+          @if(this.editId == null){ Add } @else{ Edit }
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="testimonial.hide()"
+        ></button>
+      </div>
+
+      <form
+        class="tablelist-form"
+        [formGroup]="sectionOne"
+        (submit)="submitSectionOne(testimonial)"
+      >
+        <div class="modal-body">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="name" class="form-label"
+              >Name<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              placeholder="Enter name"
+              [ngClass]="
+                secOne['name'] &&
+                secOne['name'].hasError('required') &&
+                secOne['name'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (secOne['name'] && secOne['name'].hasError('required') &&
+            secOne['name'].touched) {
+            <div class="invalid-text">Name is required.</div>
+            } @if(secOne['name'] && secOne['name'].hasError('maxlength') &&
+            secOne['name'].touched){
+            <div class="invalid-text">Name must be at most 45 characters</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label"
+              >Testimonial <span class="text-danger">*</span></label
+            >
+            <textarea
+              class="form-control"
+              placeholder="Must enter maximum of a 500 characters"
+              rows="5"
+              formControlName="testimonials"
+              [ngClass]="{
+                'is-invalid':
+                  secOne['testimonials'] &&
+                  secOne['testimonials'].errors &&
+                  secOne['testimonials'].touched
+              }"
+            ></textarea>
+            @if(secOne['testimonials'] &&
+            secOne['testimonials'].hasError('required') &&
+            secOne['testimonials'].touched){
+            <div class="invalid-text">testimonials is required</div>
+
+            } @if(secOne['testimonials'] &&
+            secOne['testimonials'].hasError('maxlength') &&
+            secOne['testimonials'].touched){
+            <div class="invalid-text">
+              testimonials must be at most 500 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="addtype" class="form-label"
+              >Type {{ sectionOne.get("type")?.value
+              }}<span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="type"
+              data-choices
+              id="addtype"
+              [ngClass]="
+                secOne['type'] &&
+                secOne['type'].hasError('required') &&
+                secOne['type'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Type</option>
+              <option value="about">About</option>
+              <option value="science">Science</option>
+            </select>
+            @if (secOne['type'] && secOne['type'].hasError('required') &&
+            secOne['type'].touched) {
+            <div class="invalid-text">Type is required.</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="addstatus" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="addstatus"
+              [ngClass]="
+                secOne['status'] &&
+                secOne['status'].hasError('required') &&
+                secOne['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (secOne['status'] && secOne['status'].hasError('required') &&
+            secOne['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-success"
+              (click)="testimonial.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            @if (addSaveButtonActive) {
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Save Changes
+            </button>
+            } @else {
+            <button class="btn btn-secondary" type="button" disabled>
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Please wait
+            </button>
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- add Modal-->

@@ -1,0 +1,459 @@
+<form
+  [formGroup]="sectionHeading"
+  (submit)="onSubmitHeadingForm('section-three-heading')"
+>
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="mb-3">
+        <label for="title" class="form-label"
+          >Heading<span class="text-danger">*</span></label
+        >
+        <input
+          type="text"
+          id="title"
+          formControlName="heading"
+          class="form-control"
+          placeholder="Enter heading"
+          [ngClass]="
+            sOne['heading'] &&
+            sOne['heading'].hasError('required') &&
+            sOne['heading'].touched
+              ? 'is-invalid'
+              : ''
+          "
+        />
+        @if (sOne['heading'] && sOne['heading'].hasError('required') &&
+        sOne['heading'].touched) {
+        <div class="invalid-text">heading is required.</div>
+        }
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="mb-3">
+        <label for="addstatus" class="form-label"
+          >Status <span class="text-danger">*</span></label
+        >
+        <select
+          class="form-control"
+          formControlName="status"
+          data-choices
+          id="addstatus"
+          [ngClass]="
+            sOne['status'] &&
+            sOne['status'].hasError('required') &&
+            sOne['status'].touched
+              ? 'is-invalid'
+              : ''
+          "
+        >
+          <option value="">Select Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+        @if (sOne['status'] && sOne['status'].hasError('required') &&
+        sOne['status'].touched) {
+        <div class="invalid-text">Status is required.</div>
+        }
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="hstack gap-2 justify-content-start mt-4">
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</form>
+<hr />
+
+<div class="card">
+  <div class="card-body ps-0">
+    <div class="row align-items-center g-2">
+      <div class="col-6 mt-0">
+        <div class="card-header ps-0 pt-0">
+          <div class="d-flex justify-content-between align-items-center"></div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-end">
+        <div class="search-box">
+          <input
+            type="text"
+            class="form-control search"
+            placeholder="Search"
+            [(ngModel)]="term"
+            (keyup)="filterdata()"
+          />
+          <i class="ri-search-line search-icon"></i>
+        </div>
+      </div>
+
+      <div class="col-lg-1">
+        <div class="hstack flex-wrap gap-2">
+          <div>
+            <a (click)="modal.show(); resetForm()" class="btn btn-secondary"
+              ><i class="bi bi-plus-circle align-baseline me-1"></i>Add</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive table-card">
+      <table
+        class="table table-bordered table-centered align-middle table-custom-effect table-nowrap mb-0"
+      >
+        <thead class="text-muted text-center">
+          <tr>
+            <th scope="col" class="cursor-pointer">S No.</th>
+            <th scope="col" class="cursor-pointer">Title</th>
+            <th scope="col" class="cursor-pointer">Image</th>
+
+            <th scope="col" class="cursor-pointer">Status</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody class="list form-check-all text-center">
+          @for (sectionOne of aboutSectionthree; track $index) {
+          <tr>
+            <td class="id">
+              {{ $index + 1 }}
+            </td>
+
+            <td class="instructor">
+              {{ sectionOne.title }}
+            </td>
+
+            <td class="category">
+              <div class="flex-shrink-0 d-flex justify-content-center">
+                <div class="uploaded-image-avatar bg-light rounded p-2">
+                  <img class="img-fluid rounded" src="{{ sectionOne.image }}" />
+                </div>
+              </div>
+            </td>
+
+            <td class="status">
+              <div class="form-switch form-switch-md mb-3">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  [checked]="sectionOne.status === 'active'"
+                  (change)="sectionOnesetStatus(sectionOne.id, $event)"
+                  [id]="'customSwitchsizemd' + $index"
+                />
+                <label
+                  class="form-check-label"
+                  [for]="'customSwitchsizemd' + $index"
+                  ><span
+                    class="badge text-capitalize"
+                    [ngClass]="{
+                      'bg-info-subtle text-info':
+                        sectionOne.status === 'active',
+                      'bg-danger-subtle text-danger':
+                        sectionOne.status === 'inactive'
+                    }"
+                    >{{ sectionOne.status }}</span
+                  >
+                </label>
+              </div>
+            </td>
+
+            <td class="px-0">
+              <ul
+                class="d-flex justify-content-center gap-2 list-unstyled mb-0"
+              >
+                <!-- <li>
+                <a
+                  [routerLink]="
+                    sectionOne.layout_type === 'layoutA'
+                      ? '/sectionOne/layout-a/' + sectionOne.id
+                      : '/sectionOne/layout-b/' + sectionOne.id
+                  "
+                  class="btn btn-subtle-dark px-2 py-1"
+                >
+                  <i
+                    class="bi bi-plus-circle align-baseline me-1"
+                  ></i>
+                  Add Details
+                </a>
+              </li> -->
+                <li>
+                  <a
+                    (click)="modal.show(); editSectionOne(sectionOne)"
+                    class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                    ><i class="ph-pencil fs-5"></i
+                  ></a>
+                </li>
+                <li>
+                  <a
+                    (click)="delete(sectionOne.id)"
+                    class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                    ><i class="ph-trash fs-5"></i
+                  ></a>
+                </li>
+              </ul>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="noresult" style="display: none">
+        <div class="text-center py-4">
+          <i class="ph-magnifying-glass fs-1 text-primary"></i>
+          <h5 class="mt-2">Sorry! No Result Found</h5>
+          <p class="text-muted mb-0">
+            We did not find any Details for you search.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-center mt-4 pt-2" id="pagination-element">
+      <div class="col-sm">
+        <div class="text-muted text-center text-sm-start">
+          Showing
+          <span class="fw-semibold">{{ aboutSectionthree?.length }}</span>
+          of
+          <span class="fw-semibold">{{ aboutSectionthreeList?.length }}</span>
+          Results
+        </div>
+      </div>
+
+      <div class="col-sm-auto mt-3 mt-sm-0">
+        <pagination
+          class="pagination-wrap hstack gap-2 justify-content-center"
+          [totalItems]="aboutSectionthreeList?.length"
+          [itemsPerPage]="5"
+          (pageChanged)="pageChanged($event)"
+        ></pagination>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- add Modal-->
+<div bsModal #modal="bs-modal" class="modal fade" id="modal">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <div class="modal-header bg-success p-3">
+        <h5 class="modal-title text-white" id="editSection2ModalLabel">
+          @if(this.editId == null){ Add } @else{ Edit }
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="modal.hide()"
+        ></button>
+      </div>
+
+      <form
+        class="tablelist-form"
+        [formGroup]="sectionOne"
+        (submit)="submitSectionOne(modal)"
+      >
+        <div class="modal-body">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="title" class="form-label"
+              >Title<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-control"
+              placeholder="Enter title"
+              [ngClass]="
+                secOne['title'] &&
+                secOne['title'].hasError('required') &&
+                secOne['title'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (secOne['title'] && secOne['title'].hasError('required') &&
+            secOne['title'].touched) {
+            <div class="invalid-text">title is required.</div>
+            } @if (secOne['title'] && secOne['title'].hasError('maxlength') &&
+            secOne['title'].touched) {
+            <div class="invalid-text">Title must be at most 45 characters</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label"
+              >Description <span class="text-danger">*</span></label
+            >
+            <textarea
+              class="form-control"
+              placeholder="Must enter maximum of a 350 characters"
+              rows="5"
+              formControlName="description"
+              [ngClass]="{
+                'is-invalid':
+                  secOne['description'] &&
+                  secOne['description'].errors &&
+                  secOne['description'].touched
+              }"
+            ></textarea>
+            @if(secOne['description'] &&
+            secOne['description'].hasError('required') &&
+            secOne['description'].touched){
+            <div class="invalid-text">Description is required</div>
+
+            } @if(secOne['description'] &&
+            secOne['description'].hasError('maxlength') &&
+            secOne['description'].touched){
+            <div class="invalid-text">
+              Description must be at most 350 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label"
+              >Image<span class="text-danger">*</span></label
+            >
+            <div class="custom-modal-dropzone">
+              <input
+                type="file"
+                id="sectionOneimageupload"
+                accept="image/*"
+                formControlName="image"
+                (change)="sectionOneimageSelect($event)"
+                hidden
+                #sectionOneimageupload
+              />
+              <label for="sectionOneimageupload" class="custom-modalfile-input">
+                <span class="custom-modalfile-text"
+                  >Choose a file to upload.
+                  <br />
+                  <span class="custom-file-text2-modal"
+                    >File size 38 × 38 px
+                  </span>
+                </span>
+              </label>
+            </div>
+
+            @if (sectionOneselectedImage) {
+            <ul class="list-unstyled mb-0" id="dropzone-preview">
+              <li class="mt-2" id="dropzone-preview-list">
+                <div class="border rounded">
+                  <div class="d-flex flex-wrap gap-2 p-2">
+                    <div class="flex-shrink-0">
+                      <div class="image-avatar bg-light rounded p-2">
+                        @if (sectionOneselectedImagePreview) {
+                        <img
+                          class="img-fluid rounded d-block"
+                          [src]="sectionOneselectedImagePreview"
+                          alt="Dropzone-Image"
+                        />
+                        }
+                      </div>
+                    </div>
+                    <div class="flex-grow-1 me-1">
+                      <div class="pt-1">
+                        @if (sectionOneselectedImage.name) {
+                        <h5 class="fs-md mb-1">
+                          {{ sectionOneselectedImage.name }}
+                        </h5>
+                        } @if (sectionOneselectedImage.size) {
+                        <p class="fs-sm text-muted mb-0">
+                          {{ sectionOneselectedImage.size }}
+                        </p>
+                        }
+                      </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                      <button
+                        (click)="sectionOneremoveImage()"
+                        class="btn btn-sm btn-danger"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            } @if (sectionOneuploadedImage) {
+            <div class="col-lg-6 mt-3 mt-lg-0">
+              <div>
+                <label class="form-label">Uploaded Image</label>
+                <div>
+                  <div>
+                    <img
+                      class="edit-thumbnail-img-fluid rounded d-block w-50"
+                      [src]="sectionOneuploadedImage"
+                      alt="Uploaded Thumbnail"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            } @if (secOne['image'] && secOne['image'].hasError('required') &&
+            secOne['image'].touched) {
+            <div class="invalid-text">Image is required.</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="addstatus" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="addstatus"
+              [ngClass]="
+                secOne['status'] &&
+                secOne['status'].hasError('required') &&
+                secOne['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (secOne['status'] && secOne['status'].hasError('required') &&
+            secOne['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-success"
+              (click)="modal.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            @if (addSaveButtonActive) {
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Save Changes
+            </button>
+            } @else {
+            <button class="btn btn-secondary" type="button" disabled>
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Please wait
+            </button>
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- add Modal-->

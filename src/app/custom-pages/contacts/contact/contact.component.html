@@ -1,0 +1,86 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Contact"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <accordion
+        [closeOthers]="true"
+        class="accordion custom-accordionwithicon-plus"
+        id="accordionWithplusicon"
+      >
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 1 : {{ sectionTitles["sectionTwoTitle"] }}
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-contact-page
+                (titleChange)="handleTitleChange('sectionTwoTitle', $event)"
+              ></app-contact-page>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 2 : loaction
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-location></app-location>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 3 : {{ sectionTitles["sectionThreeTitle"] }}
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-contact-form
+                (titleChange)="handleTitleChange('sectionThreeTitle', $event)"
+              ></app-contact-form>
+              <!-- <app-home-sectiontwo
+                (titleChange)="handleTitleChange('sectionThreeTitle', $event)"
+              ></app-home-sectiontwo>
+              <app-our-process></app-our-process> -->
+            </div>
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+</div>

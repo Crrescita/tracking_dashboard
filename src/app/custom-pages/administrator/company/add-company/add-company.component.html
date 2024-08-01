@@ -1,0 +1,666 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  [title]="urlId ? 'Edit Company' : 'Add Company'"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<!-- End Breadcrumbs -->
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-xxl-4">
+      <div class="card overflow-hidden">
+        <div class="ratio ratio-16x9">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6509156.773725123!2d-123.79622260161696!3d37.19312212390098!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb9fe5f285e3d%3A0x8b5109a227086f55!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sin!4v1678106410566!5m2!1sen!2sin"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+        <div class="card-body pt-1">
+          @if (companyselectedImage) { @if (companyselectedImagePreview) {
+          <div class="avatar-lg mt-n5 position-relative mx-auto">
+            <div class="avatar-title bg-body-secondary rounded shadow">
+              <img
+                [src]="companyselectedImagePreview"
+                alt=""
+                class="avatar-sm"
+              />
+            </div>
+          </div>
+
+          } }@else if (companyuploadedImage) {
+          <div class="avatar-lg mt-n5 position-relative mx-auto">
+            <div class="avatar-title bg-body-secondary rounded shadow">
+              <img [src]="companyuploadedImage" alt="" class="avatar-sm" />
+            </div>
+          </div>
+
+          } @else {
+          <div class="avatar-lg mt-n5 position-relative mx-auto">
+            <div class="avatar-title bg-body-secondary rounded shadow">
+              <img
+                src="assets/images/companies/img-1.png"
+                alt=""
+                class="avatar-sm"
+              />
+            </div>
+          </div>
+
+          } @if (f['logo'] && f['logo'].hasError('required') &&
+          f['logo'].touched) {
+          <div class="invalid-text">Logo is required.</div>
+          }
+
+          <div class="avatar-lg mt-n5 position-relative mx-auto">
+            <input
+              type="file"
+              id="companylogo"
+              accept="image/*"
+              formControlName="logo"
+              (change)="companyimageSelect($event)"
+              hidden
+              #companylogo
+            />
+
+            <div
+              for="companylogo"
+              class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0"
+            >
+              <label for="companylogo" class="profile-photo-edit avatar-xs">
+                <span class="avatar-title rounded-circle bg-light text-body">
+                  <i class="bi bi-camera"></i>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <h5 class="mb-2">{{ f["name"].value }}</h5>
+            <p class="text-muted mb-4 pb-2">{{ f["business_type"].value }}</p>
+          </div>
+          <div class="table-responsive table-card">
+            <table class="table align-middle table-borderless mb-0">
+              <tbody>
+                <tr>
+                  <th>TIN</th>
+                  <td>{{ f["tax_no"].value }}</td>
+                </tr>
+                <tr>
+                  <th>CIN</th>
+                  <td>{{ f["cin_id"].value }}</td>
+                </tr>
+                <tr>
+                  <th>Location</th>
+                  <td>{{ f["address"].value }}</td>
+                </tr>
+                <tr>
+                  <th>Website</th>
+                  <td>{{ f["website_url"].value }}</td>
+                </tr>
+                <tr>
+                  <th>Phone Number</th>
+                  <td>
+                    <a>{{ f["mobile"].value }}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul
+            class="hstack gap-2 justify-content-center list-unstyled mt-4 pt-2 mb-0"
+          >
+            <li>
+              <a href="javascript:void(0);" class="btn btn-success btn-sm"
+                ><i class="bi bi-whatsapp"></i
+              ></a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                ><i class="bi bi-facebook"></i
+              ></a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class="btn btn-info btn-sm"
+                ><i class="bi bi-twitter"></i
+              ></a>
+            </li>
+            <li>
+              <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                ><i class="bi bi-envelope"></i
+              ></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+
+    <div class="col-xl-8">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Company Information</h6>
+        </div>
+        <div class="card-body">
+          <div class="col-xxl-12">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="name" class="form-label"
+                    >Company name <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    formControlName="name"
+                    placeholder="Enter company name"
+                    value="name"
+                    [ngClass]="
+                      f['name'] &&
+                      f['name'].hasError('required') &&
+                      f['name'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['name'] && f['name'].hasError('required') &&
+                  f['name'].touched) {
+                  <div class="invalid-text">Company name is required.</div>
+                  } @if(f['name'] && f['name'].hasError('maxlength') &&
+                  f['name'].touched){
+                  <div class="invalid-text">
+                    Company name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="business_type" class="form-label"
+                    >Business type <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="business_type"
+                    formControlName="business_type"
+                    placeholder="Enter Business type"
+                    value="business_type"
+                    [ngClass]="
+                      f['business_type'] &&
+                      f['business_type'].hasError('required') &&
+                      f['business_type'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['business_type'] &&
+                  f['business_type'].hasError('required') &&
+                  f['business_type'].touched) {
+                  <div class="invalid-text">Business type is required.</div>
+                  } @if(f['business_type'] &&
+                  f['business_type'].hasError('maxlength') &&
+                  f['business_type'].touched){
+                  <div class="invalid-text">
+                    Business type must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="tax_no" class="form-label"
+                    >Tax Identification Number (TIN)
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tax_no"
+                    formControlName="tax_no"
+                    placeholder="Enter TIN"
+                    value="tax_no"
+                    [ngClass]="
+                      f['tax_no'] &&
+                      f['tax_no'].hasError('required') &&
+                      f['tax_no'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['tax_no'] && f['tax_no'].hasError('required') &&
+                  f['tax_no'].touched) {
+                  <div class="invalid-text">TIN is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="cin_id" class="form-label"
+                    >Corporate Identification Number (CIN)
+                    <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="cin_id"
+                    formControlName="cin_id"
+                    placeholder="Enter CIN"
+                    value="cin_id"
+                    [ngClass]="
+                      f['cin_id'] &&
+                      f['cin_id'].hasError('required') &&
+                      f['cin_id'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['cin_id'] && f['cin_id'].hasError('required') &&
+                  f['cin_id'].touched) {
+                  <div class="invalid-text">CIN is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="no_of_emp" class="form-label"
+                    >No. of Employee <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="no_of_emp"
+                    formControlName="no_of_emp"
+                    placeholder="Enter No. of employee"
+                    value="no_of_emp"
+                    [ngClass]="
+                      f['no_of_emp'] &&
+                      f['no_of_emp'].hasError('required') &&
+                      f['no_of_emp'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['no_of_emp'] && f['no_of_emp'].hasError('required') &&
+                  f['no_of_emp'].touched) {
+                  <div class="invalid-text">No. of Employee is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="website_url" class="form-label"
+                    >Website Url<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="website_url"
+                    formControlName="website_url"
+                    placeholder="Enter Website Url"
+                    value="website_url"
+                    [ngClass]="
+                      f['website_url'] &&
+                      f['website_url'].hasError('required') &&
+                      f['website_url'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['website_url'] && f['website_url'].hasError('required')
+                  && f['website_url'].touched) {
+                  <div class="invalid-text">Website url is required.</div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end card-body -->
+      </div>
+      <!-- contact information -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Contact Information</h6>
+        </div>
+        <div class="card-body">
+          <div class="col-xxl-12">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="contact_person" class="form-label"
+                    >Contact person <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="contact_person"
+                    formControlName="contact_person"
+                    placeholder="Enter Contact person"
+                    value="contact_person"
+                    [ngClass]="
+                      f['contact_person'] &&
+                      f['contact_person'].hasError('required') &&
+                      f['contact_person'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['contact_person'] &&
+                  f['contact_person'].hasError('required') &&
+                  f['contact_person'].touched) {
+                  <div class="invalid-text">Contact person is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="email" class="form-label"
+                    >Email <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="email"
+                    formControlName="email"
+                    placeholder="Enter email"
+                    value="email"
+                    [ngClass]="
+                      f['email'] &&
+                      f['email'].hasError('required') &&
+                      f['email'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['email'] && f['email'].hasError('required') &&
+                  f['email'].touched) {
+                  <div class="invalid-text">Email is required.</div>
+                  } @if(f['email'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Email must be a valid email address
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="contact" class="form-label"
+                    >Contact Number <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="contact"
+                    formControlName="mobile"
+                    placeholder="Enter mobile"
+                    value="mobile"
+                    [ngClass]="
+                      f['mobile'] &&
+                      f['mobile'].hasError('required') &&
+                      f['mobile'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['mobile'] && f['mobile'].hasError('required') &&
+                  f['mobile'].touched) {
+                  <div class="invalid-text">Mobile is required.</div>
+                  } @if(f['mobile'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Please, Enter 10 digit Mobile Number.
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- end card-body -->
+      </div>
+      <!-- Address Information -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Address Information</h6>
+        </div>
+        <div class="card-body">
+          <div class="col-xxl-12">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="city" class="form-label"
+                    >City <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    formControlName="city"
+                    placeholder="Enter City"
+                    value="city"
+                    [ngClass]="
+                      f['city'] &&
+                      f['city'].hasError('required') &&
+                      f['city'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['city'] && f['city'].hasError('required') &&
+                  f['city'].touched) {
+                  <div class="invalid-text">City is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="State" class="form-label"
+                    >State <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="State"
+                    formControlName="state"
+                    placeholder="Enter state"
+                    value="state"
+                    [ngClass]="
+                      f['state'] &&
+                      f['state'].hasError('required') &&
+                      f['state'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['state'] && f['state'].hasError('required') &&
+                  f['state'].touched) {
+                  <div class="invalid-text">State is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="zip_code" class="form-label"
+                    >Zip code <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="zip_code"
+                    formControlName="zip_code"
+                    placeholder="Enter zip code"
+                    value="zip_code"
+                    [ngClass]="
+                      f['zip_code'] &&
+                      f['zip_code'].hasError('required') &&
+                      f['zip_code'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['zip_code'] && f['zip_code'].hasError('required') &&
+                  f['zip_code'].touched) {
+                  <div class="invalid-text">zip_code is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label for="address" class="form-label">
+                    Address <span class="text-danger">*</span></label
+                  >
+
+                  <textarea
+                    class="form-control"
+                    placeholder="Enter address"
+                    rows="5"
+                    formControlName="address"
+                    [ngClass]="{
+                      'is-invalid':
+                        f['address'] &&
+                        f['address'].errors &&
+                        f['address'].touched
+                    }"
+                  ></textarea>
+
+                  @if (f['address'] && f['address'].hasError('required') &&
+                  f['address'].touched) {
+                  <div class="invalid-text">Address is required.</div>
+                  } @if(f['address'] && f['address'].hasError('maxlength') &&
+                  f['address'].touched){
+                  <div class="invalid-text">
+                    Address must be at most 100 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label class="form-label" for="password-input"
+                    >Password <span class="text-danger">*</span></label
+                  >
+                  <div class="position-relative auth-pass-inputgroup mb-3">
+                    <input
+                      [type]="fieldTextType ? 'text' : 'password'"
+                      formControlName="password"
+                      [ngClass]="{
+                        'is-invalid': submitted && f['password'].errors
+                      }"
+                      type="password"
+                      class="form-control pe-5 password-input"
+                      placeholder="Enter password"
+                      id="password-input"
+                    />
+                    <button
+                      class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                      type="button"
+                      id="password-addon"
+                    >
+                      <i
+                        class="ri-eye-fill align-middle"
+                        [ngClass]="{
+                          'mdi-eye-off-outline': !fieldTextType,
+                          'mdi-eye-outline': fieldTextType
+                        }"
+                        (click)="toggleFieldTextType()"
+                      ></i>
+                    </button>
+                    @if (f['password'] && f['password'].hasError('required') &&
+                    f['password'].touched) {
+                    <div class="invalid-text">Password is required.</div>
+                    } @if(f['password'] && f['password'].hasError('minlength')
+                    && f['password'].touched){
+                    <div class="invalid-text">
+                      password must be at minimum 5 characters
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="statuss" class="form-label"
+                    >Status <span class="text-danger">*</span></label
+                  >
+                  <select
+                    class="form-control"
+                    formControlName="status"
+                    data-choices
+                    id="statuss"
+                    [ngClass]="
+                      f['status'] &&
+                      f['status'].hasError('required') &&
+                      f['status'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  >
+                    <option value="">Select Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                  @if (f['status'] && f['status'].hasError('required') &&
+                  f['status'].touched) {
+                  <div class="invalid-text">Status is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="hstack gap-2 justify-content-start mb-3">
+                  @if (saveButtonActive) {
+                  <button class="btn btn-primary">Save</button>
+                  } @else {
+                  <button class="btn btn-secondary" type="button" disabled>
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Please wait
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- end card-body -->
+      </div>
+      <!-- end card -->
+    </div>
+
+    @if (spinnerStatus) {
+    <div id="elmLoader">
+      <div class="spinner-border text-primary avatar-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    }
+  </div>
+</form>

@@ -1,0 +1,253 @@
+@if (spinnerStatus) {
+<div id="elmLoader">
+  <div class="spinner-border text-primary avatar-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+}
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="col-xxl-12">
+          <form [formGroup]="formGroup" (submit)="onSubmit()">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="title" class="form-label">
+                    Title<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="title"
+                    formControlName="title"
+                    class="form-control"
+                    placeholder="Enter Title "
+                    [ngClass]="
+                      s2['title'] &&
+                      s2['title'].hasError('required') &&
+                      s2['title'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (s2['title'] && s2['title'].hasError('required') &&
+                  s2['title'].touched) {
+                  <div class="invalid-text">Title is required.</div>
+                  } @if(s2['title'] && s2['title'].hasError('maxlength') &&
+                  s2['title'].touched){
+                  <div class="invalid-text">
+                    Title must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="sub_title" class="form-label">
+                    Sub Title<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="sub_title"
+                    formControlName="sub_title"
+                    class="form-control"
+                    placeholder="Enter sub title "
+                    [ngClass]="
+                      s2['sub_title'] &&
+                      s2['sub_title'].hasError('required') &&
+                      s2['sub_title'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (s2['sub_title'] && s2['sub_title'].hasError('required')
+                  && s2['sub_title'].touched) {
+                  <div class="invalid-text">Sub title is required.</div>
+                  } @if(s2['sub_title'] && s2['sub_title'].hasError('maxlength')
+                  && s2['sub_title'].touched){
+                  <div class="invalid-text">
+                    Sub title must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label for="description" class="form-label">
+                    Description<span class="text-danger"></span
+                  ></label>
+                  <ngx-editor-menu
+                    [editor]="editordescription"
+                    [toolbar]="toolbar"
+                  >
+                  </ngx-editor-menu>
+                  <ngx-editor
+                    [editor]="editordescription"
+                    formControlName="description"
+                    [placeholder]="'Type here...'"
+                    [ngClass]="{
+                      'is-invalid':
+                        s2['description'] &&
+                        s2['description'].errors &&
+                        s2['description'].touched
+                    }"
+                  ></ngx-editor>
+                  <!-- <editor
+                    formControlName="description"
+                    apiKey="l3q3kt1n2jg9y35es7w0gkv80en8bm7gz9v379zfwrea7uvq"
+                    [init]="{
+                      height: 400,
+                      plugins: [
+                        'advlist',
+
+                        'autolink',
+
+                        'lists',
+                        'link',
+                        'image',
+                        'charmap',
+                        'preview',
+                        'anchor',
+                        'searchreplace',
+                        'visualblocks',
+
+                        'fullscreen',
+
+                        'insertdatetime',
+                        'media',
+                        'table',
+                        'help',
+                        'wordcount',
+                        'code'
+                      ],
+                      toolbar:
+                        'undo redo | casechange blocks | bold italic backcolor | \
+                         alignleft aligncenter alignright alignjustify | \
+                         bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+                    }"
+                  ></editor> -->
+                  @if (s2['description'] &&
+                  s2['description'].hasError('required') &&
+                  s2['description'].touched) {
+                  <div class="invalid-text">Description One is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label"
+                    >Banner<span class="text-danger">*</span></label
+                  >
+                  <div class="custom-modal-dropzone">
+                    <input
+                      type="file"
+                      id="aboutBanner"
+                      accept="image/*"
+                      formControlName="banner"
+                      (change)="imageOneSelect($event)"
+                      hidden
+                      #aboutBanner
+                    />
+                    <label for="aboutBanner" class="custom-modalfile-input">
+                      <span class="custom-modalfile-text"
+                        >Choose a file to upload.
+                        <br />
+                        <span class="custom-file-text2-modal"
+                          >File size 1440 × 700 px
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+
+                  @if (selectedImageOne) {
+                  <ul class="list-unstyled mb-0" id="dropzone-preview">
+                    <li class="mt-2" id="dropzone-preview-list">
+                      <div class="border rounded">
+                        <div class="d-flex flex-wrap gap-2 p-2">
+                          <div class="flex-shrink-0">
+                            <div class="image-avatar bg-light rounded p-2">
+                              @if (selectedImageOnePreview) {
+                              <img
+                                class="img-fluid rounded d-block"
+                                [src]="selectedImageOnePreview"
+                                alt="Dropzone-Image"
+                              />
+                              }
+                            </div>
+                          </div>
+                          <div class="flex-grow-1 me-1">
+                            <div class="pt-1">
+                              @if (selectedImageOne.name) {
+                              <h5 class="fs-md mb-1">
+                                {{ selectedImageOne.name }}
+                              </h5>
+                              } @if (selectedImageOne.size) {
+                              <p class="fs-sm text-muted mb-0">
+                                {{ selectedImageOne.size }}
+                              </p>
+                              }
+                            </div>
+                          </div>
+                          <div class="flex-shrink-0">
+                            <button
+                              (click)="removeImageOne()"
+                              class="btn btn-sm btn-danger"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                  } @if (uploadedImageOne) { } @if (s2['banner'] &&
+                  s2['banner'].hasError('required') && s2['banner'].touched) {
+                  <div class="invalid-text">Banner is required.</div>
+                  }
+                </div>
+              </div>
+              @if(uploadedImageOne){
+              <div class="col-lg-6 mt-3 mt-lg-0">
+                <div>
+                  <label class="form-label">Uploaded Image</label>
+                  <div>
+                    <div>
+                      <img
+                        class="edit-thumbnail-img-fluid rounded d-block w-50"
+                        [src]="uploadedImageOne"
+                        alt="Uploaded Thumbnail"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              }
+
+              <div class="col-12">
+                <div class="hstack gap-2 justify-content-start mb-3">
+                  @if (saveButtonActive) {
+                  <button class="btn btn-primary">Save</button>
+                  } @else {
+                  <button class="btn btn-secondary" type="button" disabled>
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Please wait
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

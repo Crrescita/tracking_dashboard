@@ -1,0 +1,430 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Add Location"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card" id="coursesList">
+              <div class="card-body ps-0">
+                <div class="row align-items-center g-2">
+                  <div class="col-6 mt-0">
+                    <div class="card-header ps-0 pt-0">
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="col-lg-5 d-flex justify-content-end">
+                    <div class="search-box">
+                      <input
+                        type="text"
+                        class="form-control search"
+                        placeholder="Search"
+                        [(ngModel)]="term"
+                        (keyup)="filterdata()"
+                      />
+                      <i class="ri-search-line search-icon"></i>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-1">
+                    <div class="hstack flex-wrap gap-2">
+                      <div>
+                        <a
+                          (click)="modal.show(); resetForm()"
+                          class="btn btn-secondary"
+                          ><i class="bi bi-plus-circle align-baseline me-1"></i
+                          >Add</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive table-card">
+                  <table
+                    class="table table-bordered table-centered align-middle table-custom-effect table-nowrap mb-0"
+                  >
+                    <thead class="text-muted text-center">
+                      <tr>
+                        <th scope="col" class="cursor-pointer">S No.</th>
+                        <th scope="col" class="cursor-pointer">City Name</th>
+                        <th scope="col" class="cursor-pointer">Address</th>
+                        <th scope="col" class="cursor-pointer">Mobile</th>
+                        <th scope="col" class="cursor-pointer">email</th>
+                        <th scope="col" class="cursor-pointer">Status</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="list form-check-all text-center">
+                      @for (location of locationData; track $index) {
+                      <tr>
+                        <td class="id">
+                          {{ $index + 1 }}
+                        </td>
+
+                        <td class="instructor">
+                          {{ location.city_name }}
+                        </td>
+
+                        <td class="category">
+                          {{ location.address }}
+                        </td>
+
+                        <td class="instructor">
+                          {{ location.mobile }}
+                        </td>
+                        <td class="instructor">
+                          {{ location.email }}
+                        </td>
+                        <td class="status">
+                          <div class="form-switch form-switch-md mb-3">
+                            <input
+                              type="checkbox"
+                              class="form-check-input"
+                              [checked]="location.status === 'active'"
+                              (change)="setStatus(location, $event)"
+                              [id]="'customSwitchsizemdlo' + $index"
+                            />
+                            <label
+                              class="form-check-label"
+                              [for]="'customSwitchsizemdlo' + $index"
+                              ><span
+                                class="badge text-capitalize"
+                                [ngClass]="{
+                                  'bg-info-subtle text-info':
+                                    location.status === 'active',
+                                  'bg-danger-subtle text-danger':
+                                    location.status === 'inactive'
+                                }"
+                                >{{ location.status }}</span
+                              >
+                            </label>
+                          </div>
+                        </td>
+
+                        <td class="px-0">
+                          <ul
+                            class="d-flex justify-content-center gap-2 list-unstyled mb-0"
+                          >
+                            <!-- <li>
+                              <a
+                                [routerLink]="
+                                  location.layout_type === 'layoutA'
+                                    ? '/location/layout-a/' + location.id
+                                    : '/location/layout-b/' + location.id
+                                "
+                                class="btn btn-subtle-dark px-2 py-1"
+                              >
+                                <i
+                                  class="bi bi-plus-circle align-baseline me-1"
+                                ></i>
+                                Add Details
+                              </a>
+                            </li> -->
+                            <li>
+                              <a
+                                (click)="modal.show(); edit(location)"
+                                class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                                ><i class="ph-pencil fs-5"></i
+                              ></a>
+                            </li>
+                            <li>
+                              <a
+                                (click)="delete(location.id)"
+                                class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                                ><i class="ph-trash fs-5"></i
+                              ></a>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                      }
+                    </tbody>
+
+                    <!-- end tbody -->
+                  </table>
+
+                  <!-- end table -->
+                  <div class="noresult" style="display: none">
+                    <div class="text-center py-4">
+                      <i class="ph-magnifying-glass fs-1 text-primary"></i>
+                      <h5 class="mt-2">Sorry! No Result Found</h5>
+                      <p class="text-muted mb-0">
+                        We did not find any Details for you search.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="row align-items-center mt-4 pt-2"
+                  id="pagination-element"
+                >
+                  <div class="col-sm">
+                    <div class="text-muted text-center text-sm-start">
+                      Showing
+                      <span class="fw-semibold">{{
+                        locationData?.length
+                      }}</span>
+                      of
+                      <span class="fw-semibold">{{
+                        locationDataList?.length
+                      }}</span>
+                      Results
+                    </div>
+                  </div>
+
+                  <div class="col-sm-auto mt-3 mt-sm-0">
+                    <pagination
+                      class="pagination-wrap hstack gap-2 justify-content-center"
+                      [totalItems]="locationDataList?.length"
+                      [itemsPerPage]="5"
+                      (pageChanged)="pageChanged($event)"
+                    ></pagination>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--end card-->
+          </div>
+          <!--end col-->
+        </div>
+        @if (spinnerStatus) {
+        <div id="elmLoader">
+          <div class="spinner-border text-primary avatar-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- add Modal-->
+<div bsModal #modal="bs-modal" class="modal fade" id="modal">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <div class="modal-header bg-success p-3">
+        <h5 class="modal-title text-white" id="editSection2ModalLabel">
+          @if(this.editId == null){ Add Location } @else{ Edit Location }
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="modal.hide()"
+        ></button>
+      </div>
+
+      <form
+        class="tablelist-form"
+        [formGroup]="formGroup"
+        (submit)="onSubmit(modal)"
+      >
+        <!--  -->
+        <div class="modal-body">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="city_name" class="form-label"
+              >City Name<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="city_name"
+              formControlName="city_name"
+              class="form-control"
+              placeholder="Enter City Name"
+              [ngClass]="
+                s2['city_name'] &&
+                s2['city_name'].hasError('required') &&
+                s2['city_name'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (s2['city_name'] && s2['city_name'].hasError('required') &&
+            s2['city_name'].touched) {
+            <div class="invalid-text">city name is required.</div>
+            } @if(s2['city_name'] && s2['city_name'].hasError('maxlength') &&
+            s2['city_name'].touched){
+            <div class="invalid-text">
+              City Name must be at most 45 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label"
+              >Email<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              placeholder="Enter Email"
+              [ngClass]="
+                s2['email'] &&
+                s2['email'].hasError('required') &&
+                s2['email'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (s2['email'] && s2['email'].hasError('required') &&
+            s2['email'].touched) {
+            <div class="invalid-text">email is required.</div>
+            } @if(s2['email'] && s2['email'].hasError('pattern') &&
+            s2['email'].touched){
+            <div class="invalid-text">Email must be a valid email address</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="mobile" class="form-label"
+              >Mobile<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="mobile"
+              formControlName="mobile"
+              class="form-control"
+              placeholder="Enter Mobile number"
+              [ngClass]="
+                s2['mobile'] &&
+                s2['mobile'].hasError('required') &&
+                s2['mobile'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (s2['mobile'] && s2['mobile'].hasError('required') &&
+            s2['mobile'].touched) {
+            <div class="invalid-text">Mobile number is required.</div>
+            } @if(s2['mobile'] && s2['mobile'].hasError('pattern') &&
+            s2['mobile'].touched){
+            <div class="invalid-text">
+              Please, Enter 10 digit Mobile Number.
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="iframe_url" class="form-label"
+              >iframe url<span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="iframe_url"
+              formControlName="iframe_url"
+              class="form-control"
+              placeholder="Enter Iframe Url"
+              [ngClass]="
+                s2['iframe_url'] &&
+                s2['iframe_url'].hasError('required') &&
+                s2['iframe_url'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+            @if (s2['iframe_url'] && s2['iframe_url'].hasError('required') &&
+            s2['iframe_url'].touched) {
+            <div class="invalid-text">iframe url is required.</div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label"
+              >Address <span class="text-danger">*</span></label
+            >
+            <textarea
+              class="form-control"
+              placeholder="Must enter maximum of a 100 characters"
+              rows="5"
+              formControlName="address"
+              [ngClass]="{
+                'is-invalid':
+                  s2['address'] && s2['address'].errors && s2['address'].touched
+              }"
+            ></textarea>
+            @if(s2['address'] && s2['address'].hasError('required') &&
+            s2['address'].touched){
+            <div class="invalid-text">Address is required</div>
+
+            } @if(s2['address'] && s2['address'].hasError('maxlength') &&
+            s2['address'].touched){
+            <div class="invalid-text">
+              Address must be at most 100 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="addstatus" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="addstatus"
+              [ngClass]="
+                s2['status'] &&
+                s2['status'].hasError('required') &&
+                s2['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (s2['status'] && s2['status'].hasError('required') &&
+            s2['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-success"
+              (click)="modal.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            @if (addSaveButtonActive) {
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Save Changes
+            </button>
+            } @else {
+            <button class="btn btn-secondary" type="button" disabled>
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Please wait
+            </button>
+            }
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- add Modal-->

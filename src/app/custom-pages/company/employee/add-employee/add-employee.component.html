@@ -1,0 +1,707 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  [title]="urlId ? 'Edit Employee Detail' : 'Add Employee Detail'"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<!-- End Breadcrumbs -->
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-xxl-3">
+      <div class="card overflow-hidden">
+        <div>
+          <img
+            src="assets/images/small/img-7.jpg"
+            alt=""
+            id="cover-img"
+            class="card-img-top profile-wid-img object-fit-cover"
+            style="height: 200px"
+          />
+          <!-- <div>
+          <input
+            id="profile-foreground-img-file-input"
+            type="file"
+            class="profile-foreground-img-file-input d-none"
+            (change)="fileChange($event, '0')"
+          />
+          <label
+            for="profile-foreground-img-file-input"
+            class="profile-photo-edit btn btn-light btn-sm position-absolute end-0 top-0 m-3"
+          >
+            <i class="ri-image-edit-line align-bottom me-1"></i> Edit Cover
+            Images
+          </label>
+        </div> -->
+        </div>
+        <div class="card-body pt-0 mt-n5">
+          <div class="text-center">
+            <div class="profile-user position-relative d-inline-block mx-auto">
+              @if (employeeselectedImage) { @if (employeeselectedImagePreview) {
+              <img
+                class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+                [src]="employeeselectedImagePreview"
+                alt="Dropzone-Image"
+              />
+              } }@else if (employeeuploadedImage) {
+              <img
+                class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+                [src]="employeeuploadedImage"
+                alt="Uploaded Thumbnail"
+              />
+              } @else {
+              <img
+                src="assets/images/users/avatar-1.jpg"
+                alt=""
+                id="user-img"
+                class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+              />
+              } @if (f['image'] && f['image'].hasError('required') &&
+              f['image'].touched) {
+              <div class="invalid-text">Image is required.</div>
+              }
+
+              <input
+                type="file"
+                id="empimage"
+                accept="image/*"
+                formControlName="image"
+                (change)="employeeimageSelect($event)"
+                hidden
+                #empimage
+              />
+
+              <div
+                for="empimage"
+                class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0"
+              >
+                <label for="empimage" class="profile-photo-edit avatar-xs">
+                  <span class="avatar-title rounded-circle bg-light text-body">
+                    <i class="bi bi-camera"></i>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <!-- <div class="mt-3">
+              <h5>
+                Richard Marshall
+                <i
+                  class="bi bi-patch-check-fill align-baseline text-info ms-1"
+                ></i>
+              </h5>
+              <p class="text-muted">Web Developer</p>
+            </div> -->
+          </div>
+        </div>
+        <!-- <div class="card-body border-top">
+          <div class="d-flex align-items-center mb-4 pb-2">
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-0">Complete Your Profile</h5>
+            </div>
+            <div class="flex-shrink-0">
+              <a
+                href="javascript:void(0);"
+                class="badge bg-light text-secondary"
+                ><i class="ri-edit-box-line align-bottom me-1"></i> Edit</a
+              >
+            </div>
+          </div>
+          <div>
+            <progressbar
+              class="animated-progress custom-progress progress-label"
+              [value]="30"
+            >
+              <div class="label">30%</div>
+            </progressbar>
+          </div>
+        </div>
+        <div class="card-body border-top">
+          <div class="d-flex align-items-center mb-4">
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-0">Portfolio</h5>
+            </div>
+            <div class="flex-shrink-0">
+              <a
+                href="javascript:void(0);"
+                class="badge bg-info-subtle text-info fs-xs"
+                ><i class="ri-add-fill align-bottom me-1"></i> Add</a
+              >
+            </div>
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="avatar-xs d-block flex-shrink-0 me-3">
+              <span
+                class="avatar-title rounded-circle bg-dark-subtle text-dark"
+              >
+                <i class="bi bi-github"></i>
+              </span>
+            </div>
+            <input
+              type="email"
+              class="form-control"
+              id="gitUsername"
+              placeholder="Username"
+              value="@richardmarshall"
+            />
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="avatar-xs d-block flex-shrink-0 me-3">
+              <span
+                class="avatar-title rounded-circle bg-primary-subtle text-primary"
+              >
+                <i class="bi bi-facebook"></i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="websiteInput"
+              placeholder="www.example.com"
+              value="www.steex.com"
+            />
+          </div>
+          <div class="mb-3 d-flex">
+            <div class="avatar-xs d-block flex-shrink-0 me-3">
+              <span
+                class="avatar-title rounded-circle bg-success-subtle text-success"
+              >
+                <i class="bi bi-dribbble"></i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="dribbleName"
+              placeholder="Username"
+              value="@richard_marshall"
+            />
+          </div>
+          <div class="d-flex">
+            <div class="avatar-xs d-block flex-shrink-0 me-3">
+              <span
+                class="avatar-title rounded-circle bg-danger-subtle text-danger"
+              >
+                <i class="bi bi-instagram"></i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="pinterestName"
+              placeholder="Username"
+              value="Richard Marshall"
+            />
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="col-xl-9">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Personal Details</h6>
+        </div>
+        <div class="card-body">
+          <div class="col-xxl-12">
+            <!-- <form [formGroup]="formGroup" (ngSubmit)="onSubmit()"> -->
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="name" class="form-label"
+                    >Empolyee Name <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    formControlName="name"
+                    placeholder="Enter Empolyee name"
+                    value="name"
+                    [ngClass]="
+                      f['name'] &&
+                      f['name'].hasError('required') &&
+                      f['name'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['name'] && f['name'].hasError('required') &&
+                  f['name'].touched) {
+                  <div class="invalid-text">Empolyee name is required.</div>
+                  } @if(f['name'] && f['name'].hasError('maxlength') &&
+                  f['name'].touched){
+                  <div class="invalid-text">
+                    Empolyee name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emp_id" class="form-label"
+                    >Employee Id <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="emp_id"
+                    formControlName="emp_id"
+                    placeholder="Enter Employee Id"
+                    value="emp_id"
+                    [ngClass]="
+                      f['emp_id'] &&
+                      f['emp_id'].hasError('required') &&
+                      f['emp_id'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['emp_id'] && f['emp_id'].hasError('required') &&
+                  f['emp_id'].touched) {
+                  <div class="invalid-text">Employee Id is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="email" class="form-label"
+                    >Email <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="email"
+                    formControlName="email"
+                    placeholder="Enter email"
+                    value="email"
+                    [ngClass]="
+                      f['email'] &&
+                      f['email'].hasError('required') &&
+                      f['email'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['email'] && f['email'].hasError('required') &&
+                  f['email'].touched) {
+                  <div class="invalid-text">Email is required.</div>
+                  } @if(f['email'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Email must be a valid email address
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="contact" class="form-label"
+                    >Contact Number <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="contact"
+                    formControlName="mobile"
+                    placeholder="Enter mobile"
+                    value="mobile"
+                    [ngClass]="
+                      f['mobile'] &&
+                      f['mobile'].hasError('required') &&
+                      f['mobile'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['mobile'] && f['mobile'].hasError('required') &&
+                  f['mobile'].touched) {
+                  <div class="invalid-text">Mobile is required.</div>
+                  } @if(f['mobile'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Please, Enter 10 digit Mobile Number.
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="dob" class="form-label"
+                    >Date of Birth <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="dob"
+                    formControlName="dob"
+                    placeholder="Enter Date of Birth"
+                    value="dob"
+                    [ngClass]="
+                      f['dob'] &&
+                      f['dob'].hasError('required') &&
+                      f['dob'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['dob'] && f['dob'].hasError('required') &&
+                  f['dob'].touched) {
+                  <div class="invalid-text">Date of Birth is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="JoiningdatInput" class="form-label"
+                    >Joining Date</label
+                  >
+                  <input
+                    formControlName="joining_date"
+                    type="date"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="designation" class="form-label"
+                    >Designation <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="designation"
+                    formControlName="designation"
+                    placeholder="Enter Designation"
+                    value="designation"
+                    [ngClass]="
+                      f['designation'] &&
+                      f['designation'].hasError('required') &&
+                      f['designation'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['designation'] && f['designation'].hasError('required')
+                  && f['designation'].touched) {
+                  <div class="invalid-text">Designation is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="gender" class="form-label"
+                    >Gender <span class="text-danger">*</span></label
+                  >
+                  <select
+                    class="form-control"
+                    formControlName="gender"
+                    data-choices
+                    id="gender"
+                    [ngClass]="
+                      f['gender'] &&
+                      f['gender'].hasError('required') &&
+                      f['gender'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  @if (f['gender'] && f['gender'].hasError('required') &&
+                  f['gender'].touched) {
+                  <div class="invalid-text">Gender is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label for="address" class="form-label">
+                    Address <span class="text-danger">*</span></label
+                  >
+
+                  <textarea
+                    class="form-control"
+                    placeholder="Enter address"
+                    rows="3"
+                    formControlName="address"
+                    [ngClass]="{
+                      'is-invalid':
+                        f['address'] &&
+                        f['address'].errors &&
+                        f['address'].touched
+                    }"
+                  ></textarea>
+
+                  @if (f['address'] && f['address'].hasError('required') &&
+                  f['address'].touched) {
+                  <div class="invalid-text">Address is required.</div>
+                  } @if(f['address'] && f['address'].hasError('maxlength') &&
+                  f['address'].touched){
+                  <div class="invalid-text">
+                    Address must be at most 100 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="city" class="form-label"
+                    >City <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    formControlName="city"
+                    placeholder="Enter city"
+                    value="city"
+                    [ngClass]="
+                      f['city'] &&
+                      f['city'].hasError('required') &&
+                      f['city'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['city'] && f['city'].hasError('required') &&
+                  f['city'].touched) {
+                  <div class="invalid-text">City is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="zip_code" class="form-label"
+                    >Zip code <span class="text-danger">*</span></label
+                  >
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="zip_code"
+                    formControlName="zip_code"
+                    placeholder="Enter zip code"
+                    [ngClass]="
+                      f['zip_code'] &&
+                      f['zip_code'].hasError('required') &&
+                      f['zip_code'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  <div *ngIf="f['zip_code']?.touched && f['zip_code']?.errors">
+                    <div
+                      *ngIf="f['zip_code']?.hasError('required')"
+                      class="invalid-text"
+                    >
+                      Zip code is required.
+                    </div>
+                    <div
+                      *ngIf="f['zip_code']?.hasError('maxlength')"
+                      class="invalid-text"
+                    >
+                      Invalid zip code.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="mb-3">
+                  <label for="state" class="form-label"
+                    >State <span class="text-danger">*</span></label
+                  >
+                  <select
+                    class="form-control"
+                    formControlName="state"
+                    data-choices
+                    id="state"
+                    [ngClass]="
+                      f['state'] &&
+                      f['state'].hasError('required') &&
+                      f['state'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  >
+                    <option value="">Select State</option>
+                    <option *ngFor="let state of states" [value]="state">
+                      {{ state }}
+                    </option>
+                  </select>
+                  @if (f['state'] && f['state'].hasError('required') &&
+                  f['state'].touched) {
+                  <div class="invalid-text">State is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="statuss" class="form-label"
+                    >Status <span class="text-danger">*</span></label
+                  >
+                  <select
+                    class="form-control"
+                    formControlName="status"
+                    data-choices
+                    id="statuss"
+                    [ngClass]="
+                      f['status'] &&
+                      f['status'].hasError('required') &&
+                      f['status'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  >
+                    <option value="">Select Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                  @if (f['status'] && f['status'].hasError('required') &&
+                  f['status'].touched) {
+                  <div class="invalid-text">Status is required.</div>
+                  }
+                </div>
+              </div>
+
+              <!-- <div class="col-lg-6">
+                <div class="mb-3">
+                  <label class="form-label"
+                    >Image<span class="text-danger">*</span></label
+                  >
+                  <div class="custom-modal-dropzone">
+                    <input
+                      type="file"
+                      id="empimage"
+                      accept="image/*"
+                      formControlName="image"
+                      (change)="employeeimageSelect($event)"
+                      hidden
+                      #empimage
+                    />
+                    <label for="empimage" class="custom-modalfile-input">
+                      <span class="custom-modalfile-text"
+                        >Choose a file to upload.
+                        <br />
+                        <span class="custom-file-text2-modal"
+                          >File size 100 × 100 px
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+
+                  @if (employeeselectedImage) {
+                  <ul class="list-unstyled mb-0" id="dropzone-preview">
+                    <li class="mt-2" id="dropzone-preview-list">
+                      <div class="border rounded">
+                        <div class="d-flex flex-wrap gap-2 p-2">
+                          <div class="flex-shrink-0">
+                            <div class="image-avatar bg-light rounded p-2">
+                              @if (employeeselectedImagePreview) {
+                              <img
+                                class="img-fluid rounded d-block"
+                                [src]="employeeselectedImagePreview"
+                                alt="Dropzone-Image"
+                              />
+                              }
+                            </div>
+                          </div>
+                          <div class="flex-grow-1 me-1">
+                            <div class="pt-1">
+                              @if (employeeselectedImage.name) {
+                              <h5 class="fs-md mb-1">
+                                {{ employeeselectedImage.name }}
+                              </h5>
+                              } @if (employeeselectedImage.size) {
+                              <p class="fs-sm text-muted mb-0">
+                                {{ employeeselectedImage.size }}
+                              </p>
+                              }
+                            </div>
+                          </div>
+                          <div class="flex-shrink-0">
+                            <button
+                              (click)="employeeremoveImage()"
+                              class="btn btn-sm btn-danger"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                  } @if (employeeuploadedImage) {
+                  <div class="col-lg-6 mt-3 mt-lg-0">
+                    <div>
+                      <label class="form-label">Uploaded Image</label>
+                      <div>
+                        <div>
+                          <img
+                            class="edit-thumbnail-img-fluid rounded d-block w-50"
+                            [src]="employeeuploadedImage"
+                            alt="Uploaded Thumbnail"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  } @if (f['image'] && f['image'].hasError('required') &&
+                  f['image'].touched) {
+                  <div class="invalid-text">Image is required.</div>
+                  }
+                </div>
+              </div> -->
+              <div class="col-12">
+                <div class="hstack gap-2 justify-content-end mb-3">
+                  @if (saveButtonActive) {
+                  <button class="btn btn-primary">Save</button>
+                  } @else {
+                  <button class="btn btn-secondary" type="button" disabled>
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Please wait
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
+
+            <div></div>
+          </div>
+          @if (spinnerStatus) {
+          <div id="elmLoader">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          }
+        </div>
+        <!-- end card-body -->
+      </div>
+      <!-- end card -->
+    </div>
+  </div>
+</form>

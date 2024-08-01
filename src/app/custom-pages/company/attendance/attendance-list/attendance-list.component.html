@@ -1,0 +1,299 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Employee Attendance"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="productList">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-xxl">
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name, mobile etc..."
+                />
+                <i class="ri-search-line search-icon"></i>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-xxl col-sm-6"></div>
+            <!--end col-->
+            <div class="col-xxl-3 col-sm-6">
+              <div>
+                <select class="form-control" id="idCategory">
+                  <option value="">Select Category</option>
+                  <option value="Appliances">Appliances</option>
+                  <option value="Automotive Accessories">
+                    Automotive Accessories
+                  </option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Fashion">Fashion</option>
+                  <option value="Furniture">Furniture</option>
+                  <option value="Grocery">Grocery</option>
+                  <option value="Headphones">Headphones</option>
+                  <option value="Kids">Kids</option>
+                  <option value="Luggage">Luggage</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Watches">Watches</option>
+                </select>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-xxl-2 col-sm-6">
+              <div>
+                <select class="form-control" id="idDiscount">
+                  <option value="all">Select All Discount</option>
+                  <option value="50">50% or more</option>
+                  <option value="40">40% or more</option>
+                  <option value="30">30% or more</option>
+                  <option value="20">20% or more</option>
+                  <option value="10">10% or more</option>
+                  <option value="0">Less than 10%</option>
+                </select>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-xxl-auto col-sm-6">
+              <button type="button" class="btn btn-secondary w-md">
+                <i class="bi bi-funnel align-baseline me-1"></i> Filters
+              </button>
+            </div>
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </div>
+      </div>
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Employees
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                attendanceData?.length
+              }}</span>
+            </h5>
+
+            <p class="text-muted mb-0 mt-2">
+              Showing Result of Date:
+              <span class="fw-bold">
+                {{ this.formattedDate | date : "dd MMM , yyyy" }}</span
+              >
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <button class="btn btn-subtle-danger d-none" id="remove-actions">
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <button type="button" class="btn btn-primary add-btn">
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
+                Product
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-centered align-middle table-nowrap mb-0">
+              <thead class="table-active">
+                <tr>
+                  <th>
+                    <div class="form-check">
+                      <!-- <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="option"
+                        [(ngModel)]="masterSelected"
+                        (change)="checkUncheckAll($event)"
+                        id="checkAll"
+                      /> -->
+                      <label class="form-check-label" for="checkAll"></label>
+                    </div>
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('name')">
+                    Name
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('mobile')">
+                    Mobile
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('email')">
+                    Email
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('designation')"
+                  >
+                    Designation
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('check_in_time')"
+                  >
+                    Check-in Time
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('check_out_time')"
+                  >
+                    Check-out Time
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('checkin_status')"
+                  >
+                    Attendance Status
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list form-check-all">
+                @for ( data of attendanceData; track $index) {
+                <tr id="p_{{ data._id }}">
+                  <td></td>
+                  <td class="id" style="display: none">
+                    <a href="javascript:void(0);" class="fw-medium link-primary"
+                      >#TB01</a
+                    >
+                  </td>
+                  <td class="products">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="{{ data.image }}"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+                      <div>
+                        <h6 class="mb-0">
+                          <a
+                            routerLink="/ecommerce/product-details"
+                            class="text-reset products"
+                            >{{ data.name }}</a
+                          >
+                        </h6>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="discount">{{ data.mobile }}</td>
+                  <td class="category">{{ data.email }}</td>
+                  <td class="stock">{{ data.designation }}</td>
+                  <td class="price">{{ data.check_in_time }}</td>
+                  <td class="orders">{{ data.check_in_time }}</td>
+
+                  <td class="published">{{ data.checkin_status }}</td>
+                  <td>
+                    <div dropdown class="dropdown">
+                      <button
+                        dropdownToggle
+                        class="btn btn-subtle-secondary btn-sm btn-icon"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+
+                      <ul
+                        *bsDropdownMenu
+                        class="dropdown-menu dropdown-menu-end"
+                      >
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            routerLink="/ecommerce/product-details"
+                            href="javascript:void(0);"
+                            ><i class="ph-eye align-middle me-1"></i> View</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item edit-item-btn"
+                            ><i class="ph-pencil align-middle me-1"></i> Edit</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            class="dropdown-item remove-item-btn"
+                            href="javascript:void(0);"
+                            ><i class="ph-trash align-middle me-1"></i>
+                            Remove</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                }
+              </tbody>
+              <!-- <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div> -->
+            </table>
+          </div>
+          <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched {{ attendanceDataList?.length }} Employee Data.
+                We did not find any Employee for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+          <div class="row mt-3 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{ attendanceData?.length }}</span> of
+                <span class="fw-semibold">{{
+                  attendanceDataList?.length
+                }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0">
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [totalItems]="attendanceDataList?.length"
+                [itemsPerPage]="10"
+                (pageChanged)="pageChanged($event)"
+              ></pagination>
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>

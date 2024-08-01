@@ -1,0 +1,68 @@
+@if (spinnerStatus) {
+<div id="elmLoader">
+  <div class="spinner-border text-primary avatar-sm" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+}
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="col-xxl-12">
+          <form [formGroup]="formGroup" (submit)="onSubmit()">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="">
+                  <label for="title" class="form-label">
+                    Title<span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="title"
+                    formControlName="title"
+                    class="form-control"
+                    placeholder="Enter Title "
+                    [ngClass]="
+                      s2['title'] &&
+                      s2['title'].hasError('required') &&
+                      s2['title'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (s2['title'] && s2['title'].hasError('required') &&
+                  s2['title'].touched) {
+                  <div class="invalid-text">Title is required.</div>
+                  } @if(s2['title'] && s2['title'].hasError('maxlength') &&
+                  s2['title'].touched){
+                  <div class="invalid-text">
+                    Title must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="hstack gap-2 justify-content-start mt-4">
+                  @if (saveButtonActive) {
+                  <button class="btn btn-primary">Save</button>
+                  } @else {
+                  <button class="btn btn-secondary" type="button" disabled>
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Please wait
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

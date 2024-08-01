@@ -1,0 +1,128 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="service"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <accordion
+        [closeOthers]="true"
+        class="accordion custom-accordionwithicon-plus"
+        id="accordionWithplusicon"
+      >
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Service Banner
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-service-banner></app-service-banner>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 1 : Add service
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <!-- <app-home-sectionone
+                (titleChange)="handleTitleChange('sectionTwoTitle', $event)"
+              ></app-home-sectionone> -->
+
+              <app-add-service></app-add-service>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 2 : {{ sectionTitles["sectionThreeTitle"] }}
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-testimonials
+                (titleChange)="handleTitleChange('sectionThreeTitle', $event)"
+              ></app-testimonials>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 3 : {{ sectionTitles["sectionFourTitle"] }}
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-our-team
+                (titleChange)="handleTitleChange('sectionFourTitle', $event)"
+              ></app-our-team>
+            </div>
+          </div>
+        </accordion-group>
+
+        <accordion-group class="accordion-item">
+          <h2
+            accordion-heading
+            class="accordion-header"
+            id="accordionwithplusExample1"
+          >
+            <button class="accordion-button text-uppercase" type="button">
+              Section 4 : {{ sectionTitles["sectionFiveTitle"] }}
+            </button>
+          </h2>
+          <div
+            id="accor_plusExamplecollapse1"
+            class="accordion-collapse collapse show"
+          >
+            <div class="accordion-body">
+              <app-service-contact-form
+                (titleChange)="handleTitleChange('sectionFiveTitle', $event)"
+              ></app-service-contact-form>
+            </div>
+          </div>
+        </accordion-group>
+      </accordion>
+    </div>
+  </div>
+</div>
