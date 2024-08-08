@@ -49,7 +49,7 @@ export class LoginComponent {
       localStorage.getItem("currentUser") &&
       localStorage.getItem("access_token")
     ) {
-      this.router.navigate(["/home"]);
+      this.router.navigate(["/company"]);
     }
     /**
      * Form Validatyion
@@ -104,7 +104,7 @@ export class LoginComponent {
             );
             localStorage.setItem("userType", res.user_type);
 
-            this.router.navigate(["/home"]);
+            this.router.navigate(["/company"]);
           } else if (res.status == false) {
             this.loginButtonActive = true;
             this.toastService.error(res.message);

@@ -24,7 +24,7 @@ export const COMPANY_MENU: MenuItem[] = [
       {
         id: 80,
         label: "MENUITEMS.COMPANY.LIST.DESIGNATION",
-        link: "/department-list",
+        link: "/designation-list",
         parentId: 1,
         icon: " ri-file-user-line",
       },

@@ -167,34 +167,36 @@ export class TimelineComponent implements OnInit {
               return item;
             });
 
-            this.initializeMap();
+            if (this.employeeTimeline && this.employeeTimeline.length > 0) {
+              this.initializeMap();
 
-            // Calculate total distance
-            let totalDistance = 0;
-            for (let i = 1; i < this.employeeTimeline.length; i++) {
-              totalDistance += this.calculateDistance(
-                this.employeeTimeline[i - 1].latitude,
-                this.employeeTimeline[i - 1].longitude,
-                this.employeeTimeline[i].latitude,
-                this.employeeTimeline[i].longitude
-              );
+              // Calculate total distance
+              let totalDistance = 0;
+              for (let i = 1; i < this.employeeTimeline.length; i++) {
+                totalDistance += this.calculateDistance(
+                  this.employeeTimeline[i - 1].latitude,
+                  this.employeeTimeline[i - 1].longitude,
+                  this.employeeTimeline[i].latitude,
+                  this.employeeTimeline[i].longitude
+                );
+              }
+
+              // Calculate time spent in different modes
+              const timeSpent = this.calculateTimeSpent();
+
+              this.totaldistanceToshow = totalDistance.toFixed(1);
+
+              // console.log("Total Distance:", totalDistance, "km");
+              // console.log("Time Spent:", timeSpent);
+
+              // Display these results in the UI as needed
             }
-
-            // Calculate time spent in different modes
-            const timeSpent = this.calculateTimeSpent();
-
-            this.totaldistanceToshow = totalDistance.toFixed(1);
-
-            // console.log("Total Distance:", totalDistance, "km");
-            // console.log("Time Spent:", timeSpent);
-
-            // Display these results in the UI as needed
           } else {
             this.employeeTimeline = [];
             this.intervalTimeCoordinates = [];
             this.totaldistanceToshow = null;
 
-            this.initializeDefaultMap();
+            // this.initializeDefaultMap();
           }
         },
         (error) => {
@@ -282,7 +284,7 @@ export class TimelineComponent implements OnInit {
     }
 
     this.intervalTimeCoordinates = filteredCoordinates;
-
+    console.log(this.intervalTimeCoordinates);
     return filteredCoordinates;
   }
 
@@ -602,6 +604,7 @@ export class TimelineComponent implements OnInit {
       center: [78.22773895317802, 26.22052522541971],
       zoom: 5,
     });
+    this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on("load", () => {
       if (!this.employeeTimeline || this.employeeTimeline.length === 0) {
@@ -757,6 +760,7 @@ export class TimelineComponent implements OnInit {
       center: [78.9629, 20.5937],
       zoom: 13,
     });
+    this.map.addControl(new mapboxgl.NavigationControl());
   }
 
   formatTime(time: string): string {

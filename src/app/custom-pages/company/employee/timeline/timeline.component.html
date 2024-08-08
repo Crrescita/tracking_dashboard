@@ -86,36 +86,9 @@
 </div>
 
 <div class="row">
+  @if(employeeTimeline && employeeTimeline.length >0){
   <div class="col-lg-4">
     <ul class="acitivity-timeline-2 list-unstyled mb-0 mt-3 overflow">
-      <!-- @for (item of employeeTimeline; track $index) {
-      <li
-        (click)="updateMarkerAndPath(item.longitude, item.latitude, item)"
-        class="activity-item pt-2"
-        [ngClass]="{ 'selected-item': selectedItem === item }"
-      >
-        <div class="d-flex justify-content-between align-items-center">
-          <span
-            class="fs-md badge bg-body-secondary border border-secondary text-secondary"
-            >{{ item.formattedTime }}</span
-          >
-
-          <button
-            type="button"
-            class="btn battery-status"
-            [ngClass]="getBatteryClass(item.battery_status)"
-            data-bs-toggle="tooltip"
-            placement="top"
-            tooltip="Battery Percentage"
-          >
-            <span class="ri-battery-saver-line"></span>
-            {{ item.battery_status }} %
-          </button>
-        </div>
-
-        <p class="mb-0 mt-2">{{ item.address }}</p>
-      </li>
-      }  -->
       @for (item of intervalTimeCoordinates; track $index) {
       <li
         (click)="
@@ -146,18 +119,20 @@
         <p class="mb-0 mt-2">{{ item.end.address }}</p>
       </li>
       } @empty {
-      <div id="noresult">
-        <div class="text-center py-4">
-          <div class="avatar-md mx-auto mb-4">
-            <div
-              class="avatar-title bg-light text-primary rounded-circle fs-4xl"
-            >
-              <i class="bi bi-search"></i>
-            </div>
-          </div>
-          <h5 class="mt-2">Sorry! No Result Found</h5>
-          <!-- <p class="text-muted mb-0">We've searched more than 150+ sellers We did not find any sellers for you search.</p> -->
+      <div class="mt-2 text-center">
+        <div class="error-img text-center px-5">
+          <img
+            src="assets/images/auth/offline-page.gif"
+            alt=""
+            class="img-fluid w-50"
+          />
         </div>
+        <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
+        <!-- <p class="text-muted mb-4">
+            We can't show you this images because you aren't connected to the
+            internet. When you’re back online refresh the page or hit the button
+            below
+          </p> -->
       </div>
       }
     </ul>
@@ -165,4 +140,26 @@
   <div class="col-lg-8">
     <div id="map" class="match-parent"></div>
   </div>
+  } @else {
+  <div class="col-12">
+    <div class="mt-2 text-center">
+      <div class="error-img text-center px-5">
+        <img
+          src="assets/images/auth/offline-page.gif"
+          alt=""
+          class="img-fluid w-25"
+        />
+      </div>
+      <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
+      <div id="map" class="match-parent"></div>
+      <!-- <p class="text-muted mb-4">
+        We can't show you this images because you aren't connected to the
+        internet. When you’re back online refresh the page or hit the button
+        below
+      </p> -->
+    </div>
+  </div>
+  }
 </div>
+
+<div id="map" class="match-parent"></div>

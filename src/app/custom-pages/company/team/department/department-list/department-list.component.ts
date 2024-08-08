@@ -39,8 +39,8 @@ export class DepartmentListComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Ecommerce" },
-      { label: "Products", active: true },
+      { label: "Employee Management" },
+      { label: "Department", active: true },
     ];
 
     this.getDepartment();

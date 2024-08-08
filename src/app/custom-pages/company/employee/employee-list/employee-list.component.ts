@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
 import { ToastrService } from "ngx-toastr";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import Swal from "sweetalert2";
+import { ModalDirective } from "ngx-bootstrap/modal";
 
 @Component({
   selector: "app-employee-list",
@@ -21,11 +22,19 @@ export class EmployeeListComponent implements OnInit {
   company_id: any;
 
   //table
-  term: string = "";
-  currentPage = 1;
-  totalItems = 0;
-  itemsPerPage = 5;
+  // term: string = "";
+  // currentPage = 1;
+  // totalItems = 0;
+  // itemsPerPage = 5;
   endItem: any;
+
+  @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
+  @ViewChild("deleteRecordModal", { static: false })
+  deleteRecordModal?: ModalDirective;
+  deleteId: any;
+
+  checkedValGet: any[] = [];
+  masterSelected!: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,8 +44,8 @@ export class EmployeeListComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Employee", active: true },
-      { label: "Employees list", active: true },
+      { label: "Employee Management", active: true },
+      { label: "Employees", active: true },
     ];
 
     const data = localStorage.getItem("currentUser");
@@ -59,8 +68,6 @@ export class EmployeeListComponent implements OnInit {
           this.toggleSpinner(false);
           this.employeeData = res.data || [];
           this.employeeDataList = res.data || [];
-          this.updatePagination();
-          this.updateDisplayedItems();
         } else {
           this.handleError("Unexpected response format");
         }
@@ -92,32 +99,50 @@ export class EmployeeListComponent implements OnInit {
     this.spinnerStatus = isLoading;
   }
 
-  delete(id: number) {
-    if (id) {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then((result: any) => {
-        if (result.isConfirmed) {
-          this.api.deleteWithId("employees", id).subscribe(
-            (res: any) => this.handleStatusChangeResponse(res),
-            (error) => this.handleError(error)
-          );
-        }
-      });
-    }
-  }
-
   handleStatusChangeResponse(res: any) {
     this.toggleSpinner(false);
     if (res["status"] === true) {
       this.toastService.success("Data Saved Successfully!!");
       this.getemployeeData();
+    } else {
+      this.toastService.error(res["message"]);
+    }
+  }
+
+  // Delete
+  removeItem(id: any) {
+    this.deleteId = id;
+    this.deleteRecordModal?.show();
+  }
+
+  deleteData(id?: any) {
+    this.toggleSpinner(true);
+    this.deleteRecordModal?.hide();
+
+    if (id) {
+      this.api.deleteWithId("employees", id).subscribe(
+        (res: any) => this.handleResponse(res),
+        (error) => this.handleError(error)
+      );
+    }
+
+    const idsToDelete = this.checkedValGet;
+    if (idsToDelete && idsToDelete.length > 0) {
+      this.api
+        .post("employees-delete-multiple", { ids: idsToDelete })
+        .subscribe(
+          (res: any) => this.handleResponse(res),
+          (error) => this.handleError(error)
+        );
+    }
+  }
+
+  handleResponse(res: any) {
+    this.toggleSpinner(false);
+    if (res["status"] === true) {
+      this.toastService.success("Employee Data Delete Successfully!!");
+      this.getemployeeData();
+      this.showModal?.hide();
     } else {
       this.toastService.error(res["message"]);
     }
@@ -129,18 +154,46 @@ export class EmployeeListComponent implements OnInit {
 
   // table
 
+  // Sort Data
+  direction: any = "asc";
+  onSort(column: any) {
+    if (this.direction == "asc") {
+      this.direction = "desc";
+    } else {
+      this.direction = "asc";
+    }
+    const sortedArray = [...this.employeeData]; // Create a new array
+    sortedArray.sort((a, b) => {
+      const res = this.compare(a[column], b[column]);
+      return this.direction === "asc" ? res : -res;
+    });
+    this.employeeData = sortedArray;
+  }
+  compare(v1: string | number, v2: string | number) {
+    return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
+  }
+
+  pageChanged(event: PageChangedEvent): void {
+    const startItem = (event.page - 1) * event.itemsPerPage;
+    this.endItem = event.page * event.itemsPerPage;
+    this.employeeData = this.employeeDataList.slice(startItem, this.endItem);
+  }
+  term: any;
+
+  // filterdata
   filterdata() {
     if (this.term) {
-      this.employeeData = this.employeeDataList.filter((el: any) => {
-        const searchTerm = this.term.toLowerCase();
-        return (
-          el.name.toLowerCase().includes(searchTerm) ||
-          el.employee_id.toLowerCase().includes(searchTerm) ||
-          el.status.toLowerCase().includes(searchTerm)
-        );
-      });
+      this.employeeData = this.employeeDataList.filter(
+        (el: any) =>
+          el.name.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.email.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.designation.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.department.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
+      );
     } else {
-      this.employeeData = this.employeeDataList.slice(0, 5);
+      this.employeeData = this.employeeDataList;
     }
     // noResultElement
     this.updateNoResultDisplay();
@@ -161,17 +214,42 @@ export class EmployeeListComponent implements OnInit {
     }
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    this.currentPage = event.page;
-    this.updateDisplayedItems();
+  // Select Checkbox value Get
+  onCheckboxChange(e: any) {
+    var checkedVal: any[] = [];
+    var result;
+    for (var i = 0; i < this.employeeData.length; i++) {
+      if (this.employeeData[i].states == true) {
+        result = this.employeeData[i].id;
+        checkedVal.push(result);
+      }
+    }
+    this.checkedValGet = checkedVal;
+    checkedVal.length > 0
+      ? document.getElementById("remove-actions")?.classList.remove("d-none")
+      : document.getElementById("remove-actions")?.classList.add("d-none");
   }
-  updatePagination() {
-    // Update total items for pagination
-    this.totalItems = this.employeeDataList.length;
-  }
-  updateDisplayedItems(): void {
-    const startItem = (this.currentPage - 1) * this.itemsPerPage;
-    this.endItem = this.currentPage * this.itemsPerPage;
-    this.employeeData = this.employeeDataList.slice(startItem, this.endItem);
+
+  // The master checkbox will check/ uncheck all items
+  checkUncheckAll(ev: any) {
+    this.employeeData = this.employeeData.map((x: { states: any }) => ({
+      ...x,
+      states: ev.target.checked,
+    }));
+
+    var checkedVal: any[] = [];
+    var result;
+    for (var i = 0; i < this.employeeData.length; i++) {
+      if (this.employeeData[i].states == true) {
+        result = this.employeeData[i].id;
+        checkedVal.push(result);
+      }
+    }
+
+    this.checkedValGet = checkedVal;
+
+    checkedVal.length > 0
+      ? document.getElementById("remove-actions")?.classList.remove("d-none")
+      : document.getElementById("remove-actions")?.classList.add("d-none");
   }
 }

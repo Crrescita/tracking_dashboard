@@ -19,7 +19,7 @@ export class EmployeeDetailComponent {
 
   formGroups: FormGroup[] = [];
   educationForm!: FormGroup;
-  currentTab = "personalDetails";
+  currentTab = "timeline";
 
   urlId: number | null = null;
 
@@ -110,17 +110,18 @@ export class EmployeeDetailComponent {
         (res: any) => {
           this.toggleSpinner(false);
           if (res && res.status) {
-            this.checkIndetails = res.data[0];
+            this.checkIndetails = res.data;
+            this.formattedTotalTime = this.calculateTotalTimeForAll();
+            // if (
+            //   this.checkIndetails.check_in_time &&
+            //   this.checkIndetails.check_out_time
+            // ) {
+            //   this.formattedTotalTime = this.calculateTotalTime(
+            //     this.checkIndetails.check_in_time,
+            //     this.checkIndetails.check_out_time
+            //   );
 
-            if (
-              this.checkIndetails.check_in_time &&
-              this.checkIndetails.check_out_time
-            ) {
-              this.formattedTotalTime = this.calculateTotalTime(
-                this.checkIndetails.check_in_time,
-                this.checkIndetails.check_out_time
-              );
-            }
+            // }
           } else {
             this.checkIndetails = null;
           }
@@ -169,6 +170,51 @@ export class EmployeeDetailComponent {
   // Delete Form
   deleteForm(id: any) {
     this.formGroups.splice(id, 1);
+  }
+
+  calculateTimeDifference(checkInTime: string, checkOutTime: string): number {
+    const [checkInHour, checkInMinute, checkInSecond] = checkInTime
+      .split(":")
+      .map(Number);
+    const [checkOutHour, checkOutMinute, checkOutSecond] = checkOutTime
+      .split(":")
+      .map(Number);
+
+    const checkInDate = new Date();
+    checkInDate.setHours(checkInHour, checkInMinute, checkInSecond);
+
+    const checkOutDate = new Date();
+    checkOutDate.setHours(checkOutHour, checkOutMinute, checkOutSecond);
+
+    // Difference in milliseconds
+    const diffInMs = checkOutDate.getTime() - checkInDate.getTime();
+
+    // Convert to minutes
+    return Math.max(0, Math.floor(diffInMs / 60000)); // Avoid negative minutes
+  }
+
+  calculateTotalTimeForAll(): string {
+    if (!this.checkIndetails || this.checkIndetails.length === 0) {
+      return "No check-in/check-out data available";
+    }
+
+    let totalMinutes = 0;
+
+    // Iterate through the data and calculate total time
+    for (const entry of this.checkIndetails) {
+      if (entry.check_in_time && entry.check_out_time) {
+        totalMinutes += this.calculateTimeDifference(
+          entry.check_in_time,
+          entry.check_out_time
+        );
+      }
+    }
+
+    // Convert total minutes to hours and minutes
+    const totalHours = Math.floor(totalMinutes / 60);
+    const remainingMinutes = totalMinutes % 60;
+
+    return `${totalHours}h ${remainingMinutes}m`;
   }
 
   calculateTotalTime(checkInTime: string, checkOutTime: string): string {

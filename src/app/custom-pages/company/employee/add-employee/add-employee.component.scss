@@ -6,6 +6,39 @@
     border: 2px dashed #ff6c6c;
 }
 
+a{
+  cursor: pointer;
+}
+
+
+#password-contain {
+  display: block;
+
+  p {
+      padding-left: 13px;
+
+      &.valid {
+          color: #2dcb73;
+
+          &::before {
+              position: relative;
+              left: -8px;
+              content: "✔";
+          }
+      }
+
+      &.invalid {
+          color: #ff6c6c;
+
+          &::before {
+              position: relative;
+              left: -8px;
+              content: "✖";
+          }
+      }
+  }
+}
+
 .custom-modal-dropzone{
     height: 150px !important;
     border: 2px dashed var(--tb-border-color);

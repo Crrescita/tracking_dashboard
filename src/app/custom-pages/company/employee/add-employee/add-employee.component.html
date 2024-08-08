@@ -370,10 +370,33 @@
 
               <div class="col-lg-6">
                 <div class="mb-3">
-                  <label for="designation" class="form-label"
-                    >Designation <span class="text-danger">*</span></label
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <label for="designation" class="form-label"
+                        >Designation <span class="text-danger">*</span></label
+                      >
+                    </div>
+                    <div class="flex-shrink-0">
+                      <a class="link-effect" (click)="onAdd()"
+                        >Create New
+                        <i class="bi bi-arrow-right align-baseline ms-1"></i
+                      ></a>
+                    </div>
+                  </div>
+
+                  <select
+                    class="form-select"
+                    id="designation"
+                    formControlName="designation"
+                    placeholder="Enter Designation"
                   >
-                  <input
+                    <option selected>Select Designation</option>
+                    @for (item of designations; track $index) {
+                    <option value="{{ item.slug }}">{{ item.name }}</option>
+                    }
+                  </select>
+
+                  <!-- <input
                     type="text"
                     class="form-control"
                     id="designation"
@@ -387,11 +410,62 @@
                         ? 'is-invalid'
                         : ''
                     "
-                  />
+                  /> -->
 
                   @if (f['designation'] && f['designation'].hasError('required')
                   && f['designation'].touched) {
                   <div class="invalid-text">Designation is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
+                      <label for="departments" class="form-label"
+                        >Department <span class="text-danger">*</span></label
+                      >
+                    </div>
+                    <div class="flex-shrink-0">
+                      <a class="link-effect" (click)="onAdddep()"
+                        >Create New
+                        <i class="bi bi-arrow-right align-baseline ms-1"></i
+                      ></a>
+                    </div>
+                  </div>
+
+                  <select
+                    class="form-select"
+                    id="departments"
+                    formControlName="department"
+                    placeholder="Enter Department"
+                  >
+                    <option selected>Select Department</option>
+                    @for (item of departments; track $index) {
+                    <option value="{{ item.slug }}">{{ item.name }}</option>
+                    }
+                  </select>
+
+                  <!-- <input
+                    type="text"
+                    class="form-control"
+                    id="designation"
+                    formControlName="designation"
+                    placeholder="Enter Designation"
+                    value="designation"
+                    [ngClass]="
+                      f['designation'] &&
+                      f['designation'].hasError('required') &&
+                      f['designation'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  /> -->
+
+                  @if (f['department'] && f['department'].hasError('required')
+                  && f['department'].touched) {
+                  <div class="invalid-text">Department is required.</div>
                   }
                 </div>
               </div>
@@ -582,109 +656,183 @@
                 </div>
               </div>
 
-              <!-- <div class="col-lg-6">
-                <div class="mb-3">
-                  <label class="form-label"
-                    >Image<span class="text-danger">*</span></label
-                  >
-                  <div class="custom-modal-dropzone">
-                    <input
-                      type="file"
-                      id="empimage"
-                      accept="image/*"
-                      formControlName="image"
-                      (change)="employeeimageSelect($event)"
-                      hidden
-                      #empimage
-                    />
-                    <label for="empimage" class="custom-modalfile-input">
-                      <span class="custom-modalfile-text"
-                        >Choose a file to upload.
-                        <br />
-                        <span class="custom-file-text2-modal"
-                          >File size 100 × 100 px
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-
-                  @if (employeeselectedImage) {
-                  <ul class="list-unstyled mb-0" id="dropzone-preview">
-                    <li class="mt-2" id="dropzone-preview-list">
-                      <div class="border rounded">
-                        <div class="d-flex flex-wrap gap-2 p-2">
-                          <div class="flex-shrink-0">
-                            <div class="image-avatar bg-light rounded p-2">
-                              @if (employeeselectedImagePreview) {
-                              <img
-                                class="img-fluid rounded d-block"
-                                [src]="employeeselectedImagePreview"
-                                alt="Dropzone-Image"
-                              />
-                              }
-                            </div>
-                          </div>
-                          <div class="flex-grow-1 me-1">
-                            <div class="pt-1">
-                              @if (employeeselectedImage.name) {
-                              <h5 class="fs-md mb-1">
-                                {{ employeeselectedImage.name }}
-                              </h5>
-                              } @if (employeeselectedImage.size) {
-                              <p class="fs-sm text-muted mb-0">
-                                {{ employeeselectedImage.size }}
-                              </p>
-                              }
-                            </div>
-                          </div>
-                          <div class="flex-shrink-0">
-                            <button
-                              (click)="employeeremoveImage()"
-                              class="btn btn-sm btn-danger"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                  } @if (employeeuploadedImage) {
-                  <div class="col-lg-6 mt-3 mt-lg-0">
-                    <div>
-                      <label class="form-label">Uploaded Image</label>
-                      <div>
-                        <div>
-                          <img
-                            class="edit-thumbnail-img-fluid rounded d-block w-50"
-                            [src]="employeeuploadedImage"
-                            alt="Uploaded Thumbnail"
-                          />
-                        </div>
-                      </div>
+              <div class="col-lg-6 d-flex align-items-center">
+                <li class="d-flex">
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        id="directMessage"
+                        class="form-check-input"
+                        [checked]="useDefaultPassword"
+                        (change)="onCheckboxChange($event)"
+                      />
+                      Use Default Password (Password : 123456)
                     </div>
                   </div>
-                  } @if (f['image'] && f['image'].hasError('required') &&
-                  f['image'].touched) {
-                  <div class="invalid-text">Image is required.</div>
+                </li>
+              </div>
+
+              <div *ngIf="!useDefaultPassword" class="col-lg-4">
+                <div class="auth-pass-inputgroup">
+                  <label for="password-input" class="form-label"
+                    >New Password*</label
+                  >
+                  <div class="position-relative">
+                    <input
+                      [type]="fieldTextType1 ? 'text' : 'password'"
+                      class="form-control password-input"
+                      id="password-input"
+                      value="password"
+                      formControlName="password"
+                      placeholder="Enter new password"
+                      (input)="checkPasswordPattern()"
+                      [ngClass]="
+                        f['password'] &&
+                        f['password'].hasError('required') &&
+                        f['password'].touched
+                          ? 'is-invalid'
+                          : ''
+                      "
+                    />
+
+                    <button
+                      class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                      type="button"
+                      (click)="toggleFieldTextType1()"
+                    >
+                      <i
+                        class="ri-eye-fill align-middle"
+                        [ngClass]="{
+                          'mdi-eye-off-outline': !fieldTextType1,
+                          'mdi-eye-outline': fieldTextType1
+                        }"
+                      ></i>
+                    </button>
+                  </div>
+                  @if (f['password'] && f['password'].hasError('required') &&
+                  f['password'].touched) {
+                  <div class="invalid-text">Password is required.</div>
                   }
                 </div>
-              </div> -->
-              <div class="col-12">
-                <div class="hstack gap-2 justify-content-end mb-3">
-                  @if (saveButtonActive) {
-                  <button class="btn btn-primary">Save</button>
-                  } @else {
-                  <button class="btn btn-secondary" type="button" disabled>
-                    <span
-                      class="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                    Please wait
-                  </button>
+              </div>
+
+              <div *ngIf="!useDefaultPassword" class="col-lg-4">
+                <div class="auth-pass-inputgroup">
+                  <label for="confirm-password-input" class="form-label"
+                    >Confirm Password*</label
+                  >
+                  <div class="position-relative">
+                    <input
+                      [type]="fieldTextType2 ? 'text' : 'password'"
+                      class="form-control password-input"
+                      id="confirm-password-input"
+                      formControlName="confirmPassword"
+                      placeholder="Confirm password"
+                      [ngClass]="
+                        f['confirmPassword'] &&
+                        f['confirmPassword'].hasError('required') &&
+                        f['confirmPassword'].touched
+                          ? 'is-invalid'
+                          : ''
+                      "
+                    />
+                    <button
+                      class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                      type="button"
+                      (click)="toggleFieldTextType2()"
+                    >
+                      <i
+                        class="ri-eye-fill align-middle"
+                        [ngClass]="{
+                          'mdi-eye-off-outline': !fieldTextType2,
+                          'mdi-eye-outline': fieldTextType2
+                        }"
+                      ></i>
+                    </button>
+                  </div>
+                  @if (f['confirmPassword'] &&
+                  f['confirmPassword'].hasError('required') &&
+                  f['confirmPassword'].touched) {
+                  <div class="invalid-text">Confirm Password is required.</div>
+                  } @if(formGroup.hasError('mismatch') &&
+                  f['confirmPassword'].value && f['password'].value){
+                  <div class="invalid-text">
+                    Password and Confirm Password does not match.
+                  </div>
                   }
                 </div>
+              </div>
+
+              @if(f['password'] && f['password'].hasError('pattern')){
+              <div class="col-lg-12 mt-4">
+                <div
+                  class="card bg-light shadow-none passwd-bg"
+                  id="password-contain"
+                >
+                  <div class="card-body">
+                    <div class="mb-4">
+                      <h5 class="fs-sm">Password must contain:</h5>
+                    </div>
+                    <div>
+                      <p
+                        id="pass-length"
+                        class="fs-xs mb-2"
+                        [ngClass]="
+                          passwordValidations.length ? 'valid' : 'invalid'
+                        "
+                      >
+                        Minimum <b>8 characters</b>
+                      </p>
+                      <p
+                        id="pass-lower"
+                        class="fs-xs mb-2"
+                        [ngClass]="
+                          passwordValidations.lower ? 'valid' : 'invalid'
+                        "
+                      >
+                        At least <b>one lowercase</b> letter (a-z)
+                      </p>
+                      <p
+                        id="pass-upper"
+                        class="fs-xs mb-2"
+                        [class.valid]="passwordValidations.upper"
+                        [ngClass]="
+                          passwordValidations.upper ? 'valid' : 'invalid'
+                        "
+                      >
+                        At least <b>one uppercase</b> letter (A-Z)
+                      </p>
+                      <p
+                        id="pass-number"
+                        class="fs-xs mb-0"
+                        [ngClass]="
+                          passwordValidations.number ? 'valid' : 'invalid'
+                        "
+                      >
+                        At least <b>one number</b> (0-9)
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+            <div class="col-12">
+              <div class="hstack gap-2 justify-content-end mb-3">
+                @if (saveButtonActive) {
+                <button class="btn btn-primary">Save</button>
+                } @else {
+                <button class="btn btn-secondary" type="button" disabled>
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Please wait
+                </button>
+                }
               </div>
             </div>
             <!-- </form> -->
@@ -705,3 +853,201 @@
     </div>
   </div>
 </form>
+
+<!-- designation modal -->
+<div
+  class="modal fade"
+  bsModal
+  #showModal="bs-modal"
+  (hidden.bs.modal)="resetFormDes()"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header px-4 pt-4">
+        <h5 class="modal-title" id="exampleModalLabel">Add Designation</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showModal.hide()"
+        ></button>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmitDes()"
+        [formGroup]="formGroupDesignation"
+        class="tablelist-form"
+        novalidate
+        autocomplete="off"
+      >
+        <div class="modal-body p-4">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="product-title-input" class="form-label"
+              >Designation Name <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="product-title-input"
+              formControlName="name"
+              class="form-control"
+              placeholder="Enter Designation Name"
+            />
+            @if (d['name'] && d['name'].hasError('required') &&
+            d['name'].touched) {
+            <div class="invalid-text">Designation name is required.</div>
+            } @if(d['name'] && d['name'].hasError('maxlength') &&
+            d['name'].touched){
+            <div class="invalid-text">
+              Designation name must be at most 45 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="statuss" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="statuss"
+              [ngClass]="
+                d['status'] &&
+                d['status'].hasError('required') &&
+                d['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (d['status'] && d['status'].hasError('required') &&
+            d['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-danger"
+              (click)="showModal.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- department modal -->
+<div
+  class="modal fade"
+  bsModal
+  #showModalDepartment="bs-modal"
+  (hidden.bs.modal)="resetFormDep()"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header px-4 pt-4">
+        <h5 class="modal-title" id="exampleModalLabel">Add Department</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showModalDepartment.hide()"
+        ></button>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmitDep()"
+        [formGroup]="formGroupDepartment"
+        class="tablelist-form"
+        novalidate
+        autocomplete="off"
+      >
+        <div class="modal-body p-4">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="product-title-input" class="form-label"
+              >Department Name <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="product-title-input"
+              formControlName="name"
+              class="form-control"
+              placeholder="Enter Department Name"
+            />
+            @if (de['name'] && de['name'].hasError('required') &&
+            de['name'].touched) {
+            <div class="invalid-text">Department name is required.</div>
+            } @if(de['name'] && de['name'].hasError('maxlength') &&
+            de['name'].touched){
+            <div class="invalid-text">
+              Department name must be at most 45 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="statuss" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="statuss"
+              [ngClass]="
+                de['status'] &&
+                de['status'].hasError('required') &&
+                de['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (de['status'] && de['status'].hasError('required') &&
+            de['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-danger"
+              (click)="showModalDepartment.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

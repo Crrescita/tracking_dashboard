@@ -81,6 +81,7 @@ export class LiveLocationComponent implements OnInit {
       center: [78.22773895317802, 26.22052522541971],
       zoom: 5,
     });
+    this.map.addControl(new mapboxgl.NavigationControl());
   }
 
   async addMarkerToMap(coordinates: any) {
