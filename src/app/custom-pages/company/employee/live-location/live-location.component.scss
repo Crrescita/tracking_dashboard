@@ -7,3 +7,20 @@
   .match-parent {
     height: 100%;
   }
+
+   @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .rotate {
+    animation: rotate 0.5s linear;
+  }
+
+  .bi-arrow-clockwise{
+    font-size: 22px;
+  }

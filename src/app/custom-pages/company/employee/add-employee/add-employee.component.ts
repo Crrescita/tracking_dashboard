@@ -116,7 +116,7 @@ export class AddEmployeeComponent implements OnInit {
 
     if (this.urlId) {
       this.useDefaultPassword = false;
-      console.log(this.urlId);
+
       this.getemployeeData();
     }
 
@@ -216,29 +216,31 @@ export class AddEmployeeComponent implements OnInit {
     this.fieldTextType2 = !this.fieldTextType2;
   }
 
+  // passwordMatchValidator(formGroup: FormGroup) {
+  //   const password = formGroup.get("password")?.value;
+  //   const confirmPassword = formGroup.get("confirmPassword")?.value;
+  //   return password === confirmPassword ? null : { mismatch: true };
+  // }
+
   passwordMatchValidator(formGroup: FormGroup) {
-    const password = formGroup.get("password")?.value;
-    const confirmPassword = formGroup.get("confirmPassword")?.value;
-    return password === confirmPassword ? null : { mismatch: true };
+    const passwordControl = formGroup.get("password")?.value;
+    const confirmPasswordControl = formGroup.get("confirmPassword")?.value;
+
+    if (passwordControl && confirmPasswordControl) {
+      const password = passwordControl;
+      const confirmPassword = confirmPasswordControl;
+
+      return password === confirmPassword ? null : { mismatch: true };
+      // if (password !== confirmPassword) {
+      //   confirmPasswordControl.setErrors({ mismatch: true });
+      // } else {
+      //   confirmPasswordControl.setErrors(null);
+      // }
+    }
+
+    return null;
   }
 
-  // passwordMatchValidator(formGroup: FormGroup) {
-  //   const passwordControl = formGroup.get("password")?.value;
-  //   const confirmPasswordControl = formGroup.get("confirmPassword")?.value;
-
-  //   if (passwordControl && confirmPasswordControl) {
-  //     const password = passwordControl.value;
-  //     const confirmPassword = confirmPasswordControl.value;
-
-  //     if (password !== confirmPassword) {
-  //       confirmPasswordControl.setErrors({ mismatch: true });
-  //     } else {
-  //       confirmPasswordControl.setErrors(null);
-  //     }
-  //   }
-
-  //   return null;
-  // }
   // passwordMatchValidator(formGroup: FormGroup) {
   //   const passwordControl = formGroup.get("password") as FormControl;
   //   const confirmPasswordControl = formGroup.get(
@@ -249,12 +251,14 @@ export class AddEmployeeComponent implements OnInit {
   //     const password = passwordControl.value;
   //     const confirmPassword = confirmPasswordControl.value;
 
-  //     if (password !== confirmPassword) {
-  //       console.log("mismatch");
-  //       confirmPasswordControl.setErrors({ mismatch: true });
-  //     } else {
-  //       confirmPasswordControl.setErrors(null);
-  //     }
+  //     return password === confirmPassword ? null : { mismatch: true };
+
+  //     // if (password !== confirmPassword) {
+  //     //   console.log("mismatch");
+  //     //   confirmPasswordControl.setErrors({ mismatch: true });
+  //     // } else {
+  //     //   confirmPasswordControl.setErrors(null);
+  //     // }
   //   }
 
   //   return null;
@@ -400,22 +404,22 @@ export class AddEmployeeComponent implements OnInit {
         this.addemployee(formData);
       }
     } else {
-      console.log("Form validity:", this.formGroup.valid);
+      // console.log("Form validity:", this.formGroup.valid);
 
       // Mark all controls as touched to ensure validation messages show up
       this.formGroup.markAllAsTouched();
 
       // Log each control's status and errors
-      Object.keys(this.formGroup.controls).forEach((key) => {
-        const control = this.formGroup.get(key);
-        if (control) {
-          console.log(`Control "${key}" - Valid: ${control.valid}`);
-          if (control.invalid) {
-            console.log(`Field "${key}" is invalid.`);
-            console.log("Errors:", control.errors);
-          }
-        }
-      });
+      // Object.keys(this.formGroup.controls).forEach((key) => {
+      //   const control = this.formGroup.get(key);
+      //   if (control) {
+      //     console.log(`Control "${key}" - Valid: ${control.valid}`);
+      //     if (control.invalid) {
+      //       console.log(`Field "${key}" is invalid.`);
+      //       console.log("Errors:", control.errors);
+      //     }
+      //   }
+      // });
     }
   }
 

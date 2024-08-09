@@ -1,15 +1,39 @@
-<div class="card py-3">
-  <!-- <div class="row">
-    <div class="col-4">
+<div class="card">
+  <div class="row">
+    <div class="col-12 text-end">
       <button
         type="button"
-        class="btn btn-ghost-secondary btn-icon btn-sm fs-lg ms-auto"
+        (click)="refreshTimeline()"
+        [ngClass]="{ rotate: isRotatinglive }"
+        class="btn btn-ghost-secondary btn-icon btn-sm fs-xl ms-auto"
       >
         <i class="bi bi-arrow-clockwise"></i>
       </button>
     </div>
-    <div class="col-lg-12"></div>
-    
-  </div> -->
+    <div
+      class="col-lg-12"
+      [ngClass]="
+        liveCoordinates && liveCoordinates.length == 0 ? 'd-none' : 'd-block'
+      "
+    >
+      <div id="mapId"></div>
+    </div>
+    <div class="col-12">
+      <div
+        class="mt-2 text-center"
+        [ngClass]="
+          liveCoordinates && liveCoordinates.length === 0 ? 'd-block' : 'd-none'
+        "
+      >
+        <div class="error-img text-center px-5">
+          <img
+            src="assets/images/auth/offline-page.gif"
+            alt=""
+            class="img-fluid w-25"
+          />
+        </div>
+        <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
+      </div>
+    </div>
+  </div>
 </div>
-<div id="mapId" class="match-parent"></div>

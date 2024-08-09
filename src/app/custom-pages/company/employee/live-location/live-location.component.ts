@@ -12,7 +12,7 @@ export class LiveLocationComponent implements OnInit {
   @Input() companyId!: string;
   @Input() emp_image!: string;
   urlId: number | null = null;
-  map!: mapboxgl.Map;
+  livemap!: mapboxgl.Map;
   marker!: mapboxgl.Marker;
 
   selectedDate: Date = new Date();
@@ -20,8 +20,21 @@ export class LiveLocationComponent implements OnInit {
 
   liveCoordinates: any;
   spinnerStatus: boolean = false;
+  isRotatinglive = false;
+
+  private refreshInterval = 30000;
+  private liveLocationTimeout: any;
 
   constructor(private api: ApiService, private route: ActivatedRoute) {}
+
+  ngOnDestroy() {
+    if (this.livemap) {
+      this.livemap.remove();
+    }
+    if (this.liveLocationTimeout) {
+      clearTimeout(this.liveLocationTimeout);
+    }
+  }
 
   ngOnInit(): void {
     this.selectedDate = new Date();
@@ -34,9 +47,17 @@ export class LiveLocationComponent implements OnInit {
       this.urlId = params["id"] ? Number(params["id"]) : null;
     });
     if (this.companyId) {
-      this.getLiveLocation();
+      this.scheduleNextUpdate();
     }
     this.initializeMap();
+  }
+
+  refreshTimeline() {
+    this.isRotatinglive = true;
+    this.getLiveLocation();
+    setTimeout(() => {
+      this.isRotatinglive = false;
+    }, 500);
   }
 
   formatDate(date: Date): string {
@@ -54,17 +75,32 @@ export class LiveLocationComponent implements OnInit {
   getLiveLocation() {
     this.toggleSpinner(true);
     const url = `getEmpLiveLocation?emp_id=${this.urlId}&company_id=${this.companyId}&date=${this.formattedDate}`;
-    this.api.getwithoutid(url).subscribe((res: any) => {
-      this.toggleSpinner(false);
-      if (res && res.status) {
-        this.liveCoordinates = res.data;
+    this.api.getwithoutid(url).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.liveCoordinates = res.data;
 
-        this.addMarkerToMap(this.liveCoordinates);
-      } else {
-        this.liveCoordinates = null;
-        this.handleError("Unexpected response format");
+          this.addMarkerToMap(this.liveCoordinates);
+        } else {
+          this.liveCoordinates = [];
+        }
+        this.scheduleNextUpdate();
+      },
+      (error) => {
+        this.toggleSpinner(false);
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+        this.scheduleNextUpdate();
       }
-    });
+    );
+  }
+
+  private scheduleNextUpdate() {
+    this.liveLocationTimeout = setTimeout(() => {
+      this.getLiveLocation();
+    }, this.refreshInterval);
   }
 
   handleError(error: any) {
@@ -75,13 +111,22 @@ export class LiveLocationComponent implements OnInit {
   initializeMap() {
     (mapboxgl as any).accessToken =
       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www";
-    this.map = new mapboxgl.Map({
+    this.livemap = new mapboxgl.Map({
       container: "mapId",
       style: "mapbox://styles/mapbox/streets-v11",
       center: [78.22773895317802, 26.22052522541971],
       zoom: 5,
     });
-    this.map.addControl(new mapboxgl.NavigationControl());
+
+    window.addEventListener("resize", () => {
+      this.livemap.resize();
+    });
+
+    this.livemap.on("load", (event) => {
+      this.livemap.resize();
+    });
+
+    this.livemap.addControl(new mapboxgl.NavigationControl());
   }
 
   async addMarkerToMap(coordinates: any) {
@@ -116,13 +161,13 @@ export class LiveLocationComponent implements OnInit {
       const marker = new mapboxgl.Marker(el)
         .setLngLat(lngLat)
         .setPopup(popup)
-        .addTo(this.map);
+        .addTo(this.livemap);
 
       // Show the popup by default
       marker.togglePopup();
 
       // Center the map on the marker
-      this.map.flyTo({ center: lngLat, zoom: 14 });
+      this.livemap.flyTo({ center: lngLat, zoom: 14 });
     } catch (error) {
       console.error("Error adding marker to map:", error);
     }

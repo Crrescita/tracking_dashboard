@@ -1,6 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiService } from "../../../../core/services/api.service";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
+import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
   selector: "app-attendance-list",
@@ -8,6 +11,8 @@ import { PageChangedEvent } from "ngx-bootstrap/pagination";
   styleUrl: "./attendance-list.component.scss",
 })
 export class AttendanceListComponent implements OnInit {
+  bsConfig?: Partial<BsDatepickerConfig>;
+  private dateChangeSubject = new Subject<Date>();
   breadCrumbItems!: Array<{}>;
   company_id: any;
   spinnerStatus: boolean = false;
@@ -19,12 +24,22 @@ export class AttendanceListComponent implements OnInit {
   attendanceDataList: any = [];
   endItem: any;
 
-  constructor(private api: ApiService) {}
+  checkInDetails: any[] = [];
+  totalDuration: any;
+  attendanceCount: any;
+
+  constructor(private api: ApiService) {
+    this.bsConfig = {
+      maxDate: new Date(),
+      showWeekNumbers: false,
+      dateInputFormat: "DD/MM/YYYY",
+    };
+  }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: "Ecommerce" },
-      { label: "Products", active: true },
+      { label: "Attendance" },
+      { label: "Employee", active: true },
     ];
 
     this.selectedDate = new Date();
@@ -43,6 +58,25 @@ export class AttendanceListComponent implements OnInit {
     if (this.company_id) {
       this.getAttendance();
     }
+
+    // Subscribe to the date change subject
+    this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
+      this.handleDateChange(newDate);
+    });
+  }
+
+  onDateChange(newDate: Date): void {
+    this.dateChangeSubject.next(newDate);
+  }
+
+  handleDateChange(newDate: Date): void {
+    // if (newDate && newDate !== this.selectedDate) {
+
+    this.selectedDate = newDate;
+    this.formattedDate = this.formatDate(newDate);
+    this.getAttendance();
+
+    // }
   }
 
   formatDate(date: Date): string {
@@ -60,15 +94,39 @@ export class AttendanceListComponent implements OnInit {
   getAttendance() {
     this.toggleSpinner(true);
     const url = `getAttendence?company_id=${this.company_id}&date=${this.formattedDate}`;
-    this.api.getwithoutid(url).subscribe((res: any) => {
-      this.toggleSpinner(false);
-      if (res && res.status) {
-        this.attendanceData = res.data || [];
-        this.attendanceDataList = res.data || [];
-        // this.updatePagination();
-        // this.updateDisplayedItems();
+    this.api.getwithoutid(url).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.attendanceData = res.data || [];
+          this.attendanceDataList = res.data || [];
+          this.attendanceCount = res.attendenceCount || [];
+
+          // this.updatePagination();
+          // this.updateDisplayedItems();
+        } else {
+          this.attendanceData = [];
+          this.attendanceDataList = [];
+          this.attendanceCount = [];
+          this.toggleSpinner(false);
+        }
+      },
+      (error) => {
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
       }
-    });
+    );
+  }
+
+  handleError(error: any) {
+    this.toggleSpinner(false);
+  }
+
+  //
+  updateCheckInDetal(data: any, duration: any) {
+    this.totalDuration = duration;
+    this.checkInDetails = data;
   }
 
   // table
@@ -110,7 +168,8 @@ export class AttendanceListComponent implements OnInit {
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
           el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.checkin_status.toLowerCase().includes(this.term.toLowerCase())
       );
     } else {
       this.attendanceData = this.attendanceDataList;
@@ -132,5 +191,18 @@ export class AttendanceListComponent implements OnInit {
       noResultElement.style.display = "none";
       paginationElement.classList.remove("d-none");
     }
+  }
+
+  formatTime(time: string | null): string {
+    if (!time) {
+      return "-";
+    }
+
+    // Assuming time format is "HH:mm:ss" or similar
+    const [hour, minute, second] = time.split(":");
+    const period = +hour >= 12 ? "PM" : "AM";
+    const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
+
+    return `${formattedHour}:${minute}:${second} ${period} `;
   }
 }

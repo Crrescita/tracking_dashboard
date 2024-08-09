@@ -684,19 +684,15 @@
                       [type]="fieldTextType1 ? 'text' : 'password'"
                       class="form-control password-input"
                       id="password-input"
-                      value="password"
                       formControlName="password"
                       placeholder="Enter new password"
                       (input)="checkPasswordPattern()"
-                      [ngClass]="
-                        f['password'] &&
-                        f['password'].hasError('required') &&
-                        f['password'].touched
-                          ? 'is-invalid'
-                          : ''
-                      "
+                      [ngClass]="{
+                        'is-invalid':
+                          f['password'].hasError('required') &&
+                          f['password'].touched
+                      }"
                     />
-
                     <button
                       class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
                       type="button"
@@ -711,10 +707,15 @@
                       ></i>
                     </button>
                   </div>
-                  @if (f['password'] && f['password'].hasError('required') &&
-                  f['password'].touched) {
-                  <div class="invalid-text">Password is required.</div>
-                  }
+                  <div
+                    *ngIf="
+                      f['password'].hasError('required') &&
+                      f['password'].touched
+                    "
+                    class="invalid-text"
+                  >
+                    Password is required.
+                  </div>
                 </div>
               </div>
 
@@ -730,13 +731,11 @@
                       id="confirm-password-input"
                       formControlName="confirmPassword"
                       placeholder="Confirm password"
-                      [ngClass]="
-                        f['confirmPassword'] &&
-                        f['confirmPassword'].hasError('required') &&
-                        f['confirmPassword'].touched
-                          ? 'is-invalid'
-                          : ''
-                      "
+                      [ngClass]="{
+                        'is-invalid':
+                          f['confirmPassword'].hasError('required') &&
+                          f['confirmPassword'].touched
+                      }"
                     />
                     <button
                       class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
@@ -752,16 +751,25 @@
                       ></i>
                     </button>
                   </div>
-                  @if (f['confirmPassword'] &&
-                  f['confirmPassword'].hasError('required') &&
-                  f['confirmPassword'].touched) {
-                  <div class="invalid-text">Confirm Password is required.</div>
-                  } @if(formGroup.hasError('mismatch') &&
-                  f['confirmPassword'].value && f['password'].value){
-                  <div class="invalid-text">
+                  <div
+                    *ngIf="
+                      f['confirmPassword'].hasError('required') &&
+                      f['confirmPassword'].touched
+                    "
+                    class="invalid-text"
+                  >
+                    Confirm Password is required.
+                  </div>
+                  <div
+                    *ngIf="
+                      formGroup.hasError('mismatch') &&
+                      f['confirmPassword']?.value &&
+                      f['password']?.value
+                    "
+                    class="invalid-text"
+                  >
                     Password and Confirm Password does not match.
                   </div>
-                  }
                 </div>
               </div>
 

@@ -214,7 +214,7 @@
                           <a
                             class="dropdown-item"
                             routerLink="/employee-detail/{{ data.id }}"
-                            href="javascript:void(0);"
+                            [queryParams]="{ tab: 'personalDetails' }"
                             ><i class="ph-eye align-middle me-1"></i> View</a
                           >
                         </li>
@@ -229,7 +229,6 @@
                           <a
                             class="dropdown-item remove-item-btn"
                             (click)="removeItem(data.id)"
-                            href="javascript:void(0);"
                             ><i class="ph-trash align-middle me-1"></i>
                             Remove</a
                           >

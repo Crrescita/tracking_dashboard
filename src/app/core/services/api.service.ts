@@ -55,7 +55,6 @@ export class ApiService {
   }
 
   post(apiName: any, data: any): Observable<any> {
-    console.log(data);
     const url = `${this.apiUrl + apiName}`;
     return this.http.post<any>(url, data);
   }

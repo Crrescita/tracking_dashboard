@@ -7,74 +7,121 @@
 
 <div id="productList">
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-xl-7">
       <div class="card">
         <div class="card-body">
-          <div class="row g-3">
-            <div class="col-xxl">
-              <div class="search-box">
-                <input
-                  type="text"
-                  class="form-control search"
-                  [(ngModel)]="term"
-                  (keyup)="filterdata()"
-                  placeholder="Search name, mobile etc..."
-                />
-                <i class="ri-search-line search-icon"></i>
-              </div>
-            </div>
-            <!--end col-->
-            <div class="col-xxl col-sm-6"></div>
-            <!--end col-->
-            <div class="col-xxl-3 col-sm-6">
+          <div class="row g-4">
+            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
               <div>
-                <select class="form-control" id="idCategory">
-                  <option value="">Select Category</option>
-                  <option value="Appliances">Appliances</option>
-                  <option value="Automotive Accessories">
-                    Automotive Accessories
-                  </option>
-                  <option value="Electronics">Electronics</option>
-                  <option value="Fashion">Fashion</option>
-                  <option value="Furniture">Furniture</option>
-                  <option value="Grocery">Grocery</option>
-                  <option value="Headphones">Headphones</option>
-                  <option value="Kids">Kids</option>
-                  <option value="Luggage">Luggage</option>
-                  <option value="Sports">Sports</option>
-                  <option value="Watches">Watches</option>
-                </select>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-primary-subtle rounded-circle text-primary"
+                    >
+                      <i class="ri-user-line"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Total Employee</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span
+                    class="counter-value"
+                    [countUp]="attendanceDataList?.length"
+                    >{{ attendanceDataList?.length }}</span
+                  >
+                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                    >
+                    <i class="align-baseline bi bi-arrow-up"></i> 12.09%
+                    </small
+                  > -->
+                </h3>
               </div>
             </div>
-            <!--end col-->
-            <div class="col-xxl-2 col-sm-6">
+            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
               <div>
-                <select class="form-control" id="idDiscount">
-                  <option value="all">Select All Discount</option>
-                  <option value="50">50% or more</option>
-                  <option value="40">40% or more</option>
-                  <option value="30">30% or more</option>
-                  <option value="20">20% or more</option>
-                  <option value="10">10% or more</option>
-                  <option value="0">Less than 10%</option>
-                </select>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                    >
+                      <i class="ri-user-follow-line"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Present</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span
+                    class="counter-value"
+                    [countUp]="this.attendanceCount?.totalPresent"
+                    >{{ this.attendanceCount?.totalPresent }}</span
+                  >
+                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                    ><i class="align-baseline bi bi-arrow-up"></i> 6.57%</small
+                  > -->
+                </h3>
               </div>
             </div>
-            <!--end col-->
-            <div class="col-xxl-auto col-sm-6">
-              <button type="button" class="btn btn-secondary w-md">
-                <i class="bi bi-funnel align-baseline me-1"></i> Filters
-              </button>
+            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                    >
+                      <i class="ri-user-unfollow-line"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Absent</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span
+                    class="counter-value"
+                    [countUp]="this.attendanceCount?.totalAbsent"
+                    >{{ this.attendanceCount?.totalAbsent }}</span
+                  >
+                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                    ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
+                  > -->
+                </h3>
+              </div>
             </div>
-            <!--end col-->
+            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-warning"
+                    >
+                      <i class="bi bi-clock-history"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Total Duration</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span class="counter-value">{{
+                    this.attendanceCount?.totalDuration
+                  }}</span>
+                  <!-- <small class="fs-xs fw-normal ms-1 text-danger"
+                    ><i class="align-baseline bi bi-arrow-down"></i>
+                    3.49%</small
+                  > -->
+                </h3>
+              </div>
+            </div>
+            <!---->
           </div>
-          <!--end row-->
         </div>
       </div>
     </div>
-    <!--end col-->
   </div>
-  <!--end row-->
 
   <div class="row">
     <div class="col-lg-12">
@@ -97,13 +144,46 @@
           </div>
           <div class="flex-shrink-0">
             <div class="d-flex flex-wrap align-items-start gap-2">
-              <button class="btn btn-subtle-danger d-none" id="remove-actions">
+              <div class="col-xxl">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="form-control"
+                    showWeekNumbers="false"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [(ngModel)]="selectedDate"
+                    (bsValueChange)="onDateChange($event)"
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepicker"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name, mobile etc..."
+                />
+                <i class="ri-search-line search-icon"></i>
+              </div>
+
+              <!-- <button class="btn btn-subtle-danger d-none" id="remove-actions">
                 <i class="ri-delete-bin-2-line"></i>
               </button>
               <button type="button" class="btn btn-primary add-btn">
                 <i class="bi bi-plus-circle align-baseline me-1"></i> Add
                 Product
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
@@ -154,6 +234,12 @@
                   </th>
                   <th
                     class="sort cursor-pointer"
+                    (click)="onSort('totalDuration')"
+                  >
+                    Total Duration
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
                     (click)="onSort('checkin_status')"
                   >
                     Attendance Status
@@ -172,6 +258,7 @@
                   </td>
                   <td class="products">
                     <div class="d-flex align-items-center">
+                      @if(data.image){
                       <div class="avatar-sm bg-light rounded p-1 me-2">
                         <img
                           src="{{ data.image }}"
@@ -179,6 +266,17 @@
                           class="img-fluid d-block"
                         />
                       </div>
+
+                      }@else {
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="assets/images/users/avatar-1.jpg"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+
+                      }
                       <div>
                         <h6 class="mb-0">
                           <a
@@ -193,10 +291,35 @@
                   <td class="discount">{{ data.mobile }}</td>
                   <td class="category">{{ data.email }}</td>
                   <td class="stock">{{ data.designation }}</td>
-                  <td class="price">{{ data.check_in_time }}</td>
-                  <td class="orders">{{ data.check_out_time }}</td>
+                  <td class="price">
+                    {{ formatTime(data.latestCheckInTime) }}
+                  </td>
+                  <td class="orders">
+                    {{ formatTime(data.latestCheckOutTime) }}
+                  </td>
+                  <td class="orders">
+                    {{ data.totalDuration }}<br />
+                    <a
+                      (click)="
+                        tooltipmodal.show();
+                        updateCheckInDetal(data.checkIns, data.totalDuration)
+                      "
+                      class="text-decoration-underline ng-star-inserted"
+                      >Check Detail
+                    </a>
+                  </td>
 
-                  <td class="published">{{ data.checkin_status }}</td>
+                  <td class="published">
+                    <span
+                      class="badge"
+                      [ngClass]="
+                        data.checkin_status == 'Present'
+                          ? 'bg-success'
+                          : 'bg-danger'
+                      "
+                      >{{ data.checkin_status }}</span
+                    >
+                  </td>
                   <td>
                     <div dropdown class="dropdown">
                       <button
@@ -213,12 +336,16 @@
                         <li>
                           <a
                             class="dropdown-item"
-                            routerLink="/ecommerce/product-details"
+                            routerLink="/employee-detail/{{ data.id }}"
+                            [queryParams]="{
+                              tab: 'timeline',
+                           
+                            }"
                             href="javascript:void(0);"
                             ><i class="ph-eye align-middle me-1"></i> View</a
                           >
                         </li>
-                        <li>
+                        <!-- <li>
                           <a class="dropdown-item edit-item-btn"
                             ><i class="ph-pencil align-middle me-1"></i> Edit</a
                           >
@@ -230,21 +357,23 @@
                             ><i class="ph-trash align-middle me-1"></i>
                             Remove</a
                           >
-                        </li>
+                        </li> -->
                       </ul>
                     </div>
                   </td>
                 </tr>
                 }
               </tbody>
-              <!-- <div id="elmLoader">
+              @if (spinnerStatus) {
+              <div id="elmLoader">
                 <div
                   class="spinner-border text-primary avatar-sm"
                   role="status"
                 >
                   <span class="visually-hidden">Loading...</span>
                 </div>
-              </div> -->
+              </div>
+              }
             </table>
           </div>
           <!--end table-responsive-->
@@ -296,4 +425,90 @@
     <!--end col-->
   </div>
   <!--end row-->
+</div>
+
+<div
+  bsModal
+  #tooltipmodal="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Check-in Detail</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="tooltipmodal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive mt-4">
+          <table
+            class="table table-borderless text-center table-nowrap align-middle mb-0"
+          >
+            <thead>
+              <tr class="table-light">
+                <th scope="col" style="width: 50px">#</th>
+                <!-- <th  scope="col">
+                Address
+                </th> -->
+                <th scope="col">Check-In Time</th>
+                <th scope="col">Check-Out Time</th>
+                <th scope="col" class="text-end">Duration</th>
+              </tr>
+            </thead>
+            <tbody id="products-list">
+              @for (item of checkInDetails; track $index) {
+              <tr>
+                <th scope="row">{{ $index + 1 }}</th>
+                <!-- <td  class="text-start">
+                    <span  class="fw-medium"
+                      >Branded T-Shirts</span
+                    >
+                    <p  class="text-muted mb-0">
+                      Fashion
+                    </p>
+                  </td> -->
+                <td>{{ formatTime(item.check_in_time) }}</td>
+                <td>{{ formatTime(item.check_out_time) }}</td>
+                <td class="text-end">{{ item.duration }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div id="products-list-total" class="border-top border-top-dashed mt-2">
+          <table
+            class="table table-borderless table-nowrap align-middle mb-0 ms-auto"
+            style="width: 250px"
+          >
+            <tbody>
+              <tr class="border-top border-top-dashed fs-base">
+                <th scope="row">Total Duration</th>
+                <th class="text-end">
+                  <i class="bi bi-clock align-baseline me-1"></i>
+                  {{ this.totalDuration }}
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="col-lg-12">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              (click)="tooltipmodal.hide()"
+              class="btn btn-light"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

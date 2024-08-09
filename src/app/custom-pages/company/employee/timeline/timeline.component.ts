@@ -42,6 +42,7 @@ export class TimelineComponent implements OnInit {
   selectedInterval: number = 15;
 
   intervalTimeCoordinates: any[] = [];
+  isRotating = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +50,11 @@ export class TimelineComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
+  ngOnDestroy() {
+    if (this.map) {
+      this.map.remove();
+    }
+  }
   ngOnInit(): void {
     this.cdr.detectChanges();
     this.selectedDate = new Date();
@@ -93,6 +99,14 @@ export class TimelineComponent implements OnInit {
     this.getemployeeTimeline();
     this.getCheckInDetail();
     // }
+  }
+
+  refreshTimeline() {
+    this.isRotating = true;
+    this.getemployeeTimeline();
+    setTimeout(() => {
+      this.isRotating = false;
+    }, 500);
   }
 
   // onDateChange(newDate: Date): void {
@@ -368,233 +382,6 @@ export class TimelineComponent implements OnInit {
       });
   }
 
-  // load map
-  // initializeMap() {
-  //   this.map = new mapboxgl.Map({
-  //     accessToken:
-  //       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www",
-  //     container: "map",
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [78.22773895317802, 26.22052522541971],
-  //     zoom: 5,
-  //   });
-
-  //   this.map.on("load", () => {
-  //     const geocodingPromises: Promise<void>[] = [];
-
-  //     this.employeeTimeline.forEach((item: any) => {
-  //       const geocodingPromise = this.geocodeCoordinates(
-  //         item.longitude,
-  //         item.latitude
-  //       )
-  //         .then((address) => {
-  //           item.address = address;
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error fetching address:", error);
-  //         });
-
-  //       geocodingPromises.push(geocodingPromise);
-  //     });
-
-  //     Promise.all(geocodingPromises)
-  //       .then(() => {
-  //         this.employeeTimeline.forEach((item: any, index: any) => {
-  //           const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
-  //             `<h6>${item.formattedTime}</h6>
-  //             <p>Battery Percentage: ${item.battery_status}%</p>
-  //             <p>Address: ${item.address}</p>`
-  //           );
-
-  //           const marker = new mapboxgl.Marker()
-  //             .setLngLat([item.longitude, item.latitude])
-  //             .setPopup(popup)
-  //             .addTo(this.map);
-
-  //           this.markers.push(marker);
-
-  //           if (index > 0) {
-  //             const coordinates = [
-  //               [
-  //                 this.employeeTimeline[index - 1].longitude,
-  //                 this.employeeTimeline[index - 1].latitude,
-  //               ],
-  //               [item.longitude, item.latitude],
-  //             ];
-
-  //             const layerId = `path-${index}`;
-  //             this.removeLayerIfExists(layerId);
-
-  //             this.map.addLayer({
-  //               id: layerId,
-  //               type: "line",
-  //               source: {
-  //                 type: "geojson",
-  //                 data: {
-  //                   type: "Feature",
-  //                   properties: {},
-  //                   geometry: {
-  //                     type: "LineString",
-  //                     coordinates: coordinates,
-  //                   },
-  //                 },
-  //               },
-  //               layout: {
-  //                 "line-join": "round",
-  //                 "line-cap": "round",
-  //               },
-  //               paint: {
-  //                 "line-color": "#3887be",
-  //                 "line-width": 8,
-  //               },
-  //             });
-  //           }
-  //         });
-
-  //         const bounds = new mapboxgl.LngLatBounds();
-  //         this.markers.forEach((marker) => bounds.extend(marker.getLngLat()));
-  //         this.map.fitBounds(bounds, { padding: 50 });
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching addresses:", error);
-  //       });
-  //   });
-  // }
-
-  // initializeMap() {
-  //   this.map = new mapboxgl.Map({
-  //     accessToken:
-  //       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www",
-  //     container: "map",
-  //     style: "mapbox://styles/mapbox/streets-v11",
-  //     center: [78.22773895317802, 26.22052522541971],
-  //     zoom: 5,
-  //   });
-
-  //   this.map.on("load", () => {
-  //     if (!this.employeeTimeline || this.employeeTimeline.length === 0) {
-  //       console.error("Employee timeline data is empty or undefined.");
-  //       return;
-  //     }
-
-  //     const filteredCoordinates = this.filterCoordinatesByInterval(
-  //       this.employeeTimeline[0].time, // Get the time part from the first entry
-  //       this.selectedInterval
-  //     );
-
-  //     const geocodingPromises = this.employeeTimeline.map((item) => {
-  //       return this.geocodeCoordinates(item.longitude, item.latitude)
-  //         .then((address) => {
-  //           item.address = address;
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error fetching address:", error);
-  //         });
-  //     });
-
-  //     Promise.all(geocodingPromises).then(() => {
-  //       filteredCoordinates.forEach((segment, index) => {
-  //         if (!segment.start || !segment.end) {
-  //           console.error(
-  //             `Segment at index ${index} is missing start or end coordinates.`
-  //           );
-  //           return;
-  //         }
-
-  //         // Create start marker
-  //         const popupStart = new mapboxgl.Popup({ offset: 25 }).setHTML(
-  //           `<h6>${segment.start.formattedTime}</h6>
-  //                   <p>Battery Percentage: ${segment.start.battery_status}%</p>
-  //                   <p>Address: ${segment.start.address}</p>`
-  //         );
-
-  //         const markerStart = new mapboxgl.Marker({ color: "green" })
-  //           .setLngLat([segment.start.longitude, segment.start.latitude])
-  //           .setPopup(popupStart)
-  //           .addTo(this.map);
-
-  //         // Create end marker
-  //         const popupEnd = new mapboxgl.Popup({ offset: 25 }).setHTML(
-  //           `<h6>${segment.end.formattedTime}</h6>
-  //                   <p>Battery Percentage: ${segment.end.battery_status}%</p>
-  //                   <p>Address: ${segment.end.address}</p>`
-  //         );
-
-  //         const markerEnd = new mapboxgl.Marker({ color: "red" })
-  //           .setLngLat([segment.end.longitude, segment.end.latitude])
-  //           .setPopup(popupEnd)
-  //           .addTo(this.map);
-
-  //         this.markers.push(markerStart, markerEnd);
-
-  //         // Collect all intermediate coordinates for this segment
-  //         const intermediateCoordinates = this.employeeTimeline
-  //           .filter((item) => {
-  //             const itemTime = this.getTimeInSeconds(item.time);
-  //             const startTime = this.getTimeInSeconds(segment.start.time);
-  //             const endTime = this.getTimeInSeconds(segment.end.time);
-  //             return itemTime >= startTime && itemTime <= endTime;
-  //           })
-  //           .map((item) => [item.longitude, item.latitude]);
-
-  //         // Ensure the path starts and ends at the correct coordinates
-  //         if (
-  //           intermediateCoordinates[0][0] !== segment.start.longitude ||
-  //           intermediateCoordinates[0][1] !== segment.start.latitude
-  //         ) {
-  //           intermediateCoordinates.unshift([
-  //             segment.start.longitude,
-  //             segment.start.latitude,
-  //           ]);
-  //         }
-  //         if (
-  //           intermediateCoordinates[intermediateCoordinates.length - 1][0] !==
-  //             segment.end.longitude ||
-  //           intermediateCoordinates[intermediateCoordinates.length - 1][1] !==
-  //             segment.end.latitude
-  //         ) {
-  //           intermediateCoordinates.push([
-  //             segment.end.longitude,
-  //             segment.end.latitude,
-  //           ]);
-  //         }
-
-  //         // Add path to the map (No intermediate markers added)
-  //         const layerId = `path-${index}`;
-  //         this.removeLayerIfExists(layerId);
-
-  //         this.map.addLayer({
-  //           id: layerId,
-  //           type: "line",
-  //           source: {
-  //             type: "geojson",
-  //             data: {
-  //               type: "Feature",
-  //               properties: {},
-  //               geometry: {
-  //                 type: "LineString",
-  //                 coordinates: intermediateCoordinates,
-  //               },
-  //             },
-  //           },
-  //           layout: {
-  //             "line-join": "round",
-  //             "line-cap": "round",
-  //           },
-  //           paint: {
-  //             "line-color": "#3887be",
-  //             "line-width": 8,
-  //           },
-  //         });
-  //       });
-
-  //       const bounds = new mapboxgl.LngLatBounds();
-  //       this.markers.forEach((marker) => bounds.extend(marker.getLngLat()));
-  //       this.map.fitBounds(bounds, { padding: 50 });
-  //     });
-  //   });
-  // }
-
   initializeMap() {
     this.map = new mapboxgl.Map({
       accessToken:
@@ -604,6 +391,7 @@ export class TimelineComponent implements OnInit {
       center: [78.22773895317802, 26.22052522541971],
       zoom: 5,
     });
+
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on("load", () => {
@@ -611,7 +399,7 @@ export class TimelineComponent implements OnInit {
         console.error("Employee timeline data is empty or undefined.");
         return;
       }
-
+      this.map.resize();
       const filteredCoordinates = this.filterCoordinatesByInterval(
         this.employeeTimeline[0].time, // Get the time part from the first entry
         this.selectedInterval

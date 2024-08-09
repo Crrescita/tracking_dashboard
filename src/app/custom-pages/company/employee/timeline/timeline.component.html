@@ -31,6 +31,17 @@
         <option value="60">1 Hour</option>
       </select>
     </div>
+
+    <div class="col-8 text-end">
+      <button
+        type="button"
+        (click)="refreshTimeline()"
+        [ngClass]="{ rotate: isRotating }"
+        class="btn btn-ghost-secondary btn-icon btn-sm fs-xl ms-auto"
+      >
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -86,8 +97,13 @@
 </div>
 
 <div class="row">
-  @if(employeeTimeline && employeeTimeline.length >0){
-  <div class="col-lg-4">
+  <!-- @if(employeeTimeline && employeeTimeline.length >0){ -->
+  <div
+    class="col-lg-4"
+    [ngClass]="
+      employeeTimeline && employeeTimeline.length > 0 ? 'd-block' : 'd-none'
+    "
+  >
     <ul class="acitivity-timeline-2 list-unstyled mb-0 mt-3 overflow">
       @for (item of intervalTimeCoordinates; track $index) {
       <li
@@ -119,30 +135,44 @@
         <p class="mb-0 mt-2">{{ item.end.address }}</p>
       </li>
       } @empty {
-      <div class="mt-2 text-center">
-        <div class="error-img text-center px-5">
-          <img
-            src="assets/images/auth/offline-page.gif"
+
+      <div class="mt-5 pt-5 text-center">
+        <div class="error-img text-center px-5 mt-5">
+          <!-- <img
+            src="assets/images/comingsoon.png"
             alt=""
-            class="img-fluid w-50"
-          />
+            height="110"
+            class="move-animation"
+          /> -->
         </div>
-        <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
-        <!-- <p class="text-muted mb-4">
-            We can't show you this images because you aren't connected to the
-            internet. When you’re back online refresh the page or hit the button
-            below
-          </p> -->
+        <button type="button" class="btn btn-info btn-load mt-5">
+          <span class="d-flex align-items-center">
+            <span class="flex-grow-1 me-2"> Loading... </span>
+            <span class="spinner-grow flex-shrink-0" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </span>
+          </span>
+        </button>
       </div>
       }
     </ul>
   </div>
-  <div class="col-lg-8">
-    <div id="map" class="match-parent"></div>
+  <div
+    class="col-lg-8"
+    [ngClass]="
+      employeeTimeline && employeeTimeline.length == 0 ? 'd-none' : 'd-block'
+    "
+  >
+    <div id="map" class="match-parent w-100 h-100"></div>
   </div>
-  } @else {
+  <!-- } @else { -->
   <div class="col-12">
-    <div class="mt-2 text-center">
+    <div
+      class="mt-2 text-center"
+      [ngClass]="
+        employeeTimeline && employeeTimeline.length === 0 ? 'd-block' : 'd-none'
+      "
+    >
       <div class="error-img text-center px-5">
         <img
           src="assets/images/auth/offline-page.gif"
@@ -151,15 +181,9 @@
         />
       </div>
       <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
-      <div id="map" class="match-parent"></div>
-      <!-- <p class="text-muted mb-4">
-        We can't show you this images because you aren't connected to the
-        internet. When you’re back online refresh the page or hit the button
-        below
-      </p> -->
     </div>
   </div>
-  }
+  <!-- } -->
 </div>
 
 <div id="map" class="match-parent"></div>

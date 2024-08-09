@@ -19,7 +19,7 @@ export class EmployeeDetailComponent {
 
   formGroups: FormGroup[] = [];
   educationForm!: FormGroup;
-  currentTab = "timeline";
+  currentTab: any;
 
   urlId: number | null = null;
 
@@ -39,7 +39,11 @@ export class EmployeeDetailComponent {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private api: ApiService
-  ) {}
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      this.currentTab = params["tab"] || "personalDetails";
+    });
+  }
 
   ngOnInit(): void {
     /**
@@ -112,6 +116,7 @@ export class EmployeeDetailComponent {
           if (res && res.status) {
             this.checkIndetails = res.data;
             this.formattedTotalTime = this.calculateTotalTimeForAll();
+            console.log(this.formattedTotalTime);
             // if (
             //   this.checkIndetails.check_in_time &&
             //   this.checkIndetails.check_out_time

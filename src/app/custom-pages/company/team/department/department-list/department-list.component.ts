@@ -290,7 +290,7 @@ export class DepartmentListComponent implements OnInit {
   filterdata() {
     if (this.term) {
       this.departmentData = this.departmentDataList.filter((el: any) =>
-        el.title.toLowerCase().includes(this.term.toLowerCase())
+        el.name.toLowerCase().includes(this.term.toLowerCase())
       );
     } else {
       this.departmentData = this.departmentDataList;
