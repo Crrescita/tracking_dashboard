@@ -199,10 +199,10 @@
                   ></i>
                   Checkin Time
                 </div>
-                @if(checkIndetails?.check_in_time){
+                @if(checkIndetails?.latestCheckInTime){
                 <div
                   class="flex-shrink-0 text-muted"
-                  [innerHTML]="formatTime(checkIndetails?.check_in_time)"
+                  [innerHTML]="formatTime(checkIndetails?.latestCheckInTime)"
                 ></div>
                 }@else {
                 <div class="flex-shrink-0 text-danger">Not Checked In Yet</div>
@@ -218,10 +218,10 @@
                   ></i>
                   Checkout Time
                 </div>
-                @if(checkIndetails?.check_out_time){
+                @if(checkIndetails?.latestCheckOutTime){
                 <div
                   class="flex-shrink-0 text-muted"
-                  [innerHTML]="formatTime(checkIndetails?.check_out_time)"
+                  [innerHTML]="formatTime(checkIndetails?.latestCheckOutTime)"
                 ></div>
                 }@else {
                 <div class="flex-shrink-0 text-danger">Not Checked Out Yet</div>
@@ -237,10 +237,10 @@
                   ></i>
                   Total Time
                 </div>
-                @if(checkIndetails?.check_in_time &&
-                checkIndetails?.check_out_time) {
+                @if(checkIndetails?.latestCheckInTime &&
+                checkIndetails?.latestCheckOutTime) {
                 <div class="flex-shrink-0 text-muted">
-                  {{ formattedTotalTime }}
+                  {{ checkIndetails?.totalDuration }}
                 </div>
                 }@else {-}
               </div>

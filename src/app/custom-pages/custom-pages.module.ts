@@ -48,6 +48,9 @@ import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { ProgressbarModule } from "ngx-bootstrap/progressbar";
 import { RatingModule } from "ngx-bootstrap/rating";
 
+// Calendar package
+import { FullCalendarModule } from "@fullcalendar/angular";
+
 // Flat Picker
 import { FlatpickrModule } from "angularx-flatpickr";
 
@@ -61,6 +64,7 @@ import { PasswordChangeComponent } from "./company/employee/password-change/pass
 import { LiveLocationComponent } from "./company/employee/live-location/live-location.component";
 import { AttendanceListComponent } from "./company/attendance/attendance-list/attendance-list.component";
 import { DepartmentListComponent } from "./company/team/department/department-list/department-list.component";
+import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
 
 @NgModule({
   declarations: [
@@ -75,6 +79,7 @@ import { DepartmentListComponent } from "./company/team/department/department-li
     AttendanceListComponent,
     DepartmentListComponent,
     DesignationListComponent,
+    AttenCalenderComponent,
   ],
   imports: [
     CommonModule,
@@ -103,6 +108,7 @@ import { DepartmentListComponent } from "./company/team/department/department-li
     RatingModule.forRoot(),
     DropzoneModule,
     FlatpickrModule.forRoot(),
+    FullCalendarModule,
   ],
 })
 export class CustomPagesModule {}

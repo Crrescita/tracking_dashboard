@@ -8,7 +8,9 @@
 
 /* Importing Select SCSS file. */
 @import "~@ng-select/ng-select/themes/default.theme.css";
-
+a{
+  cursor: pointer;
+}
 
 .emoji-mart {
   position: absolute;

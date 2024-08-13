@@ -28,6 +28,33 @@ export class AttendanceListComponent implements OnInit {
   totalDuration: any;
   attendanceCount: any;
 
+  selectValue = [
+    "Alaska",
+    "Hawaii",
+    "California",
+    "Nevada",
+    "Oregon",
+    "Washington",
+    "Arizona",
+    "Colorado",
+    "Idaho",
+    "Montana",
+    "Nebraska",
+    "New Mexico",
+    "North Dakota",
+    "Utah",
+    "Wyoming",
+    "Alabama",
+    "Arkansas",
+    "Illinois",
+    "Iowa",
+  ];
+
+  departments: any[] = [];
+  selectedDepartments: any[] = [];
+  selectedDesignations: any[] = [];
+  designations: any[] = [];
+
   constructor(private api: ApiService) {
     this.bsConfig = {
       maxDate: new Date(),
@@ -35,6 +62,9 @@ export class AttendanceListComponent implements OnInit {
       dateInputFormat: "DD/MM/YYYY",
     };
   }
+
+  // filter
+  selectedStatus: string = "";
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -63,6 +93,49 @@ export class AttendanceListComponent implements OnInit {
     this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
       this.handleDateChange(newDate);
     });
+
+    this.getDepartment();
+    this.getDesignation();
+  }
+
+  getDepartment() {
+    this.toggleSpinner(true);
+    this.api.getwithoutid(`department?status=active`).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.departments = res.data;
+        } else {
+          this.departments = [];
+        }
+      },
+      (error) => {
+        this.toggleSpinner(false);
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+      }
+    );
+  }
+
+  getDesignation() {
+    this.toggleSpinner(true);
+    this.api.getwithoutid(`designation?status=active`).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.designations = res.data;
+        } else {
+          this.designations = [];
+        }
+      },
+      (error) => {
+        this.toggleSpinner(false);
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+      }
+    );
   }
 
   onDateChange(newDate: Date): void {
@@ -161,20 +234,71 @@ export class AttendanceListComponent implements OnInit {
   term: any;
 
   // filterdata
+  // filterdata() {
+  //   if (this.term) {
+  //     this.attendanceData = this.attendanceDataList.filter(
+  //       (el: any) =>
+  //         el.name.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.email.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.checkin_status.toLowerCase().includes(this.term.toLowerCase())||
+  //         el.department.toLowerCase().includes(this.term.toLowerCase())
+  //     );
+  //   } else {
+  //     this.attendanceData = this.attendanceDataList;
+  //   }
+  //   // noResultElement
+  //   this.updateNoResultDisplay();
+  // }
+
   filterdata() {
+    let filteredData = this.attendanceDataList;
+
+    // Convert selected designations to lowercase
+    const selectedDesignationsLower = this.selectedDesignations
+      ? this.selectedDesignations.map((d: string) => d.toLowerCase())
+      : [];
+
+    const selectedDepartmentLower = this.selectedDepartments
+      ? this.selectedDepartments.map((d: string) => d.toLowerCase())
+      : [];
+
+    // Filter by term
     if (this.term) {
-      this.attendanceData = this.attendanceDataList.filter(
+      filteredData = filteredData.filter(
         (el: any) =>
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
           el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.checkin_status.toLowerCase().includes(this.term.toLowerCase())
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
-    } else {
-      this.attendanceData = this.attendanceDataList;
     }
-    // noResultElement
+
+    // Filter by selected departments
+    if (selectedDepartmentLower.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        selectedDepartmentLower.includes(el.department.toLowerCase())
+      );
+    }
+
+    // Filter by selected designations (case-insensitive)
+    if (selectedDesignationsLower.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        selectedDesignationsLower.includes(el.designation.toLowerCase())
+      );
+    }
+
+    // Filter by selected status
+    if (this.selectedStatus) {
+      filteredData = filteredData.filter(
+        (el: any) => el.checkin_status === this.selectedStatus
+      );
+    }
+
+    this.attendanceData = filteredData;
+
+    // Update no result display
     this.updateNoResultDisplay();
   }
 
@@ -204,5 +328,17 @@ export class AttendanceListComponent implements OnInit {
     const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
 
     return `${formattedHour}:${minute}:${second} ${period} `;
+  }
+
+  // filter
+  //  Filter Offcanvas Set
+  openEnd() {
+    document.getElementById("courseFilters")?.classList.add("show");
+    document.querySelector(".backdrop3")?.classList.add("show");
+  }
+
+  closeoffcanvas() {
+    document.getElementById("courseFilters")?.classList.remove("show");
+    document.querySelector(".backdrop3")?.classList.remove("show");
   }
 }

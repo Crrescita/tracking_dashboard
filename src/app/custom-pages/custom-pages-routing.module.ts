@@ -9,6 +9,7 @@ import { EmployeeDetailComponent } from "./company/employee/employee-detail/empl
 import { AttendanceListComponent } from "./company/attendance/attendance-list/attendance-list.component";
 import { DepartmentListComponent } from "./company/team/department/department-list/department-list.component";
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
+import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   { path: "department-list", component: DepartmentListComponent },
 
   { path: "designation-list", component: DesignationListComponent },
+  {
+    path: "attendance-calender/:id/:company_id",
+    component: AttenCalenderComponent,
+  },
 ];
 
 @NgModule({
