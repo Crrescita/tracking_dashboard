@@ -143,8 +143,8 @@ export class TimelineComponent implements OnInit {
           if (res && res.status) {
             this.checkIndetails = res.data[0];
             if (
-              this.checkIndetails.check_in_time &&
-              this.checkIndetails.check_out_time
+              this.checkIndetails?.check_in_time &&
+              this.checkIndetails?.check_out_time
             ) {
               this.formattedTotalTime = this.calculateTotalTime(
                 this.checkIndetails.check_in_time,
@@ -298,7 +298,6 @@ export class TimelineComponent implements OnInit {
     }
 
     this.intervalTimeCoordinates = filteredCoordinates;
-    console.log(this.intervalTimeCoordinates);
     return filteredCoordinates;
   }
 
@@ -339,20 +338,27 @@ export class TimelineComponent implements OnInit {
     for (let i = 1; i < this.employeeTimeline.length; i++) {
       const prevItem = this.employeeTimeline[i - 1];
       const currentItem = this.employeeTimeline[i];
-      const timeDifference =
-        (new Date(currentItem.time).getTime() -
-          new Date(prevItem.time).getTime()) /
-        1000 /
-        60; // Time difference in minutes
 
+      // Convert time strings to Date objects for calculation
+      const prevDate = new Date(`1970-01-01T${prevItem.time}Z`);
+      const currentDate = new Date(`1970-01-01T${currentItem.time}Z`);
+
+      // Calculate time difference in minutes
+      const timeDifference =
+        (currentDate.getTime() - prevDate.getTime()) / 1000 / 60; // Time difference in minutes
+
+      // Calculate distance between the two coordinates
       const distance = this.calculateDistance(
         prevItem.latitude,
         prevItem.longitude,
         currentItem.latitude,
         currentItem.longitude
       );
+
+      // Calculate speed in km/h
       const speed = distance / (timeDifference / 60); // Speed in km/h
 
+      // Determine the activity type based on speed
       if (speed > 25) {
         timeSpent.driving += timeDifference;
       } else if (speed > 15) {
@@ -364,7 +370,19 @@ export class TimelineComponent implements OnInit {
       }
     }
 
-    return timeSpent;
+    // Convert time spent to hours and minutes format
+    const formatTime = (minutes: number) => {
+      const hours = Math.floor(minutes / 60);
+      const mins = Math.round(minutes % 60);
+      return `${hours} hours ${mins} minutes`;
+    };
+
+    return {
+      driving: formatTime(timeSpent.driving),
+      cycling: formatTime(timeSpent.cycling),
+      walking: formatTime(timeSpent.walking),
+      stationary: formatTime(timeSpent.stationary),
+    };
   }
 
   // get address
@@ -404,7 +422,6 @@ export class TimelineComponent implements OnInit {
         this.employeeTimeline[0].time, // Get the time part from the first entry
         this.selectedInterval
       );
-
       const geocodingPromises = this.employeeTimeline.map((item) => {
         return this.geocodeCoordinates(item.longitude, item.latitude)
           .then((address) => {

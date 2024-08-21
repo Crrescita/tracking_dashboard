@@ -65,6 +65,7 @@ import { LiveLocationComponent } from "./company/employee/live-location/live-loc
 import { AttendanceListComponent } from "./company/attendance/attendance-list/attendance-list.component";
 import { DepartmentListComponent } from "./company/team/department/department-list/department-list.component";
 import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
+import { MapComponent } from "./company/employee/map/map.component";
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { AttenCalenderComponent } from "./company/attendance/atten-calender/atte
     DepartmentListComponent,
     DesignationListComponent,
     AttenCalenderComponent,
+    MapComponent,
   ],
   imports: [
     CommonModule,

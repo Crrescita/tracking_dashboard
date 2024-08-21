@@ -115,7 +115,7 @@ export class EmployeeDetailComponent {
           this.toggleSpinner(false);
           if (res && res.status) {
             this.checkIndetails = res.data;
-            console.log(this.checkIndetails);
+
             // this.formattedTotalTime = this.calculateTotalTimeForAll();
             // console.log(this.formattedTotalTime);
             // if (

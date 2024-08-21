@@ -88,6 +88,7 @@ export class AddEmployeeComponent implements OnInit {
     lower: false,
     upper: false,
     number: false,
+    special: false,
   };
   useDefaultPassword: boolean = true;
 
@@ -179,13 +180,13 @@ export class AddEmployeeComponent implements OnInit {
           this.urlId
             ? [
                 Validators.pattern(
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
                 ),
               ]
             : [
                 Validators.required,
                 Validators.pattern(
-                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
                 ),
               ],
         ],
@@ -270,6 +271,7 @@ export class AddEmployeeComponent implements OnInit {
     this.passwordValidations.lower = /[a-z]/.test(password);
     this.passwordValidations.upper = /[A-Z]/.test(password);
     this.passwordValidations.number = /\d/.test(password);
+    this.passwordValidations.special = /[@$!%*?&]/.test(password);
   }
 
   onCheckboxChange(event: any): void {

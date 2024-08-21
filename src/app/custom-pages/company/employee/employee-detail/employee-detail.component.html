@@ -258,6 +258,35 @@
       >
         <li class="nav-item" role="presentation">
           <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'timeline'"
+            (click)="changeTab('timeline')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Timeline
+          </a>
+        </li>
+
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'timelinev2'"
+            (click)="changeTab('timelinev2')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Timeline v2
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
             class="nav-link active"
             data-bs-toggle="tab"
             href="javascript:void(0);"
@@ -283,20 +312,7 @@
             Changes Password
           </a>
         </li>
-        <li class="nav-item" role="presentation">
-          <a
-            class="nav-link"
-            data-bs-toggle="tab"
-            href="javascript:void(0);"
-            [class.active]="currentTab === 'timeline'"
-            (click)="changeTab('timeline')"
-            role="tab"
-            aria-selected="false"
-            tabindex="-1"
-          >
-            Timeline
-          </a>
-        </li>
+
         <li class="nav-item" role="presentation">
           <a
             class="nav-link"
@@ -433,6 +449,22 @@
             <app-timeline
               [companyId]="employeeDetail?.company_id"
             ></app-timeline>
+            }
+          </div>
+        </div>
+
+        <div
+          [hidden]="currentTab !== 'timelinev2'"
+          class="tab-pane active"
+          id="timelinev2"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Timeline v2</h6>
+          </div>
+          <div class="card-body">
+            @if(employeeDetail){
+            <app-map [companyId]="employeeDetail?.company_id"></app-map>
             }
           </div>
         </div>

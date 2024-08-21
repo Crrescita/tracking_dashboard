@@ -819,12 +819,23 @@
                       </p>
                       <p
                         id="pass-number"
-                        class="fs-xs mb-0"
+                        class="fs-xs mb-2"
                         [ngClass]="
                           passwordValidations.number ? 'valid' : 'invalid'
                         "
                       >
                         At least <b>one number</b> (0-9)
+                      </p>
+
+                      <p
+                        id="pass-number"
+                        class="fs-xs mb-0"
+                        [ngClass]="
+                          passwordValidations.special ? 'valid' : 'invalid'
+                        "
+                      >
+                        At least
+                        <b>one special character</b> (!&#64;#$!%*?&)
                       </p>
                     </div>
                   </div>

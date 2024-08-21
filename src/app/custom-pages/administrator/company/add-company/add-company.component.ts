@@ -95,6 +95,9 @@ export class AddCompanyComponent implements OnInit {
       state: ["", [Validators.required]],
       zip_code: ["", [Validators.required]],
       contact_person: ["", [Validators.required]],
+      check_out_time: ["", [Validators.required]],
+      check_in_time_start: ["", [Validators.required]],
+      check_in_time_end: ["", [Validators.required]],
     });
   }
 
@@ -151,6 +154,9 @@ export class AddCompanyComponent implements OnInit {
         zip_code: data.zip_code,
         contact_person: data.contact_person,
         website_url: data.website_url,
+        check_in_time_start: data.check_in_time_start,
+        check_in_time_end: data.check_in_time_end,
+        check_out_time: data.check_out_time,
       });
 
       // Set uploaded image
@@ -168,6 +174,34 @@ export class AddCompanyComponent implements OnInit {
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
       const formData = this.createFormData();
+
+      const checkInStart = this.f["check_in_time_start"].value;
+      const checkInEnd = this.f["check_in_time_end"].value;
+      const checkOutTime = this.f["check_out_time"].value;
+
+      if (checkInStart > checkInEnd) {
+        this.toastService.error(
+          "Check-in start time must be before the end time."
+        );
+        return;
+        this.toggleSpinner(false);
+      }
+      if (checkOutTime <= checkInEnd) {
+        this.toastService.error(
+          "Check-out time must be after the check-in end time."
+        );
+        return;
+        this.toggleSpinner(false);
+      }
+
+      if (checkOutTime <= checkInStart) {
+        this.toastService.error(
+          "Check-out time must be after the check-in start time."
+        );
+        return;
+        this.toggleSpinner(false);
+      }
+
       if (this.urlId) {
         this.updateCompany(formData);
       } else {
@@ -195,6 +229,9 @@ export class AddCompanyComponent implements OnInit {
     formData.append("zip_code", this.f["zip_code"].value);
     formData.append("contact_person", this.f["contact_person"].value);
     formData.append("website_url", this.f["website_url"].value);
+    formData.append("check_out_time", this.f["check_out_time"].value);
+    formData.append("check_in_time_start", this.f["check_in_time_start"].value);
+    formData.append("check_in_time_end", this.f["check_in_time_end"].value);
     if (this.companyselectedImage) {
       formData.append("logo", this.companyselectedImage);
     }
