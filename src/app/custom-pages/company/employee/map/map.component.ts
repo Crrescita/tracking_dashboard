@@ -170,7 +170,7 @@ export class MapComponent implements OnInit {
           this.toggleSpinner(false);
 
           if (res && res.status && res.data.length > 0) {
-            this.employeeTimeline = res.data.reverse().map((item: any) => {
+            this.employeeTimeline = res.data.map((item: any) => {
               item.formattedTime = this.formatTime(item.time);
               return item;
             });

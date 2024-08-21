@@ -126,8 +126,18 @@
             tooltip="Battery Percentage"
           >
             <span class="ri-battery-saver-line"></span>
-            {{ item.motionStatus }}
+            {{ item.battery_status }}
           </button>
+        </div>
+        <div class="d-flex justify-content-between">
+          <div>
+            {{ item.motionStatus }}
+          </div>
+          <div>
+            duration
+            <i _ngcontent-ng-c1622002897="" class="bi bi-hourglass-split"></i>:
+            {{ item.time_difference }}
+          </div>
         </div>
 
         <p class="mb-0 mt-2">{{ item.address }}</p>
