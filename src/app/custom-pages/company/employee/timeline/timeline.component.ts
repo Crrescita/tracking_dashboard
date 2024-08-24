@@ -165,6 +165,66 @@ export class TimelineComponent implements OnInit {
   }
 
   // api's method
+  // getemployeeTimeline() {
+  //   this.toggleSpinner(true);
+  //   this.api
+  //     .getwithoutid(
+  //       `getCoordinates?emp_id=${this.urlId}&company_id=${this.companyId}&date=${this.formattedDate}`
+  //     )
+  //     .subscribe(
+  //       (res: any) => {
+  //         this.toggleSpinner(false);
+
+  //         if (res && res.status && res.data.length > 0) {
+  //           this.employeeTimeline = res.data.map((item: any) => {
+  //             item.formattedTime = this.formatTime(item.time);
+  //             return item;
+  //           });
+
+  //           if (this.employeeTimeline && this.employeeTimeline.length > 0) {
+  //             this.initializeMap();
+
+  //             // Calculate total distance
+  //             let totalDistance = 0;
+  //             for (let i = 1; i < this.employeeTimeline.length; i++) {
+  //               totalDistance += this.calculateDistance(
+  //                 this.employeeTimeline[i - 1].latitude,
+  //                 this.employeeTimeline[i - 1].longitude,
+  //                 this.employeeTimeline[i].latitude,
+  //                 this.employeeTimeline[i].longitude
+  //               );
+  //             }
+
+  //             // Calculate time spent in different modes
+  //             const timeSpent = this.calculateTimeSpent();
+
+  //             this.totaldistanceToshow = totalDistance.toFixed(1);
+
+  //             // console.log("Total Distance:", totalDistance, "km");
+  //             // console.log("Time Spent:", timeSpent);
+
+  //             // Display these results in the UI as needed
+  //           }
+  //         } else {
+  //           this.employeeTimeline = [];
+  //           this.intervalTimeCoordinates = [];
+  //           this.totaldistanceToshow = null;
+
+  //           // this.initializeDefaultMap();
+  //         }
+  //       },
+  //       (error) => {
+  //         this.toggleSpinner(false);
+  //         this.employeeTimeline = [];
+
+  //         this.initializeDefaultMap();
+  //         this.handleError(
+  //           error.message || "An error occurred while fetching data"
+  //         );
+  //       }
+  //     );
+  // }
+
   getemployeeTimeline() {
     this.toggleSpinner(true);
     this.api
@@ -195,15 +255,16 @@ export class TimelineComponent implements OnInit {
                 );
               }
 
-              // Calculate time spent in different modes
+              // Calculate time spent in different modes, including rest periods
               const timeSpent = this.calculateTimeSpent();
+              const restPeriods = this.calculateRestPeriods(); // New method to calculate rest periods
 
               this.totaldistanceToshow = totalDistance.toFixed(1);
 
-              // console.log("Total Distance:", totalDistance, "km");
-              // console.log("Time Spent:", timeSpent);
-
-              // Display these results in the UI as needed
+              // Display results as needed
+              console.log("Total Distance:", totalDistance, "km");
+              console.log("Time Spent:", timeSpent);
+              console.log("Rest Periods:", restPeriods);
             }
           } else {
             this.employeeTimeline = [];
@@ -224,6 +285,58 @@ export class TimelineComponent implements OnInit {
         }
       );
   }
+
+  // getemployeeTimeline() {
+  //   this.toggleSpinner(true);
+  //   this.api
+  //     .getwithoutid(
+  //       `getCoordinates?emp_id=${this.urlId}&company_id=${this.companyId}&date=${this.formattedDate}`
+  //     )
+  //     .subscribe(
+  //       (res: any) => {
+  //         this.toggleSpinner(false);
+
+  //         if (res && res.status && res.data.length > 0) {
+  //           this.employeeTimeline = res.data.map((item: any) => {
+  //             item.formattedTime = this.formatTime(item.time);
+  //             return item;
+  //           });
+
+  //           if (this.employeeTimeline && this.employeeTimeline.length > 0) {
+  //             this.initializeMap();
+
+  //             // Calculate total distance
+  //             let totalDistance = 0;
+  //             for (let i = 1; i < this.employeeTimeline.length; i++) {
+  //               totalDistance += this.calculateDistance(
+  //                 this.employeeTimeline[i - 1].latitude,
+  //                 this.employeeTimeline[i - 1].longitude,
+  //                 this.employeeTimeline[i].latitude,
+  //                 this.employeeTimeline[i].longitude
+  //               );
+  //             }
+
+  //             // Calculate time spent in different modes
+  //             const timeSpent = this.calculateTimeSpent();
+
+  //             this.totaldistanceToshow = totalDistance.toFixed(1);
+  //           }
+  //         } else {
+  //           this.employeeTimeline = [];
+  //           this.intervalTimeCoordinates = [];
+  //           this.totaldistanceToshow = null;
+  //         }
+  //       },
+  //       (error) => {
+  //         this.toggleSpinner(false);
+  //         this.employeeTimeline = [];
+  //         this.initializeDefaultMap();
+  //         this.handleError(
+  //           error.message || "An error occurred while fetching data"
+  //         );
+  //       }
+  //     );
+  // }
 
   // Filter coordinates based on the selected interval
   filterCoordinatesByInterval(startTime: string, interval: number) {
@@ -400,6 +513,147 @@ export class TimelineComponent implements OnInit {
       });
   }
 
+  // initializeMap() {
+  //   this.map = new mapboxgl.Map({
+  //     accessToken:
+  //       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www",
+  //     container: "map",
+  //     style: "mapbox://styles/mapbox/streets-v11",
+  //     center: [78.22773895317802, 26.22052522541971],
+  //     zoom: 5,
+  //   });
+
+  //   this.map.addControl(new mapboxgl.NavigationControl());
+
+  //   this.map.on("load", () => {
+  //     if (!this.employeeTimeline || this.employeeTimeline.length === 0) {
+  //       console.error("Employee timeline data is empty or undefined.");
+  //       return;
+  //     }
+  //     this.map.resize();
+  //     const filteredCoordinates = this.filterCoordinatesByInterval(
+  //       this.employeeTimeline[0].time, // Get the time part from the first entry
+  //       this.selectedInterval
+  //     );
+  //     const geocodingPromises = this.employeeTimeline.map((item) => {
+  //       return this.geocodeCoordinates(item.longitude, item.latitude)
+  //         .then((address) => {
+  //           item.address = address;
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching address:", error);
+  //         });
+  //     });
+
+  //     Promise.all(geocodingPromises).then(() => {
+  //       // Only create markers for the first and last entries
+  //       const firstCoordinate = this.employeeTimeline[0];
+  //       const lastCoordinate =
+  //         this.employeeTimeline[this.employeeTimeline.length - 1];
+
+  //       // Create start marker
+  //       const popupStart = new mapboxgl.Popup({ offset: 25 }).setHTML(
+  //         `<h6>${firstCoordinate.formattedTime}</h6>
+  //               <p>Battery Percentage: ${firstCoordinate.battery_status}%</p>
+  //               <p>Address: ${firstCoordinate.address}</p>`
+  //       );
+
+  //       const markerStart = new mapboxgl.Marker({ color: "green" })
+  //         .setLngLat([firstCoordinate.longitude, firstCoordinate.latitude])
+  //         .setPopup(popupStart)
+  //         .addTo(this.map);
+
+  //       // Create end marker
+  //       const popupEnd = new mapboxgl.Popup({ offset: 25 }).setHTML(
+  //         `<h6>${lastCoordinate.formattedTime}</h6>
+  //               <p>Battery Percentage: ${lastCoordinate.battery_status}%</p>
+  //               <p>Address: ${lastCoordinate.address}</p>`
+  //       );
+
+  //       const markerEnd = new mapboxgl.Marker({ color: "red" })
+  //         .setLngLat([lastCoordinate.longitude, lastCoordinate.latitude])
+  //         .setPopup(popupEnd)
+  //         .addTo(this.map);
+
+  //       this.markers.push(markerStart, markerEnd);
+
+  //       filteredCoordinates.forEach((segment, index) => {
+  //         if (!segment.start || !segment.end) {
+  //           console.error(
+  //             `Segment at index ${index} is missing start or end coordinates.`
+  //           );
+  //           return;
+  //         }
+
+  //         // Collect all intermediate coordinates for this segment
+  //         const intermediateCoordinates = this.employeeTimeline
+  //           .filter((item) => {
+  //             const itemTime = this.getTimeInSeconds(item.time);
+  //             const startTime = this.getTimeInSeconds(segment.start.time);
+  //             const endTime = this.getTimeInSeconds(segment.end.time);
+  //             return itemTime >= startTime && itemTime <= endTime;
+  //           })
+  //           .map((item) => [item.longitude, item.latitude]);
+
+  //         // Ensure the path starts and ends at the correct coordinates
+  //         if (
+  //           intermediateCoordinates[0][0] !== segment.start.longitude ||
+  //           intermediateCoordinates[0][1] !== segment.start.latitude
+  //         ) {
+  //           intermediateCoordinates.unshift([
+  //             segment.start.longitude,
+  //             segment.start.latitude,
+  //           ]);
+  //         }
+  //         if (
+  //           intermediateCoordinates[intermediateCoordinates.length - 1][0] !==
+  //             segment.end.longitude ||
+  //           intermediateCoordinates[intermediateCoordinates.length - 1][1] !==
+  //             segment.end.latitude
+  //         ) {
+  //           intermediateCoordinates.push([
+  //             segment.end.longitude,
+  //             segment.end.latitude,
+  //           ]);
+  //         }
+
+  //         // Add path to the map
+  //         const layerId = `path-${index}`;
+  //         this.removeLayerIfExists(layerId);
+
+  //         this.map.addLayer({
+  //           id: layerId,
+  //           type: "line",
+  //           source: {
+  //             type: "geojson",
+  //             data: {
+  //               type: "Feature",
+  //               properties: {},
+  //               geometry: {
+  //                 type: "LineString",
+  //                 coordinates: intermediateCoordinates,
+  //               },
+  //             },
+  //           },
+  //           layout: {
+  //             "line-join": "round",
+  //             "line-cap": "round",
+  //           },
+  //           paint: {
+  //             "line-color": "#3887be",
+  //             "line-width": 8,
+  //           },
+  //         });
+  //       });
+
+  //       // Fit the map bounds to include the markers
+  //       const bounds = new mapboxgl.LngLatBounds();
+  //       this.markers.forEach((marker) => bounds.extend(marker.getLngLat()));
+  //       this.map.fitBounds(bounds, { padding: 50 });
+  //     });
+  //   });
+  // }
+
   initializeMap() {
     this.map = new mapboxgl.Map({
       accessToken:
@@ -419,7 +673,7 @@ export class TimelineComponent implements OnInit {
       }
       this.map.resize();
       const filteredCoordinates = this.filterCoordinatesByInterval(
-        this.employeeTimeline[0].time, // Get the time part from the first entry
+        this.employeeTimeline[0].time,
         this.selectedInterval
       );
       const geocodingPromises = this.employeeTimeline.map((item) => {
@@ -441,8 +695,8 @@ export class TimelineComponent implements OnInit {
         // Create start marker
         const popupStart = new mapboxgl.Popup({ offset: 25 }).setHTML(
           `<h6>${firstCoordinate.formattedTime}</h6>
-                <p>Battery Percentage: ${firstCoordinate.battery_status}%</p>
-                <p>Address: ${firstCoordinate.address}</p>`
+              <p>Battery Percentage: ${firstCoordinate.battery_status}%</p>
+              <p>Address: ${firstCoordinate.address}</p>`
         );
 
         const markerStart = new mapboxgl.Marker({ color: "green" })
@@ -453,8 +707,8 @@ export class TimelineComponent implements OnInit {
         // Create end marker
         const popupEnd = new mapboxgl.Popup({ offset: 25 }).setHTML(
           `<h6>${lastCoordinate.formattedTime}</h6>
-                <p>Battery Percentage: ${lastCoordinate.battery_status}%</p>
-                <p>Address: ${lastCoordinate.address}</p>`
+              <p>Battery Percentage: ${lastCoordinate.battery_status}%</p>
+              <p>Address: ${lastCoordinate.address}</p>`
         );
 
         const markerEnd = new mapboxgl.Marker({ color: "red" })
@@ -463,6 +717,25 @@ export class TimelineComponent implements OnInit {
           .addTo(this.map);
 
         this.markers.push(markerStart, markerEnd);
+
+        // Display rest periods on the map
+        const restPeriods = this.calculateRestPeriods();
+        restPeriods.forEach((period, index) => {
+          const popupRest = new mapboxgl.Popup({ offset: 25 }).setHTML(
+            `<h6>Rest Period ${index + 1}</h6>
+                  <p>Duration: ${period.duration}</p>
+                  <p>From: ${period.startTime}</p>
+                  <p>To: ${period.endTime}</p>
+                  <p>Address: ${period.address}</p>`
+          );
+
+          const markerRest = new mapboxgl.Marker({ color: "blue" })
+            .setLngLat([period.start.longitude, period.start.latitude])
+            .setPopup(popupRest)
+            .addTo(this.map);
+
+          this.markers.push(markerRest);
+        });
 
         filteredCoordinates.forEach((segment, index) => {
           if (!segment.start || !segment.end) {
@@ -480,25 +753,36 @@ export class TimelineComponent implements OnInit {
               const endTime = this.getTimeInSeconds(segment.end.time);
               return itemTime >= startTime && itemTime <= endTime;
             })
-            .map((item) => [item.longitude, item.latitude]);
+            .map((item) => [item.longitude, item.latitude, item.time]);
+
+          // Remove consecutive duplicates while preserving time differences
+          const uniqueCoordinates = intermediateCoordinates
+            .filter(
+              (coord, i, arr) =>
+                i === 0 ||
+                coord[0] !== arr[i - 1][0] ||
+                coord[1] !== arr[i - 1][1] ||
+                coord[2] !== arr[i - 1][2]
+            )
+            .map((coord) => [coord[0], coord[1]]);
 
           // Ensure the path starts and ends at the correct coordinates
           if (
-            intermediateCoordinates[0][0] !== segment.start.longitude ||
-            intermediateCoordinates[0][1] !== segment.start.latitude
+            uniqueCoordinates[0][0] !== segment.start.longitude ||
+            uniqueCoordinates[0][1] !== segment.start.latitude
           ) {
-            intermediateCoordinates.unshift([
+            uniqueCoordinates.unshift([
               segment.start.longitude,
               segment.start.latitude,
             ]);
           }
           if (
-            intermediateCoordinates[intermediateCoordinates.length - 1][0] !==
+            uniqueCoordinates[uniqueCoordinates.length - 1][0] !==
               segment.end.longitude ||
-            intermediateCoordinates[intermediateCoordinates.length - 1][1] !==
+            uniqueCoordinates[uniqueCoordinates.length - 1][1] !==
               segment.end.latitude
           ) {
-            intermediateCoordinates.push([
+            uniqueCoordinates.push([
               segment.end.longitude,
               segment.end.latitude,
             ]);
@@ -518,7 +802,7 @@ export class TimelineComponent implements OnInit {
                 properties: {},
                 geometry: {
                   type: "LineString",
-                  coordinates: intermediateCoordinates,
+                  coordinates: uniqueCoordinates,
                 },
               },
             },
@@ -528,7 +812,7 @@ export class TimelineComponent implements OnInit {
             },
             paint: {
               "line-color": "#3887be",
-              "line-width": 8,
+              "line-width": 4,
             },
           });
         });
@@ -539,6 +823,65 @@ export class TimelineComponent implements OnInit {
         this.map.fitBounds(bounds, { padding: 50 });
       });
     });
+  }
+
+  calculateRestPeriods() {
+    const restPeriods = [];
+    const thresholdDistance = 0.02; // Approx. 20 meters, adjust as needed
+    let startRest = null;
+
+    for (let i = 1; i < this.employeeTimeline.length; i++) {
+      const prevCoord = this.employeeTimeline[i - 1];
+      const currCoord = this.employeeTimeline[i];
+      const distance = this.calculateDistance(
+        prevCoord.latitude,
+        prevCoord.longitude,
+        currCoord.latitude,
+        currCoord.longitude
+      );
+
+      if (distance <= thresholdDistance) {
+        if (!startRest) {
+          startRest = prevCoord;
+        }
+      } else {
+        if (startRest) {
+          const durationInSeconds =
+            this.getTimeInSeconds(currCoord.time) -
+            this.getTimeInSeconds(startRest.time);
+
+          const durationInMinutes = durationInSeconds / 60;
+          if (durationInMinutes >= 5) {
+            restPeriods.push({
+              ...startRest,
+              start: startRest,
+              end: currCoord,
+              duration: this.formatDuration(durationInSeconds), // Format to hh:mm:ss
+              durationInMinutes: durationInMinutes.toFixed(1), // To display minutes if needed
+              startTime: this.formatTime(startRest.time), // Formatted start time
+              endTime: this.formatTime(currCoord.time), // Formatted end time
+            });
+          }
+          startRest = null;
+        }
+      }
+    }
+
+    return restPeriods;
+  }
+
+  // Helper function to format duration in hh:mm:ss
+  formatDuration(totalSeconds: number): string {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+
+    return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
+  }
+
+  // Helper function to pad numbers to two digits (e.g., 05, 09)
+  pad(num: number): string {
+    return num.toString().padStart(2, "0");
   }
 
   // Utility function to convert HH:mm:ss to total seconds
