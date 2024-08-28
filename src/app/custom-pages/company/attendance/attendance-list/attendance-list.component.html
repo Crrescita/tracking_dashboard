@@ -126,7 +126,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
-        <div class="card-header d-flex align-items-center">
+        <div class="card-header d-lg-flex align-items-center">
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
               Employees
@@ -224,7 +224,7 @@
                   <th class="sort cursor-pointer" (click)="onSort('name')">
                     Name
                   </th>
-                  <th class="sort cursor-pointer" (click)="onSort('mobile')">
+                  <!-- <th class="sort cursor-pointer" (click)="onSort('mobile')">
                     Mobile
                   </th>
                   <th class="sort cursor-pointer" (click)="onSort('email')">
@@ -232,10 +232,10 @@
                   </th>
                   <th
                     class="sort cursor-pointer"
-                    (click)="onSort('designation')"
+                    (click)="onSort('department')"
                   >
-                    Designation
-                  </th>
+                    Department
+                  </th> -->
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('check_in_time')"
@@ -252,13 +252,25 @@
                     class="sort cursor-pointer"
                     (click)="onSort('totalDuration')"
                   >
-                    Total Duration
+                    Work Hours
                   </th>
                   <th
                     class="sort cursor-pointer"
-                    (click)="onSort('checkin_status')"
+                    (click)="onSort('attendance_status')"
                   >
                     Attendance Status
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('checkin_statusv2')"
+                  >
+                    Check-in Status
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('timeDifferencev2')"
+                  >
+                    Time Difference
                   </th>
                   <th>Action</th>
                 </tr>
@@ -275,6 +287,7 @@
                   <td class="products">
                     <div class="d-flex align-items-center">
                       @if(data.image){
+
                       <div class="avatar-sm bg-light rounded p-1 me-2">
                         <img
                           src="{{ data.image }}"
@@ -295,18 +308,15 @@
                       }
                       <div>
                         <h6 class="mb-0">
-                          <a
-                            routerLink="/ecommerce/product-details"
-                            class="text-reset products"
-                            >{{ data.name }}</a
-                          >
+                          <a class="text-reset products">{{ data.name }}</a>
                         </h6>
+                        <p class="text-muted mb-0">{{ data.designation }}</p>
                       </div>
                     </div>
                   </td>
-                  <td class="discount">{{ data.mobile }}</td>
+                  <!-- <td class="discount">{{ data.mobile }}</td>
                   <td class="category">{{ data.email }}</td>
-                  <td class="stock">{{ data.designation }}</td>
+                  <td class="stock">{{ data.department }}</td> -->
                   <td class="price">
                     {{ formatTime(data.latestCheckInTime) }}
                   </td>
@@ -324,17 +334,50 @@
                       >Check Detail
                     </a>
                   </td>
-
                   <td class="published">
                     <span
                       class="badge"
                       [ngClass]="
-                        data.checkin_status == 'Present'
+                        data.attendance_status == 'Present'
                           ? 'bg-success'
                           : 'bg-danger'
                       "
-                      >{{ data.checkin_status }}</span
+                      >{{ data.attendance_status }}</span
                     >
+                  </td>
+
+                  <td class="published">
+                    @if(data.checkin_statusv2 != 'Absent'){
+                    <span
+                      class="badge"
+                      [ngClass]="
+                        data.checkin_statusv2 == 'Early'
+                          ? 'bg-warning'
+                          : data.checkin_statusv2 == 'Late'
+                          ? 'bg-danger'
+                          : 'bg-success'
+                      "
+                      >{{ data.checkin_statusv2 }}</span
+                    >
+                    } @else { -}
+                  </td>
+                  <td class="published">
+                    @if(data.checkin_statusv2 != 'Absent'){
+
+                    <p
+                      [ngClass]="
+                        data.checkin_statusv2 == 'Early'
+                          ? 'text-warning'
+                          : data.checkin_statusv2 == 'Late'
+                          ? 'text-danger'
+                          : 'text-success'
+                      "
+                      class="mb-0"
+                    >
+                      {{ data.timeDifferencev2 }}
+                    </p>
+
+                    } @else { -}
                   </td>
                   <td>
                     <div dropdown class="dropdown">

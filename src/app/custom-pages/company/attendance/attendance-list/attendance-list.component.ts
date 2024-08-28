@@ -4,6 +4,7 @@ import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+import { cloneDeep } from "lodash";
 
 @Component({
   selector: "app-attendance-list",
@@ -174,7 +175,7 @@ export class AttendanceListComponent implements OnInit {
           this.attendanceData = res.data || [];
           this.attendanceDataList = res.data || [];
           this.attendanceCount = res.attendenceCount || [];
-
+          this.attendanceData = cloneDeep(this.attendanceDataList.slice(0, 10));
           // this.updatePagination();
           // this.updateDisplayedItems();
         } else {
@@ -259,7 +260,7 @@ export class AttendanceListComponent implements OnInit {
     const selectedDesignationsLower = this.selectedDesignations
       ? this.selectedDesignations.map((d: string) => d.toLowerCase())
       : [];
-
+    console.log(selectedDesignationsLower);
     const selectedDepartmentLower = this.selectedDepartments
       ? this.selectedDepartments.map((d: string) => d.toLowerCase())
       : [];

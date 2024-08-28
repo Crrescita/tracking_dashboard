@@ -1,0 +1,250 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Attendance"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="productList">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-md-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Attendance
+              <span class="badge bg-dark-subtle text-dark ms-1"></span>
+            </h5>
+          </div>
+
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <div class="col-xxl">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="form-control"
+                    showWeekNumbers="false"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [(ngModel)]="selectedDate"
+                    (bsValueChange)="onDateChange($event)"
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepicker"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name, Employee id etc..."
+                />
+
+                <i class="ri-search-line search-icon"></i>
+              </div>
+
+              <!-- <a (click)="exportTableToExcel()" class="btn btn-success"
+                ><i class="ri-printer-line align-bottom me-1"></i> Dwon</a
+              > -->
+
+              <button
+                (click)="exportTableToExcel()"
+                type="button"
+                id="download-button"
+                class="btn btn-primary"
+              >
+                <i class="ri-download-2-line align-bottom me-1"></i> Download
+              </button>
+
+              <!-- <div class="col-lg-auto">
+                <div class="hstack flex-wrap gap-2">
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-info me-1"
+                      (click)="openEnd()"
+                    >
+                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                    </button>
+                  </div>
+                </div>
+              </div> -->
+              <!--end col-->
+
+              <!-- <button class="btn btn-subtle-danger d-none" id="remove-actions">
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <button type="button" class="btn btn-primary add-btn">
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
+                Product
+              </button> -->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive table-card mt-1 px-2">
+            <table
+              class="table table-nowrap table-striped-columns mb-0 table-fixed"
+            >
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Name</th>
+
+                  @for ( dayInfo of daysInMonth; track $index) {
+                  <th scope="col">
+                    {{ dayInfo.date }} <br />
+                    <small>{{ dayInfo.day }}</small>
+                  </th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of attendanceMonthyData; track $index) {
+                <tr>
+                  <td>
+                    {{ item.name }}
+                  </td>
+                  @for ( attendance of item.attendance; track $index) {
+                  <td>
+                    @if( attendance.attendance_status == "Present"){
+                    <span class="text-success">&#10004;</span>
+                    <!-- <i class="ri-check-fill align-bottom me-1 text-success"></i> -->
+                    }@else {
+                    <span class="text-danger">&#10007;</span>
+                    <!-- <i class="ri-close-line align-bottom me-1 text-danger"></i> -->
+                    }
+                  </td>
+                  }
+                </tr>
+                }
+              </tbody>
+              @if (spinnerStatus) {
+              <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              }
+            </table>
+          </div>
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched
+                {{ attendanceMonthyDataList?.length }} Employee Data. We did not
+                find any Employee for you search.
+              </p>
+            </div>
+          </div>
+
+          <div class="row mt-5 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{
+                  attendanceMonthyData?.length
+                }}</span>
+                of
+                <span class="fw-semibold">{{
+                  attendanceMonthyDataList?.length
+                }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
+              <div class="d-flex me-3 mt-1 mb-3 justify-content-center">
+                <div class="text-muted text-center text-sm-start me-2">
+                  Items per page :
+                </div>
+                <div class="">
+                  <div class="input-group input-group-sm">
+                    <select
+                      id="itemsPerPage"
+                      class="form-control"
+                      [(ngModel)]="currentItemsPerPage"
+                      (change)="onItemsPerPageChange($event)"
+                    >
+                      <option
+                        *ngFor="let option of itemsPerPageOptions"
+                        [value]="option"
+                      >
+                        {{ option }}
+                      </option>
+                      <option [value]="attendanceMonthyDataList?.length">
+                        Show All
+                      </option>
+                    </select>
+
+                    <!-- <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"> -->
+                  </div>
+                </div>
+
+                <!-- Input Group Sizing -->
+              </div>
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [totalItems]="attendanceMonthyDataList?.length"
+                [itemsPerPage]="10"
+                (pageChanged)="pageChanged($event)"
+              ></pagination>
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>
+
+<!-- <table
+  id="attendanceTable"
+  class="table table-nowrap table-striped-columns mb-0 table-fixed"
+>
+  <thead class="table-light">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col" *ngFor="let dayInfo of daysInMonth">
+        {{ dayInfo.date }} <br />
+        <small>{{ dayInfo.day }}</small>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of attendanceMonthyData">
+      <td>{{ item.name }}</td>
+      <td *ngFor="let attendance of item.attendance">
+        <ng-container *ngIf="attendance.attendance_status === 'Present'">
+          Present
+        </ng-container>
+        <ng-container *ngIf="attendance.attendance_status !== 'Present'">
+          Absent
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table> -->

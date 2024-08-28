@@ -1,6 +1,11 @@
 <div class="calendar-wrapper d-lg-flex gap-4">
   <div class="w-100">
     <div class="card card-h-100">
+      <div class="d-flex justify-content-end">
+        <a href="javascript:window.print()" class="btn btn-success me-3 mt-2"
+          ><i class="ri-printer-line align-bottom me-1"></i> Print</a
+        >
+      </div>
       <div class="">
         <div id="calendar">
           <full-calendar [options]="calendarOptions"></full-calendar>

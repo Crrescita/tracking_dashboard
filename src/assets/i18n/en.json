@@ -108,8 +108,8 @@
         "EMPLOYEE": "Employee",
         "DEPARTMENT":"Department",
         "DESIGNATION":"Designation",
-        "ATTENDANCE":"Attendance"
-       
+        "ATTENDANCE":"Attendance",
+       "ATTENDANCE-MONTHLY":"Attendance Monthly"
       }
     },
     "COMPONENTS": {

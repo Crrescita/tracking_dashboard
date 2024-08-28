@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import Swal from "sweetalert2";
 import { ModalDirective } from "ngx-bootstrap/modal";
+import { cloneDeep } from "lodash";
 
 @Component({
   selector: "app-employee-list",
@@ -68,6 +69,7 @@ export class EmployeeListComponent implements OnInit {
           this.toggleSpinner(false);
           this.employeeData = res.data || [];
           this.employeeDataList = res.data || [];
+          this.employeeData = cloneDeep(this.employeeDataList.slice(0, 10));
         } else {
           this.handleError("Unexpected response format");
         }
@@ -86,10 +88,11 @@ export class EmployeeListComponent implements OnInit {
 
     const formData = new FormData();
     formData.append("status", newStatus);
+    formData.append("company_id", this.company_id);
 
     this.toggleSpinner(true);
 
-    this.api.put("employees", id, formData).subscribe(
+    this.api.put(`employees`, id, formData).subscribe(
       (res: any) => this.handleStatusChangeResponse(res),
       (error) => this.handleError(error)
     );

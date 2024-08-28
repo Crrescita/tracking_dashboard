@@ -10,6 +10,7 @@ import { AttendanceListComponent } from "./company/attendance/attendance-list/at
 import { DepartmentListComponent } from "./company/team/department/department-list/department-list.component";
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
 import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
+import { AttendanceMonthlyComponent } from "./company/attendance/attendance-monthly/attendance-monthly.component";
 
 const routes: Routes = [
   {
@@ -41,6 +42,7 @@ const routes: Routes = [
     path: "attendance-calender/:id/:company_id",
     component: AttenCalenderComponent,
   },
+  { path: "attendance-monthly", component: AttendanceMonthlyComponent },
 ];
 
 @NgModule({

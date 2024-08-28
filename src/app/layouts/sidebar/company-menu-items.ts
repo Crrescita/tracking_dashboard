@@ -38,5 +38,13 @@ export const COMPANY_MENU: MenuItem[] = [
 
     icon: " ri-file-user-line",
   },
+
+  {
+    id: 3,
+    label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-MONTHLY",
+    link: "/attendance-monthly",
+
+    icon: " ri-file-user-line",
+  },
   // More items...
 ];

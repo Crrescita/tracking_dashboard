@@ -50,6 +50,7 @@ import { RatingModule } from "ngx-bootstrap/rating";
 
 // Calendar package
 import { FullCalendarModule } from "@fullcalendar/angular";
+import { PopoverModule } from "ngx-bootstrap/popover";
 
 // Flat Picker
 import { FlatpickrModule } from "angularx-flatpickr";
@@ -66,6 +67,7 @@ import { AttendanceListComponent } from "./company/attendance/attendance-list/at
 import { DepartmentListComponent } from "./company/team/department/department-list/department-list.component";
 import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
 import { MapComponent } from "./company/employee/map/map.component";
+import { AttendanceMonthlyComponent } from "./company/attendance/attendance-monthly/attendance-monthly.component";
 
 @NgModule({
   declarations: [
@@ -82,6 +84,7 @@ import { MapComponent } from "./company/employee/map/map.component";
     DesignationListComponent,
     AttenCalenderComponent,
     MapComponent,
+    AttendanceMonthlyComponent,
   ],
   imports: [
     CommonModule,
@@ -111,6 +114,7 @@ import { MapComponent } from "./company/employee/map/map.component";
     DropzoneModule,
     FlatpickrModule.forRoot(),
     FullCalendarModule,
+    PopoverModule,
   ],
 })
 export class CustomPagesModule {}
