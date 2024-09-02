@@ -1,3 +1,4 @@
+import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
 import { CustomPagesRoutingModule } from "./custom-pages-routing.module";
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
@@ -68,6 +69,8 @@ import { DepartmentListComponent } from "./company/team/department/department-li
 import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
 import { MapComponent } from "./company/employee/map/map.component";
 import { AttendanceMonthlyComponent } from "./company/attendance/attendance-monthly/attendance-monthly.component";
+import { LeaveTypeComponent } from "./company/leave-management/leave-type/leave-type.component";
+import { LeaveRequestComponent } from "./company/leave-management/leave-request/leave-request.component";
 
 @NgModule({
   declarations: [
@@ -85,6 +88,9 @@ import { AttendanceMonthlyComponent } from "./company/attendance/attendance-mont
     AttenCalenderComponent,
     MapComponent,
     AttendanceMonthlyComponent,
+    HolidaysListComponent,
+    LeaveTypeComponent,
+    LeaveRequestComponent,
   ],
   imports: [
     CommonModule,

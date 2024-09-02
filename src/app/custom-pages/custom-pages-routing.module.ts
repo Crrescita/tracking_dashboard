@@ -11,6 +11,9 @@ import { DepartmentListComponent } from "./company/team/department/department-li
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
 import { AttenCalenderComponent } from "./company/attendance/atten-calender/atten-calender.component";
 import { AttendanceMonthlyComponent } from "./company/attendance/attendance-monthly/attendance-monthly.component";
+import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
+import { LeaveTypeComponent } from "./company/leave-management/leave-type/leave-type.component";
+import { LeaveRequestComponent } from "./company/leave-management/leave-request/leave-request.component";
 
 const routes: Routes = [
   {
@@ -43,6 +46,9 @@ const routes: Routes = [
     component: AttenCalenderComponent,
   },
   { path: "attendance-monthly", component: AttendanceMonthlyComponent },
+  { path: "holidays", component: HolidaysListComponent },
+  { path: "leave-types", component: LeaveTypeComponent },
+  { path: "leave-requests", component: LeaveRequestComponent },
 ];
 
 @NgModule({

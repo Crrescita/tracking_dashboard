@@ -1,6 +1,6 @@
 <!-- Start Breadcrumbs -->
 <app-breadcrumbs
-  title="Designation List"
+  title="Leave Type List"
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 <!-- End Breadcrumbs -->
@@ -12,9 +12,9 @@
         <div class="card-header d-flex align-items-center">
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
-              Designation
+              Leave Type
               <span class="badge bg-dark-subtle text-dark ms-1">{{
-                departmentData?.length
+                leaveData?.length
               }}</span>
             </h5>
           </div>
@@ -28,7 +28,7 @@
                     class="form-control search"
                     [(ngModel)]="term"
                     (keyup)="filterdata()"
-                    placeholder="Search Department"
+                    placeholder="Search name"
                   />
                   <i class="ri-search-line search-icon"></i>
                 </div>
@@ -46,8 +46,8 @@
                 class="btn btn-primary add-btn"
                 (click)="onAdd()"
               >
-                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
-                Designation
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add Leave
+                Type
               </button>
             </div>
           </div>
@@ -71,8 +71,9 @@
                     </div>
                   </th>
                   <th class="sort cursor-pointer" (click)="onSort('name')">
-                    Designation Name
+                    Leave Type Name
                   </th>
+
                   <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
                   </th>
@@ -87,7 +88,7 @@
                 </tr>
               </thead>
               <tbody class="list form-check-all">
-                @for ( data of departmentData; track $index) {
+                @for ( data of leaveData; track $index) {
                 <tr id="p_{{ data._id }}">
                   <td>
                     <div class="form-check">
@@ -110,6 +111,7 @@
                   <td class="products">
                     {{ data.name }}
                   </td>
+
                   <td class="discount">
                     <div class="form-switch form-switch-md mb-3">
                       <input
@@ -210,8 +212,8 @@
               <h5 class="mt-2">Sorry! No Result Found</h5>
               <p class="text-muted mb-0">
                 We've searched
-                {{ this.departmentDataList.length }} Department We did not find
-                any Department for you search.
+                {{ this.leaveDataList.length }} Leave Type We did not find any
+                Leave Type for you search.
               </p>
             </div>
           </div>
@@ -221,10 +223,8 @@
             <div class="col-sm">
               <div class="text-muted text-center text-sm-start">
                 Showing
-                <span class="fw-semibold">{{ departmentData?.length }}</span> of
-                <span class="fw-semibold">{{
-                  departmentDataList?.length
-                }}</span>
+                <span class="fw-semibold">{{ leaveData?.length }}</span> of
+                <span class="fw-semibold">{{ leaveDataList?.length }}</span>
                 Results
               </div>
             </div>
@@ -232,7 +232,7 @@
             <div class="col-sm-auto mt-3 mt-sm-0">
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
-                [totalItems]="departmentDataList?.length"
+                [totalItems]="leaveDataList?.length"
                 [itemsPerPage]="10"
                 (pageChanged)="pageChanged($event)"
               ></pagination>
@@ -257,7 +257,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header px-4 pt-4">
-        <h5 class="modal-title" id="exampleModalLabel">Add Designation</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Leave Type</h5>
         <button
           type="button"
           class="btn-close"
@@ -280,22 +280,22 @@
 
           <div class="mb-3">
             <label for="product-title-input" class="form-label"
-              >Designation Name <span class="text-danger">*</span></label
+              >Leave Type Name <span class="text-danger">*</span></label
             >
             <input
               type="text"
               id="product-title-input"
               formControlName="name"
               class="form-control"
-              placeholder="Enter Designation Name"
+              placeholder="Enter Leave Type Name"
             />
             @if (f['name'] && f['name'].hasError('required') &&
             f['name'].touched) {
-            <div class="invalid-text">Designation name is required.</div>
+            <div class="invalid-text">Leave Type name is required.</div>
             } @if(f['name'] && f['name'].hasError('maxlength') &&
             f['name'].touched){
             <div class="invalid-text">
-              Designation name must be at most 45 characters
+              Leave Type name must be at most 45 characters
             </div>
             }
           </div>

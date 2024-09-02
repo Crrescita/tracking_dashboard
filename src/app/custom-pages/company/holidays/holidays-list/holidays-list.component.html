@@ -1,6 +1,6 @@
 <!-- Start Breadcrumbs -->
 <app-breadcrumbs
-  title="Designation List"
+  title="Holiday List"
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 <!-- End Breadcrumbs -->
@@ -12,9 +12,9 @@
         <div class="card-header d-flex align-items-center">
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
-              Designation
+              Holidays
               <span class="badge bg-dark-subtle text-dark ms-1">{{
-                departmentData?.length
+                holidaysData?.length
               }}</span>
             </h5>
           </div>
@@ -28,7 +28,7 @@
                     class="form-control search"
                     [(ngModel)]="term"
                     (keyup)="filterdata()"
-                    placeholder="Search Department"
+                    placeholder="Search name"
                   />
                   <i class="ri-search-line search-icon"></i>
                 </div>
@@ -47,7 +47,7 @@
                 (click)="onAdd()"
               >
                 <i class="bi bi-plus-circle align-baseline me-1"></i> Add
-                Designation
+                Holiday
               </button>
             </div>
           </div>
@@ -71,7 +71,10 @@
                     </div>
                   </th>
                   <th class="sort cursor-pointer" (click)="onSort('name')">
-                    Designation Name
+                    Hoilday Name
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('date')">
+                    Date
                   </th>
                   <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
@@ -87,7 +90,7 @@
                 </tr>
               </thead>
               <tbody class="list form-check-all">
-                @for ( data of departmentData; track $index) {
+                @for ( data of holidaysData; track $index) {
                 <tr id="p_{{ data._id }}">
                   <td>
                     <div class="form-check">
@@ -109,6 +112,9 @@
                   </td>
                   <td class="products">
                     {{ data.name }}
+                  </td>
+                  <td class="products">
+                    {{ data.date | date : "EEE, dd MMM , yyyy" }}
                   </td>
                   <td class="discount">
                     <div class="form-switch form-switch-md mb-3">
@@ -210,8 +216,8 @@
               <h5 class="mt-2">Sorry! No Result Found</h5>
               <p class="text-muted mb-0">
                 We've searched
-                {{ this.departmentDataList.length }} Department We did not find
-                any Department for you search.
+                {{ this.holidaysDataList.length }} Hoildays We did not find any
+                Holiday for you search.
               </p>
             </div>
           </div>
@@ -221,18 +227,41 @@
             <div class="col-sm">
               <div class="text-muted text-center text-sm-start">
                 Showing
-                <span class="fw-semibold">{{ departmentData?.length }}</span> of
-                <span class="fw-semibold">{{
-                  departmentDataList?.length
-                }}</span>
+                <span class="fw-semibold">{{ holidaysData?.length }}</span> of
+                <span class="fw-semibold">{{ holidaysDataList?.length }}</span>
                 Results
               </div>
             </div>
 
-            <div class="col-sm-auto mt-3 mt-sm-0">
+            <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
+              <div class="d-flex me-3 mt-1 mb-3 justify-content-center">
+                <div class="text-muted text-center text-sm-start me-2">
+                  Items per page :
+                </div>
+                <div class="">
+                  <div class="input-group input-group-sm">
+                    <select
+                      id="itemsPerPage"
+                      class="form-control"
+                      [(ngModel)]="currentItemsPerPage"
+                      (change)="onItemsPerPageChange($event)"
+                    >
+                      <option
+                        *ngFor="let option of itemsPerPageOptions"
+                        [value]="option"
+                      >
+                        {{ option }}
+                      </option>
+                      <option [value]="holidaysDataList?.length">
+                        Show All
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
-                [totalItems]="departmentDataList?.length"
+                [totalItems]="holidaysDataList?.length"
                 [itemsPerPage]="10"
                 (pageChanged)="pageChanged($event)"
               ></pagination>
@@ -257,7 +286,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header px-4 pt-4">
-        <h5 class="modal-title" id="exampleModalLabel">Add Designation</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Holiday</h5>
         <button
           type="button"
           class="btn-close"
@@ -280,26 +309,49 @@
 
           <div class="mb-3">
             <label for="product-title-input" class="form-label"
-              >Designation Name <span class="text-danger">*</span></label
+              >Holiday Name <span class="text-danger">*</span></label
             >
             <input
               type="text"
               id="product-title-input"
               formControlName="name"
               class="form-control"
-              placeholder="Enter Designation Name"
+              placeholder="Enter Holiday Name"
             />
             @if (f['name'] && f['name'].hasError('required') &&
             f['name'].touched) {
-            <div class="invalid-text">Designation name is required.</div>
+            <div class="invalid-text">Holiday name is required.</div>
             } @if(f['name'] && f['name'].hasError('maxlength') &&
             f['name'].touched){
             <div class="invalid-text">
-              Designation name must be at most 45 characters
+              Holiday name must be at most 45 characters
             </div>
             }
           </div>
 
+          <div class="mb-3">
+            <label for="date" class="form-label"
+              >Date<span class="text-danger">*</span></label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="date"
+              formControlName="date"
+              placeholder="Enter Date of Birth"
+              value="date"
+              [ngClass]="
+                f['date'] && f['date'].hasError('required') && f['date'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            />
+
+            @if (f['date'] && f['date'].hasError('required') &&
+            f['date'].touched) {
+            <div class="invalid-text">Date is required.</div>
+            }
+          </div>
           <div class="mb-3">
             <label for="statuss" class="form-label"
               >Status <span class="text-danger">*</span></label

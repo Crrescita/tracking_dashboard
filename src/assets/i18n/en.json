@@ -109,7 +109,11 @@
         "DEPARTMENT":"Department",
         "DESIGNATION":"Designation",
         "ATTENDANCE":"Attendance",
-       "ATTENDANCE-MONTHLY":"Attendance Monthly"
+       "ATTENDANCE-MONTHLY":"Attendance Monthly",
+       "HOLIDAYS":"Holidays",
+       "LEAVE-MANAGEMENT":"Leave Management",
+       "LEAVE-TYPES":"Leave Types",
+        "LEAVE-REQUEST":"Leave Requests"
       }
     },
     "COMPONENTS": {

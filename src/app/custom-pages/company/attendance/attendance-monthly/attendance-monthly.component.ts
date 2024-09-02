@@ -92,7 +92,7 @@ export class AttendanceMonthlyComponent implements OnInit {
 
   getMonthlyCalenderData() {
     this.toggleSpinner(true);
-    const url = `getEmployeeAttendance?company_id=${this.company_id}&date=${this.formattedDate}`;
+    const url = `getEmployeeMonthlyAttendance?company_id=${this.company_id}&date=${this.formattedDate}`;
     this.api.getwithoutid(url).subscribe(
       (res: any) => {
         this.toggleSpinner(false);

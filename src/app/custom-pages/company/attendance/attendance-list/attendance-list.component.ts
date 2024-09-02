@@ -174,7 +174,7 @@ export class AttendanceListComponent implements OnInit {
         if (res && res.status) {
           this.attendanceData = res.data || [];
           this.attendanceDataList = res.data || [];
-          this.attendanceCount = res.attendenceCount || [];
+          this.attendanceCount = res.attendanceCount || [];
           this.attendanceData = cloneDeep(this.attendanceDataList.slice(0, 10));
           // this.updatePagination();
           // this.updateDisplayedItems();

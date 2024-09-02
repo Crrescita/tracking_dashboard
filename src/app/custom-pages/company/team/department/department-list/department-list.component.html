@@ -1,6 +1,6 @@
 <!-- Start Breadcrumbs -->
 <app-breadcrumbs
-  title="Department"
+  title="Department List"
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 <!-- End Breadcrumbs -->
@@ -42,12 +42,13 @@
                 <i class="ri-delete-bin-2-line"></i>
               </button>
               <button
-              type="button"
-              class="btn btn-primary add-btn"
-              (click)="onAdd()"
-            >
-              <i class="bi bi-plus-circle align-baseline me-1"></i> Add Department
-            </button>
+                type="button"
+                class="btn btn-primary add-btn"
+                (click)="onAdd()"
+              >
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
+                Department
+              </button>
             </div>
           </div>
         </div>
@@ -247,8 +248,12 @@
   <!--end row-->
 </div>
 
-<div class="modal fade" bsModal #showModal="bs-modal" (hidden.bs.modal)="resetForm()">
-
+<div
+  class="modal fade"
+  bsModal
+  #showModal="bs-modal"
+  (hidden.bs.modal)="resetForm()"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header px-4 pt-4">

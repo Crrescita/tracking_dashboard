@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import {
   CalendarOptions,
   EventApi,
@@ -11,6 +11,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
+import { ModalDirective } from "ngx-bootstrap/modal";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-atten-calender",
@@ -30,9 +32,28 @@ export class AttenCalenderComponent {
 
   events: any;
 
-  constructor(private api: ApiService, private route: ActivatedRoute) {}
+  // modal
+  @ViewChild("eventModal", { static: false }) eventModal?: ModalDirective;
+  isEditMode: boolean = false;
+  submitted = false;
+  newEventDate: any;
+  editEvent: any;
+
+  // form
+  formGroup!: FormGroup;
+
+  constructor(
+    private api: ApiService,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
+    this.formGroup = this.formBuilder.group({
+      check_in_time: ["", [Validators.required]],
+      check_out_time: ["", [Validators.required]],
+    });
+
     this.route.params.subscribe((params) => {
       params["id"];
     });
@@ -45,7 +66,7 @@ export class AttenCalenderComponent {
     });
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.getAttendance();
+
     if (this.urlId && this.company_id) {
       this.getCheckInDetail();
     }
@@ -54,103 +75,6 @@ export class AttenCalenderComponent {
   toggleSpinner(isLoading: boolean) {
     this.spinnerStatus = isLoading;
   }
-
-  getAttendance() {
-    this.toggleSpinner(true);
-    const url = `getAttendence?company_id=1&date=2024-08-10`;
-    this.api.getwithoutid(url).subscribe(
-      (res: any) => {
-        this.toggleSpinner(false);
-        if (res && res.status) {
-          this.attendanceData = res.data || [];
-          this.attendanceDataList = res.data || [];
-          // this.attendanceCount = res.attendenceCount || [];
-
-          // this.updatePagination();
-          // this.updateDisplayedItems();
-        } else {
-          this.attendanceData = [];
-          this.attendanceDataList = [];
-          // this.attendanceCount = [];
-          this.toggleSpinner(false);
-        }
-      },
-      (error) => {
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
-      }
-    );
-  }
-
-  // getCheckInDetail() {
-  //   this.toggleSpinner(true);
-  //   this.api
-  //     .getwithoutid(
-  //       `checkInDetailAllDate?emp_id=${this.urlId}&company_id=${this.company_id}`
-  //     )
-  //     .subscribe(
-  //       (res: any) => {
-  //         this.toggleSpinner(false);
-  //         if (res && res.status) {
-  //           this.checkIndetails = res.data;
-  //           console.log(this.checkIndetails);
-
-  //           // Transform data into calendar events format
-  //           const events = this.checkIndetails.checkInsByDate.flatMap(
-  //             (dateInfo: any) => {
-  //               console.log(dateInfo);
-  //               return {
-  //                 title: `Check-in: ${
-  //                   dateInfo.earliestCheckInTime
-  //                 } - Check-out: ${dateInfo.latestCheckOutTime || "Ongoing"}`,
-  //                 start: `${dateInfo.date}T${dateInfo.earliestCheckInTime}`,
-  //                 end: dateInfo.latestCheckOutTime
-  //                   ? `${dateInfo.date}T${dateInfo.latestCheckOutTime}`
-  //                   : null,
-  //                 extendedProps: {
-  //                   earliestCheckInTime: dateInfo.earliestCheckInTime,
-  //                   latestCheckOutTime: dateInfo.latestCheckOutTime,
-  //                   totalDuration: dateInfo.totalDuration,
-  //                 },
-  //               };
-
-  //               return dateInfo.checkIns.map((checkIn: any) => {
-  //                 return {
-  //                   title: `Check-in: ${checkIn.check_in_time} - Check-out: ${
-  //                     checkIn.check_out_time || "Ongoing"
-  //                   }`,
-  //                   start: `${dateInfo.date}T${checkIn.check_in_time}`,
-  //                   end: checkIn.check_out_time
-  //                     ? `${dateInfo.date}T${checkIn.check_out_time}`
-  //                     : null,
-  //                   extendedProps: {
-  //                     earliestCheckInTime: dateInfo.earliestCheckInTime,
-  //                     latestCheckOutTime: dateInfo.latestCheckOutTime,
-  //                     totalDuration: dateInfo.totalDuration,
-  //                   },
-  //                 };
-  //               });
-  //             }
-  //           );
-
-  //           // Update calendar options dynamically
-  //           this.calendarOptions = {
-  //             ...this.calendarOptions,
-  //             events: events,
-  //           };
-  //         } else {
-  //           this.checkIndetails = null;
-  //         }
-  //       },
-  //       (error) => {
-  //         this.toggleSpinner(false);
-  //         this.handleError(
-  //           error.message || "An error occurred while fetching data"
-  //         );
-  //       }
-  //     );
-  // }
 
   getCheckInDetail() {
     this.toggleSpinner(true);
@@ -163,14 +87,13 @@ export class AttenCalenderComponent {
           this.toggleSpinner(false);
           if (res && res.status) {
             this.checkIndetails = res.data;
-            console.log(this.checkIndetails);
 
             // Transform data into calendar events format
             const events = this.checkIndetails.checkInsByDate.flatMap(
               (dateInfo: any) => {
                 return {
-                  title: `${dateInfo.earliestCheckInTime} - ${
-                    dateInfo.latestCheckOutTime || "Ongoing"
+                  title: `${this.formatTime(dateInfo.earliestCheckInTime)} - ${
+                    this.formatTime(dateInfo.latestCheckOutTime) || "Ongoing"
                   }`,
                   start: `${dateInfo.date}T${dateInfo.earliestCheckInTime}`,
                   end: dateInfo.latestCheckOutTime
@@ -183,7 +106,9 @@ export class AttenCalenderComponent {
                     latestCheckOutTime: this.formatTime(
                       dateInfo.latestCheckOutTime
                     ),
-                    totalDuration: dateInfo.totalDuration,
+                    totalDuration: dateInfo.total_duration,
+                    checkin_status: dateInfo.checkin_status,
+                    timeDifferencev2: dateInfo.timeDifferencev2,
                   },
                   className: "bg-warning-subtle",
                 };
@@ -223,6 +148,8 @@ export class AttenCalenderComponent {
     selectable: true,
     navLinks: true,
     eventResizableFromStart: true,
+
+    eventClick: this.handleEventClick.bind(this),
     events: [], // This will be updated dynamically
     eventContent: function (arg) {
       const { extendedProps } = arg.event;
@@ -231,14 +158,13 @@ export class AttenCalenderComponent {
         html: `
 
           <div >
-        
+
            <b>Check-in:</b> ${extendedProps["earliestCheckInTime"]} <br>
             <b>Check-out:</b> ${
               extendedProps["latestCheckOutTime"] || "Ongoing"
             } <br>
             <b>Total Duration:</b>   ${extendedProps["totalDuration"]}
-           
-           
+
           </div>
         `,
       };
@@ -260,5 +186,77 @@ export class AttenCalenderComponent {
     const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
 
     return `${formattedHour}:${minute} ${period}`;
+  }
+
+  /**
+   * Event click modal show
+   */
+  handleEventClick(clickInfo: EventClickArg) {
+    console.log(clickInfo);
+    this.isEditMode = true;
+    this.editEvent = clickInfo.event;
+    console.log(this.editEvent);
+    this.eventModal?.show();
+
+    setTimeout(() => {
+      (document.querySelector(".event-details") as HTMLElement).style.display =
+        "block";
+      (document.querySelector(".event-form") as HTMLElement).style.display =
+        "none";
+
+      document.getElementById("btn-delete-event")?.classList.remove("d-none");
+
+      var editbtn = document.querySelector(
+        "#edit-event-btn"
+      ) as HTMLAreaElement;
+      editbtn.innerHTML = "edit";
+
+      (document.getElementById("btn-save-event") as HTMLElement).setAttribute(
+        "hidden",
+        "true"
+      );
+
+      // var modaltitle = document.querySelector(
+      //   ".modal-title"
+      // ) as HTMLAreaElement;
+      // modaltitle.innerHTML = this.editEvent.title;
+    }, 100);
+
+    // this.formData = this.formBuilder.group({
+    //   title: clickInfo.event.title,
+    //   category: clickInfo.event.classNames[0],
+    //   location: clickInfo.event.extendedProps['location'],
+    //   description: clickInfo.event.extendedProps['description'],
+    //   date: clickInfo.event.start,
+    //   start: (clickInfo.event.start ? clickInfo.event.start : ''),
+    //   end: (clickInfo.event.end ? clickInfo.event.end : '')
+    // });
+
+    this.formGroup = this.formBuilder.group({
+      check_in_time: clickInfo.event.extendedProps["earliestCheckInTime"],
+      check_out_time: clickInfo.event.extendedProps["latestCheckOutTime"],
+    });
+  }
+
+  showeditEvent() {
+    if (document.querySelector("#edit-event-btn")?.innerHTML == "cancel") {
+      this.eventModal?.hide();
+    } else {
+      (document.querySelector(".event-details") as HTMLElement).style.display =
+        "none";
+      (document.querySelector(".event-form") as HTMLElement).style.display =
+        "block";
+      (
+        document.getElementById("btn-save-event") as HTMLElement
+      ).removeAttribute("hidden");
+      var modalbtn = document.querySelector(
+        "#btn-save-event"
+      ) as HTMLAreaElement;
+      modalbtn.innerHTML = "Update Event";
+      var editbtn = document.querySelector(
+        "#edit-event-btn"
+      ) as HTMLAreaElement;
+      editbtn.innerHTML = "cancel";
+    }
   }
 }
