@@ -377,34 +377,34 @@
                   </td>
 
                   <td class="published">
-                    @if(data.checkin_statusv2 != 'Absent'){
+                    @if(data.checkin_status != 'Absent'){
                     <span
                       class="badge"
                       [ngClass]="
-                        data.checkin_statusv2 == 'Early'
+                        data.checkin_status == 'Early'
                           ? 'bg-warning'
-                          : data.checkin_statusv2 == 'Late'
+                          : data.checkin_status == 'Late'
                           ? 'bg-danger'
                           : 'bg-success'
                       "
-                      >{{ data.checkin_statusv2 }}</span
+                      >{{ data.checkin_status }}</span
                     >
                     } @else { -}
                   </td>
                   <td class="published">
-                    @if(data.checkin_statusv2 != 'Absent'){
+                    @if(data.checkin_status != 'Absent'){
 
                     <p
                       [ngClass]="
-                        data.checkin_statusv2 == 'Early'
+                        data.checkin_status == 'Early'
                           ? 'text-warning'
-                          : data.checkin_statusv2 == 'Late'
+                          : data.checkin_status == 'Late'
                           ? 'text-danger'
                           : 'text-success'
                       "
                       class="mb-0"
                     >
-                      {{ data.timeDifferencev2 }}
+                      {{ data.timeDifference }}
                     </p>
 
                     } @else { -}
