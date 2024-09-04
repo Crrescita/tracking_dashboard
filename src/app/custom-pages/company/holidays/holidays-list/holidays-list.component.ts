@@ -105,6 +105,7 @@ export class HolidaysListComponent {
     const newStatus = inputElement.checked ? "active" : "inactive";
 
     const formData = {
+      company_id: this.company_id,
       name: data.name,
       date: data.date,
       status: newStatus,
@@ -133,6 +134,7 @@ export class HolidaysListComponent {
 
   createFormData() {
     const formData = {
+      company_id: this.company_id,
       name: this.f["name"].value,
       date: this.f["date"].value,
       status: this.f["status"].value,

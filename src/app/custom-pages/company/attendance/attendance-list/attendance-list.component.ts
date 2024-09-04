@@ -86,57 +86,59 @@ export class AttendanceListComponent implements OnInit {
       this.company_id = user.id;
     }
 
-    if (this.company_id) {
-      this.getAttendance();
-    }
-
     // Subscribe to the date change subject
     this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
       this.handleDateChange(newDate);
     });
-
-    this.getDepartment();
-    this.getDesignation();
+    if (this.company_id) {
+      this.getAttendance();
+      this.getDepartment();
+      this.getDesignation();
+    }
   }
 
   getDepartment() {
     this.toggleSpinner(true);
-    this.api.getwithoutid(`department?status=active`).subscribe(
-      (res: any) => {
-        this.toggleSpinner(false);
-        if (res && res.status) {
-          this.departments = res.data;
-        } else {
-          this.departments = [];
+    this.api
+      .getwithoutid(`department?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.departments = res.data;
+          } else {
+            this.departments = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
         }
-      },
-      (error) => {
-        this.toggleSpinner(false);
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
-      }
-    );
+      );
   }
 
   getDesignation() {
     this.toggleSpinner(true);
-    this.api.getwithoutid(`designation?status=active`).subscribe(
-      (res: any) => {
-        this.toggleSpinner(false);
-        if (res && res.status) {
-          this.designations = res.data;
-        } else {
-          this.designations = [];
+    this.api
+      .getwithoutid(`designation?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.designations = res.data;
+          } else {
+            this.designations = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
         }
-      },
-      (error) => {
-        this.toggleSpinner(false);
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
-      }
-    );
+      );
   }
 
   onDateChange(newDate: Date): void {

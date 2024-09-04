@@ -128,6 +128,7 @@ export class DesignationListComponent implements OnInit {
 
   createFormData() {
     const formData = {
+      company_id: this.company_id,
       name: this.f["name"].value,
       status: this.f["status"].value,
     };
