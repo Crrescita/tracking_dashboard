@@ -308,42 +308,46 @@ export class AddEmployeeComponent implements OnInit {
   // API Methods
   getDepartment() {
     this.toggleSpinner(true);
-    this.api.getwithoutid(`department?status=active`).subscribe(
-      (res: any) => {
-        this.toggleSpinner(false);
-        if (res && res.status) {
-          this.departments = res.data;
-        } else {
-          this.departments = [];
+    this.api
+      .getwithoutid(`department?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.departments = res.data;
+          } else {
+            this.departments = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
         }
-      },
-      (error) => {
-        this.toggleSpinner(false);
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
-      }
-    );
+      );
   }
 
   getDesignation() {
     this.toggleSpinner(true);
-    this.api.getwithoutid(`designation?status=active`).subscribe(
-      (res: any) => {
-        this.toggleSpinner(false);
-        if (res && res.status) {
-          this.designations = res.data;
-        } else {
-          this.designations = [];
+    this.api
+      .getwithoutid(`designation?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.designations = res.data;
+          } else {
+            this.designations = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
         }
-      },
-      (error) => {
-        this.toggleSpinner(false);
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
-      }
-    );
+      );
   }
 
   getemployeeData() {
