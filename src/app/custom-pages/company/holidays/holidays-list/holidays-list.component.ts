@@ -26,6 +26,7 @@ export class HolidaysListComponent {
 
   checkedValGet: any[] = [];
 
+  company_id: any;
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
@@ -45,6 +46,16 @@ export class HolidaysListComponent {
       { label: "Employee Management" },
       { label: "Holiday", active: true },
     ];
+
+    const data = localStorage.getItem("currentUser");
+    if (data) {
+      const user = JSON.parse(data);
+      this.company_id = user.id;
+    }
+
+    if (this.company_id) {
+      this.getDepartment();
+    }
 
     this.getDepartment();
 
@@ -67,7 +78,8 @@ export class HolidaysListComponent {
 
   getDepartment() {
     this.toggleSpinner(true);
-    this.api.getwithoutid("holidays").subscribe(
+    const url = `holidays?company_id=${this.company_id}`;
+    this.api.getwithoutid(url).subscribe(
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);

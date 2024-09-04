@@ -7,11 +7,11 @@
 
 <div id="productList">
   <div class="row">
-    <div class="col-xl-7">
+    <div class="col-xl-10">
       <div class="card">
         <div class="card-body">
           <div class="row g-4">
-            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-4">
                   <div class="avatar-xs flex-shrink-0">
@@ -39,7 +39,7 @@
                 </h3>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-4">
                   <div class="avatar-xs flex-shrink-0">
@@ -65,7 +65,7 @@
                 </h3>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-4">
                   <div class="avatar-xs flex-shrink-0">
@@ -91,12 +91,40 @@
                 </h3>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
               <div>
                 <div class="d-flex align-items-center gap-2 mb-4">
                   <div class="avatar-xs flex-shrink-0">
                     <div
-                      class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-warning"
+                      class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
+                    >
+                      <i class="mdi mdi-account-alert-outline"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Leave</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span
+                    class="counter-value"
+                    [countUp]="this.attendanceCount?.totalLeave"
+                    >{{ this.attendanceCount?.totalLeave }}</span
+                  >
+                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                    ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
+                  > -->
+                </h3>
+              </div>
+            </div>
+
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
                     >
                       <i class="bi bi-clock-history"></i>
                     </div>
@@ -340,7 +368,9 @@
                       [ngClass]="
                         data.attendance_status == 'Present'
                           ? 'bg-success'
-                          : 'bg-danger'
+                          : data.attendance_status == 'Absent'
+                          ? 'bg-danger'
+                          : 'bg-warning'
                       "
                       >{{ data.attendance_status }}</span
                     >

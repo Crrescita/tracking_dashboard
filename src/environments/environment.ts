@@ -20,6 +20,16 @@ export const environment = {
     measurementId: "G-1N6FB2GG55",
   },
 
+  //  firebaseConfig = {
+  //   apiKey: "AIzaSyCgv0M0OycO8Q5IclQ6Koe8CSSBnaRaJ9s",
+  //   authDomain: "location-tracker-17a8e.firebaseapp.com",
+  //   projectId: "location-tracker-17a8e",
+  //   storageBucket: "location-tracker-17a8e.appspot.com",
+  //   messagingSenderId: "691315287200",
+  //   appId: "1:691315287200:web:975c7c891fdbc654c995c5",
+  //   measurementId: "G-1BYNWW0039"
+  // };
+
   mapbox: {
     accessToken:
       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseW1sazg0cjAyOTEya3M3emFka24xbWUifQ.zNaqdcWcDsvtQz6g5xkdHg",

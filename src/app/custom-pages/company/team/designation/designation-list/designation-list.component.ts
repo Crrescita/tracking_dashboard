@@ -31,6 +31,8 @@ export class DesignationListComponent implements OnInit {
   deleteRecordModal?: ModalDirective;
   deleteId: any;
 
+  company_id: any;
+
   constructor(
     private api: ApiService,
     public toastService: ToastrService,
@@ -43,7 +45,16 @@ export class DesignationListComponent implements OnInit {
       { label: "Designation", active: true },
     ];
 
-    this.getDepartment();
+    const data = localStorage.getItem("currentUser");
+
+    if (data) {
+      const user = JSON.parse(data);
+      this.company_id = user.id;
+    }
+
+    if (this.company_id) {
+      this.getDesignation();
+    }
 
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
@@ -61,9 +72,10 @@ export class DesignationListComponent implements OnInit {
     this.submitted = isLoading;
   }
 
-  getDepartment() {
+  getDesignation() {
     this.toggleSpinner(true);
-    this.api.getwithoutid("designation").subscribe(
+    const url = `designation?company_id=${this.company_id}`;
+    this.api.getwithoutid(url).subscribe(
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);
@@ -205,7 +217,7 @@ export class DesignationListComponent implements OnInit {
     if (res["status"] === true) {
       this.formGroup.reset();
       this.toastService.success("Data Saved Successfully!!");
-      this.getDepartment();
+      this.getDesignation();
       this.showModal?.hide();
     } else {
       this.toastService.error(res["message"]);

@@ -25,6 +25,7 @@ export class DepartmentListComponent implements OnInit {
   id: number | null = null;
 
   checkedValGet: any[] = [];
+  company_id: any;
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
@@ -43,7 +44,16 @@ export class DepartmentListComponent implements OnInit {
       { label: "Department", active: true },
     ];
 
-    this.getDepartment();
+    const data = localStorage.getItem("currentUser");
+
+    if (data) {
+      const user = JSON.parse(data);
+      this.company_id = user.id;
+    }
+
+    if (this.company_id) {
+      this.getDepartment();
+    }
 
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
@@ -63,7 +73,8 @@ export class DepartmentListComponent implements OnInit {
 
   getDepartment() {
     this.toggleSpinner(true);
-    this.api.getwithoutid("department").subscribe(
+    const url = `department?company_id=${this.company_id}`;
+    this.api.getwithoutid(url).subscribe(
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);
