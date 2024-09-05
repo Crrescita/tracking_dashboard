@@ -206,4 +206,18 @@ export class AttendanceMonthlyComponent implements OnInit {
     // Write the workbook to a file
     XLSX.writeFile(workbook, filename);
   }
+
+  timeLineData: any;
+  setModalData(data: any) {
+    this.timeLineData = data;
+  }
+
+  formatTime(time: string): string {
+    // Assuming time format is "HH:mm:ss" or similar
+    const [hour, minute, second] = time.split(":");
+    const period = +hour >= 12 ? "PM" : "AM";
+    const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
+
+    return `${formattedHour}:${minute} ${period}`;
+  }
 }

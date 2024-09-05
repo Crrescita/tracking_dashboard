@@ -1,0 +1,30 @@
+.scroll-timeline{
+    max-height: 400px;
+    overflow: scroll;
+}
+
+.punch-info {
+    margin: 20px 0 20px;
+}
+.punch-info .punch-hours {
+    background-color: #f9f9f9;
+    border: 5px solid #e2e4e6;
+    font-size: 18px;
+    height: 120px;
+    width: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+}
+
+.check-bg{
+    background-color: #f9f9f9;
+}

@@ -117,9 +117,15 @@
                   @for ( attendance of item.attendance; track $index) {
                   <td>
                     @if( attendance.attendance_status == "Present"){
-                    <span class="text-success">&#10004;</span>
+                    <span
+                      class="text-success"
+                      (click)="template.show(); setModalData(attendance)"
+                      >&#10004;</span
+                    >
                     <!-- <i class="ri-check-fill align-bottom me-1 text-success"></i> -->
-                    }@else {
+                    } @else if (attendance.attendance_status == "Leave") {
+                    <span class="text-warning fw-bold">L</span>
+                    } @else {
                     <span class="text-danger">&#10007;</span>
                     <!-- <i class="ri-close-line align-bottom me-1 text-danger"></i> -->
                     }
@@ -196,12 +202,8 @@
                         Show All
                       </option>
                     </select>
-
-                    <!-- <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"> -->
                   </div>
                 </div>
-
-                <!-- Input Group Sizing -->
               </div>
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
@@ -211,40 +213,155 @@
               ></pagination>
             </div>
           </div>
-          <!-- end pagination-element -->
         </div>
       </div>
-      <!--end card-->
     </div>
-    <!--end col-->
   </div>
-  <!--end row-->
 </div>
+<!-- Default Modals -->
+<div>
+  <div
+    bsModal
+    #template="bs-modal"
+    id="myModal"
+    class="modal fade"
+    tabindex="-1"
+    aria-labelledby="myModalLabel"
+    aria-hidden="true"
+    style="display: none"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-lg" id="myModalLabel">Attendance Info</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="template.hide()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          @if(this.timeLineData ){
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="card-title mb-0">Timesheet</h6>
+                  <span class="text-mute me-2">{{
+                    this.timeLineData.date | date : "EEE, MMM d, y"
+                  }}</span>
+                  <span
+                    class="badge"
+                    [ngClass]="
+                      this.timeLineData.checkin_status == 'Early'
+                        ? 'bg-warning'
+                        : this.timeLineData.checkin_status == 'Late'
+                        ? 'bg-danger'
+                        : 'bg-success'
+                    "
+                    >{{ this.timeLineData.checkin_status }}
+                    @if(this.timeLineData.checkin_status != 'On Time'){ by
+                    {{ this.timeLineData.timeDifference }}
+                    }
+                  </span>
 
-<!-- <table
-  id="attendanceTable"
-  class="table table-nowrap table-striped-columns mb-0 table-fixed"
->
-  <thead class="table-light">
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col" *ngFor="let dayInfo of daysInMonth">
-        {{ dayInfo.date }} <br />
-        <small>{{ dayInfo.day }}</small>
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let item of attendanceMonthyData">
-      <td>{{ item.name }}</td>
-      <td *ngFor="let attendance of item.attendance">
-        <ng-container *ngIf="attendance.attendance_status === 'Present'">
-          Present
-        </ng-container>
-        <ng-container *ngIf="attendance.attendance_status !== 'Present'">
-          Absent
-        </ng-container>
-      </td>
-    </tr>
-  </tbody>
-</table> -->
+                  <!-- <p
+                    [ngClass]="
+                      this.timeLineData.checkin_status == 'Early'
+                        ? 'text-warning'
+                        : this.timeLineData.checkin_status == 'Late'
+                        ? 'text-danger'
+                        : 'text-success'
+                    "
+                    class="mb-0"
+                  >
+                    {{ this.timeLineData.timeDifference }}
+                  </p> -->
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <div class="card border shadow-none mb-0 check-bg">
+                        <div class="card-body p-2">
+                          <div class="text-center">
+                            <p class="text-muted text-truncate mb-2">
+                              Check In at
+                            </p>
+                            <h6 class="fs-lg">
+                              {{
+                                formatTime(this.timeLineData.last_check_in_time)
+                              }}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="punch-info">
+                      <div class="punch-hours">
+                        <span>{{ this.timeLineData.totalDuration }} hrs</span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="card border shadow-none mb-0 check-bg">
+                        <div class="card-body p-2">
+                          <div class="text-center">
+                            <p class="text-muted text-truncate mb-2">
+                              Check Out at
+                            </p>
+                            <h6 class="fs-lg">
+                              {{
+                                formatTime(
+                                  this.timeLineData.last_check_out_time
+                                )
+                              }}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="card-title mb-0">Activity</h6>
+                </div>
+                <div class="card-body">
+                  <ul
+                    class="acitivity-timeline-2 list-unstyled mb-0 scroll-timeline"
+                  >
+                    @if(this.timeLineData ){ @for(item of
+                    this.timeLineData.timeline ; track $index){
+                    <li>
+                      <h6 class="fs-sm">{{ item.action }}</h6>
+                      <p class="text-mute">
+                        <i class="bi bi-clock align-baseline me-1"></i>
+                        {{ formatTime(item.time) }}
+                      </p>
+                    </li>
+                    } }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-light" (click)="template.hide()">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save Changes</button>
+        </div> -->
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>
