@@ -44,6 +44,12 @@ export class TimelineComponent implements OnInit {
   intervalTimeCoordinates: any[] = [];
   isRotating = false;
 
+  uniqueCoordinates: {
+    longitude: number;
+    latitude: number;
+    address: string;
+  }[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private api: ApiService,
@@ -298,6 +304,7 @@ export class TimelineComponent implements OnInit {
     }
 
     this.intervalTimeCoordinates = filteredCoordinates;
+
     return filteredCoordinates;
   }
 
@@ -392,6 +399,7 @@ export class TimelineComponent implements OnInit {
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data.features[0].place_name);
         return data.features[0].place_name;
       })
       .catch((error) => {
@@ -422,17 +430,43 @@ export class TimelineComponent implements OnInit {
         this.employeeTimeline[0].time,
         this.selectedInterval
       );
+      console.log(this.employeeTimeline);
       const geocodingPromises = this.employeeTimeline.map((item) => {
-        return this.geocodeCoordinates(item.longitude, item.latitude)
-          .then((address) => {
-            item.address = address;
-          })
-          .catch((error) => {
-            console.error("Error fetching address:", error);
-          });
+        if (item.address) {
+          // this.uniqueCoordinates.push({
+          //   longitude: item.longitude,
+          //   latitude: item.latitude,
+          //   address: item.address,
+          // });
+          return Promise.resolve();
+        } else {
+          return this.geocodeCoordinates(item.longitude, item.latitude)
+            .then((address) => {
+              const isDuplicate = this.uniqueCoordinates.some(
+                (coord) =>
+                  coord.longitude === item.longitude &&
+                  coord.latitude === item.latitude
+              );
+
+              if (!isDuplicate) {
+                this.uniqueCoordinates.push({
+                  longitude: item.longitude,
+                  latitude: item.latitude,
+                  address: address,
+                });
+              }
+              console.log(this.uniqueCoordinates);
+              item.address = address;
+            })
+            .catch((error) => {
+              console.error("Error fetching address:", error);
+            });
+        }
       });
 
       Promise.all(geocodingPromises).then(() => {
+        this.sendCoordinatesToAPI(this.uniqueCoordinates);
+
         // Only create markers for the first and last entries
         const firstCoordinate = this.employeeTimeline[0];
         const lastCoordinate =
@@ -725,5 +759,17 @@ export class TimelineComponent implements OnInit {
     const minutes = diffInMinutes % 60;
 
     return `${hours}h ${minutes}m`;
+  }
+
+  sendCoordinatesToAPI(
+    coordinates: { longitude: number; latitude: number; address: string }[]
+  ) {
+    const apiUrl = "address";
+
+    this.api.post("address", coordinates).subscribe(
+      (res: any) => {},
+
+      (error) => this.handleError(error)
+    );
   }
 }

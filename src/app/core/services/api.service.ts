@@ -82,11 +82,11 @@ export class ApiService {
     const now = Date.now();
 
     if (this.cache[url] && now - this.cache[url].expiry < this.cacheDuration) {
-      console.log("Serving data from cache:", this.cache[url].data);
+      // console.log("Serving data from cache:", this.cache[url].data);
       return this.cache[url].data;
     }
 
-    console.log("Fetching new data from API");
+    // console.log("Fetching new data from API");
 
     // Fetch new data and update cache
     const observable = this.http.get(url).pipe(
@@ -96,7 +96,7 @@ export class ApiService {
           data: of(data), // Store observable in cache
           expiry: now + this.cacheDuration,
         };
-        console.log("New data cached:", data);
+        // console.log("New data cached:", data);
       }),
       catchError((error) => {
         delete this.cache[url];

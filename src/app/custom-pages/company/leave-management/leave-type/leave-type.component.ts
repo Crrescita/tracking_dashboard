@@ -63,20 +63,17 @@ export class LeaveTypeComponent {
       const user = JSON.parse(data);
       this.company_id = user.id;
     }
-
+    // , this.maxLeaveDaysValidator.bind(this)
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.required, Validators.maxLength(45)]],
-      totalLeaveDays: [
-        "",
-        [Validators.required, this.maxLeaveDaysValidator.bind(this)],
-      ],
+      totalLeaveDays: ["", [Validators.required]],
       status: ["", Validators.required],
     });
 
-    this.formGroup.get("totalLeaveDays")?.valueChanges.subscribe((value) => {
-      this.updateRemainingDays(value);
-      this.isEditMode = false;
-    });
+    // this.formGroup.get("totalLeaveDays")?.valueChanges.subscribe((value) => {
+    //   this.updateRemainingDays(value);
+    //   this.isEditMode = false;
+    // });
 
     this.leaveForm = this.formBuilder.group({
       totalLeave: ["", Validators.required],
@@ -119,30 +116,30 @@ export class LeaveTypeComponent {
 
   previousValue: number | null = null;
 
-  updateRemainingDays(days: number | null) {
-    if (this.isEditMode) {
-      return;
-    }
-    if (
-      days !== null &&
-      days !== undefined &&
-      days <= this.remaining_leavedays
-    ) {
-      if (this.previousValue !== null) {
-        const difference = days - this.previousValue;
+  // updateRemainingDays(days: number | null) {
+  //   if (this.isEditMode) {
+  //     return;
+  //   }
+  //   if (
+  //     days !== null &&
+  //     days !== undefined &&
+  //     days <= this.remaining_leavedays
+  //   ) {
+  //     if (this.previousValue !== null) {
+  //       const difference = days - this.previousValue;
 
-        if (difference !== 0 && this.remaining_leavedays - difference >= 0) {
-          this.remaining_leavedays -= difference;
-        }
-      } else if (days <= this.remaining_leavedays) {
-        this.remaining_leavedays -= days;
-      }
-      this.previousValue = days;
-    } else {
-      this.getLeaveSetting();
-      this.previousValue = null;
-    }
-  }
+  //       if (difference !== 0 && this.remaining_leavedays - difference >= 0) {
+  //         this.remaining_leavedays -= difference;
+  //       }
+  //     } else if (days <= this.remaining_leavedays) {
+  //       this.remaining_leavedays -= days;
+  //     }
+  //     this.previousValue = days;
+  //   } else {
+  //     this.getLeaveSetting();
+  //     this.previousValue = null;
+  //   }
+  // }
 
   maxCarryForwardValidator(): ValidatorFn {
     return (control: AbstractControl) => {
@@ -273,6 +270,7 @@ export class LeaveTypeComponent {
       company_id: this.company_id,
       name: this.f["name"].value,
       total_leave_days: this.f["totalLeaveDays"].value,
+      // status: 'active',
       status: this.f["status"].value,
     };
     return formData;
