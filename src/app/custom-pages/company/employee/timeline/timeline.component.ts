@@ -207,9 +207,9 @@ export class TimelineComponent implements OnInit {
               this.totaldistanceToshow = totalDistance.toFixed(1);
 
               // Display results as needed
-              console.log("Total Distance:", totalDistance, "km");
-              console.log("Time Spent:", timeSpent);
-              console.log("Rest Periods:", restPeriods);
+              // console.log("Total Distance:", totalDistance, "km");
+              // console.log("Time Spent:", timeSpent);
+              // console.log("Rest Periods:", restPeriods);
             }
           } else {
             this.employeeTimeline = [];
@@ -399,7 +399,6 @@ export class TimelineComponent implements OnInit {
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.features[0].place_name);
         return data.features[0].place_name;
       })
       .catch((error) => {
@@ -430,7 +429,7 @@ export class TimelineComponent implements OnInit {
         this.employeeTimeline[0].time,
         this.selectedInterval
       );
-      console.log(this.employeeTimeline);
+
       const geocodingPromises = this.employeeTimeline.map((item) => {
         if (item.address) {
           // this.uniqueCoordinates.push({
@@ -455,7 +454,7 @@ export class TimelineComponent implements OnInit {
                   address: address,
                 });
               }
-              console.log(this.uniqueCoordinates);
+
               item.address = address;
             })
             .catch((error) => {
@@ -764,8 +763,6 @@ export class TimelineComponent implements OnInit {
   sendCoordinatesToAPI(
     coordinates: { longitude: number; latitude: number; address: string }[]
   ) {
-    const apiUrl = "address";
-
     this.api.post("address", coordinates).subscribe(
       (res: any) => {},
 
