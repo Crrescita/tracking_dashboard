@@ -124,13 +124,15 @@
           <button
             type="button"
             class="btn battery-status"
-            [ngClass]="getBatteryClass(item.end.battery_status)"
+            [ngClass]="
+              getBatteryClass(item.end.battery_status.replace('%', ''))
+            "
             data-bs-toggle="tooltip"
             placement="top"
             tooltip="Battery Percentage"
           >
             <span class="ri-battery-saver-line"></span>
-            {{ item.end.battery_status }} %
+            {{ item.end.battery_status }}
           </button>
         </div>
 
