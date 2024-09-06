@@ -57,29 +57,29 @@
         }}</span>
       </h5>
     </div>
-    @if(checkIndetails?.check_in_time){
+    @if(checkIndetails?.latestCheckInTime){
     <div class="col-lg col-3">
       <p class="text-muted mb-2 text-uppercase">Check-In At</p>
       <h5
         class="fs-md mb-0"
-        [innerHTML]="formatTime(checkIndetails?.check_in_time)"
+        [innerHTML]="formatTime(checkIndetails?.latestCheckInTime)"
       ></h5>
     </div>
-    } @if(checkIndetails?.check_out_time){
+    } @if(checkIndetails?.latestCheckOutTime){
     <div class="col-lg col-3">
       <p class="text-muted mb-2 text-uppercase">Check-out At</p>
       <h5 class="fs-md mb-0">
         <span
           id="invoice-date"
-          [innerHTML]="formatTime(checkIndetails?.check_out_time)"
+          [innerHTML]="formatTime(checkIndetails?.latestCheckOutTime)"
         ></span>
       </h5>
     </div>
-    } @if(checkIndetails?.check_in_time && checkIndetails?.check_out_time) {
+    } @if(checkIndetails?.latestCheckInTime) {
     <div class="col-lg col-3">
       <p class="text-muted mb-2 text-uppercase">Total Time</p>
       <h5 class="fs-md mb-0">
-        <span id="invoice-due-date">{{ formattedTotalTime }}</span>
+        <span id="invoice-due-date">{{ checkIndetails?.totalDuration }}</span>
       </h5>
     </div>
     } @if(totaldistanceToshow){

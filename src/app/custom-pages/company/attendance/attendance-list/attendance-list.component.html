@@ -294,12 +294,12 @@
                   >
                     Check-in Status
                   </th>
-                  <th
+                  <!-- <th
                     class="sort cursor-pointer"
                     (click)="onSort('timeDifferencev2')"
                   >
                     Time Difference
-                  </th>
+                  </th> -->
                   <th>Action</th>
                 </tr>
               </thead>
@@ -387,11 +387,14 @@
                           ? 'bg-danger'
                           : 'bg-success'
                       "
-                      >{{ data.checkin_status }}</span
-                    >
+                      >{{ data.checkin_status }} @if(data.checkin_status != 'On
+                      Time'){ by
+                      {{ data.timeDifference }}
+                      }
+                    </span>
                     } @else { -}
                   </td>
-                  <td class="published">
+                  <!-- <td class="published">
                     @if(data.checkin_status != 'Absent'){
 
                     <p
@@ -408,7 +411,7 @@
                     </p>
 
                     } @else { -}
-                  </td>
+                  </td> -->
                   <td>
                     <div dropdown class="dropdown">
                       <button

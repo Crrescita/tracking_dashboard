@@ -312,11 +312,14 @@
                               Check Out at
                             </p>
                             <h6 class="fs-lg">
+                              @if( this.timeLineData.last_check_out_time ==
+                              '-'){ Not Check-out Yet } @else {
                               {{
                                 formatTime(
                                   this.timeLineData.last_check_out_time
                                 )
                               }}
+                              }
                             </h6>
                           </div>
                         </div>
