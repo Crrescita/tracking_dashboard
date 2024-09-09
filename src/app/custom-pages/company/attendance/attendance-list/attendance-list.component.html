@@ -377,7 +377,8 @@
                   </td>
 
                   <td class="published">
-                    @if(data.checkin_status != 'Absent'){
+                    @if(data.checkin_status != 'Absent' && data.checkin_status
+                    != 'Leave'){
                     <span
                       class="badge"
                       [ngClass]="
@@ -387,8 +388,8 @@
                           ? 'bg-danger'
                           : 'bg-success'
                       "
-                      >{{ data.checkin_status }} @if(data.checkin_status != 'On
-                      Time'){ by
+                      >{{ data.checkin_status }} @if(data.checkin_status !=
+                      'On-Time' && data.checkin_status != 'Leave'){ by
                       {{ data.timeDifference }}
                       }
                     </span>

@@ -114,23 +114,25 @@
                   <td>
                     {{ item.name }}
                   </td>
-                  @for ( attendance of item.attendance; track $index) {
-                  <td>
-                    @if( attendance.attendance_status == "Present"){
-                    <span
-                      class="text-success cursor-pointer"
-                      (click)="template.show(); setModalData(attendance)"
-                      >&#10004;</span
-                    >
-                    <!-- <i class="ri-check-fill align-bottom me-1 text-success"></i> -->
-                    } @else if (attendance.attendance_status == "Leave") {
-                    <span class="text-warning fw-bold">L</span>
-                    } @else {
-                    <span class="text-danger">&#10007;</span>
-                    <!-- <i class="ri-close-line align-bottom me-1 text-danger"></i> -->
-                    }
+                  @for ( attendance of item.attendance; track $index) { @if(
+                  attendance.attendance_status == "Present"){
+                  <td
+                    class="cursor-pointer"
+                    (click)="template.show(); setModalData(attendance)"
+                  >
+                    <span class="text-success">&#10004;</span>
                   </td>
-                  }
+                  <!-- <i class="ri-check-fill align-bottom me-1 text-success"></i> -->
+                  } @else if (attendance.attendance_status == "Leave") {
+                  <td>
+                    <span class="text-warning fw-bold">L</span>
+                  </td>
+                  } @else {
+                  <td>
+                    <span class="text-danger">&#10007;</span>
+                  </td>
+                  <!-- <i class="ri-close-line align-bottom me-1 text-danger"></i> -->
+                  } }
                 </tr>
                 }
               </tbody>
@@ -260,7 +262,7 @@
                         : 'bg-success'
                     "
                     >{{ this.timeLineData.checkin_status }}
-                    @if(this.timeLineData.checkin_status != 'On Time'){ by
+                    @if(this.timeLineData.checkin_status != 'On-Time'){ by
                     {{ this.timeLineData.timeDifference }}
                     }
                   </span>

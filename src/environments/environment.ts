@@ -9,26 +9,26 @@ export const environment = {
   // apifrontendUrl: "http://localhost:3000/frontend/",
   // apiUrl: "https://trackingapi.crrescita.com/admin/",
   apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
-  firebaseConfig: {
-    apiKey: "AIzaSyCqS9cSPrDCNSQ-Ku2kZf5DBWjPPv7hvcA",
-    authDomain: "test-demo-774f8.firebaseapp.com",
-    databaseURL: "https://test-demo-774f8-default-rtdb.firebaseio.com",
-    projectId: "test-demo-774f8",
-    storageBucket: "test-demo-774f8.appspot.com",
-    messagingSenderId: "916438010670",
-    appId: "1:916438010670:web:c70cf404da6c0fe7b048bf",
-    measurementId: "G-1N6FB2GG55",
-  },
+  // firebaseConfig: {
+  //   apiKey: "AIzaSyCqS9cSPrDCNSQ-Ku2kZf5DBWjPPv7hvcA",
+  //   authDomain: "test-demo-774f8.firebaseapp.com",
+  //   databaseURL: "https://test-demo-774f8-default-rtdb.firebaseio.com",
+  //   projectId: "test-demo-774f8",
+  //   storageBucket: "test-demo-774f8.appspot.com",
+  //   messagingSenderId: "916438010670",
+  //   appId: "1:916438010670:web:c70cf404da6c0fe7b048bf",
+  //   measurementId: "G-1N6FB2GG55",
+  // },
 
-  //  firebaseConfig = {
-  //   apiKey: "AIzaSyCgv0M0OycO8Q5IclQ6Koe8CSSBnaRaJ9s",
-  //   authDomain: "location-tracker-17a8e.firebaseapp.com",
-  //   projectId: "location-tracker-17a8e",
-  //   storageBucket: "location-tracker-17a8e.appspot.com",
-  //   messagingSenderId: "691315287200",
-  //   appId: "1:691315287200:web:975c7c891fdbc654c995c5",
-  //   measurementId: "G-1BYNWW0039"
-  // };
+  firebaseConfig: {
+    apiKey: "AIzaSyCgv0M0OycO8Q5IclQ6Koe8CSSBnaRaJ9s",
+    authDomain: "location-tracker-17a8e.firebaseapp.com",
+    projectId: "location-tracker-17a8e",
+    storageBucket: "location-tracker-17a8e.appspot.com",
+    messagingSenderId: "691315287200",
+    appId: "1:691315287200:web:975c7c891fdbc654c995c5",
+    measurementId: "G-1BYNWW0039",
+  },
 
   mapbox: {
     accessToken:

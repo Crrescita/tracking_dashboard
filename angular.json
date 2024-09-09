@@ -30,7 +30,9 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/firebase-messaging-sw.js",
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "node_modules/prismjs/themes/prism.css",
@@ -67,7 +69,9 @@
               "dropzone",
               "prismjs",
               "lodash"
-            ]
+            ],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
@@ -139,7 +143,13 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets", { "glob": "**/*", "input": "node_modules/tinymce", "output": "/tinymce/" }
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "src/styles.scss"

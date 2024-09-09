@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, isDevMode } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
@@ -9,6 +9,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 // auth
 import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireMessagingModule } from "@angular/fire/compat/messaging";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 // Page Route
 import { AppRoutingModule } from "./app-routing.module";
@@ -33,6 +34,7 @@ import { AuthenticationEffects } from "./store/Authentication/authentication.eff
 import { initFirebaseBackend } from "./authUtils";
 import { AuthInterceptor } from "./core/services/custom-pages/authconfig.interceptor";
 import { ApiResponseInterceptor } from "./api-response.interceptor";
+import { ServiceWorkerModule } from "@angular/service-worker";
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, "assets/i18n/", ".json");
@@ -62,6 +64,7 @@ if (environment.defaultauth === "firebase") {
 
     EffectsModule.forRoot([AuthenticationEffects]),
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireMessagingModule,
     HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -71,6 +74,12 @@ if (environment.defaultauth === "firebase") {
     FormsModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
+    ServiceWorkerModule.register("ngsw-worker.js", {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: "registerWhenStable:30000",
+    }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

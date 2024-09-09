@@ -4,27 +4,28 @@ import {
   EventEmitter,
   Inject,
   ViewChild,
-} from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { EventService } from 'src/app/core/services/event.service';
-import { LanguageService } from 'src/app/core/services/language.service';
-import { CookieService } from 'ngx-cookie-service';
-import { AuthenticationService } from 'src/app/core/services/auth.service';
-import { Router } from '@angular/router';
+} from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { EventService } from "src/app/core/services/event.service";
+import { LanguageService } from "src/app/core/services/language.service";
+import { CookieService } from "ngx-cookie-service";
+import { AuthenticationService } from "src/app/core/services/auth.service";
+import { Router } from "@angular/router";
 // import { cartList } from 'src/app/pages/ecommerce/cart/data';
-import { ModalDirective } from 'ngx-bootstrap/modal';
-import { notification } from './data';
-import { RootReducerState } from 'src/app/store';
-import { Store } from '@ngrx/store';
-import { changeMode } from 'src/app/store/layouts/layout-action';
-import { getLayoutmode } from 'src/app/store/layouts/layout-selector';
-import { TokenStorageService } from 'src/app/core/services/token-storage.service';
-import { AuthService } from 'src/app/core/services/custom-pages/auth.service';
+import { ModalDirective } from "ngx-bootstrap/modal";
+// import { notification } from "./data";
+import { RootReducerState } from "src/app/store";
+import { Store } from "@ngrx/store";
+import { changeMode } from "src/app/store/layouts/layout-action";
+import { getLayoutmode } from "src/app/store/layouts/layout-selector";
+import { TokenStorageService } from "src/app/core/services/token-storage.service";
+import { AuthService } from "src/app/core/services/custom-pages/auth.service";
+import { ApiService } from "../../core/services/api.service";
 
 @Component({
-  selector: 'app-topbar',
-  templateUrl: './topbar.component.html',
-  styleUrls: ['./topbar.component.scss'],
+  selector: "app-topbar",
+  templateUrl: "./topbar.component.html",
+  styleUrls: ["./topbar.component.scss"],
 })
 export class TopbarComponent {
   country: any;
@@ -44,17 +45,17 @@ export class TopbarComponent {
   subtotal: any = 0;
   totalsum: any;
   taxRate: any = 0.125;
-  shippingRate: any = '65.00';
+  shippingRate: any = "65.00";
   discountRate: any = 0.15;
   discount: any;
   tax: any;
 
-  notificationList: any;
+  notificationList: any[] = [];
 
   @Output() mobileMenuButtonClicked = new EventEmitter();
-  @ViewChild('removeNotificationModal', { static: false })
+  @ViewChild("removeNotificationModal", { static: false })
   removeNotificationModal?: ModalDirective;
-  @ViewChild('removeCartModal', { static: false })
+  @ViewChild("removeCartModal", { static: false })
   removeCartModal?: ModalDirective;
   deleteid: any;
   totalNotify: number = 0;
@@ -69,12 +70,32 @@ export class TopbarComponent {
     private router: Router,
     public _cookiesService: CookieService,
     public store: Store<RootReducerState>,
-    private TokenStorageService: TokenStorageService
+    private TokenStorageService: TokenStorageService,
+    private api: ApiService
   ) {}
 
   ngOnInit(): void {
-    this.element = document.documentElement;
+    this.authService.requestPermission();
+
+    this.authService.receiveMessage();
+
     this.userData = this.TokenStorageService.getUser();
+
+    this.authService.currentMessage.subscribe((message) => {
+      if (message) {
+        console.log("Received notification in foreground:", message);
+        this.getNotification();
+      }
+    });
+
+    this.getNotification();
+    // onCheckboxChange(event: any, index: number) {
+    //   this.notificationList[index].state = event.target.checked;
+    //   // Logic to handle the checkbox state
+    // }
+
+    this.element = document.documentElement;
+
     // this.cartData = cartList;
     // this.cartData.map((x: any) => {
     //   x['total'] = (x['qty'] * x['price']).toFixed(2);
@@ -91,26 +112,65 @@ export class TopbarComponent {
     ).toFixed(2);
 
     // Cookies wise Language set
-    this.cookieValue = this._cookiesService.get('lang');
+    this.cookieValue = this._cookiesService.get("lang");
     const val = this.listLang.filter((x) => x.lang === this.cookieValue);
     this.countryName = val.map((element) => element.text);
     if (val.length === 0) {
       if (this.flagvalue === undefined) {
-        this.valueset = 'assets/images/flags/us.svg';
+        this.valueset = "assets/images/flags/us.svg";
       }
-      this.countryName = 'English';
+      this.countryName = "English";
     } else {
       this.flagvalue = val.map((element) => element.flag);
     }
+  }
 
-    this.notificationList = notification;
-    this.notificationList.forEach((element: any) => {
-      this.totalNotify += element.items.length;
-      if (element.title == 'New') {
-        this.newNotify = element.items.length;
-      } else {
-        this.readNotify = element.items.length;
-      }
+  getNotification() {
+    this.api.get(`getNotification`, this.userData.id).subscribe((res: any) => {
+      this.notificationList = [];
+      this.totalNotify = 0;
+      this.newNotify = 0;
+
+      const groupedNotifications = res.data.reduce(
+        (acc: any, message: any, index: number) => {
+          const title = message.title || "New";
+          if (!acc[title]) {
+            acc[title] = {
+              title: title,
+              items: [],
+            };
+          }
+          acc[title].items.push({
+            id: index + 1,
+            type: "notification",
+            avatar: message.image || "",
+            text: message.body,
+            timestamp: message.timestamp,
+            checkboxId: `notification-${index + 1}`,
+            state: false,
+            background: "bg-info-subtle text-info",
+            icon: "bx bx-badge-check",
+          });
+
+          return acc;
+        },
+        {}
+      );
+
+      const newNotifications = groupedNotifications["New"]
+        ? [groupedNotifications["New"]]
+        : [];
+      const otherNotifications = Object.keys(groupedNotifications)
+        .filter((title) => title !== "New")
+        .map((title) => groupedNotifications[title]);
+
+      this.notificationList = [...newNotifications, ...otherNotifications];
+
+      console.log(this.notificationList);
+
+      const addedItems = res.data.length;
+      this.totalNotify += addedItems;
+      this.newNotify += newNotifications[0].items.length;
     });
   }
 
@@ -119,13 +179,13 @@ export class TopbarComponent {
       document.body.scrollTop > 100 ||
       document.documentElement.scrollTop > 100
     ) {
-      (document.getElementById('back-to-top') as HTMLElement).style.display =
-        'block';
-      document.getElementById('page-topbar')?.classList.add('topbar-shadow');
+      (document.getElementById("back-to-top") as HTMLElement).style.display =
+        "block";
+      document.getElementById("page-topbar")?.classList.add("topbar-shadow");
     } else {
-      (document.getElementById('back-to-top') as HTMLElement).style.display =
-        'none';
-      document.getElementById('page-topbar')?.classList.remove('topbar-shadow');
+      (document.getElementById("back-to-top") as HTMLElement).style.display =
+        "none";
+      document.getElementById("page-topbar")?.classList.remove("topbar-shadow");
     }
   }
 
@@ -133,14 +193,14 @@ export class TopbarComponent {
   qty: number = 0;
   increment(qty: any, i: any, id: any) {
     this.subtotal = 0;
-    if (id == '0' && qty > 1) {
+    if (id == "0" && qty > 1) {
       qty--;
       this.cartData[i].qty = qty;
       this.cartData[i].total = (
         this.cartData[i].qty * this.cartData[i].price
       ).toFixed(2);
     }
-    if (id == '1') {
+    if (id == "1") {
       qty++;
       this.cartData[i].qty = qty;
       this.cartData[i].total = (
@@ -149,7 +209,7 @@ export class TopbarComponent {
     }
 
     this.cartData.map((x: any) => {
-      this.subtotal += parseFloat(x['total']);
+      this.subtotal += parseFloat(x["total"]);
     });
 
     this.subtotal = this.subtotal.toFixed(2);
@@ -189,17 +249,17 @@ export class TopbarComponent {
    */
   changeMode(mode: string) {
     this.mode = mode;
-    if (mode == 'auto') {
-      document.documentElement.setAttribute('data-bs-theme', 'light');
-      document.documentElement.setAttribute('data-topbar', 'light');
-      document.documentElement.classList.add('mode-auto');
+    if (mode == "auto") {
+      document.documentElement.setAttribute("data-bs-theme", "light");
+      document.documentElement.setAttribute("data-topbar", "light");
+      document.documentElement.classList.add("mode-auto");
     } else {
       this.store.dispatch(changeMode({ mode }));
       this.store.select(getLayoutmode).subscribe((mode) => {
-        document.documentElement.setAttribute('data-bs-theme', mode);
+        document.documentElement.setAttribute("data-bs-theme", mode);
       });
-      document.documentElement.classList.remove('mode-auto');
-      document.documentElement.setAttribute('data-topbar', mode);
+      document.documentElement.classList.remove("mode-auto");
+      document.documentElement.setAttribute("data-topbar", mode);
     }
   }
 
@@ -207,14 +267,14 @@ export class TopbarComponent {
    * Language Listing
    */
   listLang = [
-    { text: 'English', flag: 'assets/images/flags/us.svg', lang: 'en' },
-    { text: 'Española', flag: 'assets/images/flags/spain.svg', lang: 'sp' },
-    { text: 'Deutsche', flag: 'assets/images/flags/germany.svg', lang: 'gr' },
-    { text: 'Italiana', flag: 'assets/images/flags/italy.svg', lang: 'it' },
-    { text: 'русский', flag: 'assets/images/flags/russia.svg', lang: 'ru' },
-    { text: '中国人', flag: 'assets/images/flags/china.svg', lang: 'ch' },
-    { text: 'français', flag: 'assets/images/flags/french.svg', lang: 'fr' },
-    { text: 'Arabic', flag: 'assets/images/flags/ae.svg', lang: 'ar' },
+    { text: "English", flag: "assets/images/flags/us.svg", lang: "en" },
+    { text: "Española", flag: "assets/images/flags/spain.svg", lang: "sp" },
+    { text: "Deutsche", flag: "assets/images/flags/germany.svg", lang: "gr" },
+    { text: "Italiana", flag: "assets/images/flags/italy.svg", lang: "it" },
+    { text: "русский", flag: "assets/images/flags/russia.svg", lang: "ru" },
+    { text: "中国人", flag: "assets/images/flags/china.svg", lang: "ch" },
+    { text: "français", flag: "assets/images/flags/french.svg", lang: "fr" },
+    { text: "Arabic", flag: "assets/images/flags/ae.svg", lang: "ar" },
   ];
 
   /***
@@ -231,7 +291,7 @@ export class TopbarComponent {
    * Toggle the menu bar when having mobile screen
    */
   toggleMobileMenu(event: any) {
-    document.querySelector('.hamburger-icon')?.classList.toggle('open');
+    document.querySelector(".hamburger-icon")?.classList.toggle("open");
     event.preventDefault();
     this.mobileMenuButtonClicked.emit();
   }
@@ -240,7 +300,7 @@ export class TopbarComponent {
    * Fullscreen method
    */
   fullscreen() {
-    document.body.classList.toggle('fullscreen-enable');
+    document.body.classList.toggle("fullscreen-enable");
     if (
       !document.fullscreenElement &&
       !this.element.mozFullScreenElement &&
@@ -277,10 +337,10 @@ export class TopbarComponent {
   // Search Topbar
   Search() {
     var searchOptions = document.getElementById(
-      'search-close-options'
+      "search-close-options"
     ) as HTMLAreaElement;
     var dropdown = document.getElementById(
-      'search-dropdown'
+      "search-dropdown"
     ) as HTMLAreaElement;
     var input: any,
       filter: any,
@@ -289,41 +349,41 @@ export class TopbarComponent {
       a: any | undefined,
       i: any,
       txtValue: any;
-    input = document.getElementById('search-options') as HTMLAreaElement;
+    input = document.getElementById("search-options") as HTMLAreaElement;
     filter = input.value.toUpperCase();
     var inputLength = filter.length;
 
     if (inputLength > 0) {
-      dropdown.classList.add('show');
-      searchOptions.classList.remove('d-none');
+      dropdown.classList.add("show");
+      searchOptions.classList.remove("d-none");
       var inputVal = input.value.toUpperCase();
-      var notifyItem = document.getElementsByClassName('notify-item');
+      var notifyItem = document.getElementsByClassName("notify-item");
 
       Array.from(notifyItem).forEach(function (element: any) {
-        var notifiTxt = '';
-        if (element.querySelector('h6')) {
+        var notifiTxt = "";
+        if (element.querySelector("h6")) {
           var spantext = element
-            .getElementsByTagName('span')[0]
+            .getElementsByTagName("span")[0]
             .innerText.toLowerCase();
-          var name = element.querySelector('h6').innerText.toLowerCase();
+          var name = element.querySelector("h6").innerText.toLowerCase();
           if (name.includes(inputVal)) {
             notifiTxt = name;
           } else {
             notifiTxt = spantext;
           }
-        } else if (element.getElementsByTagName('span')) {
+        } else if (element.getElementsByTagName("span")) {
           notifiTxt = element
-            .getElementsByTagName('span')[0]
+            .getElementsByTagName("span")[0]
             .innerText.toLowerCase();
         }
         if (notifiTxt)
           element.style.display = notifiTxt.includes(inputVal)
-            ? 'block'
-            : 'none';
+            ? "block"
+            : "none";
       });
     } else {
-      dropdown.classList.remove('show');
-      searchOptions.classList.add('d-none');
+      dropdown.classList.remove("show");
+      searchOptions.classList.add("d-none");
     }
   }
 
@@ -332,17 +392,17 @@ export class TopbarComponent {
    */
   closeBtn() {
     var searchOptions = document.getElementById(
-      'search-close-options'
+      "search-close-options"
     ) as HTMLAreaElement;
     var dropdown = document.getElementById(
-      'search-dropdown'
+      "search-dropdown"
     ) as HTMLAreaElement;
     var searchInputReponsive = document.getElementById(
-      'search-options'
+      "search-options"
     ) as HTMLInputElement;
-    dropdown.classList.remove('show');
-    searchOptions.classList.add('d-none');
-    searchInputReponsive.value = '';
+    dropdown.classList.remove("show");
+    searchOptions.classList.add("d-none");
+    searchInputReponsive.value = "";
   }
 
   // Remove Notification
@@ -361,11 +421,11 @@ export class TopbarComponent {
     this.checkedValGet = checkedVal;
     checkedVal.length > 0
       ? ((
-          document.getElementById('notification-actions') as HTMLElement
-        ).style.display = 'block')
+          document.getElementById("notification-actions") as HTMLElement
+        ).style.display = "block")
       : ((
-          document.getElementById('notification-actions') as HTMLElement
-        ).style.display = 'none');
+          document.getElementById("notification-actions") as HTMLElement
+        ).style.display = "none");
   }
 
   notificationDelete() {
@@ -387,7 +447,7 @@ export class TopbarComponent {
     this.checkedValGet = [];
     this.notificationList.forEach((element: any) => {
       this.totalNotify += element.items.length;
-      if (element.title == 'New') {
+      if (element.title == "New") {
         this.newNotify = element.items.length;
       } else {
         this.readNotify = element.items.length;
@@ -395,15 +455,15 @@ export class TopbarComponent {
     });
     this.checkedValGet.length > 0
       ? ((
-          document.getElementById('notification-actions') as HTMLElement
-        ).style.display = 'block')
+          document.getElementById("notification-actions") as HTMLElement
+        ).style.display = "block")
       : ((
-          document.getElementById('notification-actions') as HTMLElement
-        ).style.display = 'none');
+          document.getElementById("notification-actions") as HTMLElement
+        ).style.display = "none");
     if (this.totalNotify == 0) {
       document
-        .querySelector('.empty-notification-elem')
-        ?.classList.remove('d-none');
+        .querySelector(".empty-notification-elem")
+        ?.classList.remove("d-none");
     }
   }
 
@@ -412,5 +472,27 @@ export class TopbarComponent {
    */
   logout() {
     this.authService.doLogout();
+  }
+
+  markAllAsRead() {
+    const payload = {
+      companyId: this.userData.id,
+    };
+    this.api.post("markAsRead", payload).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.getNotification();
+          // this.notificationList.forEach((category) => {
+          //   category.items.forEach((item: any) => {
+          //     item.state = true;
+          //   });
+          // });
+          // this.newNotify = 0;
+        }
+      },
+      (error) => {
+        console.error("Error marking notifications as read:", error);
+      }
+    );
   }
 }
