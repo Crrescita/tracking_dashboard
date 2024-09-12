@@ -14,6 +14,10 @@ import { AttendanceMonthlyComponent } from "./company/attendance/attendance-mont
 import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
 import { LeaveTypeComponent } from "./company/leave-management/leave-type/leave-type.component";
 import { LeaveRequestComponent } from "./company/leave-management/leave-request/leave-request.component";
+import { LeaveRequestDeatilComponent } from "./company/leave-management/leave-request-deatil/leave-request-deatil.component";
+import { LogsComponent } from "./administrator/logs/logs.component";
+import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
+import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
 
 const routes: Routes = [
   {
@@ -29,7 +33,12 @@ const routes: Routes = [
     path: "edit-company/:id",
     component: AddCompanyComponent,
   },
+  {
+    path: "logs",
+    component: LogsComponent,
+  },
 
+  // /company
   { path: "employee", component: EmployeeListComponent },
 
   { path: "add-employee", component: AddEmployeeComponent },
@@ -49,6 +58,10 @@ const routes: Routes = [
   { path: "holidays", component: HolidaysListComponent },
   { path: "leave-types", component: LeaveTypeComponent },
   { path: "leave-requests", component: LeaveRequestComponent },
+  { path: "leave-detail/:id/:emp_id", component: LeaveRequestDeatilComponent },
+  { path: "leave-record", component: LeaveRecordComponent },
+
+  { path: "employe-leave-record/:emp_id", component: EmpLeaveComponent },
 ];
 
 @NgModule({

@@ -97,7 +97,8 @@
         "MAINTENANCE": "Maintenance",
         "COMINGSOON": "Coming Soon",
         "PRIVACYPOLICY": "Privacy Policy",
-        "TERMS&CONDITIONS": "Term & Conditions"
+        "TERMS&CONDITIONS": "Term & Conditions",
+        "LOGS":"Logs"
       }
     },
 
@@ -113,7 +114,8 @@
        "HOLIDAYS":"Holidays",
        "LEAVE-MANAGEMENT":"Leave Management",
        "LEAVE-TYPES":"Leave Types",
-        "LEAVE-REQUEST":"Leave Requests"
+      "LEAVE-REQUEST":"Leave Requests",
+      "LEAVE-RECORD":"Leave Record"
       }
     },
     "COMPONENTS": {

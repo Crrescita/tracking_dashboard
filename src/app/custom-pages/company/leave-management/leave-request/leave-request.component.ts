@@ -99,6 +99,7 @@ export class LeaveRequestComponent {
     const newStatus = (event.target as HTMLSelectElement).value;
     const formData = {
       status: newStatus,
+      // leave_type: data.leaveType_id,
     };
 
     this.toggleSpinner(true);

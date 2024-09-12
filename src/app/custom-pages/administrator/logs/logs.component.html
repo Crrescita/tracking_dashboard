@@ -1,0 +1,316 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Logs List"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="productList">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-lg-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Logs
+
+              <span class="badge bg-dark-subtle text-dark ms-1">
+                {{ logsData.length }}
+              </span>
+            </h5>
+
+            <p class="text-muted mb-0 mt-2">
+              Showing Result of Date:
+              <span class="fw-bold">
+                {{ this.formattedDate | date : "EEEE, dd MMM , yyyy" }}</span
+              >
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <div class="col-xxl">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="form-control"
+                    showWeekNumbers="false"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [(ngModel)]="selectedDate"
+                    (bsValueChange)="onDateChange($event)"
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepicker"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name etc..."
+                />
+
+                <i class="ri-search-line search-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div
+              class="col-lg-3 ng-star-inserted"
+              (click)="setLogFile('admin')"
+            >
+              <div class="card border shadow-none">
+                <div
+                  class="card-body cursor-pointer"
+                  [ngClass]="fileType === 'admin' ? 'card-bg-sel' : ''"
+                >
+                  <div class="d-flex gap-3 mb-4">
+                    <div class="flex-grow-1">
+                      <div class="avatar-xs">
+                        <div
+                          class="avatar-title bg-transparent rounded text-primary fs-3"
+                        >
+                          <i class="bi bi-folder2-open"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div dropdown="" class="flex-shrink-0 dropdown">
+                      <a
+                        dropdowntoggle=""
+                        href="javascript:void(0);"
+                        class="text-reset d-inline-block"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        ><i class="bi bi-three-dots-vertical"></i></a
+                      ><!---->
+                    </div>
+                    <!---->
+                  </div>
+                  <a href="javascript:void(0);"
+                    ><h6 class="fs-md text-truncate">Dashboard Api</h6></a
+                  >
+                  <ul class="list-unstyled hstack gap-2 text-muted mb-0">
+                    <!-- <li><b>24</b> Feb</li> -->
+                    <li>
+                      <b>{{ this.logsAdminData?.totalFiles }} Files</b>
+                    </li>
+                    <li>
+                      <b>{{ this.logsAdminData?.totalFileSize }}</b>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-lg-3 ng-star-inserted"
+              (click)="setLogFile('frontend')"
+            >
+              <div class="card border shadow-none">
+                <div
+                  class="card-body cursor-pointer"
+                  [ngClass]="fileType === 'frontend' ? 'card-bg-sel' : ''"
+                >
+                  <div class="d-flex gap-3 mb-4">
+                    <div class="flex-grow-1">
+                      <div class="avatar-xs">
+                        <div
+                          class="avatar-title bg-transparent rounded text-primary fs-3"
+                        >
+                          <i class="bi bi-folder2-open"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div dropdown="" class="flex-shrink-0 dropdown">
+                      <a
+                        dropdowntoggle=""
+                        href="javascript:void(0);"
+                        class="text-reset d-inline-block"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        ><i class="bi bi-three-dots-vertical"></i></a
+                      ><!---->
+                    </div>
+                    <!---->
+                  </div>
+                  <a href="javascript:void(0);"
+                    ><h6 class="fs-md text-truncate">Frontend Api</h6></a
+                  >
+                  <ul class="list-unstyled hstack gap-2 text-muted mb-0">
+                    <!-- <li><b>08</b> Feb</li> -->
+                    <li>
+                      <b>{{ this.logsFrontData?.totalFiles }} Files</b>
+                    </li>
+                    <li>
+                      <b>{{ this.logsFrontData?.totalFileSize }}</b>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!---->
+          </div>
+          <div class="table-responsive">
+            <table class="table table-centered align-middle table-nowrap mb-0">
+              <thead class="table-active">
+                <tr>
+                  <th>
+                    <div class="form-check">
+                      <label class="form-check-label" for="checkAll"></label>
+                    </div>
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('filename')">
+                    File Name
+                  </th>
+
+                  <th class="sort cursor-pointer" (click)="onSort('size')">
+                    Size
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('createdAt')">
+                    Created At
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list form-check-all">
+                @for ( log of this.logsData; track $index) {
+
+                <tr id="p_{{ $index }}">
+                  <td></td>
+                  <td class="id" style="display: none">
+                    <a href="javascript:void(0);" class="fw-medium link-primary"
+                      >#TB01</a
+                    >
+                  </td>
+                  <td class="products">
+                    <i class="bi bi-file-earmark-text"></i>
+                    {{ log.filename }}
+                  </td>
+
+                  <td class="price">
+                    {{ log.size }}
+                  </td>
+                  <td class="orders">
+                    {{ log.createdAt | date : "dd MMM , yyyy, h:mm a" }}
+                  </td>
+
+                  <td>
+                    <a
+                      [href]="log.downloadUrl"
+                      target="_blank"
+                      class="btn btn-subtle-primary btn-icon btn-sm"
+                      ><i class="ph-eye fs-5 fs-3"></i
+                    ></a>
+
+                    <!-- <div dropdown class="dropdown">
+                      <button
+                        dropdownToggle
+                        class="btn btn-subtle-secondary btn-sm btn-icon"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+
+                      <ul
+                        *bsDropdownMenu
+                        class="dropdown-menu dropdown-menu-end"
+                      >
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            routerLink="/employee-detail/{{ log }}"
+                            [queryParams]="{
+                                      tab: 'timeline',
+                                   
+                                    }"
+                            href="javascript:void(0);"
+                            ><i class="ph-eye align-middle me-1"></i> View
+                            Timeline</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            routerLink="/attendance-calender/{{ log }}"
+                            class="dropdown-item edit-item-btn"
+                            ><i
+                              class="ri-folder-reduce-line align-middle me-1"
+                            ></i
+                            >Attendance Detail</a
+                          >
+                        </li>
+                      </ul>
+                    </div> -->
+                  </td>
+                </tr>
+                }
+              </tbody>
+              @if (spinnerStatus) {
+              <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              }
+            </table>
+          </div>
+          <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched {{ logDataList?.length }} Log . We did not find
+                any Log for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+          <div class="row mt-3 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{ logsData.length }}</span> of
+                <span class="fw-semibold">{{ logDataList?.length }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0">
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [totalItems]="logDataList?.length"
+                [itemsPerPage]="10"
+                (pageChanged)="pageChanged($event)"
+              ></pagination>
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>

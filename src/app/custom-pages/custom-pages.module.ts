@@ -1,3 +1,4 @@
+import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
 import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
 import { CustomPagesRoutingModule } from "./custom-pages-routing.module";
@@ -71,6 +72,9 @@ import { MapComponent } from "./company/employee/map/map.component";
 import { AttendanceMonthlyComponent } from "./company/attendance/attendance-monthly/attendance-monthly.component";
 import { LeaveTypeComponent } from "./company/leave-management/leave-type/leave-type.component";
 import { LeaveRequestComponent } from "./company/leave-management/leave-request/leave-request.component";
+import { LeaveRequestDeatilComponent } from "./company/leave-management/leave-request-deatil/leave-request-deatil.component";
+import { LogsComponent } from "./administrator/logs/logs.component";
+import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
 
 @NgModule({
   declarations: [
@@ -91,6 +95,10 @@ import { LeaveRequestComponent } from "./company/leave-management/leave-request/
     HolidaysListComponent,
     LeaveTypeComponent,
     LeaveRequestComponent,
+    LeaveRequestDeatilComponent,
+    LeaveRecordComponent,
+    LogsComponent,
+    EmpLeaveComponent,
   ],
   imports: [
     CommonModule,

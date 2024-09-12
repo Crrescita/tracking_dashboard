@@ -1,0 +1,324 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Leave Detail"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xxl-12">
+    <div class="card">
+      <div class="row g-0 product-list">
+        <div class="col-xl-4 border-end">
+          <div class="card-header">
+            <h6 class="card-title mb-0">Leave Details</h6>
+          </div>
+          <!-- <div class="card-body">
+             
+              <button id="agent-chat" class="btn btn-secondary w-100">
+                <i class="bi bi-chat-text align-baseline me-1"></i>
+                Get In Touch
+              </button>
+  
+              <div class="text-end mt-4">
+                <a
+                  routerLink="/ecommerce/products-grid"
+                  class="btn btn-secondary me-1"
+                  >Continue Shopping</a
+                >
+                <a routerLink="/ecommerce/checkout" class="btn btn-primary"
+                  >Checkout</a
+                >
+              </div>
+            </div> -->
+          <div class="card-body">
+            <div class="d-flex gap-2 align-items-center mb-3">
+              <div class="flex-shrink-0">
+                <img
+                  src="{{ this.employeeDetail?.image }}"
+                  alt=""
+                  class="avatar-sm rounded"
+                />
+              </div>
+              <div class="flex-grow-1">
+                <h6 class="fs-md">{{ this.employeeDetail?.name }}</h6>
+                <p class="text-muted mb-0">
+                  {{ this.employeeDetail?.department_name }}
+                </p>
+              </div>
+            </div>
+            <div class="table-responsive table-card mt-1">
+              <table class="table table-borderless align-middle mb-0">
+                <tbody>
+                  <tr>
+                    <th>Leave Type :</th>
+                    <td>{{ this.leaveDetailData?.leave_type }}</td>
+                  </tr>
+                  <tr>
+                    <th>From :</th>
+                    <td id="t-client">
+                      {{
+                        this.leaveDetailData?.from_date
+                          | date : "EEE dd MMM, YYYY"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>To :</th>
+                    <td>
+                      {{
+                        this.leaveDetailData?.to_date
+                          | date : "EEE dd MMM, YYYY"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Last Leave On:</th>
+                    <td>
+                      @if(this.leaveDetailData?.recent_leave){
+                      {{
+                        this.leaveDetailData?.recent_leave_date
+                          | date : "EEE dd MMM, YYYY "
+                      }}
+                      <span class="fw-bold">
+                        ({{ this.leaveDetailData?.recent_leave }})</span
+                      >
+                      }@else { - }
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Upcoming Leave On:</th>
+                    <td>
+                      @if( this.leaveDetailData?.upcoming_leave){
+                      {{
+                        this.leaveDetailData?.upcoming_leave_date
+                          | date : "EEE dd MMM, YYYY "
+                      }}
+                      <span class="fw-bold"
+                        >({{ this.leaveDetailData?.upcoming_leave }})</span
+                      >
+                      }@else { - }
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>
+                      No of Days
+                      <span class="text-danger"
+                        >(Exclude Sundays and company holidays.)</span
+                      >
+                    </th>
+                    <td>
+                      {{ this.leaveDetailData?.no_of_days }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>No. of Sunday included In Leaves :</th>
+                    <td>
+                      {{ this.leaveDetailData?.number_of_sundays }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>No. of Company Hoilday included In Leaves :</th>
+                    <td>
+                      {{ this.leaveDetailData?.number_of_holidays }}
+                      <!-- <select
+                        id="t-status"
+                        data-choices=""
+                        data-choices-search-false=""
+                        aria-label="Default select example"
+                        class="form-select"
+                      >
+                        <option value="">Status</option>
+                        <option value="New" selected="">New</option>
+                        <option value="Open">Open</option>
+                        <option value="Inprogress">Inprogress</option>
+                        <option value="Closed">Closed</option>
+                      </select> -->
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Reason :</th>
+                    <td>
+                      {{ this.leaveDetailData?.reason }}
+                      <!-- <span id="t-priority" class="badge bg-danger">High</span> -->
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Applied On :</th>
+                    <td id="c-date">
+                      {{
+                        this.leaveDetailData?.created_at
+                          | date : "EEE dd MMM, YYYY , h:mm a"
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <div class="text-end">
+                      <button
+                        class="btn btn-success me-1"
+                        (click)="updateLeaveStatus('Approved')"
+                      >
+                        <i class="bx bx-check align-baseline me-1"></i>
+                        Approved
+                      </button>
+
+                      <button
+                        class="btn btn-danger me-1"
+                        (click)="template.show()"
+                      >
+                        <i class="ri-close-line align-baseline me-1"></i>
+                        Declined
+                      </button>
+                    </div>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-8">
+          <div class="card-header d-flex align-items-center gap-2">
+            <h5 class="card-title flex-grow-1 mb-0">Leave Type Detail</h5>
+            <div class="flex-shrink-0">
+              <span class="badge bg-danger-subtle text-danger"></span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table
+                class="table align-middle table-nowrap table-borderless mb-0"
+              >
+                <thead class="table-active">
+                  <tr>
+                    <th>Leave Type Name</th>
+                    <th>No. Of Taken Leaves</th>
+                    <th>Remaining Leaves</th>
+                    <th class="text-end">Total Leaves</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (data of leaveTypesData; track $index) {
+                  <tr class="product">
+                    <td>
+                      {{ data.name }}
+                    </td>
+                    <td>
+                      <span class="product-price">{{
+                        data.no_of_days_taken
+                      }}</span>
+                    </td>
+                    <td>
+                      {{ data.remaining_leave }}
+                    </td>
+                    <td class="fw-medium text-end">
+                      <span class="product-line-price">{{
+                        data.total_leave_days
+                      }}</span>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+              <div
+                id="products-list-total"
+                class="border-top border-top-dashed mt-2"
+              >
+                <table
+                  class="table table-borderless table-nowrap align-middle mb-0 ms-auto"
+                  style="width: 250px"
+                >
+                  <tbody>
+                    <tr>
+                      <td>Total Leaves Taken</td>
+                      <td class="text-end">
+                        {{ getTotal("no_of_days_taken") }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Total Remaining Leaves</td>
+                      <td class="text-end">
+                        {{ getTotal("remaining_leave") }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Total Leaves</td>
+
+                      <td class="text-end">
+                        {{ getTotal("total_leave_days") }}
+                      </td>
+                    </tr>
+                    <!-- <tr>
+                      <td>Shipping Charge</td>
+                      <td class="text-end">$65.00</td>
+                    </tr>
+                    <tr class="border-top border-top-dashed fs-base">
+                      <th scope="row">Total Amount</th>
+                      <th class="text-end">$2,050.20</th>
+                    </tr> -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Varying Modal Content -->
+<!-- Default Modals -->
+<div>
+  <div
+    bsModal
+    #template="bs-modal"
+    id="myModal"
+    class="modal fade"
+    tabindex="-1"
+    aria-labelledby="myModalLabel"
+    aria-hidden="true"
+    style="display: none"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myModalLabel">Decline Leave Request</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="template.hide()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="VertimeassageInput" class="form-label">Reason</label
+            ><textarea
+              [(ngModel)]="reason"
+              id="VertimeassageInput"
+              rows="3"
+              placeholder="Enter your message"
+              class="form-control"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" (click)="template.hide()">
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="updateLeaveStatus('Declined')"
+          >
+            Declined
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+</div>

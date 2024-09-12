@@ -52,7 +52,7 @@ export class CompanyLoginComponent {
 
   ngOnInit(): void {
     this.deviceInfo = this.getDeviceInfo();
-    console.log(this.deviceInfo);
+
     if (
       localStorage.getItem("currentUser") &&
       localStorage.getItem("access_token")
@@ -133,7 +133,7 @@ export class CompanyLoginComponent {
   requestPermission() {
     this.afMessaging.requestToken.subscribe(
       (token) => {
-        console.log("Admin FCM Token:", token);
+        // console.log("Admin FCM Token:", token);
         // Save the token to the backend
         const user_id = localStorage.getItem("currentUser");
 
@@ -158,7 +158,7 @@ export class CompanyLoginComponent {
         navigator.serviceWorker
           .register("firebase-messaging-sw.js")
           .then((registration) => {
-            console.log("Service Worker Registered", registration);
+            // console.log("Service Worker Registered", registration);
           })
           .catch((error) => {
             console.error("Service Worker Registration Failed", error);

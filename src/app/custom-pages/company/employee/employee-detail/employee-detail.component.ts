@@ -114,8 +114,8 @@ export class EmployeeDetailComponent {
         (res: any) => {
           this.toggleSpinner(false);
           if (res && res.status) {
-            this.checkIndetails = res.data;
-
+            this.checkIndetails = res.data[0];
+            console.log(this.checkIndetails);
             // this.formattedTotalTime = this.calculateTotalTimeForAll();
             // console.log(this.formattedTotalTime);
             // if (
@@ -246,7 +246,6 @@ export class EmployeeDetailComponent {
     if (!time) {
       return "Invalid time";
     }
-
     // Assuming time format is "HH:mm:ss" or similar
     const [hour, minute, second] = time.split(":");
     const period = +hour >= 12 ? "PM" : "AM";

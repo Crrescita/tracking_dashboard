@@ -181,9 +181,9 @@
                     Total Days
                   </th>
 
-                  <th class="sort cursor-pointer" (click)="onSort('status')">
+                  <!-- <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
-                  </th>
+                  </th> -->
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('created_at')"
@@ -223,7 +223,7 @@
                     {{ data.total_leave_days }}
                   </td>
 
-                  <td class="discount">
+                  <!-- <td class="discount">
                     <div class="form-switch form-switch-md mb-3">
                       <input
                         type="checkbox"
@@ -249,7 +249,7 @@
                         </span>
                       </label>
                     </div>
-                  </td>
+                  </td> -->
                   <td class="category">
                     {{ data.created_at | date : "dd MMM, YYYY" }}
                   </td>
@@ -453,7 +453,7 @@
             />
           </div>
 
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="statuss" class="form-label"
               >Status <span class="text-danger">*</span></label
             >
@@ -478,7 +478,7 @@
             f['status'].touched) {
             <div class="invalid-text">Status is required.</div>
             }
-          </div>
+          </div> -->
         </div>
         <div class="modal-footer">
           <div class="hstack gap-2 justify-content-end">

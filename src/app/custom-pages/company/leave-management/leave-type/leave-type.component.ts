@@ -67,7 +67,7 @@ export class LeaveTypeComponent {
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.required, Validators.maxLength(45)]],
       totalLeaveDays: ["", [Validators.required]],
-      status: ["", Validators.required],
+      status: [""],
     });
 
     // this.formGroup.get("totalLeaveDays")?.valueChanges.subscribe((value) => {
@@ -270,8 +270,8 @@ export class LeaveTypeComponent {
       company_id: this.company_id,
       name: this.f["name"].value,
       total_leave_days: this.f["totalLeaveDays"].value,
-      // status: 'active',
-      status: this.f["status"].value,
+      status: "active",
+      // status: this.f["status"].value,
     };
     return formData;
   }

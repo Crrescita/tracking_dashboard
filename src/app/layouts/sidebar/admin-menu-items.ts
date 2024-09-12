@@ -17,4 +17,11 @@ export const ADMIN_MENU: MenuItem[] = [
     icon: "ri-building-4-line",
     // parentId: 75,
   },
+  {
+    id: 2,
+    label: "MENUITEMS.EXTRAPAGES.LIST.LOGS",
+    link: "/logs",
+    icon: "ri-building-4-line",
+    // parentId: 75,
+  },
 ];

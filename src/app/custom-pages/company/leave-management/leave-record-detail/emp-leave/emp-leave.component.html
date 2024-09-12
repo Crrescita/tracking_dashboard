@@ -1,0 +1,577 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Leave Record"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row">
+  <div class="col-xl-3">
+    <div class="card">
+      <div class="card-body">
+        <!-- <div class="d-flex mb-3">
+          <div dropdown class="dropdown flex-shrink-0 ms-auto">
+            <button
+              dropdownToggle
+              class="btn btn-light btn-icon btn-sm"
+              type="button"
+            >
+              <i class="bi bi-share"></i>
+            </button>
+            <ul *bsDropdownMenu class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  ><i class="bi bi-facebook me-1 align-baseline"></i>
+                  Facebook</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  ><i class="bi bi-whatsapp me-1 align-baseline"></i>
+                  Whatsapp</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  ><i class="bi bi-instagram me-1 align-baseline"></i>
+                  Instagram</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div> -->
+        <div class="text-center border-bottom border-dashed pb-4">
+          @if(empLeaveRecordData?.image){
+          <img
+            src="{{ empLeaveRecordData.image }}"
+            alt=""
+            class="avatar-lg rounded-circle p-1 img-thumbnail"
+          />
+          } @else {
+          <img
+            src="assets/images/users/avatar-1.jpg"
+            alt=""
+            id="user-img"
+            class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+          />
+          }
+          <div class="mt-3">
+            <h5>
+              {{ empLeaveRecordData?.name }}
+              <!-- <i
+                class="bi bi-patch-check-fill align-baseline text-info ms-1"
+              ></i> -->
+            </h5>
+            <p class="text-muted">{{ empLeaveRecordData?.designation }}</p>
+          </div>
+
+          <!-- <div class="d-flex gap-2 mt-4">
+                        <button type="button" class="btn btn-subtle-secondary custom-toggle w-50" (click)="Followbtn($event)">
+                            <span class="icon-on"><i class="bi bi-person-plus align-baseline me-1"></i> Follow</span>
+                            <span class="icon-off"><i class="bi bi-person-x align-baseline me-1"></i> Unfollow</span>
+                        </button>
+                        <button type="button" class="btn btn-primary text-truncate w-50"><i class="bi bi-chat-left-text align-baseline me-1"></i> Contact Us</button>
+                    </div> -->
+        </div>
+
+        <div class="border-bottom border-dashed py-4">
+          <h5 class="card-title mb-3">Information</h5>
+          <div class="table-responsive">
+            <table class="table table-borderless table-sm align-middle mb-0">
+              <tbody>
+                <tr>
+                  <th class="ps-0" scope="row">Designation</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.designation_name }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Department</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.department_name }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Phone No</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.mobile }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Gender</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.gender }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th class="ps-0" scope="row">Birth of Date</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.dob | date : "dd MMM, YYYY" }}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th class="ps-0" scope="row">Email</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.email }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Address</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.address }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Joining Date</th>
+                  <td class="text-muted text-end">
+                    {{ employeeDetail?.joining_date | date : "dd MMM, YYYY" }}
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <th>Social Media</th>
+                  <td>
+                    <div class="d-flex flex-wrap justify-content-end gap-2">
+                      <a href="javascript:void(0);" class="avatar-xs d-block">
+                        <span
+                          class="avatar-title rounded-circle bg-secondary-subtle text-dark"
+                        >
+                          <i class="bi bi-github"></i>
+                        </span>
+                      </a>
+                      <a href="javascript:void(0);" class="avatar-xs d-block">
+                        <span
+                          class="avatar-title rounded-circle bg-primary-subtle text-primary"
+                        >
+                          <i class="bi bi-facebook"></i>
+                        </span>
+                      </a>
+                      <a href="javascript:void(0);" class="avatar-xs d-block">
+                        <span
+                          class="avatar-title rounded-circle bg-success-subtle text-success"
+                        >
+                          <i class="bi bi-dribbble"></i>
+                        </span>
+                      </a>
+                      <a href="javascript:void(0);" class="avatar-xs d-block">
+                        <span
+                          class="avatar-title rounded-circle bg-danger-subtle text-danger"
+                        >
+                          <i class="bi bi-instagram"></i>
+                        </span>
+                      </a>
+                    </div>
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end card-->
+  </div>
+  <!--end col-->
+
+  <div class="col-xxl-9">
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-4">
+      <ul
+        class="nav nav-pills arrow-navtabs nav-secondary gap-2 flex-grow-1 order-2 order-lg-1"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link active"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'personalDetails'"
+            (click)="changeTab('personalDetails')"
+            role="tab"
+            aria-selected="true"
+          >
+            Leave Details
+          </a>
+        </li>
+        <!-- <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'changePassword'"
+            (click)="changeTab('changePassword')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Approved Leave
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'education'"
+            (click)="changeTab('education')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Education
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'securityPrivacy'"
+            (click)="changeTab('securityPrivacy')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Security & Privacy
+          </a>
+        </li> -->
+      </ul>
+      <div class="flex-shrink-0 ms-auto order-1 order-lg-2">
+        <a routerLink="/edit-employee/{{ this.id }}" class="btn btn-secondary"
+          ><i class="bi bi-pencil-square align-baseline me-1"></i> Edit
+          Profile</a
+        >
+      </div>
+    </div>
+    <div class="card">
+      <div class="tab-content">
+        <div
+          [hidden]="currentTab !== 'personalDetails'"
+          class="tab-pane active"
+          id="personalDetails"
+          role="tabpanel"
+        >
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0">Leave Type Detail</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table
+                  class="table align-middle table-nowrap table-borderless mb-0"
+                >
+                  <thead class="table-active">
+                    <tr>
+                      <th>Leave Type Name</th>
+                      <th>No. Of Taken Leaves</th>
+                      <th>Remaining Leaves</th>
+                      <th class="text-end">Total Leaves</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (data of leaveTypesData; track $index) {
+                    <tr class="product">
+                      <td>
+                        {{ data.name }}
+                      </td>
+                      <td>
+                        <span class="product-price">{{
+                          data.no_of_days_taken
+                        }}</span>
+                      </td>
+                      <td>
+                        {{ data.remaining_leave }}
+                      </td>
+                      <td class="fw-medium text-end">
+                        <span class="product-line-price">{{
+                          data.total_leave_days
+                        }}</span>
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+                <div
+                  id="products-list-total"
+                  class="border-top border-top-dashed mt-2"
+                >
+                  <table
+                    class="table table-borderless table-nowrap align-middle mb-0 ms-auto"
+                    style="width: 250px"
+                  >
+                    <tbody>
+                      <tr>
+                        <td>Total Leaves Taken</td>
+                        <td class="text-end">
+                          {{ getTotal("no_of_days_taken") }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Total Remaining Leaves</td>
+                        <td class="text-end">
+                          {{ getTotal("remaining_leave") }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Total Leaves</td>
+
+                        <td class="text-end">
+                          {{ getTotal("total_leave_days") }}
+                        </td>
+                      </tr>
+                      <!-- <tr>
+                                <td>Shipping Charge</td>
+                                <td class="text-end">$65.00</td>
+                              </tr>
+                              <tr class="border-top border-top-dashed fs-base">
+                                <th scope="row">Total Amount</th>
+                                <th class="text-end">$2,050.20</th>
+                              </tr> -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          [hidden]="currentTab !== 'changePassword'"
+          class="tab-pane active"
+          id="changePassword"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Changes Password</h6>
+          </div>
+          <div class="card-body"></div>
+        </div>
+        <!--end tab-pane-->
+        <div
+          [hidden]="currentTab !== 'education'"
+          class="tab-pane active"
+          id="education"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Education</h6>
+          </div>
+          <div class="card-body"></div>
+        </div>
+        <!--end tab-pane-->
+        <div
+          [hidden]="currentTab !== 'securityPrivacy'"
+          class="tab-pane active"
+          id="securityPrivacy"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Security & Privacy</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-4 pb-2">
+              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0">
+                <div class="flex-grow-1">
+                  <h6 class="fs-md mb-1">Two-factor Authentication</h6>
+                  <p class="text-muted">
+                    Two-factor authentication is an enhanced security. Once
+                    enabled, you'll be required to give two types of
+                    identification when you log into Google Authentication and
+                    SMS are Supported.
+                  </p>
+                </div>
+                <div class="flex-shrink-0 ms-sm-3">
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
+                    >Enable Two-factor Authentication</a
+                  >
+                </div>
+              </div>
+              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
+                <div class="flex-grow-1">
+                  <h6 class="fs-md mb-1">Secondary Verification</h6>
+                  <p class="text-muted">
+                    The first factor is a password and the second commonly
+                    includes a text with a code sent to your smartphone, or
+                    biometrics using your fingerprint, face, or retina.
+                  </p>
+                </div>
+                <div class="flex-shrink-0 ms-sm-3">
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
+                    >Set up secondary method</a
+                  >
+                </div>
+              </div>
+              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
+                <div class="flex-grow-1">
+                  <h6 class="fs-md mb-1">Backup Codes</h6>
+                  <p class="text-muted mb-sm-0">
+                    A backup code is automatically generated for you when you
+                    turn on two-factor authentication through your iOS or
+                    Android Twitter app. You can also generate a backup code on
+                    twitter.com.
+                  </p>
+                </div>
+                <div class="flex-shrink-0 ms-sm-3">
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
+                    >Generate backup codes</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <h5 class="card-title text-decoration-underline mb-3">
+                Application Notifications:
+              </h5>
+              <ul class="list-unstyled mb-0">
+                <li class="d-flex">
+                  <div class="flex-grow-1">
+                    <label for="directMessage" class="form-check-label fs-md"
+                      >Direct messages</label
+                    >
+                    <p class="text-muted">Messages from people you follow</p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="directMessage"
+                        checked
+                      />
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex mt-2">
+                  <div class="flex-grow-1">
+                    <label
+                      class="form-check-label fs-md mb-1"
+                      for="desktopNotification"
+                    >
+                      Show desktop notifications
+                    </label>
+                    <p class="text-muted">
+                      Choose the option you want as your default setting. Block
+                      a site: Next to "Not allowed to send notifications," click
+                      Add.
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="desktopNotification"
+                        checked
+                      />
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex mt-2">
+                  <div class="flex-grow-1">
+                    <label
+                      class="form-check-label fs-md mb-1"
+                      for="emailNotification"
+                    >
+                      Show email notifications
+                    </label>
+                    <p class="text-muted">
+                      Under Settings, choose Notifications. Under Select an
+                      account, choose the account to enable notifications for.
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="emailNotification"
+                      />
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex mt-2">
+                  <div class="flex-grow-1">
+                    <label
+                      class="form-check-label fs-md mb-1"
+                      for="chatNotification"
+                    >
+                      Show chat notifications
+                    </label>
+                    <p class="text-muted">
+                      To prevent duplicate mobile notifications from the Gmail
+                      and Chat apps, in settings, turn off Chat notifications.
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="chatNotification"
+                      />
+                    </div>
+                  </div>
+                </li>
+                <li class="d-flex mt-2">
+                  <div class="flex-grow-1">
+                    <label
+                      class="form-check-label fs-md mb-1"
+                      for="purchaesNotification"
+                    >
+                      Show purchase notifications
+                    </label>
+                    <p class="text-muted">
+                      Get real-time purchase alerts to protect yourself from
+                      fraudulent charges.
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="purchaesNotification"
+                      />
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="card-title text-decoration-underline mb-3">
+                Delete This Account:
+              </h5>
+              <p class="text-muted">
+                Go to the Data & Privacy section of your profile Account. Scroll
+                to "Your data & privacy options." Delete your Profile Account.
+                Follow the instructions to delete your account :
+              </p>
+              <div>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="passwordInput"
+                  placeholder="Enter your password"
+                  value="richard@321654987"
+                  style="max-width: 265px"
+                />
+              </div>
+              <div class="hstack gap-2 mt-3">
+                <a href="javascript:void(0);" class="btn btn-subtle-danger"
+                  >Close & Delete This Account</a
+                >
+                <a href="javascript:void(0);" class="btn btn-light">Cancel</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end tab-pane-->
+      </div>
+    </div>
+  </div>
+</div>
+<!--end row-->

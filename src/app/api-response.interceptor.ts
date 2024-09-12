@@ -81,7 +81,9 @@ export class ApiResponseInterceptor implements HttpInterceptor {
       switch (error.status) {
         case 400:
           this.toasterService.error(
-            "Bad Request: " + (error.error.message || "Bad request")
+            error.error.error
+              ? "Error: " + error.error.error
+              : "Bad Request: " + (error.error.message || "Bad request")
           );
           break;
         case 401:

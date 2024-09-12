@@ -83,7 +83,6 @@ export class TopbarComponent {
 
     this.authService.currentMessage.subscribe((message) => {
       if (message) {
-        console.log("Received notification in foreground:", message);
         this.getNotification();
       }
     });
@@ -165,8 +164,6 @@ export class TopbarComponent {
         .map((title) => groupedNotifications[title]);
 
       this.notificationList = [...newNotifications, ...otherNotifications];
-
-      console.log(this.notificationList);
 
       const addedItems = res.data.length;
       this.totalNotify += addedItems;

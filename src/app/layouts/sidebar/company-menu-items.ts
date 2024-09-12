@@ -72,6 +72,13 @@ export const COMPANY_MENU: MenuItem[] = [
         parentId: 8,
         icon: " ri-file-user-line",
       },
+      {
+        id: 10,
+        label: "MENUITEMS.COMPANY.LIST.LEAVE-RECORD",
+        link: "/leave-record",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
     ],
   },
 

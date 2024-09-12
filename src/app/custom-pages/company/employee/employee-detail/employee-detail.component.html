@@ -68,7 +68,7 @@
             <h5>
               {{ employeeDetail?.name }}
             </h5>
-            <p class="text-muted">{{ employeeDetail?.designation }}</p>
+            <p class="text-muted">{{ employeeDetail?.designation_name }}</p>
           </div>
           <div class="d-flex justify-content-center gap-2 mt-2">
             @if(employeeDetail?.mobile){
@@ -365,8 +365,12 @@
                         <td>{{ employeeDetail?.gender }}</td>
                       </tr>
                       <tr>
+                        <th>Department</th>
+                        <td>{{ employeeDetail?.department_name }}</td>
+                      </tr>
+                      <tr>
                         <th>Designation</th>
-                        <td>{{ employeeDetail?.designation }}</td>
+                        <td>{{ employeeDetail?.designation_name }}</td>
                       </tr>
                       <tr>
                         <th>Employee id</th>
