@@ -464,7 +464,7 @@ export class TimelineComponent implements OnInit {
       });
 
       Promise.all(geocodingPromises).then(() => {
-        this.sendCoordinatesToAPI(this.uniqueCoordinates);
+        // this.sendCoordinatesToAPI(this.uniqueCoordinates);
 
         // Only create markers for the first and last entries
         const firstCoordinate = this.employeeTimeline[0];
