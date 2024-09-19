@@ -135,6 +135,7 @@ export class AttendanceMonthlyComponent implements OnInit {
       this.attendanceMonthyData = this.attendanceMonthyDataList;
     }
     // noResultElement
+
     this.updateNoResultDisplay();
   }
 
@@ -177,33 +178,94 @@ export class AttendanceMonthlyComponent implements OnInit {
   //   XLSX.writeFile(workbook, "AttendanceData.xlsx");
   // }
 
+  // exportTableToExcel(): void {
+  //   // Select the table element
+  //   const tableElement = document.querySelector("table");
+
+  //   // Generate the worksheet from the table
+  //   const worksheet: XLSX.WorkSheet = XLSX.utils.table_to_sheet(tableElement);
+
+  //   // Create a new workbook and add the worksheet
+  //   const workbook: XLSX.WorkBook = {
+  //     Sheets: { Sheet1: worksheet },
+  //     SheetNames: ["Sheet1"],
+  //   };
+
+  //   // Get the month and year for the header and filename
+  //   const date = new Date(this.selectedDate);
+  //   const month = date.toLocaleString("default", { month: "long" });
+  //   const year = date.getFullYear();
+  //   const headerText = `Attendance Report - ${month} ${year}`;
+
+  //   // Insert the header into the worksheet
+  //   worksheet["A1"] = { v: headerText, t: "s" }; // Custom header
+  //   XLSX.utils.sheet_add_aoa(worksheet, [[headerText]], { origin: "A1" });
+
+  //   // Update the filename to include the month and year
+  //   const filename = `Attendance_${month}_${year}.xlsx`;
+
+  //   // Write the workbook to a file
+  //   XLSX.writeFile(workbook, filename);
+  // }
+
   exportTableToExcel(): void {
-    // Select the table element
-    const tableElement = document.querySelector("table");
+    // Create a new workbook
+    const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
 
-    // Generate the worksheet from the table
-    const worksheet: XLSX.WorkSheet = XLSX.utils.table_to_sheet(tableElement);
-
-    // Create a new workbook and add the worksheet
-    const workbook: XLSX.WorkBook = {
-      Sheets: { Sheet1: worksheet },
-      SheetNames: ["Sheet1"],
-    };
-
-    // Get the month and year for the header and filename
+    // Get the month and year for the filename
     const date = new Date(this.selectedDate);
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
-    const headerText = `Attendance Report - ${month} ${year}`;
-
-    // Insert the header into the worksheet
-    worksheet["A1"] = { v: headerText, t: "s" }; // Custom header
-    XLSX.utils.sheet_add_aoa(worksheet, [[headerText]], { origin: "A1" });
-
-    // Update the filename to include the month and year
     const filename = `Attendance_${month}_${year}.xlsx`;
 
-    // Write the workbook to a file
+    // Loop through each employee in the attendance data
+    this.attendanceMonthyData.forEach((employee: any, index: any) => {
+      // Create a new worksheet for the employee
+      const worksheetData = [
+        ["ID", "Name", "Mobile", "Email", "Designation", "Employee ID"],
+        [
+          employee.id,
+          employee.name,
+          employee.mobile,
+          employee.email,
+          employee.designation,
+          employee.employee_id,
+        ],
+        [],
+        [
+          "Date",
+          "Check-in Status",
+          "Attendance Status",
+          "Time Difference",
+          "Total Duration",
+          "Check-in Time",
+          "Check-out Time",
+        ],
+      ];
+
+      // Add attendance data to the worksheet
+      employee.attendance.forEach((record: any) => {
+        worksheetData.push([
+          record.date,
+          record.checkin_status,
+          record.attendance_status,
+          record.timeDifference,
+          record.totalDuration,
+          record.last_check_in_time,
+          record.last_check_out_time,
+        ]);
+      });
+
+      // Create the worksheet and add it to the workbook
+      const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+      const sheetName = employee.name
+        ? employee.name.replace(/[^a-zA-Z0-9]/g, "")
+        : `Employee${index + 1}`;
+      workbook.SheetNames.push(sheetName);
+      workbook.Sheets[sheetName] = worksheet;
+    });
+
+    // Write the workbook to an Excel file
     XLSX.writeFile(workbook, filename);
   }
 
