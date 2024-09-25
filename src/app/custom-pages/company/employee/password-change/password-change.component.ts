@@ -4,6 +4,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
+import { cloneDeep } from "lodash";
 
 @Component({
   selector: "app-password-change",
@@ -28,8 +29,9 @@ export class PasswordChangeComponent implements OnInit {
   //table
   term: string = "";
   currentPage = 1;
+  currentPagesss = 3;
   totalItems = 0;
-  itemsPerPage = 5;
+  itemsPerPage = 10;
   endItem: any;
 
   formGroup!: FormGroup;
@@ -125,8 +127,9 @@ export class PasswordChangeComponent implements OnInit {
           this.loginDetails = res.data;
           this.loginDetails = res.data || [];
           this.loginDetailsList = res.data || [];
-          this.updatePagination();
-          this.updateDisplayedItems();
+          this.loginDetails = cloneDeep(this.loginDetailsList.slice(0, 10));
+          // this.updatePagination();
+          // this.updateDisplayedItems();
         } else {
           this.loginDetails = [];
         }

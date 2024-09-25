@@ -260,7 +260,6 @@ export class AttendanceListComponent implements OnInit {
     const selectedDesignationsLower = this.selectedDesignations
       ? this.selectedDesignations.map((d: string) => d.toLowerCase())
       : [];
-    console.log(selectedDesignationsLower);
     const selectedDepartmentLower = this.selectedDepartments
       ? this.selectedDepartments.map((d: string) => d.toLowerCase())
       : [];
@@ -301,6 +300,14 @@ export class AttendanceListComponent implements OnInit {
 
     // Update no result display
     this.updateNoResultDisplay();
+  }
+
+  reset() {
+    this.term = "";
+    this.selectedStatus = "";
+    this.selectedDepartments = [];
+    this.selectedDesignations = [];
+    this.attendanceData = this.attendanceDataList;
   }
 
   // no result

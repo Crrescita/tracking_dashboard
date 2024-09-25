@@ -13,8 +13,45 @@
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
               Attendance
-              <span class="badge bg-dark-subtle text-dark ms-1"></span>
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                attendanceMonthyData?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange($event)"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="attendanceMonthyDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
             </h5>
+            <p class="text-muted mb-0 mt-2">
+              Showing Result of Month:
+              <span class="fw-bold">
+                {{ this.formattedDate | date : " MMM , yyyy" }}</span
+              >
+            </p>
           </div>
 
           <div class="flex-shrink-0">
@@ -66,6 +103,20 @@
                 <i class="ri-file-excel-2-fill align-bottom me-1"></i> Download
               </button>
 
+              <div class="col-lg-auto">
+                <div class="hstack flex-wrap gap-2">
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-info me-1"
+                      (click)="openEnd()"
+                    >
+                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <!-- <div class="col-lg-auto">
                 <div class="hstack flex-wrap gap-2">
                   <div>
@@ -89,50 +140,169 @@
                 Product
               </button> -->
             </div>
+            <div class="d-flex justify-content-end my-3">
+              <h6 class="my-2">
+                T.P<small class="text-muted"> (Total Present)</small>
+              </h6>
+              <h6 class="my-2 mx-4">
+                T.A<small class="text-muted"> (Total Absent)</small>
+              </h6>
+              <h6 class="my-2">
+                T.L<small class="text-muted"> (Total Leave)</small>
+              </h6>
+              <h6 class="my-2 mx-4">
+                T.H<small class="text-muted"> (Total Hoilday)</small>
+              </h6>
+            </div>
           </div>
         </div>
         <div class="card-body">
-          <div class="table-responsive table-card mt-1 px-2">
+          <div class="table-responsive table-card mt-1">
             <table
-              class="table table-nowrap table-striped-columns mb-0 table-fixed"
+              class="table table-nowrap table-striped-columns mb-0 table-fixed table-bordered"
             >
-              <thead class="table-light">
+              <thead class="table-light text-center">
                 <tr>
                   <th scope="col">Name</th>
 
                   @for ( dayInfo of daysInMonth; track $index) {
-                  <th scope="col">
+                  <th scope="col ">
                     {{ dayInfo.date }} <br />
                     <small>{{ dayInfo.day }}</small>
                   </th>
                   }
+                  <th scope="col bg-white ">
+                    <span class="fw-bold fs-lg">T.P</span>
+                  </th>
+                  <th scope="col ">
+                    <span class="fw-bold fs-lg">T.A</span>
+                  </th>
+                  <th scope="col"><span class="fw-bold fs-lg">T.L</span></th>
+                  <th scope="col"><span class="fw-bold fs-lg">T.H</span></th>
                 </tr>
               </thead>
               <tbody>
                 @for (item of attendanceMonthyData; track $index) {
+
                 <tr>
                   <td>
-                    {{ item.name }}
+                    <div class="d-flex align-items-center">
+                      @if(item.image){
+
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="{{ item.image }}"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+
+                      }@else {
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="assets/images/users/avatar-1.jpg"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+
+                      }
+                      <div>
+                        <h6 class="mb-0">
+                          <a class="text-reset products">{{ item.name }}</a>
+                        </h6>
+                        <p class="text-muted mb-0">{{ item.designation }}</p>
+                      </div>
+                    </div>
+                    <!-- {{ item.name }} -->
                   </td>
                   @for ( attendance of item.attendance; track $index) { @if(
                   attendance.attendance_status == "Present"){
                   <td
                     class="cursor-pointer"
-                    (click)="template.show(); setModalData(attendance)"
+                    (click)="
+                      template.show();
+                      setModalData(attendance, item.name, item.image)
+                    "
                   >
-                    <span class="text-success">&#10004;</span>
+                    <div class="flex-shrink-0 align-self-center">
+                      <div class="avatar-xs">
+                        <span
+                          class="avatar-title rounded-circle bg-light text-success"
+                        >
+                          &#10004;
+                        </span>
+                      </div>
+                    </div>
+                    <!-- <span class="text-success">&#10004;</span> -->
                   </td>
                   <!-- <i class="ri-check-fill align-bottom me-1 text-success"></i> -->
                   } @else if (attendance.attendance_status == "Leave") {
                   <td>
-                    <span class="text-warning fw-bold">L</span>
+                    <div class="flex-shrink-0 align-self-center">
+                      <div class="avatar-xs">
+                        <span
+                          class="avatar-title rounded-circle bg-light text-warning"
+                        >
+                          L
+                        </span>
+                      </div>
+                    </div>
+                    <!-- <span class="text-warning fw-bold">L</span> -->
+                  </td>
+                  } @else if (attendance.attendance_status == "Holiday") {
+                  <td>
+                    <div class="flex-shrink-0 align-self-center">
+                      <div
+                        class="avatar-xs cursor-pointer"
+                        data-bs-toggle="tooltip"
+                        placement="top"
+                        tooltip="{{ attendance.holiday_name }}"
+                      >
+                        <span
+                          class="avatar-title rounded-circle bg-light text-primary"
+                        >
+                          H
+                        </span>
+                      </div>
+                    </div>
+                    <!-- <span class="text-success fw-bold">H</span> -->
                   </td>
                   } @else {
                   <td>
-                    <span class="text-danger">&#10007;</span>
+                    <div class="flex-shrink-0 align-self-center">
+                      <div class="avatar-xs">
+                        <span
+                          class="avatar-title rounded-circle bg-light text-danger"
+                        >
+                          &#10007;
+                        </span>
+                      </div>
+                    </div>
+                    <!-- <span class="text-danger">&#10007;</span> -->
                   </td>
                   <!-- <i class="ri-close-line align-bottom me-1 text-danger"></i> -->
                   } }
+                  <td>
+                    <span class="fw-bold fs-lg">{{
+                      item.totals.totalPresent
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="fw-bold fs-lg">{{
+                      item.totals.totalAbsent
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="fw-bold fs-lg">{{
+                      item.totals.totalLeave
+                    }}</span>
+                  </td>
+                  <td>
+                    <span class="fw-bold fs-lg">{{
+                      item.totals.totalHolidays
+                    }}</span>
+                  </td>
                 </tr>
                 }
               </tbody>
@@ -181,7 +351,20 @@
               </div>
             </div>
 
-            <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
+            <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(attendanceMonthyDataList?.length){
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
+                [totalItems]="attendanceMonthyDataList?.length"
+                [itemsPerPage]="currentItemsPerPage"
+                (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
+              ></pagination>
+              }
+            </div>
+
+            <!-- <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
               <div class="d-flex me-3 mt-1 mb-3 justify-content-center">
                 <div class="text-muted text-center text-sm-start me-2">
                   Items per page :
@@ -213,7 +396,7 @@
                 [itemsPerPage]="10"
                 (pageChanged)="pageChanged($event)"
               ></pagination>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -249,23 +432,71 @@
               <div class="card">
                 <div class="card-header">
                   <h6 class="card-title mb-0">Timesheet</h6>
-                  <span class="text-mute me-2">{{
-                    this.timeLineData.date | date : "EEE, MMM d, y"
-                  }}</span>
-                  <span
-                    class="badge"
-                    [ngClass]="
-                      this.timeLineData.checkin_status == 'Early'
-                        ? 'bg-warning'
-                        : this.timeLineData.checkin_status == 'Late'
-                        ? 'bg-danger'
-                        : 'bg-success'
-                    "
-                    >{{ this.timeLineData.checkin_status }}
-                    @if(this.timeLineData.checkin_status != 'On-Time'){ by
-                    {{ this.timeLineData.timeDifference }}
+
+                  <div class="d-flex align-items-center mt-3">
+                    @if(this.timeLineData.userImage){
+
+                    <!-- <div class="avatar-sm bg-light rounded p-1 me-2">
+                      <img
+                        src="{{ this.timeLineData.userImage }}"
+                        alt=""
+                        class="img-fluid d-block"
+                      />
+
+                      
+                    </div> -->
+
+                    <img
+                      src="{{ this.timeLineData.userImage }}"
+                      alt=""
+                      class="avatar-sm rounded-circle p-1 img-thumbnail me-2"
+                    />
+
+                    }@else {
+                    <div class="avatar-sm bg-light rounded p-1 me-2">
+                      <img
+                        src="assets/images/users/avatar-1.jpg"
+                        alt=""
+                        class="img-fluid d-block"
+                      />
+                    </div>
+
                     }
-                  </span>
+                    <div>
+                      <h6 class="mb-0">
+                        <a class="text-reset products">{{
+                          this.timeLineData.userName
+                        }}</a>
+                      </h6>
+                      <span class="text-mute me-2">{{
+                        this.timeLineData.date | date : "EEE, MMM d, y"
+                      }}</span>
+                      <span
+                        class="badge"
+                        [ngClass]="
+                          this.timeLineData.checkin_status == 'Early'
+                            ? 'bg-warning'
+                            : this.timeLineData.checkin_status == 'Late'
+                            ? 'bg-danger'
+                            : 'bg-success'
+                        "
+                        >{{ this.timeLineData.checkin_status }}
+                        @if(this.timeLineData.checkin_status != 'On-Time'){ by
+                        {{ this.timeLineData.timeDifference }}
+                        }
+                      </span>
+                    </div>
+                  </div>
+                  <!-- <div class="mt-2">
+                    <img
+                      src="{{ this.timeLineData.userImage }}"
+                      alt="Header Avatar"
+                      class="rounded-circle avatar-sm header-profile-user"
+                    />
+                    <span class="card-title mb-0">{{
+                      this.timeLineData.userName
+                    }}</span>
+                  </div> -->
 
                   <!-- <p
                     [ngClass]="
@@ -370,3 +601,236 @@
   </div>
   <!-- /.modal -->
 </div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <p class="text-muted fw-medium text-uppercase mb-3">
+              Attendance Status
+            </p>
+            <select
+              class="form-control"
+              [(ngModel)]="selectedStatus"
+              (change)="filterdata()"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              <option value="">All</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Leave">Leave</option>
+            </select>
+          </div>
+        </div> -->
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Month</p>
+          <div class="input-group">
+            <input
+              type="text"
+              id="datepickers"
+              class="form-control"
+              showWeekNumbers="false"
+              bsDatepicker
+              [bsConfig]="bsConfig"
+              [(ngModel)]="selectedDate"
+              (bsValueChange)="onDateChange($event)"
+            />
+            <div class="input-group-append">
+              <label for="datepickers" class="input-group-text cursor-pointer">
+                <i class="ri-calendar-fill"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <label
+              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
+              >Ratings</label
+            >
+            <div class="vstack gap-2">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-all"
+                />
+                <label class="form-check-label" for="rating-all">
+                  Select All
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter1"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter1"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter2"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter2"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">4 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter3"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter3"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">3 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter4"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter4"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">2 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter5"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter5"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">1 & Up</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>
