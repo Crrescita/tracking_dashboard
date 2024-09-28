@@ -18,6 +18,7 @@ import { LeaveRequestDeatilComponent } from "./company/leave-management/leave-re
 import { LogsComponent } from "./administrator/logs/logs.component";
 import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
 import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
+import { DashboardComponent } from "./company/dashboard/dashboard.component";
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
   },
 
   // /company
+  { path: "dashboard", component: DashboardComponent },
   { path: "employee", component: EmployeeListComponent },
 
   { path: "add-employee", component: AddEmployeeComponent },

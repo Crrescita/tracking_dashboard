@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ApiService } from "../../../../core/services/api.service";
 import { ToastrService } from "ngx-toastr";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-leave-request-deatil",
@@ -24,7 +25,8 @@ export class LeaveRequestDeatilComponent implements OnInit {
     private route: ActivatedRoute,
     private api: ApiService,
     private router: Router,
-    public toastService: ToastrService
+    public toastService: ToastrService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -128,5 +130,9 @@ export class LeaveRequestDeatilComponent implements OnInit {
       this.toastService.error("The leave request has been declined.");
     }
     this.router.navigate(["leave-requests"]);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

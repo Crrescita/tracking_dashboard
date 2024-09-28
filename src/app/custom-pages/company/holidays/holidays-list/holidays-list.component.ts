@@ -4,6 +4,8 @@ import { ToastrService } from "ngx-toastr";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { cloneDeep } from "lodash";
 
 @Component({
   selector: "app-holidays-list",
@@ -18,6 +20,7 @@ export class HolidaysListComponent {
   masterSelected!: boolean;
   holidaysData: any = [];
   holidaysDataList: any = [];
+  filteredHoildayData: any = [];
   endItem: any;
 
   formGroup!: FormGroup;
@@ -32,13 +35,16 @@ export class HolidaysListComponent {
   deleteRecordModal?: ModalDirective;
   deleteId: any;
 
+  currentPage: number = 1;
   currentItemsPerPage = 10;
   itemsPerPageOptions = [10, 20, 30, 50];
 
   constructor(
     private api: ApiService,
     public toastService: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +52,14 @@ export class HolidaysListComponent {
       { label: "Employee Management" },
       { label: "Holiday", active: true },
     ];
+
+    this.route.queryParams.subscribe((params) => {
+      this.currentPage = +params["page"] || 1;
+      this.currentItemsPerPage = +params["itemsPerPage"] || 10;
+      this.term = params["term"] || "";
+      this.filterdata();
+      this.updatePaginatedData();
+    });
 
     const data = localStorage.getItem("currentUser");
     if (data) {
@@ -56,9 +70,6 @@ export class HolidaysListComponent {
     if (this.company_id) {
       this.getDepartment();
     }
-
-    this.getDepartment();
-
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
       date: ["", [Validators.required]],
@@ -83,8 +94,9 @@ export class HolidaysListComponent {
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);
-          this.holidaysData = res.data || [];
+          // this.holidaysData = res.data || [];
           this.holidaysDataList = res.data || [];
+          this.filterdata();
         } else {
           this.holidaysData = [];
           this.holidaysDataList = [];
@@ -296,24 +308,22 @@ export class HolidaysListComponent {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    this.endItem = event.page * event.itemsPerPage;
-    this.holidaysData = this.holidaysDataList.slice(startItem, this.endItem);
-  }
   term: any;
 
   // filterdata
+
   filterdata() {
+    let filteredData = this.holidaysDataList;
+
+    // Filter by term
     if (this.term) {
-      this.holidaysData = this.holidaysDataList.filter((el: any) =>
+      filteredData = filteredData.filter((el: any) =>
         el.name.toLowerCase().includes(this.term.toLowerCase())
       );
-    } else {
-      this.holidaysData = this.holidaysDataList;
     }
-    // noResultElement
-    this.updateNoResultDisplay();
+    this.filteredHoildayData = filteredData;
+    // Update paginated data based on current page
+    this.updatePaginatedData();
   }
 
   // no result
@@ -322,7 +332,7 @@ export class HolidaysListComponent {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.holidaysData.length === 0) {
+    if (this.holidaysData.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {
@@ -331,8 +341,42 @@ export class HolidaysListComponent {
     }
   }
 
-  onItemsPerPageChange(event: any): void {
-    this.currentItemsPerPage = +event.target.value;
-    this.pageChanged({ page: 1, itemsPerPage: this.currentItemsPerPage });
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
+  pageChanged(event: PageChangedEvent) {
+    this.currentPage = event.page;
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    const startItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const endItem = this.currentPage * this.currentItemsPerPage;
+
+    if (this.term) {
+      if (startItem >= this.filteredHoildayData.length) {
+        this.currentPage = 1;
+      }
+    }
+
+    const newStartItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const newEndItem = this.currentPage * this.currentItemsPerPage;
+
+    this.holidaysData = cloneDeep(
+      this.filteredHoildayData.slice(newStartItem, newEndItem)
+    );
+
+    this.updateNoResultDisplay();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        itemsPerPage: this.currentItemsPerPage,
+        term: this.term,
+      },
+      queryParamsHandling: "merge",
+    });
   }
 }

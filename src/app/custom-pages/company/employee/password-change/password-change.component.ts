@@ -1,6 +1,14 @@
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges,
+} from "@angular/core";
 import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
@@ -13,6 +21,7 @@ import { cloneDeep } from "lodash";
 })
 export class PasswordChangeComponent implements OnInit {
   @Input() companyId!: string;
+  @Input() employeeChange: any;
   fieldTextType!: boolean;
   fieldTextType1!: boolean;
   fieldTextType2!: boolean;
@@ -50,6 +59,19 @@ export class PasswordChangeComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes["employeeChange"] &&
+      !changes["employeeChange"].isFirstChange()
+    ) {
+      const newUrlId = changes["employeeChange"].currentValue;
+
+      this.urlId = newUrlId;
+
+      this.getemployeeLoginDetail();
+    }
+  }
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.urlId = params["id"] ? Number(params["id"]) : null;
@@ -60,6 +82,12 @@ export class PasswordChangeComponent implements OnInit {
     }
 
     this.initializeForm();
+  }
+
+  onEmployeeChange(newEmployeeData: any): void {
+    // this.employeeChange.emit(newEmployeeData);
+    console.log(newEmployeeData);
+    // this.urlId = newEmployeeId;
   }
 
   initializeForm() {

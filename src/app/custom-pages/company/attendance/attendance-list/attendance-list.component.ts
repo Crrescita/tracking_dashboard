@@ -5,6 +5,7 @@ import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { cloneDeep } from "lodash";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-attendance-list",
@@ -23,11 +24,16 @@ export class AttendanceListComponent implements OnInit {
 
   attendanceData: any = [];
   attendanceDataList: any = [];
+  filteredAttendanceData: any = [];
   endItem: any;
 
   checkInDetails: any[] = [];
   totalDuration: any;
   attendanceCount: any;
+
+  currentPage: number = 1;
+  currentItemsPerPage = 10;
+  itemsPerPageOptions = [10, 20, 30, 50];
 
   selectValue = [
     "Alaska",
@@ -54,9 +60,23 @@ export class AttendanceListComponent implements OnInit {
   departments: any[] = [];
   selectedDepartments: any[] = [];
   selectedDesignations: any[] = [];
+  selectedEmp: any[] = [];
   designations: any[] = [];
 
-  constructor(private api: ApiService) {
+  filterCounts = {
+    termCount: 0,
+    designationCount: 0,
+    departmentCount: 0,
+    statusCount: 0,
+    dateCount: 0,
+    empCount: 0,
+  };
+
+  constructor(
+    private api: ApiService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.bsConfig = {
       maxDate: new Date(),
       showWeekNumbers: false,
@@ -73,12 +93,6 @@ export class AttendanceListComponent implements OnInit {
       { label: "Employee", active: true },
     ];
 
-    this.selectedDate = new Date();
-
-    if (this.selectedDate) {
-      this.formattedDate = this.formatDate(this.selectedDate);
-    }
-
     const data = localStorage.getItem("currentUser");
 
     if (data) {
@@ -86,10 +100,44 @@ export class AttendanceListComponent implements OnInit {
       this.company_id = user.id;
     }
 
-    // Subscribe to the date change subject
+    // Check for query parameters and update state accordingly
+    this.route.queryParams.subscribe((params) => {
+      this.currentPage = +params["page"] || 1;
+      this.currentItemsPerPage = +params["itemsPerPage"] || 10;
+      this.term = params["term"] || "";
+      this.selectedDepartments = params["selectedDepartments"]
+        ? params["selectedDepartments"].split(",")
+        : [];
+      this.selectedDesignations = params["selectedDesignations"]
+        ? params["selectedDesignations"].split(",")
+        : [];
+      this.selectedStatus = params["selectedStatus"] || null;
+      this.selectedEmp = params["selectedEmp"]
+        ? params["selectedEmp"].split(",")
+        : [];
+
+      if (params["date"]) {
+        this.selectedDate = new Date(params["date"]);
+      } else {
+        this.selectedDate = new Date();
+      }
+      this.formattedDate = this.formatDate(this.selectedDate);
+      const today = new Date();
+      const isSameDay =
+        today.getFullYear() === this.selectedDate.getFullYear() &&
+        today.getMonth() === this.selectedDate.getMonth() &&
+        today.getDate() === this.selectedDate.getDate();
+
+      // Update the filter count based on the date comparison
+      this.filterCounts.dateCount = isSameDay ? 0 : 1;
+      this.filterdata();
+      this.updatePaginatedData();
+    });
+
     this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
       this.handleDateChange(newDate);
     });
+
     if (this.company_id) {
       this.getAttendance();
       this.getDepartment();
@@ -146,13 +194,26 @@ export class AttendanceListComponent implements OnInit {
   }
 
   handleDateChange(newDate: Date): void {
-    // if (newDate && newDate !== this.selectedDate) {
-
     this.selectedDate = newDate;
     this.formattedDate = this.formatDate(newDate);
-    this.getAttendance();
 
-    // }
+    const today = new Date();
+    const isSameDay =
+      today.getFullYear() === newDate.getFullYear() &&
+      today.getMonth() === newDate.getMonth() &&
+      today.getDate() === newDate.getDate();
+
+    this.filterCounts.dateCount = isSameDay ? 0 : 1;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        date: this.formattedDate,
+      },
+      queryParamsHandling: "merge",
+    });
+
+    this.getAttendance();
   }
 
   formatDate(date: Date): string {
@@ -174,10 +235,11 @@ export class AttendanceListComponent implements OnInit {
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {
-          this.attendanceData = res.data || [];
+          // this.attendanceData = res.data || [];
           this.attendanceDataList = res.data || [];
           this.attendanceCount = res.attendanceCount || [];
-          this.attendanceData = cloneDeep(this.attendanceDataList.slice(0, 10));
+          this.filterdata();
+          // this.attendanceData = cloneDeep(this.attendanceDataList.slice(0, 10));
         } else {
           this.attendanceData = [];
           this.attendanceDataList = [];
@@ -224,45 +286,18 @@ export class AttendanceListComponent implements OnInit {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    this.endItem = event.page * event.itemsPerPage;
-    this.attendanceData = this.attendanceDataList.slice(
-      startItem,
-      this.endItem
-    );
-  }
   term: any;
 
   // filterdata
-  // filterdata() {
-  //   if (this.term) {
-  //     this.attendanceData = this.attendanceDataList.filter(
-  //       (el: any) =>
-  //         el.name.toLowerCase().includes(this.term.toLowerCase()) ||
-  //         el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
-  //         el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-  //         el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
-  //         el.checkin_status.toLowerCase().includes(this.term.toLowerCase())||
-  //         el.department.toLowerCase().includes(this.term.toLowerCase())
-  //     );
-  //   } else {
-  //     this.attendanceData = this.attendanceDataList;
-  //   }
-  //   // noResultElement
-  //   this.updateNoResultDisplay();
-  // }
-
   filterdata() {
     let filteredData = this.attendanceDataList;
 
-    // Convert selected designations to lowercase
-    const selectedDesignationsLower = this.selectedDesignations
-      ? this.selectedDesignations.map((d: string) => d.toLowerCase())
-      : [];
-    const selectedDepartmentLower = this.selectedDepartments
-      ? this.selectedDepartments.map((d: string) => d.toLowerCase())
-      : [];
+    // Reset filter counts
+    this.filterCounts.termCount = 0;
+    this.filterCounts.designationCount = 0;
+    this.filterCounts.departmentCount = 0;
+    this.filterCounts.statusCount = 0;
+    this.filterCounts.empCount = 0;
 
     // Filter by term
     if (this.term) {
@@ -273,20 +308,36 @@ export class AttendanceListComponent implements OnInit {
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
+      this.filterCounts.termCount = 1;
     }
 
     // Filter by selected departments
-    if (selectedDepartmentLower.length > 0) {
+    if (this.selectedDepartments.length > 0) {
       filteredData = filteredData.filter((el: any) =>
-        selectedDepartmentLower.includes(el.department.toLowerCase())
+        this.selectedDepartments
+          .map((d) => d.toLowerCase())
+          .includes(el.department.toLowerCase())
       );
+      this.filterCounts.departmentCount = 1;
     }
 
-    // Filter by selected designations (case-insensitive)
-    if (selectedDesignationsLower.length > 0) {
+    // Filter by selected designations
+    if (this.selectedDesignations && this.selectedDesignations.length > 0) {
       filteredData = filteredData.filter((el: any) =>
-        selectedDesignationsLower.includes(el.designation.toLowerCase())
+        this.selectedDesignations
+          .map((d) => d.toLowerCase())
+          .includes(el.designation.toLowerCase())
       );
+      this.filterCounts.designationCount = 1;
+    }
+
+    if (this.selectedEmp && this.selectedEmp.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedEmp
+          .map((d) => d.toLowerCase())
+          .includes(el.name.toLowerCase())
+      );
+      this.filterCounts.empCount = 1;
     }
 
     // Filter by selected status
@@ -294,20 +345,118 @@ export class AttendanceListComponent implements OnInit {
       filteredData = filteredData.filter(
         (el: any) => el.checkin_status === this.selectedStatus
       );
+      this.filterCounts.statusCount = 1;
     }
 
-    this.attendanceData = filteredData;
+    // Update filtered data
+    this.filteredAttendanceData = filteredData;
+
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (this.filteredAttendanceData.length === 0) {
+        this.currentPage = 1;
+      }
+    }
+
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    const startItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const endItem = this.currentPage * this.currentItemsPerPage;
+
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (startItem >= this.filteredAttendanceData.length) {
+        this.currentPage = 1;
+      }
+    }
+
+    const newStartItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const newEndItem = this.currentPage * this.currentItemsPerPage;
+
+    this.attendanceData = cloneDeep(
+      this.filteredAttendanceData.slice(newStartItem, newEndItem)
+    );
 
     // Update no result display
     this.updateNoResultDisplay();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        itemsPerPage: this.currentItemsPerPage,
+        term: this.term,
+        selectedDepartments: this.selectedDepartments.join(","),
+        selectedDesignations: this.selectedDesignations.join(","),
+        selectedEmp: this.selectedEmp.join(","),
+        selectedStatus: this.selectedStatus,
+        date: this.formattedDate,
+      },
+      queryParamsHandling: "merge",
+    });
+  }
+
+  pageChanged(event: PageChangedEvent) {
+    this.currentPage = event.page;
+    this.updatePaginatedData();
+  }
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.updatePaginatedData();
   }
 
   reset() {
+    // Clear filters
     this.term = "";
-    this.selectedStatus = "";
     this.selectedDepartments = [];
     this.selectedDesignations = [];
+    this.selectedStatus = "";
     this.attendanceData = this.attendanceDataList;
+    this.selectedEmp = [];
+    this.selectedDate = new Date();
+    this.formattedDate = this.formatDate(this.selectedDate);
+
+    this.filterdata();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        term: null,
+        selectedDepartments: null,
+        selectedDesignations: null,
+        selectedStatus: null,
+        selectedEmp: null,
+        page: 1,
+        itemsPerPage: this.currentItemsPerPage,
+        date: this.formattedDate,
+      },
+      queryParamsHandling: "merge",
+    });
+
+    this.getAttendance();
+  }
+
+  get totalFilterCount(): number {
+    return (
+      this.filterCounts.termCount +
+      this.filterCounts.designationCount +
+      this.filterCounts.departmentCount +
+      this.filterCounts.statusCount +
+      this.filterCounts.dateCount +
+      this.filterCounts.empCount
+    );
   }
 
   // no result

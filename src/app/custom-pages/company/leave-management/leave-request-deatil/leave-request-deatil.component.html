@@ -9,9 +9,17 @@
   <div class="col-xxl-12">
     <div class="card">
       <div class="row g-0 product-list">
-        <div class="col-xl-4 border-end">
-          <div class="card-header">
-            <h6 class="card-title mb-0">Leave Details</h6>
+        <div class="col-xl-12 border-end">
+          <div class="card-header d-flex justify-content-between">
+            <div>
+              <h6 class="card-title mb-0">Leave Details</h6>
+            </div>
+            <div class="">
+              <button class="btn btn-secondary" (click)="goBack()">
+                <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+                Back
+              </button>
+            </div>
           </div>
           <!-- <div class="card-body">
              
@@ -47,7 +55,134 @@
                 </p>
               </div>
             </div>
-            <div class="table-responsive table-card mt-1">
+            <div class="row">
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold"> Leave Type : </span>
+                  <span>{{ this.leaveDetailData?.leave_type }}</span>
+                </p>
+              </div>
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold"> From : </span>
+                  <span>
+                    {{
+                      this.leaveDetailData?.from_date
+                        | date : "EEE dd MMM, YYYY"
+                    }}</span
+                  >
+                </p>
+              </div>
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold"> To : </span>
+                  <span>
+                    {{
+                      this.leaveDetailData?.to_date | date : "EEE dd MMM, YYYY"
+                    }}</span
+                  >
+                </p>
+              </div>
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold">
+                    No of Days
+                    <span class="text-danger"
+                      >(Exclude Sundays and company holidays.)</span
+                    >
+                    :
+                  </span>
+                  <span> {{ this.leaveDetailData?.no_of_days }}</span>
+                </p>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold"
+                    >No. of Sunday included In Leaves :
+                  </span>
+                  <span> {{ this.leaveDetailData?.number_of_sundays }}</span>
+                </p>
+              </div>
+
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold"
+                    >No. of Company Hoilday included In Leaves :
+                  </span>
+                  <span> {{ this.leaveDetailData?.number_of_holidays }}</span>
+                </p>
+              </div>
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold">Last Leave On : </span>
+                  <span>
+                    @if(this.leaveDetailData?.recent_leave){
+                    {{
+                      this.leaveDetailData?.recent_leave_date
+                        | date : "EEE dd MMM, YYYY "
+                    }}
+                    <span class="fw-bold">
+                      ({{ this.leaveDetailData?.recent_leave }})</span
+                    >
+                    }@else { - }</span
+                  >
+                </p>
+              </div>
+
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold">Upcoming Leave On : </span>
+                  <span>
+                    @if( this.leaveDetailData?.upcoming_leave){
+                    {{
+                      this.leaveDetailData?.upcoming_leave_date
+                        | date : "EEE dd MMM, YYYY "
+                    }}
+                    <span class="fw-bold"
+                      >({{ this.leaveDetailData?.upcoming_leave }})</span
+                    >
+                    }@else { - }</span
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-3">
+                <p>
+                  <span class="fw-bold">Applied On : </span>
+                  <span>
+                    {{
+                      this.leaveDetailData?.created_at
+                        | date : "EEE dd MMM, YYYY , h:mm a"
+                    }}</span
+                  >
+                </p>
+              </div>
+              <div class="col-6">
+                <p>
+                  <span class="fw-bold">Reason : </span>
+                  <span> {{ this.leaveDetailData?.reason }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="text-start mt-4">
+              <button
+                class="btn btn-success me-1"
+                (click)="updateLeaveStatus('Approved')"
+              >
+                <i class="bx bx-check align-baseline me-1"></i>
+                Approved
+              </button>
+
+              <button class="btn btn-danger me-1" (click)="template.show()">
+                <i class="ri-close-line align-baseline me-1"></i>
+                Declined
+              </button>
+            </div>
+            <!-- <div class="table-responsive table-card mt-1">
               <table class="table table-borderless align-middle mb-0">
                 <tbody>
                   <tr>
@@ -122,26 +257,12 @@
                     <th>No. of Company Hoilday included In Leaves :</th>
                     <td>
                       {{ this.leaveDetailData?.number_of_holidays }}
-                      <!-- <select
-                        id="t-status"
-                        data-choices=""
-                        data-choices-search-false=""
-                        aria-label="Default select example"
-                        class="form-select"
-                      >
-                        <option value="">Status</option>
-                        <option value="New" selected="">New</option>
-                        <option value="Open">Open</option>
-                        <option value="Inprogress">Inprogress</option>
-                        <option value="Closed">Closed</option>
-                      </select> -->
                     </td>
                   </tr>
                   <tr>
                     <th>Reason :</th>
                     <td>
                       {{ this.leaveDetailData?.reason }}
-                      <!-- <span id="t-priority" class="badge bg-danger">High</span> -->
                     </td>
                   </tr>
 
@@ -175,10 +296,10 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> -->
           </div>
         </div>
-        <div class="col-xxl-8">
+        <!-- <div class="col-xxl-8">
           <div class="card-header d-flex align-items-center gap-2">
             <h5 class="card-title flex-grow-1 mb-0">Leave Type Detail</h5>
             <div class="flex-shrink-0">
@@ -249,18 +370,93 @@
                         {{ getTotal("total_leave_days") }}
                       </td>
                     </tr>
-                    <!-- <tr>
-                      <td>Shipping Charge</td>
-                      <td class="text-end">$65.00</td>
-                    </tr>
-                    <tr class="border-top border-top-dashed fs-base">
-                      <th scope="row">Total Amount</th>
-                      <th class="text-end">$2,050.20</th>
-                    </tr> -->
+                   
                   </tbody>
                 </table>
               </div>
             </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header d-flex align-items-center gap-2">
+        <h5 class="card-title flex-grow-1 mb-0">Leaves Detail</h5>
+        <div class="flex-shrink-0">
+          <span class="badge bg-danger-subtle text-danger"></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table align-middle table-nowrap table-borderless mb-0">
+            <thead class="table-active">
+              <tr>
+                <th>Leave Name</th>
+                <th>No. Of Taken Leaves</th>
+                <th>Remaining Leaves</th>
+                <th class="text-end">Total Leaves</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (data of leaveTypesData; track $index) {
+              <tr class="product">
+                <td>
+                  {{ data.name }}
+                </td>
+                <td>
+                  <span class="product-price">{{ data.no_of_days_taken }}</span>
+                </td>
+                <td>
+                  {{ data.remaining_leave }}
+                </td>
+                <td class="fw-medium text-end">
+                  <span class="product-line-price">{{
+                    data.total_leave_days
+                  }}</span>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+          <div
+            id="products-list-total"
+            class="border-top border-top-dashed mt-2"
+          >
+            <table
+              class="table table-borderless table-nowrap align-middle mb-0 ms-auto"
+              style="width: 250px"
+            >
+              <tbody>
+                <tr>
+                  <td>Total Leaves Taken</td>
+                  <td class="text-end">
+                    {{ getTotal("no_of_days_taken") }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total Remaining Leaves</td>
+                  <td class="text-end">
+                    {{ getTotal("remaining_leave") }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total Leaves</td>
+
+                  <td class="text-end">
+                    {{ getTotal("total_leave_days") }}
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <td>Shipping Charge</td>
+                  <td class="text-end">$65.00</td>
+                </tr>
+                <tr class="border-top border-top-dashed fs-base">
+                  <th scope="row">Total Amount</th>
+                  <th class="text-end">$2,050.20</th>
+                </tr> -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

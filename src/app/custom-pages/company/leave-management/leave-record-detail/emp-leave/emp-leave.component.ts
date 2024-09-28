@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ApiService } from "../../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-emp-leave",
@@ -20,7 +21,11 @@ export class EmpLeaveComponent implements OnInit {
   submitted: boolean = false;
   spinnerStatus: boolean = false;
   saveButtonActive: boolean = true;
-  constructor(private api: ApiService, private route: ActivatedRoute) {}
+  constructor(
+    private api: ApiService,
+    private route: ActivatedRoute,
+    private location: Location
+  ) {}
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -129,5 +134,9 @@ export class EmpLeaveComponent implements OnInit {
       (total: number, data: any) => total + Number(data[key]),
       0
     );
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

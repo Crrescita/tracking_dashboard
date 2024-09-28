@@ -11,6 +11,7 @@ import { ApiService } from "../../../../core/services/api.service";
 import { ToastrService } from "ngx-toastr";
 import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { ModalDirective } from "ngx-bootstrap/modal";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-add-employee",
@@ -100,7 +101,8 @@ export class AddEmployeeComponent implements OnInit {
     private formBuilder: FormBuilder,
     private api: ApiService,
     private router: Router,
-    public toastService: ToastrService
+    public toastService: ToastrService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -404,28 +406,14 @@ export class AddEmployeeComponent implements OnInit {
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
       const formData = this.createFormData();
+      console.log(this.urlId);
       if (this.urlId) {
         this.updateemployee(formData);
       } else {
         this.addemployee(formData);
       }
     } else {
-      // console.log("Form validity:", this.formGroup.valid);
-
-      // Mark all controls as touched to ensure validation messages show up
       this.formGroup.markAllAsTouched();
-
-      // Log each control's status and errors
-      // Object.keys(this.formGroup.controls).forEach((key) => {
-      //   const control = this.formGroup.get(key);
-      //   if (control) {
-      //     console.log(`Control "${key}" - Valid: ${control.valid}`);
-      //     if (control.invalid) {
-      //       console.log(`Field "${key}" is invalid.`);
-      //       console.log("Errors:", control.errors);
-      //     }
-      //   }
-      // });
     }
   }
 
@@ -466,6 +454,7 @@ export class AddEmployeeComponent implements OnInit {
 
   updateemployee(formData: FormData) {
     const urlId = this.urlId as number;
+    console.log("up");
     this.api.put("employees", urlId, formData).subscribe(
       (res: any) => this.handleResponse(res),
       (error) => this.handleError(error)
@@ -616,5 +605,9 @@ export class AddEmployeeComponent implements OnInit {
     } else {
       this.toastService.error(res["message"]);
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

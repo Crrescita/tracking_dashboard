@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, UntypedFormGroup } from "@angular/forms";
 import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ApiService } from "../../../../core/services/api.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-employee-detail",
@@ -38,7 +39,8 @@ export class EmployeeDetailComponent {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private api: ApiService
+    private api: ApiService,
+    private location: Location
   ) {
     this.route.queryParams.subscribe((params) => {
       this.currentTab = params["tab"] || "personalDetails";
@@ -68,6 +70,11 @@ export class EmployeeDetailComponent {
       this.getemployeeData();
       // this.getCheckInDetail();
     }
+  }
+
+  onEmployeeChange(newEmployeeId: number): void {
+    this.urlId = newEmployeeId;
+    this.getemployeeData();
   }
 
   formatDate(date: Date): string {
@@ -115,19 +122,6 @@ export class EmployeeDetailComponent {
           this.toggleSpinner(false);
           if (res && res.status) {
             this.checkIndetails = res.data[0];
-            console.log(this.checkIndetails);
-            // this.formattedTotalTime = this.calculateTotalTimeForAll();
-            // console.log(this.formattedTotalTime);
-            // if (
-            //   this.checkIndetails.check_in_time &&
-            //   this.checkIndetails.check_out_time
-            // ) {
-            //   this.formattedTotalTime = this.calculateTotalTime(
-            //     this.checkIndetails.check_in_time,
-            //     this.checkIndetails.check_out_time
-            //   );
-
-            // }
           } else {
             this.checkIndetails = null;
           }
@@ -178,70 +172,6 @@ export class EmployeeDetailComponent {
     this.formGroups.splice(id, 1);
   }
 
-  calculateTimeDifference(checkInTime: string, checkOutTime: string): number {
-    const [checkInHour, checkInMinute, checkInSecond] = checkInTime
-      .split(":")
-      .map(Number);
-    const [checkOutHour, checkOutMinute, checkOutSecond] = checkOutTime
-      .split(":")
-      .map(Number);
-
-    const checkInDate = new Date();
-    checkInDate.setHours(checkInHour, checkInMinute, checkInSecond);
-
-    const checkOutDate = new Date();
-    checkOutDate.setHours(checkOutHour, checkOutMinute, checkOutSecond);
-
-    // Difference in milliseconds
-    const diffInMs = checkOutDate.getTime() - checkInDate.getTime();
-
-    // Convert to minutes
-    return Math.max(0, Math.floor(diffInMs / 60000)); // Avoid negative minutes
-  }
-
-  calculateTotalTimeForAll(): string {
-    if (!this.checkIndetails || this.checkIndetails.length === 0) {
-      return "No check-in/check-out data available";
-    }
-
-    let totalMinutes = 0;
-
-    // Iterate through the data and calculate total time
-    for (const entry of this.checkIndetails) {
-      if (entry.check_in_time && entry.check_out_time) {
-        totalMinutes += this.calculateTimeDifference(
-          entry.check_in_time,
-          entry.check_out_time
-        );
-      }
-    }
-
-    // Convert total minutes to hours and minutes
-    const totalHours = Math.floor(totalMinutes / 60);
-    const remainingMinutes = totalMinutes % 60;
-
-    return `${totalHours}h ${remainingMinutes}m`;
-  }
-
-  calculateTotalTime(checkInTime: string, checkOutTime: string): string {
-    const [checkInHour, checkInMinute] = checkInTime.split(":").map(Number);
-    const [checkOutHour, checkOutMinute] = checkOutTime.split(":").map(Number);
-
-    const checkInDate = new Date();
-    checkInDate.setHours(checkInHour, checkInMinute, 0);
-
-    const checkOutDate = new Date();
-    checkOutDate.setHours(checkOutHour, checkOutMinute, 0);
-
-    const diffInMs = checkOutDate.getTime() - checkInDate.getTime();
-    const diffInMinutes = Math.floor(diffInMs / 60000);
-
-    const hours = Math.floor(diffInMinutes / 60);
-    const minutes = diffInMinutes % 60;
-
-    return `${hours}h ${minutes}m`;
-  }
-
   formatTime(time: string | null): string {
     if (!time) {
       return "Invalid time";
@@ -252,5 +182,9 @@ export class EmployeeDetailComponent {
     const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
 
     return `${formattedHour}:${minute} ${period}`;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

@@ -4,6 +4,8 @@ import { ToastrService } from "ngx-toastr";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
+import { cloneDeep } from "lodash";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-leave-request",
@@ -18,6 +20,7 @@ export class LeaveRequestComponent {
   masterSelected!: boolean;
   leaveRequestData: any = [];
   leaveRequestDataList: any = [];
+  filteredLeaveReqData: any = [];
   endItem: any;
 
   formGroup!: FormGroup;
@@ -27,6 +30,27 @@ export class LeaveRequestComponent {
   checkedValGet: any[] = [];
   company_id: any;
 
+  currentPage: number = 1;
+  currentItemsPerPage = 10;
+  itemsPerPageOptions = [10, 20, 30, 50];
+
+  // filter
+  selectedStatus: string = "";
+  departments: any[] = [];
+  selectedEmp: any[] = [];
+  selectedDepartments: any[] = [];
+  selectedDesignations: any[] = [];
+  designations: any[] = [];
+
+  filterCounts = {
+    termCount: 0,
+    designationCount: 0,
+    departmentCount: 0,
+    statusCount: 0,
+    dateCount: 0,
+    empCount: 0,
+  };
+
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
@@ -35,7 +59,9 @@ export class LeaveRequestComponent {
   constructor(
     private api: ApiService,
     public toastService: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +69,25 @@ export class LeaveRequestComponent {
       { label: "Leave Management" },
       { label: "Leave Request", active: true },
     ];
+
+    this.route.queryParams.subscribe((params) => {
+      this.currentPage = +params["page"] || 1;
+      this.currentItemsPerPage = +params["itemsPerPage"] || 10;
+      this.term = params["term"] || "";
+      this.selectedDepartments = params["selectedDepartments"]
+        ? params["selectedDepartments"].split(",")
+        : [];
+      this.selectedDesignations = params["selectedDesignations"]
+        ? params["selectedDesignations"].split(",")
+        : [];
+      this.selectedEmp = params["selectedEmp"]
+        ? params["selectedEmp"].split(",")
+        : [];
+      this.selectedStatus = params["selectedStatus"] || null;
+
+      this.filterdata();
+      this.updatePaginatedData();
+    });
 
     const data = localStorage.getItem("currentUser");
 
@@ -53,6 +98,8 @@ export class LeaveRequestComponent {
 
     if (this.company_id) {
       this.getLeaveRequest();
+      this.getDepartment();
+      this.getDesignation();
     }
 
     this.formGroup = this.formBuilder.group({
@@ -78,8 +125,9 @@ export class LeaveRequestComponent {
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);
-          this.leaveRequestData = res.data || [];
+          // this.leaveRequestData = res.data || [];
           this.leaveRequestDataList = res.data || [];
+          this.filterdata();
         } else {
           this.leaveRequestData = [];
           this.leaveRequestDataList = [];
@@ -93,6 +141,50 @@ export class LeaveRequestComponent {
         );
       }
     );
+  }
+
+  getDepartment() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`department?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.departments = res.data;
+          } else {
+            this.departments = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+
+  getDesignation() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`designation?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.designations = res.data;
+          } else {
+            this.designations = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   setStatus(data: any, event: Event) {
@@ -294,27 +386,146 @@ export class LeaveRequestComponent {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    this.endItem = event.page * event.itemsPerPage;
-    this.leaveRequestData = this.leaveRequestDataList.slice(
-      startItem,
-      this.endItem
-    );
-  }
   term: any;
 
   // filterdata
   filterdata() {
+    let filteredData = this.leaveRequestDataList;
+
+    // Reset filter counts
+    this.filterCounts.termCount = 0;
+    this.filterCounts.designationCount = 0;
+    this.filterCounts.departmentCount = 0;
+    this.filterCounts.statusCount = 0;
+    this.filterCounts.empCount = 0;
+
+    // Filter by term
     if (this.term) {
-      this.leaveRequestData = this.leaveRequestDataList.filter((el: any) =>
-        el.name.toLowerCase().includes(this.term.toLowerCase())
+      filteredData = filteredData.filter(
+        (el: any) =>
+          el.name.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.email.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
-    } else {
-      this.leaveRequestData = this.leaveRequestDataList;
+      this.filterCounts.termCount = 1;
     }
-    // noResultElement
+
+    // Filter by selected departments
+    if (this.selectedDepartments.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedDepartments
+          .map((d) => d.toLowerCase())
+          .includes(el.department.toLowerCase())
+      );
+      this.filterCounts.departmentCount = 1;
+    }
+
+    // Filter by selected designations
+    if (this.selectedDesignations && this.selectedDesignations.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedDesignations
+          .map((d) => d.toLowerCase())
+          .includes(el.designation.toLowerCase())
+      );
+      this.filterCounts.designationCount = 1;
+    }
+
+    // Filter by selected status
+    if (this.selectedStatus) {
+      filteredData = filteredData.filter(
+        (el: any) => el.checkin_status === this.selectedStatus
+      );
+      this.filterCounts.statusCount = 1;
+    }
+
+    if (this.selectedEmp && this.selectedEmp.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedEmp
+          .map((d) => d.toLowerCase())
+          .includes(el.name.toLowerCase())
+      );
+      this.filterCounts.empCount = 1;
+    }
+
+    // Update filtered data
+    this.filteredLeaveReqData = filteredData;
+
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (this.filteredLeaveReqData.length === 0) {
+        this.currentPage = 1;
+      }
+    }
+
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    const startItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const endItem = this.currentPage * this.currentItemsPerPage;
+
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (startItem >= this.filteredLeaveReqData.length) {
+        this.currentPage = 1;
+      }
+    }
+
+    const newStartItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const newEndItem = this.currentPage * this.currentItemsPerPage;
+
+    this.leaveRequestData = cloneDeep(
+      this.filteredLeaveReqData.slice(newStartItem, newEndItem)
+    );
+
+    // Update no result display
     this.updateNoResultDisplay();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        itemsPerPage: this.currentItemsPerPage,
+        term: this.term,
+        selectedDepartments: this.selectedDepartments.join(","),
+        selectedDesignations: this.selectedDesignations.join(","),
+        selectedEmp: this.selectedEmp.join(","),
+        selectedStatus: this.selectedStatus,
+      },
+      queryParamsHandling: "merge",
+    });
+  }
+
+  pageChanged(event: PageChangedEvent) {
+    this.currentPage = event.page;
+    this.updatePaginatedData();
+  }
+
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
+
+  get totalFilterCount(): number {
+    return (
+      this.filterCounts.termCount +
+      this.filterCounts.designationCount +
+      this.filterCounts.departmentCount +
+      this.filterCounts.statusCount +
+      this.filterCounts.dateCount +
+      this.filterCounts.empCount
+    );
   }
 
   // no result
@@ -323,12 +534,51 @@ export class LeaveRequestComponent {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.leaveRequestData.length === 0) {
+    if (this.leaveRequestData.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {
       noResultElement.style.display = "none";
       paginationElement.classList.remove("d-none");
     }
+  }
+
+  reset() {
+    // Clear filters
+    this.term = "";
+    this.selectedDepartments = [];
+    this.selectedDesignations = [];
+    this.selectedStatus = "";
+    this.selectedEmp = [];
+    this.leaveRequestData = this.leaveRequestDataList;
+
+    this.filterdata();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        term: null,
+        selectedDepartments: null,
+        selectedDesignations: null,
+        selectedStatus: null,
+        selectedEmp: null,
+        page: 1,
+        itemsPerPage: this.currentItemsPerPage,
+      },
+      queryParamsHandling: "merge",
+    });
+
+    this.getLeaveRequest();
+  }
+
+  // filter
+  openEnd() {
+    document.getElementById("courseFilters")?.classList.add("show");
+    document.querySelector(".backdrop3")?.classList.add("show");
+  }
+
+  closeoffcanvas() {
+    document.getElementById("courseFilters")?.classList.remove("show");
+    document.querySelector(".backdrop3")?.classList.remove("show");
   }
 }

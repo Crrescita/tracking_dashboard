@@ -6,6 +6,7 @@ import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import Swal from "sweetalert2";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { cloneDeep } from "lodash";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-employee-list",
@@ -19,15 +20,31 @@ export class EmployeeListComponent implements OnInit {
 
   employeeData: any = [];
   employeeDataList: any = [];
+  filteredemployeeData: any = [];
 
   company_id: any;
 
-  //table
-  // term: string = "";
-  // currentPage = 1;
-  // totalItems = 0;
-  // itemsPerPage = 5;
+  currentPage: number = 1;
+  currentItemsPerPage = 10;
+  itemsPerPageOptions = [10, 20, 30, 50];
   endItem: any;
+
+  // filter
+  selectedStatus: string = "";
+  departments: any[] = [];
+  selectedDepartments: any[] = [];
+  selectedDesignations: any[] = [];
+  selectedEmp: any[] = [];
+  designations: any[] = [];
+
+  filterCounts = {
+    termCount: 0,
+    designationCount: 0,
+    departmentCount: 0,
+    statusCount: 0,
+    empCount: 0,
+    dateCount: 0,
+  };
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
@@ -40,7 +57,9 @@ export class EmployeeListComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private api: ApiService,
-    public toastService: ToastrService
+    public toastService: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -55,26 +74,95 @@ export class EmployeeListComponent implements OnInit {
       const user = JSON.parse(data);
       this.company_id = user.id;
     }
-    this.getemployeeData();
+
+    this.route.queryParams.subscribe((params) => {
+      this.currentPage = +params["page"] || 1;
+      this.currentItemsPerPage = +params["itemsPerPage"] || 10;
+      this.term = params["term"] || "";
+      this.selectedDepartments = params["selectedDepartments"]
+        ? params["selectedDepartments"].split(",")
+        : [];
+      this.selectedDesignations = params["selectedDesignations"]
+        ? params["selectedDesignations"].split(",")
+        : [];
+      this.selectedEmp = params["selectedEmp"]
+        ? params["selectedEmp"].split(",")
+        : [];
+      this.selectedStatus = params["selectedStatus"] || null;
+
+      // After initializing, you might want to call filterData and updatePaginatedData
+      this.filterdata();
+      this.updatePaginatedData();
+    });
+
+    if (this.company_id) {
+      this.getemployeeData();
+      this.getDepartment();
+      this.getDesignation();
+    }
+  }
+
+  getDepartment() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`department?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.departments = res.data;
+          } else {
+            this.departments = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+
+  getDesignation() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`designation?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.designations = res.data;
+          } else {
+            this.designations = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   getemployeeData() {
     this.toggleSpinner(true);
-
     const url = `employees?company_id=${this.company_id}`;
-
     this.api.getwithoutid(url).subscribe(
       (res: any) => {
+        this.toggleSpinner(false);
         if (res && res.status) {
-          this.toggleSpinner(false);
-          this.employeeData = res.data || [];
           this.employeeDataList = res.data || [];
-          this.employeeData = cloneDeep(this.employeeDataList.slice(0, 10));
+          this.filterdata();
         } else {
-          this.handleError("Unexpected response format");
+          this.employeeData = [];
+          this.employeeDataList = [];
+          this.toggleSpinner(false);
         }
       },
       (error) => {
+        this.toggleSpinner(false);
         this.handleError(
           error.message || "An error occurred while fetching data"
         );
@@ -176,31 +264,206 @@ export class EmployeeListComponent implements OnInit {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    this.endItem = event.page * event.itemsPerPage;
-    this.employeeData = this.employeeDataList.slice(startItem, this.endItem);
-  }
   term: any;
+  // filterdata and paginatuon
 
-  // filterdata
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
+
   filterdata() {
+    let filteredData = this.employeeDataList;
+
+    // Reset filter counts
+    this.filterCounts.termCount = 0;
+    this.filterCounts.designationCount = 0;
+    this.filterCounts.departmentCount = 0;
+    this.filterCounts.statusCount = 0;
+    this.filterCounts.empCount = 0;
+
+    // Filter by term
     if (this.term) {
-      this.employeeData = this.employeeDataList.filter(
+      filteredData = filteredData.filter(
         (el: any) =>
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
           el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.designation.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.department.toLowerCase().includes(this.term.toLowerCase()) ||
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
-    } else {
-      this.employeeData = this.employeeDataList;
+      this.filterCounts.termCount = 1;
     }
-    // noResultElement
-    this.updateNoResultDisplay();
+
+    // Filter by selected departments
+    if (this.selectedDepartments.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedDepartments
+          .map((d) => d.toLowerCase())
+          .includes(el.department_name.toLowerCase())
+      );
+      this.filterCounts.departmentCount = 1;
+    }
+
+    // Filter by selected designations
+    if (this.selectedDesignations && this.selectedDesignations.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedDesignations
+          .map((d) => d.toLowerCase())
+          .includes(el.designation_name.toLowerCase())
+      );
+      this.filterCounts.designationCount = 1;
+    }
+
+    if (this.selectedEmp && this.selectedEmp.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedEmp
+          .map((d) => d.toLowerCase())
+          .includes(el.name.toLowerCase())
+      );
+      this.filterCounts.empCount = 1;
+    }
+
+    // Filter by selected status
+    if (this.selectedStatus) {
+      filteredData = filteredData.filter(
+        (el: any) => el.checkin_status === this.selectedStatus
+      );
+      this.filterCounts.statusCount = 1;
+    }
+
+    // Update filtered data
+    this.filteredemployeeData = filteredData;
+
+    // If no data is found, reset to the first page
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (this.filteredemployeeData.length === 0) {
+        this.currentPage = 1; // Reset to page 1 if no results after search
+      }
+    }
+
+    // Update paginated data based on current page
+    this.updatePaginatedData();
   }
+  pageChanged(event: PageChangedEvent) {
+    this.currentPage = event.page;
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    // Calculate start and end indices based on current page
+    const startItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const endItem = this.currentPage * this.currentItemsPerPage;
+
+    // If start index is greater than or equal to filtered data length, reset to page 1
+    if (
+      this.term ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length ||
+      this.selectedEmp.length ||
+      this.selectedStatus
+    ) {
+      if (startItem >= this.filteredemployeeData.length) {
+        this.currentPage = 1; // Reset to page 1
+      }
+    }
+
+    const newStartItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const newEndItem = this.currentPage * this.currentItemsPerPage;
+
+    // Slice the filtered data based on current page
+    this.employeeData = cloneDeep(
+      this.filteredemployeeData.slice(newStartItem, newEndItem)
+    );
+
+    // Update no result display
+    this.updateNoResultDisplay();
+
+    // Ensure selected values are retained in the query params
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        itemsPerPage: this.currentItemsPerPage,
+        term: this.term,
+        selectedDepartments: this.selectedDepartments.join(","),
+        selectedDesignations: this.selectedDesignations.join(","),
+        selectedEmp: this.selectedEmp.join(","),
+        selectedStatus: this.selectedStatus,
+      },
+      queryParamsHandling: "merge", // Merge with existing query params
+    });
+  }
+
+  openEnd() {
+    document.getElementById("courseFilters")?.classList.add("show");
+    document.querySelector(".backdrop3")?.classList.add("show");
+  }
+
+  closeoffcanvas() {
+    document.getElementById("courseFilters")?.classList.remove("show");
+    document.querySelector(".backdrop3")?.classList.remove("show");
+  }
+  reset() {
+    // Clear filters
+    this.term = "";
+    this.selectedDepartments = [];
+    this.selectedDesignations = [];
+    this.selectedEmp = [];
+    this.selectedStatus = ""; // Clear selected status
+    this.employeeData = this.employeeDataList; // Reset data to the original list
+
+    // Update filtered data and pagination
+    this.filterdata(); // Reapply filters with reset values
+
+    // Clear query params from the URL
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        term: null,
+        selectedDepartments: null,
+        selectedDesignations: null,
+        selectedEmp: null,
+        selectedStatus: null,
+        page: 1, // Reset to first page
+        itemsPerPage: this.currentItemsPerPage, // Keep items per page intact
+      },
+      queryParamsHandling: "merge", // Merge with existing query params
+    });
+  }
+
+  get totalFilterCount(): number {
+    return (
+      this.filterCounts.termCount +
+      this.filterCounts.designationCount +
+      this.filterCounts.departmentCount +
+      this.filterCounts.statusCount +
+      this.filterCounts.empCount
+    );
+  }
+
+  // filterdata() {
+  //   if (this.term) {
+  //     this.employeeData = this.employeeDataList.filter(
+  //       (el: any) =>
+  //         el.name.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.email.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.designation.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.department.toLowerCase().includes(this.term.toLowerCase()) ||
+  //         el.employee_id.toLowerCase().includes(this.term.toLowerCase())
+  //     );
+  //   } else {
+  //     this.employeeData = this.employeeDataList;
+  //   }
+  //   // noResultElement
+  //   this.updateNoResultDisplay();
+  // }
 
   // no result
   updateNoResultDisplay() {

@@ -16,6 +16,35 @@
               <span class="badge bg-dark-subtle text-dark ms-1">{{
                 leaveRequestData?.length
               }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="leaveRequestDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
             </h5>
           </div>
 
@@ -40,6 +69,20 @@
                 (click)="deleteRecordModal.show()"
               >
                 <i class="ri-delete-bin-2-line"></i>
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-info me-1"
+                (click)="openEnd()"
+              >
+                <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                @if(totalFilterCount >0){
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                  >{{ totalFilterCount }}
+                </span>
+                }
               </button>
               <!-- <button
                 type="button"
@@ -197,33 +240,6 @@
                     </select>
                   </td>
 
-                  <!-- <td class="discount">
-                    <div class="form-switch form-switch-md mb-3">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        [checked]="data.status === 'active'"
-                        (change)="setStatus(data, $event)"
-                        [id]="'customSwitchsizemd' + $index"
-                      />
-                      <label
-                        class="form-check-label"
-                        [for]="'customSwitchsizemd' + $index"
-                      >
-                        <span
-                          class="badge text-capitalize"
-                          [ngClass]="{
-                            'bg-info-subtle text-info':
-                              data.status === 'active',
-                            'bg-danger-subtle text-danger':
-                              data.status === 'inactive'
-                          }"
-                        >
-                          {{ data.status }}
-                        </span>
-                      </label>
-                    </div>
-                  </td> -->
                   <td class="category">
                     {{ data.created_at | date : "dd MMM, YYYY" }}
                   </td>
@@ -239,59 +255,7 @@
                           ><i class="ph-eye"></i
                         ></a>
                       </li>
-                      <!-- <li>
-                        <a
-                          href="javascript:void(0);"
-                          class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
-                          ><i class="ph-pencil"></i
-                        ></a>
-                      </li>
-                      <li>
-                        <a
-                          href="javascript:void(0);"
-                          class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
-                          ><i class="ph-trash"></i
-                        ></a>
-                      </li> -->
                     </ul>
-                    <!-- <div dropdown class="dropdown">
-                      <button
-                        dropdownToggle
-                        class="btn btn-subtle-secondary btn-sm btn-icon"
-                      >
-                        <i class="bi bi-three-dots-vertical"></i>
-                      </button>
-
-                      <ul
-                        *bsDropdownMenu
-                        class="dropdown-menu dropdown-menu-end"
-                      >
-                        <li>
-                          <a
-                            class="dropdown-item"
-                            routerLink="/ecommerce/product-details"
-                            href="javascript:void(0);"
-                            ><i class="ph-eye align-middle me-1"></i> View</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item edit-item-btn"
-                            (click)="editList(data)"
-                            ><i class="ph-pencil align-middle me-1"></i> Edit</a
-                          >
-                        </li>
-                        <li>
-                          <a
-                            class="dropdown-item remove-item-btn"
-                            (click)="removeItem(data.id)"
-                            href="javascript:void(0);"
-                            ><i class="ph-trash align-middle me-1"></i>
-                            Remove</a
-                          >
-                        </li>
-                      </ul>
-                    </div> -->
                   </td>
                 </tr>
                 }
@@ -343,12 +307,16 @@
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(leaveRequestDataList?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
                 [totalItems]="leaveRequestDataList?.length"
-                [itemsPerPage]="10"
+                [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
               ></pagination>
+              }
             </div>
           </div>
           <!-- end pagination-element -->
@@ -510,3 +478,98 @@
     </div>
   </div>
 </div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="attendanceMonthyDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
+        </div>
+      </div> -->
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>

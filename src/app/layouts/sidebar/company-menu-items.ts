@@ -4,54 +4,94 @@ import { MenuItem } from "./menu.model";
 export const COMPANY_MENU: MenuItem[] = [
   {
     id: 1,
-    label: "MENUITEMS.COMPANY.LIST.EMPLOYEE-MANAGEMENT",
-    icon: "ph-gauge",
-    subItems: [
-      {
-        id: 2,
-        label: "MENUITEMS.COMPANY.LIST.EMPLOYEE",
-        link: "/employee",
-        parentId: 1,
-        icon: " ri-file-user-line",
-      },
-      {
-        id: 3,
-        label: "MENUITEMS.COMPANY.LIST.DEPARTMENT",
-        link: "/department-list",
-        parentId: 1,
-        icon: " ri-file-user-line",
-      },
-      {
-        id: 4,
-        label: "MENUITEMS.COMPANY.LIST.DESIGNATION",
-        link: "/designation-list",
-        parentId: 1,
-        icon: " ri-file-user-line",
-      },
-    ],
+    label: "MENUITEMS.COMPANY.LIST.DASHBOARD",
+    link: "/dashboard",
+    icon: " bi bi-columns-gap",
+  },
+  {
+    id: 1,
+    label: "MENUITEMS.COMPANY.LIST.EMPLOYEE",
+    link: "/employee",
+    icon: " ri-user-2-fill",
   },
 
   {
-    id: 5,
-    label: "MENUITEMS.COMPANY.LIST.ATTENDANCE",
-    icon: " ri-file-user-line",
-    subItems: [
-      {
-        id: 6,
-        label: "MENUITEMS.COMPANY.LIST.ATTENDANCE",
-        link: "/attendance-list",
-        parentId: 5,
-        icon: " ri-file-user-line",
-      },
-      {
-        id: 7,
-        label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-MONTHLY",
-        link: "/attendance-monthly",
-        parentId: 5,
-        icon: " ri-file-user-line",
-      },
-    ],
+    id: 2,
+    label: "MENUITEMS.COMPANY.LIST.DEPARTMENT",
+    link: "/department-list",
+    icon: "bi bi-people-fill",
   },
+  {
+    id: 4,
+    label: "MENUITEMS.COMPANY.LIST.DESIGNATION",
+    link: "/designation-list",
+    icon: "ri-user-star-fill",
+  },
+  // {
+  //   id: 1,
+  //   label: "MENUITEMS.COMPANY.LIST.EMPLOYEE-MANAGEMENT",
+  //   icon: "ph-gauge",
+  //   subItems: [
+  //     {
+  //       id: 2,
+  //       label: "MENUITEMS.COMPANY.LIST.EMPLOYEE",
+  //       link: "/employee",
+  //       parentId: 1,
+  //       icon: " ri-file-user-line",
+  //     },
+  //     {
+  //       id: 3,
+  //       label: "MENUITEMS.COMPANY.LIST.DEPARTMENT",
+  //       link: "/department-list",
+  //       parentId: 1,
+  //       icon: " ri-file-user-line",
+  //     },
+  //     {
+  //       id: 4,
+  //       label: "MENUITEMS.COMPANY.LIST.DESIGNATION",
+  //       link: "/designation-list",
+  //       parentId: 1,
+  //       icon: "  ri-user-star-fill",
+  //     },
+  //   ],
+  // },
+
+  {
+    id: 6,
+    label: "MENUITEMS.COMPANY.LIST.TIMESHEET",
+    link: "/attendance-list",
+    parentId: 5,
+    icon: " ri-map-pin-time-fill",
+  },
+  {
+    id: 7,
+    label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-REPORT",
+    link: "/attendance-monthly",
+    parentId: 5,
+    icon: "  ri-folder-user-fill",
+  },
+
+  // {
+  //   id: 5,
+  //   label: "MENUITEMS.COMPANY.LIST.ATTENDANCE",
+  //   icon: " ri-file-user-line",
+  //   subItems: [
+  //     {
+  //       id: 6,
+  //       label: "MENUITEMS.COMPANY.LIST.ATTENDANCE",
+  //       link: "/attendance-list",
+  //       parentId: 5,
+  //       icon: " ri-file-user-line",
+  //     },
+  //     {
+  //       id: 7,
+  //       label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-MONTHLY",
+  //       link: "/attendance-monthly",
+  //       parentId: 5,
+  //       icon: " ri-file-user-line",
+  //     },
+  //   ],
+  // },
 
   {
     id: 8,
@@ -86,7 +126,7 @@ export const COMPANY_MENU: MenuItem[] = [
     id: 11,
     label: "MENUITEMS.COMPANY.LIST.HOLIDAYS",
     link: "/holidays",
-    icon: "ri-building-4-line",
+    icon: "bi bi-calendar-week-fill",
     parentId: 75,
   },
 

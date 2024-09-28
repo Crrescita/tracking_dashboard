@@ -10,6 +10,8 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { cloneDeep } from "lodash";
 
 @Component({
   selector: "app-leave-type",
@@ -24,6 +26,7 @@ export class LeaveTypeComponent {
   masterSelected!: boolean;
   leaveData: any = [];
   leaveDataList: any = [];
+  filteredLeaveTypeData: any = [];
   endItem: any;
 
   formGroup!: FormGroup;
@@ -32,6 +35,10 @@ export class LeaveTypeComponent {
   id: number | null = null;
 
   checkedValGet: any[] = [];
+
+  currentPage: number = 1;
+  currentItemsPerPage = 10;
+  itemsPerPageOptions = [10, 20, 30, 50];
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
@@ -48,7 +55,9 @@ export class LeaveTypeComponent {
   constructor(
     private api: ApiService,
     public toastService: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +65,14 @@ export class LeaveTypeComponent {
       { label: "Leave Management" },
       { label: "Leave Type", active: true },
     ];
+
+    this.route.queryParams.subscribe((params) => {
+      this.currentPage = +params["page"] || 1;
+      this.currentItemsPerPage = +params["itemsPerPage"] || 10;
+      this.term = params["term"] || "";
+      this.filterdata();
+      this.updatePaginatedData();
+    });
 
     const data = localStorage.getItem("currentUser");
 
@@ -174,8 +191,9 @@ export class LeaveTypeComponent {
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);
-          this.leaveData = res.data || [];
+          // this.leaveData = res.data || [];
           this.leaveDataList = res.data || [];
+          this.filterdata();
         } else {
           this.leaveData = [];
           this.leaveDataList = [];
@@ -461,24 +479,66 @@ export class LeaveTypeComponent {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  pageChanged(event: PageChangedEvent): void {
-    const startItem = (event.page - 1) * event.itemsPerPage;
-    this.endItem = event.page * event.itemsPerPage;
-    this.leaveData = this.leaveDataList.slice(startItem, this.endItem);
-  }
+  // pageChanged(event: PageChangedEvent): void {
+  //   const startItem = (event.page - 1) * event.itemsPerPage;
+  //   this.endItem = event.page * event.itemsPerPage;
+  //   this.leaveData = this.leaveDataList.slice(startItem, this.endItem);
+  // }
   term: any;
 
   // filterdata
+
   filterdata() {
+    let filteredData = this.leaveDataList;
+
+    // Filter by term
     if (this.term) {
-      this.leaveData = this.leaveDataList.filter((el: any) =>
+      filteredData = filteredData.filter((el: any) =>
         el.name.toLowerCase().includes(this.term.toLowerCase())
       );
-    } else {
-      this.leaveData = this.leaveDataList;
     }
-    // noResultElement
+    this.filteredLeaveTypeData = filteredData;
+    // Update paginated data based on current page
+    this.updatePaginatedData();
+  }
+
+  onItemsPerPageChange() {
+    this.currentPage = 1;
+    this.updatePaginatedData();
+  }
+  pageChanged(event: PageChangedEvent) {
+    this.currentPage = event.page;
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    const startItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const endItem = this.currentPage * this.currentItemsPerPage;
+
+    if (this.term) {
+      if (startItem >= this.filteredLeaveTypeData.length) {
+        this.currentPage = 1;
+      }
+    }
+
+    const newStartItem = (this.currentPage - 1) * this.currentItemsPerPage;
+    const newEndItem = this.currentPage * this.currentItemsPerPage;
+
+    this.leaveData = cloneDeep(
+      this.filteredLeaveTypeData.slice(newStartItem, newEndItem)
+    );
+
     this.updateNoResultDisplay();
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.currentPage,
+        itemsPerPage: this.currentItemsPerPage,
+        term: this.term,
+      },
+      queryParamsHandling: "merge",
+    });
   }
 
   // no result

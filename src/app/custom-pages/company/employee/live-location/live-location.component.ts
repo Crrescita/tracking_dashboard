@@ -1,4 +1,10 @@
-import { Component, OnInit, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  SimpleChanges,
+  OnChanges,
+} from "@angular/core";
 import * as mapboxgl from "mapbox-gl";
 import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
@@ -11,6 +17,7 @@ import { ActivatedRoute } from "@angular/router";
 export class LiveLocationComponent implements OnInit {
   @Input() companyId!: string;
   @Input() emp_image!: string;
+  @Input() employeeChange: any;
   urlId: number | null = null;
   livemap!: mapboxgl.Map;
   marker!: mapboxgl.Marker;
@@ -26,6 +33,19 @@ export class LiveLocationComponent implements OnInit {
   private liveLocationTimeout: any;
 
   constructor(private api: ApiService, private route: ActivatedRoute) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes["employeeChange"] &&
+      !changes["employeeChange"].isFirstChange()
+    ) {
+      const newUrlId = changes["employeeChange"].currentValue;
+
+      this.urlId = newUrlId;
+
+      this.scheduleNextUpdate();
+    }
+  }
 
   ngOnDestroy() {
     if (this.livemap) {

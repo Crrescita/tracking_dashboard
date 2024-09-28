@@ -1,6 +1,19 @@
 <div class="card py-3">
   <div class="row">
     <div class="col-lg-2">
+      <!-- (change)="onEmployeeChange($event)" -->
+      <select
+        [(ngModel)]="selectedEmployeeId"
+        class="form-control"
+        (change)="handleEmployeeChange($event)"
+      >
+        <option *ngFor="let item of employeeDataList" [value]="item.id">
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-lg-2">
       <div class="input-group">
         <input
           type="text"
@@ -35,7 +48,7 @@
       </select>
     </div>
 
-    <div class="col-8 text-end">
+    <div class="col-6 text-end">
       <button
         type="button"
         (click)="refreshTimeline()"

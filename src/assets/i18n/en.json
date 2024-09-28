@@ -105,11 +105,14 @@
     "COMPANY": {
       "TEXT": "Pages",
       "LIST": {
+        "DASHBOARD":"Dashboard",
         "EMPLOYEE-MANAGEMENT":"Employee Management",
         "EMPLOYEE": "Employee",
         "DEPARTMENT":"Department",
         "DESIGNATION":"Designation",
         "ATTENDANCE":"Attendance",
+        "TIMESHEET":"Timesheet",
+        "ATTENDANCE-REPORT":"Attendance Report",
        "ATTENDANCE-MONTHLY":"Attendance Monthly",
        "HOLIDAYS":"Holidays",
        "LEAVE-MANAGEMENT":"Leave Management",

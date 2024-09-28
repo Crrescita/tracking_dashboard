@@ -7,7 +7,165 @@
 
 <div id="productList">
   <div class="row">
-    <div class="col-xl-10">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row g-4 parent">
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-primary-subtle rounded-circle text-primary"
+                  >
+                    <i class="ri-user-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Total Employee</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="attendanceDataList?.length"
+                  >{{ attendanceDataList?.length }}</span
+                >
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-user-follow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Present</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalPresent"
+                  >{{ this.attendanceCount?.totalPresent }}</span
+                >
+                <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                  ><i class="align-baseline bi bi-arrow-up"></i> 6.57%</small
+                > -->
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="ri-user-unfollow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Absent</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalAbsent"
+                  >{{ this.attendanceCount?.totalAbsent }}</span
+                >
+                <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                  ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
+                > -->
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
+                  >
+                    <i class="mdi mdi-account-alert-outline"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Leave</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalLeave"
+                  >{{ this.attendanceCount?.totalLeave }}</span
+                >
+                <!-- <small class="fs-xs fw-normal ms-1 text-success"
+                  ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
+                > -->
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-timer-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">On Time</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalOnTime
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
+                  >
+                    <i class="bi bi-clock-history"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Early</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalEarly
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="bx bx-timer"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Late</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalLate
+                }}</span>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-xl-12">
       <div class="card">
         <div class="card-body">
           <div class="row g-4">
@@ -31,11 +189,6 @@
                     [countUp]="attendanceDataList?.length"
                     >{{ attendanceDataList?.length }}</span
                   >
-                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
-                    >
-                    <i class="align-baseline bi bi-arrow-up"></i> 12.09%
-                    </small
-                  > -->
                 </h3>
               </div>
             </div>
@@ -59,9 +212,7 @@
                     [countUp]="this.attendanceCount?.totalPresent"
                     >{{ this.attendanceCount?.totalPresent }}</span
                   >
-                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
-                    ><i class="align-baseline bi bi-arrow-up"></i> 6.57%</small
-                  > -->
+                
                 </h3>
               </div>
             </div>
@@ -85,9 +236,7 @@
                     [countUp]="this.attendanceCount?.totalAbsent"
                     >{{ this.attendanceCount?.totalAbsent }}</span
                   >
-                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
-                    ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
-                  > -->
+            
                 </h3>
               </div>
             </div>
@@ -112,9 +261,7 @@
                     [countUp]="this.attendanceCount?.totalLeave"
                     >{{ this.attendanceCount?.totalLeave }}</span
                   >
-                  <!-- <small class="fs-xs fw-normal ms-1 text-success"
-                    ><i class="align-baseline bi bi-arrow-up"></i> 4.07%</small
-                  > -->
+                 
                 </h3>
               </div>
             </div>
@@ -137,18 +284,57 @@
                   <span class="counter-value">{{
                     this.attendanceCount?.totalDuration
                   }}</span>
-                  <!-- <small class="fs-xs fw-normal ms-1 text-danger"
-                    ><i class="align-baseline bi bi-arrow-down"></i>
-                    3.49%</small
-                  > -->
+                
                 </h3>
               </div>
             </div>
-            <!---->
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
+                    >
+                      <i class="bi bi-clock-history"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">On Time</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span class="counter-value">{{
+                    this.attendanceCount?.totalOnTime
+                  }}</span>
+                </h3>
+              </div>
+            </div>
+            <div class="col-lg-2 col-sm-6 border-end-sm ng-star-inserted">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
+                  <div class="avatar-xs flex-shrink-0">
+                    <div
+                      class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
+                    >
+                      <i class="bi bi-clock-history"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <p class="text-muted mb-0">Early</p>
+                  </div>
+                </div>
+                <h3 class="mb-0">
+                  <span class="counter-value">{{
+                    this.attendanceCount?.totalEarly
+                  }}</span>
+                </h3>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+     
+    </div> -->
   </div>
 
   <div class="row">
@@ -161,6 +347,35 @@
               <span class="badge bg-dark-subtle text-dark ms-1">{{
                 attendanceData?.length
               }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="attendanceDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
             </h5>
 
             <p class="text-muted mb-0 mt-2">
@@ -215,6 +430,12 @@
                       (click)="openEnd()"
                     >
                       <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                      @if(totalFilterCount >0){
+                      <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                        >{{ totalFilterCount }}
+                      </span>
+                      }
                     </button>
                   </div>
                 </div>
@@ -510,12 +731,16 @@
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(attendanceDataList?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
                 [totalItems]="attendanceDataList?.length"
-                [itemsPerPage]="10"
+                [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
               ></pagination>
+              }
             </div>
           </div>
           <!-- end pagination-element -->
@@ -620,59 +845,115 @@
     <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
   </div>
   <div class="offcanvas-body">
-    <form action="#!">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="mb-3">
-            <p class="text-muted fw-medium text-uppercase mb-3">
-              Attendance Status
-            </p>
-            <select
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Month</p>
+          <div class="input-group">
+            <input
+              type="text"
+              id="datepickers"
               class="form-control"
-              [(ngModel)]="selectedStatus"
-              (change)="filterdata()"
-              [ngModelOptions]="{ standalone: true }"
-            >
-              <option value="">All</option>
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-              <option value="Leave">Leave</option>
-            </select>
+              showWeekNumbers="false"
+              bsDatepicker
+              [bsConfig]="bsConfig"
+              [(ngModel)]="selectedDate"
+              (bsValueChange)="onDateChange($event)"
+            />
+            <div class="input-group-append">
+              <label for="datepickers" class="input-group-text cursor-pointer">
+                <i class="ri-calendar-fill"></i>
+              </label>
+            </div>
           </div>
         </div>
-        <div class="col-lg-12">
-          <div class="mb-3">
-            <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
-            <ng-select
-              [items]="departments"
-              [multiple]="true"
-              bindLabel="name"
-              bindValue="name"
-              (change)="filterdata()"
-              [(ngModel)]="selectedDepartments"
-              name="departments"
-              placeholder="Select departments"
-            >
-            </ng-select>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
           </div>
         </div>
-        <div class="col-lg-12">
-          <div class="mb-3">
-            <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
-            <ng-select
-              [items]="designations"
-              [multiple]="true"
-              bindLabel="name"
-              bindValue="name"
-              (change)="filterdata()"
-              [(ngModel)]="selectedDesignations"
-              name="designations"
-              placeholder="Select designations"
-            >
-            </ng-select>
-          </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="attendanceDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
         </div>
-        <!-- <div class="col-lg-12">
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Attendance Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Leave">Leave</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <!-- <div class="col-lg-12">
           <div class="mb-3">
             <label
               class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
@@ -787,8 +1068,8 @@
             </div>
           </div>
         </div> -->
-      </div>
-    </form>
+    </div>
+    <!-- </form> -->
   </div>
   <div class="offcanvas-header htsack gap-2 border-top p-3">
     <button class="btn btn-subtle-danger w-100" (click)="reset()">

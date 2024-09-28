@@ -16,6 +16,35 @@
               <span class="badge bg-dark-subtle text-dark ms-1">{{
                 holidaysData?.length
               }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="holidaysDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
             </h5>
           </div>
 
@@ -234,37 +263,16 @@
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
-              <div class="d-flex me-3 mt-1 mb-3 justify-content-center">
-                <div class="text-muted text-center text-sm-start me-2">
-                  Items per page :
-                </div>
-                <div class="">
-                  <div class="input-group input-group-sm">
-                    <select
-                      id="itemsPerPage"
-                      class="form-control"
-                      [(ngModel)]="currentItemsPerPage"
-                      (change)="onItemsPerPageChange($event)"
-                    >
-                      <option
-                        *ngFor="let option of itemsPerPageOptions"
-                        [value]="option"
-                      >
-                        {{ option }}
-                      </option>
-                      <option [value]="holidaysDataList?.length">
-                        Show All
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+              @if(holidaysDataList?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
                 [totalItems]="holidaysDataList?.length"
-                [itemsPerPage]="10"
+                [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
               ></pagination>
+              }
             </div>
           </div>
           <!-- end pagination-element -->

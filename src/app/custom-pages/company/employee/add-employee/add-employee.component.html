@@ -5,6 +5,13 @@
 ></app-breadcrumbs>
 
 <!-- End Breadcrumbs -->
+<div class="text-end">
+  <button class="btn btn-secondary mb-2" (click)="goBack()">
+    <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+    Back
+  </button>
+</div>
+
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <div class="row">
     <div class="col-xxl-3">
@@ -17,21 +24,6 @@
             class="card-img-top profile-wid-img object-fit-cover"
             style="height: 200px"
           />
-          <!-- <div>
-          <input
-            id="profile-foreground-img-file-input"
-            type="file"
-            class="profile-foreground-img-file-input d-none"
-            (change)="fileChange($event, '0')"
-          />
-          <label
-            for="profile-foreground-img-file-input"
-            class="profile-photo-edit btn btn-light btn-sm position-absolute end-0 top-0 m-3"
-          >
-            <i class="ri-image-edit-line align-bottom me-1"></i> Edit Cover
-            Images
-          </label>
-        </div> -->
         </div>
         <div class="card-body pt-0 mt-n5">
           <div class="text-center">

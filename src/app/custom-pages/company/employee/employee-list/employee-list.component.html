@@ -14,8 +14,37 @@
             <h5 class="card-title mb-0">
               Employeess
               <span class="badge bg-dark-subtle text-dark ms-1">{{
-                employeeDataList?.length
+                employeeData?.length
               }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="employeeDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
             </h5>
           </div>
 
@@ -49,6 +78,26 @@
                 <i class="bi bi-plus-circle align-baseline me-1"></i> Add
                 Employee
               </button>
+
+              <div class="col-lg-auto">
+                <div class="hstack flex-wrap gap-2">
+                  <div>
+                    <button
+                      type="button"
+                      class="btn btn-info me-1"
+                      (click)="openEnd()"
+                    >
+                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                      @if(totalFilterCount >0){
+                      <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                        >{{ totalFilterCount }}
+                      </span>
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -281,12 +330,16 @@
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(employeeDataList?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
                 [totalItems]="employeeDataList?.length"
-                [itemsPerPage]="10"
+                [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
               ></pagination>
+              }
             </div>
           </div>
         </div>
@@ -344,3 +397,231 @@
     </div>
   </div>
 </div>
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <p class="text-muted fw-medium text-uppercase mb-3">
+              Attendance Status
+            </p>
+            <select
+              class="form-control"
+              [(ngModel)]="selectedStatus"
+              (change)="filterdata()"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              <option value="">All</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="Leave">Leave</option>
+            </select>
+          </div>
+        </div> -->
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="employeeDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <label
+              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
+              >Ratings</label
+            >
+            <div class="vstack gap-2">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-all"
+                />
+                <label class="form-check-label" for="rating-all">
+                  Select All
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter1"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter1"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter2"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter2"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">4 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter3"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter3"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">3 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter4"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter4"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">2 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter5"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter5"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">1 & Up</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>
