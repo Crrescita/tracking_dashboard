@@ -411,6 +411,7 @@ export class AttendanceMonthlyComponent implements OnInit {
         [],
         [
           "Date",
+          "Day",
           "Check-in Status",
           "Attendance Status",
           // "Time Difference",
@@ -422,8 +423,14 @@ export class AttendanceMonthlyComponent implements OnInit {
 
       // Add attendance data to the worksheet
       employee.attendance.forEach((record: any) => {
+        // Add holiday name to the day, if present
+        const dayWithHoliday = record.holiday_name
+          ? `${record.day} (${record.holiday_name})`
+          : record.day;
+
         worksheetData.push([
           record.date,
+          dayWithHoliday, // Add holiday in parentheses if available
           record.checkin_status,
           record.attendance_status,
           // record.timeDifference,
@@ -448,6 +455,21 @@ export class AttendanceMonthlyComponent implements OnInit {
 
       // Create the worksheet and add it to the workbook
       const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+      // Set column width for better readability
+      const columnWidths = [
+        { wch: 12 }, // Date column width
+        { wch: 25 }, // Day (with holiday name) column width
+        { wch: 15 }, // Check-in Status column width
+        { wch: 20 }, // Attendance Status column width
+        { wch: 20 }, // Total Duration column width
+        { wch: 20 }, // Check-in Time column width
+        { wch: 20 }, // Check-out Time column width
+      ];
+
+      // Apply column widths to the worksheet
+      worksheet["!cols"] = columnWidths;
+
       workbook.SheetNames.push(sheetName);
       workbook.Sheets[sheetName] = worksheet;
     });

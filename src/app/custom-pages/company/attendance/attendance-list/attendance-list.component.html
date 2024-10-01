@@ -849,7 +849,7 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="mb-3">
-          <p class="text-muted fw-medium text-uppercase mb-3">Select Month</p>
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Date</p>
           <div class="input-group">
             <input
               type="text"
@@ -918,6 +918,25 @@
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
             <option value="Leave">Leave</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Check-in Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedCheckStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="On-Time">On Time</option>
+            <option value="Early">Early</option>
+            <option value="Late">Late</option>
           </select>
         </div>
       </div>

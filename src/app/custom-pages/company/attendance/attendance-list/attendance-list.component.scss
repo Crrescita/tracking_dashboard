@@ -24,14 +24,8 @@
   .childA {
     flex: 1;
   }
-  
-  .border-right {
-    border-right: 1px solid #FFFEF8;
-    /* height: calc(100% - 4px);  */
-  }
-  
-  
-  
+
+    
   
   @media (max-width: 800px) {
     .parent {
@@ -40,11 +34,6 @@
     .child {
         height:100px;
         padding: 8%;
-      }
-  
-      .border-right {
-        border-left: 1px solid #FFFEF8;
-        /* height: calc(100% - 4px);  */
       }
   }
   

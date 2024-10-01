@@ -68,6 +68,7 @@ export class AttendanceListComponent implements OnInit {
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
+    statusCheckCount: 0,
     dateCount: 0,
     empCount: 0,
   };
@@ -85,7 +86,8 @@ export class AttendanceListComponent implements OnInit {
   }
 
   // filter
-  selectedStatus: string = "";
+  selectedStatus: string = "All";
+  selectedCheckStatus: string = "All";
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -112,6 +114,7 @@ export class AttendanceListComponent implements OnInit {
         ? params["selectedDesignations"].split(",")
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
+      this.selectedCheckStatus = params["selectedCheckStatus"] || null;
       this.selectedEmp = params["selectedEmp"]
         ? params["selectedEmp"].split(",")
         : [];
@@ -297,6 +300,7 @@ export class AttendanceListComponent implements OnInit {
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
+    this.filterCounts.statusCheckCount = 0;
     this.filterCounts.empCount = 0;
 
     // Filter by term
@@ -343,9 +347,16 @@ export class AttendanceListComponent implements OnInit {
     // Filter by selected status
     if (this.selectedStatus) {
       filteredData = filteredData.filter(
-        (el: any) => el.checkin_status === this.selectedStatus
+        (el: any) => el.attendance_status === this.selectedStatus
       );
       this.filterCounts.statusCount = 1;
+    }
+
+    if (this.selectedCheckStatus) {
+      filteredData = filteredData.filter(
+        (el: any) => el.checkin_status === this.selectedCheckStatus
+      );
+      this.filterCounts.statusCheckCount = 1;
     }
 
     // Update filtered data
@@ -356,7 +367,8 @@ export class AttendanceListComponent implements OnInit {
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
-      this.selectedStatus
+      this.selectedStatus ||
+      this.selectedCheckStatus
     ) {
       if (this.filteredAttendanceData.length === 0) {
         this.currentPage = 1;
@@ -375,7 +387,8 @@ export class AttendanceListComponent implements OnInit {
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
-      this.selectedStatus
+      this.selectedStatus ||
+      this.selectedCheckStatus
     ) {
       if (startItem >= this.filteredAttendanceData.length) {
         this.currentPage = 1;
@@ -402,6 +415,7 @@ export class AttendanceListComponent implements OnInit {
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
         selectedStatus: this.selectedStatus,
+        selectedCheckStatus: this.selectedCheckStatus,
         date: this.formattedDate,
       },
       queryParamsHandling: "merge",
@@ -423,6 +437,7 @@ export class AttendanceListComponent implements OnInit {
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedStatus = "";
+    this.selectedCheckStatus = "";
     this.attendanceData = this.attendanceDataList;
     this.selectedEmp = [];
     this.selectedDate = new Date();
@@ -437,6 +452,7 @@ export class AttendanceListComponent implements OnInit {
         selectedDepartments: null,
         selectedDesignations: null,
         selectedStatus: null,
+        selectedCheckStatus: null,
         selectedEmp: null,
         page: 1,
         itemsPerPage: this.currentItemsPerPage,
@@ -454,6 +470,7 @@ export class AttendanceListComponent implements OnInit {
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
+      this.filterCounts.statusCheckCount +
       this.filterCounts.dateCount +
       this.filterCounts.empCount
     );
@@ -465,7 +482,7 @@ export class AttendanceListComponent implements OnInit {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.attendanceData.length === 0) {
+    if (this.attendanceData.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {

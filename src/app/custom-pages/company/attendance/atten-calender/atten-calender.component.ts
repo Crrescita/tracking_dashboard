@@ -13,6 +13,7 @@ import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-atten-calender",
@@ -45,7 +46,8 @@ export class AttenCalenderComponent {
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -258,5 +260,9 @@ export class AttenCalenderComponent {
       ) as HTMLAreaElement;
       editbtn.innerHTML = "cancel";
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

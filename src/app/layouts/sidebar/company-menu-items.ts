@@ -9,6 +9,20 @@ export const COMPANY_MENU: MenuItem[] = [
     icon: " bi bi-columns-gap",
   },
   {
+    id: 6,
+    label: "MENUITEMS.COMPANY.LIST.TIMESHEET",
+    link: "/attendance-list",
+    parentId: 5,
+    icon: " ri-map-pin-time-fill",
+  },
+  {
+    id: 7,
+    label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-REPORT",
+    link: "/attendance-monthly",
+    parentId: 5,
+    icon: "  ri-folder-user-fill",
+  },
+  {
     id: 1,
     label: "MENUITEMS.COMPANY.LIST.EMPLOYEE",
     link: "/employee",
@@ -56,21 +70,6 @@ export const COMPANY_MENU: MenuItem[] = [
   //   ],
   // },
 
-  {
-    id: 6,
-    label: "MENUITEMS.COMPANY.LIST.TIMESHEET",
-    link: "/attendance-list",
-    parentId: 5,
-    icon: " ri-map-pin-time-fill",
-  },
-  {
-    id: 7,
-    label: "MENUITEMS.COMPANY.LIST.ATTENDANCE-REPORT",
-    link: "/attendance-monthly",
-    parentId: 5,
-    icon: "  ri-folder-user-fill",
-  },
-
   // {
   //   id: 5,
   //   label: "MENUITEMS.COMPANY.LIST.ATTENDANCE",
@@ -92,6 +91,13 @@ export const COMPANY_MENU: MenuItem[] = [
   //     },
   //   ],
   // },
+  {
+    id: 11,
+    label: "MENUITEMS.COMPANY.LIST.HOLIDAYS",
+    link: "/holidays",
+    icon: "bi bi-calendar-week-fill",
+    parentId: 75,
+  },
 
   {
     id: 8,
@@ -120,14 +126,6 @@ export const COMPANY_MENU: MenuItem[] = [
         icon: " ri-file-user-line",
       },
     ],
-  },
-
-  {
-    id: 11,
-    label: "MENUITEMS.COMPANY.LIST.HOLIDAYS",
-    link: "/holidays",
-    icon: "bi bi-calendar-week-fill",
-    parentId: 75,
   },
 
   // More items...

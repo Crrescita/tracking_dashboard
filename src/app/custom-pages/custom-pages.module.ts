@@ -56,6 +56,7 @@ import { PopoverModule } from "ngx-bootstrap/popover";
 
 // Flat Picker
 import { FlatpickrModule } from "angularx-flatpickr";
+import { TabsModule } from "ngx-bootstrap/tabs";
 
 import { CompanyListComponent } from "./administrator/company/company-list/company-list.component";
 import { AddCompanyComponent } from "./administrator/company/add-company/add-company.component";
@@ -75,6 +76,7 @@ import { LeaveRequestComponent } from "./company/leave-management/leave-request/
 import { LeaveRequestDeatilComponent } from "./company/leave-management/leave-request-deatil/leave-request-deatil.component";
 import { LogsComponent } from "./administrator/logs/logs.component";
 import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
+import { DashboardComponent } from "./company/dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
@@ -99,6 +101,7 @@ import { EmpLeaveComponent } from "./company/leave-management/leave-record-detai
     LeaveRecordComponent,
     LogsComponent,
     EmpLeaveComponent,
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -129,6 +132,7 @@ import { EmpLeaveComponent } from "./company/leave-management/leave-record-detai
     FlatpickrModule.forRoot(),
     FullCalendarModule,
     PopoverModule,
+    TabsModule.forRoot(),
   ],
 })
 export class CustomPagesModule {}
