@@ -80,7 +80,7 @@ export class TopbarComponent {
     this.authService.receiveMessage();
 
     this.userData = this.TokenStorageService.getUser();
-
+    console.log(this.userData.id);
     this.authService.currentMessage.subscribe((message) => {
       if (message) {
         this.getNotification();

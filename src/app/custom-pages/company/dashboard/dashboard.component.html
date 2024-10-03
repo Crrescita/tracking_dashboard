@@ -204,181 +204,6 @@
       </div>
     </div>
   </div>
-  <!-- <div class="col-xxl">
-    <div
-      class="card file-manager-widgets"
-      style="background-size: 110px; background-position: right bottom"
-    >
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-4">
-          <div class="flex-grow-1">
-            <div class="avatar-sm">
-              <div class="avatar-title bg-info-subtle fs-xl rounded text-info">
-                <i class="ri-user-line"></i>
-              </div>
-            </div>
-          </div>
-        
-        </div>
-        <h4 class="fw-semibold mb-3">
-          <span class="counter-value">{{
-            this.currentDateData?.totalEmployees
-          }}</span>
-        </h4>
-        <p class="fw-medium text-muted mb-0">Total Employee</p>
-      </div>
-    </div>
-  </div> -->
-  <!-- <div class="col-xxl">
-    <div
-      class="card file-manager-widgets"
-      style="background-size: 110px; background-position: right bottom"
-    >
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-4">
-          <div class="flex-grow-1">
-            <div class="avatar-sm">
-              <div
-                class="avatar-title bg-success-subtle fs-xl rounded text-success"
-              >
-                <i class="ri-user-follow-line"></i>
-              </div>
-            </div>
-          </div>
-          <div class="flex-shrink-0">
-            <p>
-              <span
-                [ngClass]="
-                  this.previousDateData?.totalPresent >=
-                  this.currentDateData?.totalPresent
-                    ? 'text-success'
-                    : 'text-danger'
-                "
-                class="me-1"
-                ><i
-                  [ngClass]="
-                    this.previousDateData?.totalPresent >=
-                    this.currentDateData?.totalPresent
-                      ? 'fs-sm ri-arrow-right-up-line'
-                      : 'fs-sm ri-arrow-right-down-line'
-                  "
-                  class="align-middle"
-                ></i>
-                {{ this.previousDateData?.totalPresent }}</span
-              >
-              Present last day
-            </p>
-          </div>
-        </div>
-        <h4 class="fw-semibold mb-3">
-          <span class="counter-value"
-            >{{ this.currentDateData?.totalPresent }}
-          </span>
-        </h4>
-        <p class="fw-medium text-muted mb-0">Present</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-xxl">
-    <div
-      class="card file-manager-widgets"
-      style="background-size: 110px; background-position: right bottom"
-    >
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-4">
-          <div class="flex-grow-1">
-            <div class="avatar-sm">
-              <div
-                class="avatar-title bg-danger-subtle fs-xl rounded text-danger"
-              >
-                <i class="ri-user-unfollow-line"></i>
-              </div>
-            </div>
-          </div>
-          <div class="flex-shrink-0">
-            <p>
-              <span
-                [ngClass]="
-                  this.previousDateData?.totalAbsent >=
-                  this.currentDateData?.totalAbsent
-                    ? 'text-success'
-                    : 'text-danger'
-                "
-                class="me-1 text-danger"
-                ><i
-                  [ngClass]="
-                    this.previousDateData?.totalAbsent >=
-                    this.currentDateData?.totalAbsent
-                      ? 'fs-sm ri-arrow-right-up-line'
-                      : 'fs-sm ri-arrow-right-down-line'
-                  "
-                  class="align-middle fs-sm ri-arrow-right-down-line"
-                ></i>
-                {{ this.previousDateData?.totalAbsent }}</span
-              >
-              Absent last day
-            </p>
-          </div>
-        </div>
-        <h4 class="fw-semibold mb-3">
-          <span class="counter-value">{{
-            this.currentDateData?.totalAbsent
-          }}</span>
-        </h4>
-        <p class="fw-medium text-muted mb-0">Absent</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-xxl">
-    <div
-      class="card file-manager-widgets"
-      style="background-size: 110px; background-position: right bottom"
-    >
-      <div class="card-body">
-        <div class="d-flex align-items-center mb-4">
-          <div class="flex-grow-1">
-            <div class="avatar-sm">
-              <div
-                class="avatar-title bg-warning-subtle fs-xl rounded text-warning"
-              >
-                <i class="mdi mdi-account-alert-outline"></i>
-              </div>
-            </div>
-          </div>
-          <div class="flex-shrink-0">
-            <p>
-              <span
-                [ngClass]="
-                  this.previousDateData?.totalLeave >=
-                  this.currentDateData?.totalLeave
-                    ? 'text-success'
-                    : 'text-danger'
-                "
-                class="me-1 text-danger"
-                ><i
-                  [ngClass]="
-                    this.previousDateData?.totalLeave >=
-                    this.currentDateData?.totalLeave
-                      ? 'fs-sm ri-arrow-right-up-line'
-                      : 'fs-sm ri-arrow-right-down-line'
-                  "
-                  class="align-middle fs-sm ri-arrow-right-down-line"
-                ></i>
-                {{ this.previousDateData?.totalLeave }}</span
-              >
-              On leave last day
-            </p>
-          </div>
-        </div>
-        <h4 class="fw-semibold mb-3">
-          <span class="counter-value">{{
-            this.currentDateData?.totalLeave
-          }}</span>
-        </h4>
-        <p class="fw-medium text-muted mb-0">On Leave</p>
-      </div>
-    </div>
-  </div> -->
 </div>
 
 <div class="row">
@@ -394,7 +219,7 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-lg-9">
+          <div class="col-12 col-lg-9">
             <div id="map" class="match-parent w-100 h-100"></div>
           </div>
           <div class="col-lg-3">
@@ -488,7 +313,7 @@
       </div>
     </div>
   </div>
-  <div class="col-3">
+  <div class="col-12 col-lg-3">
     <div class="card">
       <div class="card-body">
         <h5 class="mb-2">Upcoming Holiday</h5>
@@ -638,6 +463,10 @@
                       <td>{{ item.address }}</td>
                       <td [innerHTML]="formatTime(item.checkInTime)"></td>
                     </tr>
+                    }@empty {
+                    <h6 class="text-muted my-3 fw-medium fs-xs text-uppercase">
+                      No employee have Checked-in yet.
+                    </h6>
                     }
                   </tbody>
                 </table>
@@ -707,6 +536,10 @@
                       <td>{{ item.address }}</td>
                       <td [innerHTML]="formatTime(item.checkOutTime)"></td>
                     </tr>
+                    }@empty {
+                    <h6 class="text-muted my-3 fw-medium fs-xs text-uppercase">
+                      No employee have Checked-Out yet.
+                    </h6>
                     }
                   </tbody>
                 </table>

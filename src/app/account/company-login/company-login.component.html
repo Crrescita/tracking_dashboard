@@ -187,7 +187,10 @@
 
                       <div class="mb-3">
                         <div class="float-end">
-                          <a routerLink="/auth/pass-reset" class="text-muted"
+                          <a
+                            routerLink="/auth/pass-reset"
+                            [queryParams]="{ userType: 'company' }"
+                            class="text-muted"
                             >Forgot password?</a
                           >
                         </div>

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "src/app/core/services/custom-pages/auth.service";
 
@@ -14,6 +14,7 @@ import { AuthService } from "src/app/core/services/custom-pages/auth.service";
 export class PassResetComponent {
   forgotForm: FormGroup;
   resetButtonActive: boolean = true;
+  userType: any;
   // set the currenr year
   year: number = new Date().getFullYear();
 
@@ -21,8 +22,13 @@ export class PassResetComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private route: ActivatedRoute
   ) {
+    this.route.queryParams.subscribe((params) => {
+      this.userType = params["userType"];
+    });
+
     this.forgotForm = this.formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
     });
@@ -37,6 +43,7 @@ export class PassResetComponent {
       this.resetButtonActive = false;
       const data = {
         email: this.f["email"].value,
+        user_type: this.userType,
       };
       this.authService.forgetPass(data).subscribe((res) => {
         if (res.status == true) {

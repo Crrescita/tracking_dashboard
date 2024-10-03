@@ -33,14 +33,16 @@ export class AddCompanyComponent implements OnInit {
 
   fieldTextType!: boolean;
 
-  // lat = 77.0652;
-  // lng = 28.4595;
+  fieldTextType1: boolean = false;
+  fieldTextType2: boolean = false;
 
-  mockLocationUpdates = [
-    { lng: 78.22045594790079, lat: 26.230978491880894 },
-    { lng: 78.22581623978483, lat: 26.230717171669912 },
-    { lng: 78.22831983563903, lat: 26.229851080580822 },
-  ];
+  passwordValidations = {
+    length: false,
+    lower: false,
+    upper: false,
+    number: false,
+    special: false,
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -68,37 +70,91 @@ export class AddCompanyComponent implements OnInit {
   }
 
   initializeForm() {
-    this.formGroup = this.formBuilder.group({
-      name: ["", [Validators.maxLength(45), Validators.required]],
-      address: ["", [Validators.maxLength(100), Validators.required]],
-      no_of_emp: ["", [Validators.required]],
-      logo: ["", this.imageValidator()],
-      cin_id: ["", [Validators.required]],
-      tax_no: ["", [Validators.required]],
-      website_url: ["", [Validators.required]],
-      email: [
-        "",
-        [
-          Validators.required,
-          Validators.email,
-          Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
+    this.formGroup = this.formBuilder.group(
+      {
+        name: ["", [Validators.maxLength(45), Validators.required]],
+        address: ["", [Validators.maxLength(100), Validators.required]],
+        no_of_emp: ["", [Validators.required]],
+        logo: ["", this.imageValidator()],
+        cin_id: ["", [Validators.required]],
+        tax_no: ["", [Validators.required]],
+        website_url: ["", [Validators.required]],
+        email: [
+          "",
+          [
+            Validators.required,
+            Validators.email,
+            Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
+          ],
         ],
-      ],
-      mobile: [
-        "",
-        [Validators.required, Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$")],
-      ],
-      business_type: ["", [Validators.maxLength(45), Validators.required]],
-      password: ["", [this.imageValidator(), Validators.minLength(5)]],
-      status: ["", [Validators.required]],
-      city: ["", [Validators.required]],
-      state: ["", [Validators.required]],
-      zip_code: ["", [Validators.required]],
-      contact_person: ["", [Validators.required]],
-      check_out_time: ["", [Validators.required]],
-      check_in_time_start: ["", [Validators.required]],
-      check_in_time_end: ["", [Validators.required]],
-    });
+        mobile: [
+          "",
+          [
+            Validators.required,
+            Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
+          ],
+        ],
+        business_type: ["", [Validators.maxLength(45), Validators.required]],
+        // password: ["", [this.imageValidator(), Validators.minLength(5)]],
+        password: [
+          "",
+          this.urlId
+            ? [
+                Validators.pattern(
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+                ),
+              ]
+            : [
+                Validators.required,
+                Validators.pattern(
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+                ),
+              ],
+        ],
+        confirmPassword: ["", this.urlId ? [] : [Validators.required]],
+        status: ["", [Validators.required]],
+        city: ["", [Validators.required]],
+        state: ["", [Validators.required]],
+        zip_code: ["", [Validators.required]],
+        contact_person: ["", [Validators.required]],
+        check_out_time: ["", [Validators.required]],
+        check_in_time_start: ["", [Validators.required]],
+        check_in_time_end: ["", [Validators.required]],
+      },
+      { validator: this.passwordMatchValidator }
+    );
+  }
+
+  passwordMatchValidator(formGroup: FormGroup) {
+    const passwordControl = formGroup.get("password")?.value;
+    const confirmPasswordControl = formGroup.get("confirmPassword")?.value;
+
+    if (passwordControl && confirmPasswordControl) {
+      const password = passwordControl;
+      const confirmPassword = confirmPasswordControl;
+
+      return password === confirmPassword ? null : { mismatch: true };
+    }
+
+    return null;
+  }
+
+  checkPasswordPattern() {
+    const password = this.formGroup.get("password")?.value;
+    this.passwordValidations.length = password.length >= 8;
+    this.passwordValidations.lower = /[a-z]/.test(password);
+    this.passwordValidations.upper = /[A-Z]/.test(password);
+    this.passwordValidations.number = /\d/.test(password);
+    this.passwordValidations.special = /[@$!%*?&]/.test(password);
+
+    const confirmPasswordControl = this.formGroup.get("confirmPassword");
+
+    if (password) {
+      confirmPasswordControl?.setValidators([Validators.required]);
+    } else {
+      confirmPasswordControl?.clearValidators();
+    }
+    confirmPasswordControl?.updateValueAndValidity();
   }
 
   imageValidator() {
@@ -145,7 +201,7 @@ export class AddCompanyComponent implements OnInit {
         cin_id: data.cin_id,
         tax_no: data.tax_no,
         email: data.email,
-        password: data.password, // Assuming you have a decrypt function
+        password: data.password,
         status: data.status,
         mobile: data.mobile,
         business_type: data.business_type,
@@ -219,7 +275,9 @@ export class AddCompanyComponent implements OnInit {
     formData.append("no_of_emp", this.f["no_of_emp"].value);
     formData.append("cin_id", this.f["cin_id"].value);
     formData.append("email", this.f["email"].value);
-    formData.append("password", this.f["password"].value);
+    if (this.f["password"].value) {
+      formData.append("password", this.f["password"].value);
+    }
     formData.append("status", this.f["status"].value);
     formData.append("mobile", this.f["mobile"].value);
     formData.append("business_type", this.f["business_type"].value);
@@ -290,5 +348,13 @@ export class AddCompanyComponent implements OnInit {
 
   toggleFieldTextType() {
     this.fieldTextType = !this.fieldTextType;
+  }
+
+  toggleFieldTextType1(): void {
+    this.fieldTextType1 = !this.fieldTextType1;
+  }
+
+  toggleFieldTextType2(): void {
+    this.fieldTextType2 = !this.fieldTextType2;
   }
 }

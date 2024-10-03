@@ -15,27 +15,39 @@ import { Observable } from "rxjs";
 export class PassChangeComponent {
   // set the currenr year
   year: number = new Date().getFullYear();
-  resetForm: FormGroup;
+  resetForm!: FormGroup;
   resetButtonActive: boolean = true;
   fieldTextType!: boolean;
   fieldTextType1!: boolean;
   token: any = "";
   sd: any = "";
   user: string | null = null;
+  user_type: any;
+
+  passwordValidations = {
+    length: false,
+    lower: false,
+    upper: false,
+    number: false,
+  };
   constructor(
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private toastService: ToastrService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    this.resetForm = this.formBuilder.group(
-      {
-        password: ["", [Validators.required]],
-        confirmPassword: ["", [Validators.required]],
-      },
-      { validator: this.passwordMatchValidator }
-    );
+    // this.resetForm = this.formBuilder.group(
+    //   {
+    //     password: ["", [Validators.required]],
+    //     confirmPassword: ["", [Validators.required]],
+    //   },
+    //   { validator: this.passwordMatchValidator }
+    // );
+    this.route.queryParams.subscribe((params) => {
+      this.user_type = params["userType"];
+    });
   }
 
   get r() {
@@ -44,13 +56,37 @@ export class PassChangeComponent {
 
   ngOnInit() {
     this.getResetToken();
+    this.initializeForm();
+  }
 
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      this.user = params.get("user");
-      if (this.user) {
-        console.log(this.user);
-      }
-    });
+  initializeForm() {
+    this.resetForm = this.formBuilder.group(
+      {
+        password: [
+          "",
+          [
+            Validators.required,
+            Validators.pattern("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"),
+          ],
+        ],
+        confirmPassword: ["", Validators.required],
+      },
+      { validator: this.passwordMatchValidator }
+    );
+  }
+
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get("password")?.value;
+    const confirmPassword = formGroup.get("confirmPassword")?.value;
+    return password === confirmPassword ? null : { mismatch: true };
+  }
+
+  checkPasswordPattern() {
+    const password = this.resetForm.get("password")?.value;
+    this.passwordValidations.length = password.length >= 8;
+    this.passwordValidations.lower = /[a-z]/.test(password);
+    this.passwordValidations.upper = /[A-Z]/.test(password);
+    this.passwordValidations.number = /\d/.test(password);
   }
 
   getResetToken() {
@@ -62,11 +98,11 @@ export class PassChangeComponent {
   }
 
   // Custom validator function to check if password and confirmPassword match
-  passwordMatchValidator(group: FormGroup) {
-    const password = group.get("password")?.value;
-    const confirmPassword = group.get("confirmPassword")?.value;
-    return password === confirmPassword ? null : { mismatch: true };
-  }
+  // passwordMatchValidator(group: FormGroup) {
+  //   const password = group.get("password")?.value;
+  //   const confirmPassword = group.get("confirmPassword")?.value;
+  //   return password === confirmPassword ? null : { mismatch: true };
+  // }
 
   onSubmit() {
     if (this.resetForm.valid) {
@@ -74,6 +110,7 @@ export class PassChangeComponent {
       const data = {
         new_password: this.r["password"].value,
         token: this.token,
+        user_type: this.user_type,
       };
 
       const resetPassword = (resetPassMethod: Observable<any>) => {
@@ -82,8 +119,10 @@ export class PassChangeComponent {
           if (res.status === true) {
             this.toastService.success(res.message);
             this.resetForm.reset();
-            if (this.user != "employee") {
+            if (this.user_type == "administrator") {
               this.router.navigate(["/auth/login"]);
+            } else {
+              this.router.navigate(["/auth/company-login"]);
             }
           } else {
             this.toastService.error(res.message);
@@ -91,11 +130,11 @@ export class PassChangeComponent {
         });
       };
 
-      if (this.user === "employee") {
-        resetPassword(this.authService.resetPassEmployee(data));
-      } else {
-        resetPassword(this.authService.resetPass(data));
-      }
+      // if (this.user === "employee") {
+      //   resetPassword(this.authService.resetPassEmployee(data));
+      // } else {
+      resetPassword(this.authService.resetPass(data));
+      // }
     } else {
       this.resetForm.markAllAsTouched();
     }

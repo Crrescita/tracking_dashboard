@@ -149,6 +149,7 @@
                                 r['password'].errors &&
                                 r['password'].touched
                             }"
+                            (input)="checkPasswordPattern()"
                           />
                           @if(r['password'] &&
                           r['password'].hasError('required') &&
@@ -225,24 +226,67 @@
                         </div>
                       </div>
 
-                      <div
-                        id="password-contain"
-                        class="p-3 bg-light mb-2 rounded"
-                      >
-                        <h5 class="fs-sm">Password must contain:</h5>
-                        <p id="pass-length" class="invalid fs-xs mb-2">
-                          Minimum <b>8 characters</b>
-                        </p>
-                        <p id="pass-lower" class="invalid fs-xs mb-2">
-                          At <b>lowercase</b> letter (a-z)
-                        </p>
-                        <p id="pass-upper" class="invalid fs-xs mb-2">
-                          At least <b>uppercase</b> letter (A-Z)
-                        </p>
-                        <p id="pass-number" class="invalid fs-xs mb-0">
-                          A least <b>number</b> (0-9)
-                        </p>
+                      @if(r['password'] && r['password'].hasError('pattern')){
+                      <div class="col-lg-12">
+                        <div
+                          class="card bg-light shadow-none passwd-bg"
+                          id="password-contain"
+                        >
+                          <div class="card-body">
+                            <div class="mb-4">
+                              <h5 class="fs-sm">Password must contain:</h5>
+                            </div>
+                            <div>
+                              <p
+                                id="pass-length"
+                                class="fs-xs mb-2"
+                                [ngClass]="
+                                  passwordValidations.length
+                                    ? 'valid'
+                                    : 'invalid'
+                                "
+                              >
+                                Minimum <b>8 characters</b>
+                              </p>
+                              <p
+                                id="pass-lower"
+                                class="fs-xs mb-2"
+                                [ngClass]="
+                                  passwordValidations.lower
+                                    ? 'valid'
+                                    : 'invalid'
+                                "
+                              >
+                                At least <b>one lowercase</b> letter (a-z)
+                              </p>
+                              <p
+                                id="pass-upper"
+                                class="fs-xs mb-2"
+                                [class.valid]="passwordValidations.upper"
+                                [ngClass]="
+                                  passwordValidations.upper
+                                    ? 'valid'
+                                    : 'invalid'
+                                "
+                              >
+                                At least <b>one uppercase</b> letter (A-Z)
+                              </p>
+                              <p
+                                id="pass-number"
+                                class="fs-xs mb-0"
+                                [ngClass]="
+                                  passwordValidations.number
+                                    ? 'valid'
+                                    : 'invalid'
+                                "
+                              >
+                                At least <b>one number</b> (0-9)
+                              </p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
+                      }
 
                       <!-- <div class="form-check form-check-primary">
                                                 <input class="form-check-input" type="checkbox" value="" id="auth-remember-check" />
@@ -271,19 +315,22 @@
                       </div>
                     </form>
                   </div>
-                  @if(this.user != "employee"){
+
                   <div class="mt-4 text-center">
                     <p class="mb-0">
                       Wait, I remember my password...
                       <a
-                        routerLink="/auth/login"
+                        [routerLink]="
+                          this.user_type == 'administrator'
+                            ? '/auth/login'
+                            : '/auth/company-login'
+                        "
                         class="fw-semibold text-primary text-decoration-underline"
                       >
                         Click here
                       </a>
                     </p>
                   </div>
-                  }
                 </div>
                 <!-- end card body -->
               </div>

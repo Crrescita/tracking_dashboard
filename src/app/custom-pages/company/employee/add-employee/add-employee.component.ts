@@ -274,6 +274,15 @@ export class AddEmployeeComponent implements OnInit {
     this.passwordValidations.upper = /[A-Z]/.test(password);
     this.passwordValidations.number = /\d/.test(password);
     this.passwordValidations.special = /[@$!%*?&]/.test(password);
+
+    const confirmPasswordControl = this.formGroup.get("confirmPassword");
+
+    if (password) {
+      confirmPasswordControl?.setValidators([Validators.required]);
+    } else {
+      confirmPasswordControl?.clearValidators();
+    }
+    confirmPasswordControl?.updateValueAndValidity();
   }
 
   onCheckboxChange(event: any): void {

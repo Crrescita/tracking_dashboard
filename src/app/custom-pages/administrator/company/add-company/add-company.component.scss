@@ -48,3 +48,31 @@
   .mt-n5 {
     margin-top: -5rem !important;
 }
+
+#password-contain {
+  display: block;
+
+  p {
+      padding-left: 13px;
+
+      &.valid {
+          color: #2dcb73;
+
+          &::before {
+              position: relative;
+              left: -8px;
+              content: "✔";
+          }
+      }
+
+      &.invalid {
+          color: #ff6c6c;
+
+          &::before {
+              position: relative;
+              left: -8px;
+              content: "✖";
+          }
+      }
+  }
+}
