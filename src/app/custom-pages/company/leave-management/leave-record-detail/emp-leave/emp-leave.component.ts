@@ -105,7 +105,7 @@ export class EmpLeaveComponent implements OnInit {
         if (res && res.status) {
           this.toggleSpinner(false);
           this.leaveTypesData = res.data;
-          console.log(this.leaveTypesData);
+
           // this.leaveDetailData = res.leave_details;
         } else {
           this.handleError("Unexpected response format");

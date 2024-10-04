@@ -10,7 +10,7 @@
     <div class="card">
       <div class="card-body">
         <div class="row g-4">
-          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+          <div class="col-lg-3 col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -33,7 +33,7 @@
               </h3>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+          <div class="col-lg-3 col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -56,7 +56,7 @@
               </h3>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+          <div class="col-lg-3 col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -80,7 +80,7 @@
             </div>
           </div>
 
-          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+          <div class="col-lg-3 col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -353,7 +353,7 @@
                         {{ option }}
                       </option>
                     </select> -->
-                    @if(data.status == 'Pending'){
+                    @if(data?.status == 'Pending'){
                     <select
                       class="form-control"
                       data-choices
@@ -369,7 +369,7 @@
                         {{ option }}
                       </option>
                     </select>
-                    }@else if (data.status == 'Approve'){
+                    }@else if (data?.status == 'Approve'){
                     <button
                       type="button"
                       class="btn btn-success btn-label rounded-pill"

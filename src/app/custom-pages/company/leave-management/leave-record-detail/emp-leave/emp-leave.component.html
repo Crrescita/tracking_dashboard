@@ -263,8 +263,8 @@
                   <thead class="table-active">
                     <tr>
                       <th>Leave Type Name</th>
-                      <th>No. Of Taken Leaves</th>
-                      <th>Remaining Leaves</th>
+                      <th>Allotted Leaves</th>
+                      <th>Balance Leaves</th>
                       <th class="text-end">Total Leaves</th>
                     </tr>
                   </thead>
@@ -301,32 +301,29 @@
                   >
                     <tbody>
                       <tr>
-                        <td>Total Leaves Taken</td>
-                        <td class="text-end">
-                          {{ getTotal("no_of_days_taken") }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Total Remaining Leaves</td>
-                        <td class="text-end">
-                          {{ getTotal("remaining_leave") }}
-                        </td>
-                      </tr>
-                      <tr>
                         <td>Total Leaves</td>
 
                         <td class="text-end">
                           {{ getTotal("total_leave_days") }}
                         </td>
                       </tr>
+                      <tr>
+                        <td>Total Allotted Leaves</td>
+                        <td class="text-end">
+                          {{ getTotal("no_of_days_taken") }}
+                        </td>
+                      </tr>
+
                       <!-- <tr>
                                 <td>Shipping Charge</td>
                                 <td class="text-end">$65.00</td>
-                              </tr>
-                              <tr class="border-top border-top-dashed fs-base">
-                                <th scope="row">Total Amount</th>
-                                <th class="text-end">$2,050.20</th>
                               </tr> -->
+                      <tr class="border-top border-top-dashed fs-base">
+                        <th scope="row">Total Balance Leaves</th>
+                        <th class="text-end">
+                          {{ getTotal("remaining_leave") }}
+                        </th>
+                      </tr>
                     </tbody>
                   </table>
                 </div>

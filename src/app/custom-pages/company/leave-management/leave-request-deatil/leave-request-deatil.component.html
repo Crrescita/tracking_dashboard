@@ -173,7 +173,7 @@
             </div>
 
             <div class="text-start mt-4">
-              @if(this.leaveDetailData.status == 'Pending'){
+              @if(this.leaveDetailData?.status == 'Pending'){
               <button
                 class="btn btn-success me-1"
                 (click)="updateLeaveStatus('Approved')"
@@ -186,7 +186,7 @@
                 <i class="ri-close-line align-baseline me-1"></i>
                 Reject
               </button>
-              }@else if (this.leaveDetailData.status == 'Approve'){
+              }@else if (this.leaveDetailData?.status == 'Approve'){
               <button
                 type="button"
                 class="btn btn-success btn-label rounded-pill"
