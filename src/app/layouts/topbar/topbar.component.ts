@@ -21,6 +21,7 @@ import { getLayoutmode } from "src/app/store/layouts/layout-selector";
 import { TokenStorageService } from "src/app/core/services/token-storage.service";
 import { AuthService } from "src/app/core/services/custom-pages/auth.service";
 import { ApiService } from "../../core/services/api.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-topbar",
@@ -71,7 +72,8 @@ export class TopbarComponent {
     public _cookiesService: CookieService,
     public store: Store<RootReducerState>,
     private TokenStorageService: TokenStorageService,
-    private api: ApiService
+    private api: ApiService,
+    public toastService: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +82,7 @@ export class TopbarComponent {
     this.authService.receiveMessage();
 
     this.userData = this.TokenStorageService.getUser();
-    console.log(this.userData.id);
+
     this.authService.currentMessage.subscribe((message) => {
       if (message) {
         this.getNotification();
@@ -125,50 +127,52 @@ export class TopbarComponent {
   }
 
   getNotification() {
-    this.api.get(`getNotification`, this.userData.id).subscribe((res: any) => {
-      this.notificationList = [];
-      this.totalNotify = 0;
-      this.newNotify = 0;
+    this.api
+      .get(`getNotification`, this.userData.id, { status: "unread" })
+      .subscribe((res: any) => {
+        this.notificationList = [];
+        this.totalNotify = 0;
+        this.newNotify = 0;
 
-      const groupedNotifications = res.data.reduce(
-        (acc: any, message: any, index: number) => {
-          const title = message.title || "New";
-          if (!acc[title]) {
-            acc[title] = {
-              title: title,
-              items: [],
-            };
-          }
-          acc[title].items.push({
-            id: index + 1,
-            type: "notification",
-            avatar: message.image || "",
-            text: message.body,
-            timestamp: message.timestamp,
-            checkboxId: `notification-${index + 1}`,
-            state: false,
-            background: "bg-info-subtle text-info",
-            icon: "bx bx-badge-check",
-          });
+        const groupedNotifications = res.data.reduce(
+          (acc: any, message: any, index: number) => {
+            const title = message.title || "New";
+            if (!acc[title]) {
+              acc[title] = {
+                title: title,
+                items: [],
+              };
+            }
+            acc[title].items.push({
+              id: index + 1,
+              type: "notification",
+              avatar: message.image || "",
+              text: message.body,
+              timestamp: message.timestamp,
+              checkboxId: `notification-${index + 1}`,
+              state: false,
+              background: "bg-info-subtle text-info",
+              icon: "bx bx-badge-check",
+            });
 
-          return acc;
-        },
-        {}
-      );
+            return acc;
+          },
+          {}
+        );
 
-      const newNotifications = groupedNotifications["New"]
-        ? [groupedNotifications["New"]]
-        : [];
-      const otherNotifications = Object.keys(groupedNotifications)
-        .filter((title) => title !== "New")
-        .map((title) => groupedNotifications[title]);
+        const newNotifications = groupedNotifications["New"]
+          ? [groupedNotifications["New"]]
+          : [];
+        const otherNotifications = Object.keys(groupedNotifications)
+          .filter((title) => title !== "New")
+          .map((title) => groupedNotifications[title]);
 
-      this.notificationList = [...newNotifications, ...otherNotifications];
+        this.notificationList = [...newNotifications, ...otherNotifications];
 
-      const addedItems = res.data.length;
-      this.totalNotify += addedItems;
-      this.newNotify += newNotifications[0].items.length;
-    });
+        const addedItems = res.data.length;
+        this.totalNotify += addedItems;
+        this.newNotify += newNotifications[0].items.length;
+      });
   }
 
   windowScroll() {
@@ -435,9 +439,45 @@ export class TopbarComponent {
         }
       }
     }
+    const idsToDelete = this.checkedValGet;
+
+    if (idsToDelete && idsToDelete.length > 0) {
+      this.deleteData(); // Call deleteData function to handle deletion
+    }
     this.calculatenotification();
     this.removeNotificationModal?.hide();
   }
+
+  deleteData(id?: any) {
+    // If single ID is provided, delete that specific notification
+    if (id) {
+      this.api.deleteWithId("notificationDelete", id).subscribe(
+        (res: any) => this.handleResponse(res),
+        (error) => this.handleError(error)
+      );
+    }
+
+    // If multiple IDs are in checkedValGet, delete them in bulk
+    const idsToDelete = this.checkedValGet;
+    if (idsToDelete && idsToDelete.length > 0) {
+      this.api
+        .post("notification-delete-multiple", { ids: idsToDelete })
+        .subscribe(
+          (res: any) => this.handleResponse(res),
+          (error) => this.handleError(error)
+        );
+    }
+  }
+
+  handleResponse(res: any) {
+    if (res["status"] === true) {
+      this.toastService.success("Notification Delete Successfully!!");
+    } else {
+      this.toastService.error(res["message"]);
+    }
+  }
+
+  handleError(error: any) {}
 
   calculatenotification() {
     this.totalNotify = 0;
@@ -479,12 +519,24 @@ export class TopbarComponent {
       (res: any) => {
         if (res.status) {
           this.getNotification();
-          // this.notificationList.forEach((category) => {
-          //   category.items.forEach((item: any) => {
-          //     item.state = true;
-          //   });
-          // });
-          // this.newNotify = 0;
+        }
+      },
+      (error) => {
+        console.error("Error marking notifications as read:", error);
+      }
+    );
+  }
+  clearAll() {
+    const payload = {
+      companyId: this.userData.id,
+    };
+
+    this.api.post("clearAll", payload).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.getNotification();
+        } else {
+          console.error("Failed to mark notifications as read:", res.message);
         }
       },
       (error) => {

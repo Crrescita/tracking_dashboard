@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
 import { cloneDeep } from "lodash";
 import { ActivatedRoute, Router } from "@angular/router";
+import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 
 @Component({
   selector: "app-leave-request",
@@ -13,6 +14,14 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrl: "./leave-request.component.scss",
 })
 export class LeaveRequestComponent {
+  selectedDate: Date | null = null;
+  selectedDateRange: any;
+
+  bsConfig = {
+    dateInputFormat: "YYYY-MM-DD",
+    rangeInputFormat: "YYYY-MM-DD",
+  };
+
   breadCrumbItems!: Array<{}>;
   submitted: boolean = false;
   spinnerStatus: boolean = false;
@@ -20,6 +29,7 @@ export class LeaveRequestComponent {
   masterSelected!: boolean;
   leaveRequestData: any = [];
   leaveRequestDataList: any = [];
+  leaveCount: any;
   filteredLeaveReqData: any = [];
   endItem: any;
 
@@ -42,6 +52,8 @@ export class LeaveRequestComponent {
   selectedDesignations: any[] = [];
   designations: any[] = [];
 
+  employeeDataList: any = [];
+
   filterCounts = {
     termCount: 0,
     designationCount: 0,
@@ -49,6 +61,7 @@ export class LeaveRequestComponent {
     statusCount: 0,
     dateCount: 0,
     empCount: 0,
+    selectedDateRangeCount: 0,
   };
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
@@ -85,6 +98,17 @@ export class LeaveRequestComponent {
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
 
+      if (params["selectedDateRange"]) {
+        const dateRange = params["selectedDateRange"].split(",");
+        if (dateRange.length > 0) {
+          this.selectedDateRange = {
+            from: new Date(dateRange[0]),
+            to: dateRange[1] ? new Date(dateRange[1]) : null,
+          };
+        }
+      }
+
+      // this.selectedDateRange = params["selectedDateRange"] || null;
       this.filterdata();
       this.updatePaginatedData();
     });
@@ -100,6 +124,7 @@ export class LeaveRequestComponent {
       this.getLeaveRequest();
       this.getDepartment();
       this.getDesignation();
+      this.getemployeeData();
     }
 
     this.formGroup = this.formBuilder.group({
@@ -118,6 +143,29 @@ export class LeaveRequestComponent {
     this.submitted = isLoading;
   }
 
+  getemployeeData() {
+    this.toggleSpinner(true);
+    const url = `employees?company_id=${this.company_id}`;
+    this.api.getwithoutid(url).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.employeeDataList = res.data || [];
+          // this.filterdata();
+        } else {
+          this.employeeDataList = [];
+          this.toggleSpinner(false);
+        }
+      },
+      (error) => {
+        this.toggleSpinner(false);
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+      }
+    );
+  }
+
   getLeaveRequest() {
     this.toggleSpinner(true);
     const url = `leaveRequest?company_id=${this.company_id}`;
@@ -127,10 +175,12 @@ export class LeaveRequestComponent {
           this.toggleSpinner(false);
           // this.leaveRequestData = res.data || [];
           this.leaveRequestDataList = res.data || [];
+          this.leaveCount = res.leaveCount || [];
           this.filterdata();
         } else {
           this.leaveRequestData = [];
           this.leaveRequestDataList = [];
+          this.leaveCount = [];
           this.handleError("Unexpected response format");
         }
       },
@@ -206,10 +256,10 @@ export class LeaveRequestComponent {
     this.toggleSpinner(false);
     if (res == "Approved") {
       this.toastService.success("Leave Request Approved Successfully!!");
-      this.getLeaveRequest();
     } else {
-      this.toastService.error("The leave request has been declined.");
+      this.toastService.success("The leave request has been Rejected.");
     }
+    this.getLeaveRequest();
   }
 
   onSubmit() {
@@ -391,13 +441,16 @@ export class LeaveRequestComponent {
   // filterdata
   filterdata() {
     let filteredData = this.leaveRequestDataList;
-
+    if (this.selectedStatus == null) {
+      this.selectedStatus = "";
+    }
     // Reset filter counts
     this.filterCounts.termCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
     this.filterCounts.empCount = 0;
+    this.filterCounts.selectedDateRangeCount = 0;
 
     // Filter by term
     if (this.term) {
@@ -434,7 +487,7 @@ export class LeaveRequestComponent {
     // Filter by selected status
     if (this.selectedStatus) {
       filteredData = filteredData.filter(
-        (el: any) => el.checkin_status === this.selectedStatus
+        (el: any) => el.status === this.selectedStatus
       );
       this.filterCounts.statusCount = 1;
     }
@@ -448,6 +501,41 @@ export class LeaveRequestComponent {
       this.filterCounts.empCount = 1;
     }
 
+    if (this.selectedDateRange) {
+      let fromDateStr = "";
+      let toDateStr = "";
+
+      if (this.selectedDateRange.from) {
+        fromDateStr = this.formatDateWithoutTime(
+          new Date(this.selectedDateRange.from)
+        );
+      }
+
+      if (this.selectedDateRange.to) {
+        toDateStr = this.formatDateWithoutTime(
+          new Date(this.selectedDateRange.to)
+        );
+      }
+
+      filteredData = filteredData.filter((el: any) => {
+        const fromDate = this.formatDateWithoutTime(new Date(el.from_date));
+        const toDate = this.formatDateWithoutTime(new Date(el.to_date));
+
+        if (fromDateStr && !toDateStr) {
+          return fromDate == fromDateStr;
+        } else if (fromDateStr && toDateStr) {
+          return (
+            (fromDate >= fromDateStr && fromDate <= toDateStr) ||
+            (toDate >= fromDateStr && toDate <= toDateStr) ||
+            (fromDate <= fromDateStr && toDate >= toDateStr)
+          );
+        }
+
+        return true;
+      });
+      this.filterCounts.selectedDateRangeCount = 1;
+    }
+
     // Update filtered data
     this.filteredLeaveReqData = filteredData;
 
@@ -456,7 +544,8 @@ export class LeaveRequestComponent {
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
-      this.selectedStatus
+      this.selectedStatus ||
+      this.selectedDateRange
     ) {
       if (this.filteredLeaveReqData.length === 0) {
         this.currentPage = 1;
@@ -464,6 +553,13 @@ export class LeaveRequestComponent {
     }
 
     this.updatePaginatedData();
+  }
+
+  formatDateWithoutTime(date: Date): string {
+    const localDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    ); // Adjust for time zone
+    return localDate.toISOString().split("T")[0]; // YYYY-MM-DD
   }
 
   updatePaginatedData(): void {
@@ -475,7 +571,8 @@ export class LeaveRequestComponent {
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
-      this.selectedStatus
+      this.selectedStatus ||
+      this.selectedDateRange
     ) {
       if (startItem >= this.filteredLeaveReqData.length) {
         this.currentPage = 1;
@@ -488,6 +585,17 @@ export class LeaveRequestComponent {
     this.leaveRequestData = cloneDeep(
       this.filteredLeaveReqData.slice(newStartItem, newEndItem)
     );
+
+    let formattedDateRange = "";
+    if (this.selectedDateRange) {
+      const fromDate = this.formatDateWithoutTime(
+        new Date(this.selectedDateRange.from)
+      );
+      const toDate = this.selectedDateRange.to
+        ? this.formatDateWithoutTime(new Date(this.selectedDateRange.to))
+        : "";
+      formattedDateRange = `${fromDate},${toDate}`; // Comma-separated range
+    }
 
     // Update no result display
     this.updateNoResultDisplay();
@@ -502,6 +610,7 @@ export class LeaveRequestComponent {
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
         selectedStatus: this.selectedStatus,
+        selectedDateRange: formattedDateRange,
       },
       queryParamsHandling: "merge",
     });
@@ -524,7 +633,8 @@ export class LeaveRequestComponent {
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
       this.filterCounts.dateCount +
-      this.filterCounts.empCount
+      this.filterCounts.empCount +
+      this.filterCounts.selectedDateRangeCount
     );
   }
 
@@ -550,7 +660,8 @@ export class LeaveRequestComponent {
     this.selectedDesignations = [];
     this.selectedStatus = "";
     this.selectedEmp = [];
-    this.leaveRequestData = this.leaveRequestDataList;
+    (this.selectedDateRange = ""),
+      (this.leaveRequestData = this.leaveRequestDataList);
 
     this.filterdata();
 
@@ -562,6 +673,7 @@ export class LeaveRequestComponent {
         selectedDesignations: null,
         selectedStatus: null,
         selectedEmp: null,
+        selectedDateRange: null,
         page: 1,
         itemsPerPage: this.currentItemsPerPage,
       },

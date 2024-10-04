@@ -86,13 +86,17 @@
               <div class="col-3">
                 <p>
                   <span class="fw-bold">
-                    No of Days
+                    Applied For
                     <span class="text-danger"
                       >(Exclude Sundays and company holidays.)</span
                     >
                     :
                   </span>
-                  <span> {{ this.leaveDetailData?.no_of_days }}</span>
+                  <span>
+                    {{ this.leaveDetailData?.no_of_days }} day{{
+                      this.leaveDetailData?.no_of_days > 1 ? "s" : ""
+                    }}</span
+                  >
                 </p>
               </div>
             </div>
@@ -169,18 +173,41 @@
             </div>
 
             <div class="text-start mt-4">
+              @if(this.leaveDetailData.status == 'Pending'){
               <button
                 class="btn btn-success me-1"
                 (click)="updateLeaveStatus('Approved')"
               >
                 <i class="bx bx-check align-baseline me-1"></i>
-                Approved
+                Approve
               </button>
 
               <button class="btn btn-danger me-1" (click)="template.show()">
                 <i class="ri-close-line align-baseline me-1"></i>
-                Declined
+                Reject
               </button>
+              }@else if (this.leaveDetailData.status == 'Approve'){
+              <button
+                type="button"
+                class="btn btn-success btn-label rounded-pill"
+              >
+                <i
+                  class="ri-check-double-line label-icon align-middle rounded-pill fs-lg me-2"
+                ></i>
+                Approved
+              </button>
+
+              }@else {
+              <button
+                type="button"
+                class="btn btn-danger btn-label rounded-pill"
+              >
+                <i
+                  class="ri-close-fill label-icon align-middle rounded-pill fs-lg me-2"
+                ></i>
+                Rejected
+              </button>
+              }
             </div>
             <!-- <div class="table-responsive table-card mt-1">
               <table class="table table-borderless align-middle mb-0">
@@ -393,8 +420,8 @@
             <thead class="table-active">
               <tr>
                 <th>Leave Name</th>
-                <th>No. Of Taken Leaves</th>
-                <th>Remaining Leaves</th>
+                <th>Allotted Leaves</th>
+                <th>Balance Leaves</th>
                 <th class="text-end">Total Leaves</th>
               </tr>
             </thead>
@@ -405,15 +432,23 @@
                   {{ data.name }}
                 </td>
                 <td>
-                  <span class="product-price">{{ data.no_of_days_taken }}</span>
+                  <span class="product-price"
+                    >{{ data.no_of_days_taken }} day{{
+                      data.no_of_days_taken > 1 ? "s" : ""
+                    }}</span
+                  >
                 </td>
                 <td>
-                  {{ data.remaining_leave }}
+                  {{ data.remaining_leave }} day{{
+                    data.remaining_leave > 1 ? "s" : ""
+                  }}
                 </td>
                 <td class="fw-medium text-end">
-                  <span class="product-line-price">{{
-                    data.total_leave_days
-                  }}</span>
+                  <span class="product-line-price"
+                    >{{ data.total_leave_days }} day{{
+                      data.total_leave_days > 1 ? "s" : ""
+                    }}</span
+                  >
                 </td>
               </tr>
               }
@@ -429,32 +464,35 @@
             >
               <tbody>
                 <tr>
-                  <td>Total Leaves Taken</td>
-                  <td class="text-end">
-                    {{ getTotal("no_of_days_taken") }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>Total Remaining Leaves</td>
-                  <td class="text-end">
-                    {{ getTotal("remaining_leave") }}
-                  </td>
-                </tr>
-                <tr>
                   <td>Total Leaves</td>
 
                   <td class="text-end">
-                    {{ getTotal("total_leave_days") }}
+                    {{ getTotal("total_leave_days") }} day{{
+                      getTotal("total_leave_days") > 1 ? "s" : ""
+                    }}
                   </td>
                 </tr>
+                <tr>
+                  <td>Total Allotted Leaves</td>
+                  <td class="text-end">
+                    {{ getTotal("no_of_days_taken") }} day{{
+                      getTotal("no_of_days_taken") > 1 ? "s" : ""
+                    }}
+                  </td>
+                </tr>
+
                 <!-- <tr>
                   <td>Shipping Charge</td>
                   <td class="text-end">$65.00</td>
-                </tr>
-                <tr class="border-top border-top-dashed fs-base">
-                  <th scope="row">Total Amount</th>
-                  <th class="text-end">$2,050.20</th>
                 </tr> -->
+                <tr class="border-top border-top-dashed fs-base">
+                  <th scope="row">Total Balance Leaves</th>
+                  <th class="text-end">
+                    {{ getTotal("remaining_leave") }} day{{
+                      getTotal("remaining_leave") > 1 ? "s" : ""
+                    }}
+                  </th>
+                </tr>
               </tbody>
             </table>
           </div>

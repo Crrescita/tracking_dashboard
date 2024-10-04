@@ -118,7 +118,9 @@
        "LEAVE-MANAGEMENT":"Leave Management",
        "LEAVE-TYPES":"Leave Types",
       "LEAVE-REQUEST":"Leave Requests",
-      "LEAVE-RECORD":"Leave Record"
+      "LEAVE-RECORD":"Leave Record",
+      "NOTIFICATION":"Notification",
+      "LEAVE-APPLICATION":"Leave Application"
       }
     },
     "COMPONENTS": {

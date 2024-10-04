@@ -543,7 +543,10 @@
                     ></a>
                     <ul *dropdownMenu class="dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="javascript:void(0);"
+                        <a
+                          class="dropdown-item"
+                          (click)="clearAll()"
+                          href="javascript:void(0);"
                           >All Clear</a
                         >
                       </li>
@@ -553,11 +556,6 @@
                           class="dropdown-item"
                           href="javascript:void(0);"
                           >Mark all as read</a
-                        >
-                      </li>
-                      <li>
-                        <a class="dropdown-item" href="javascript:void(0);"
-                          >Archive All</a
                         >
                       </li>
                     </ul>

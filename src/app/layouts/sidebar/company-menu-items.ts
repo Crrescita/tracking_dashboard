@@ -113,7 +113,7 @@ export const COMPANY_MENU: MenuItem[] = [
       },
       {
         id: 10,
-        label: "MENUITEMS.COMPANY.LIST.LEAVE-REQUEST",
+        label: "MENUITEMS.COMPANY.LIST.LEAVE-APPLICATION",
         link: "/leave-requests",
         parentId: 8,
         icon: " ri-file-user-line",
@@ -126,6 +126,13 @@ export const COMPANY_MENU: MenuItem[] = [
         icon: " ri-file-user-line",
       },
     ],
+  },
+  {
+    id: 11,
+    label: "MENUITEMS.COMPANY.LIST.NOTIFICATION",
+    link: "/notification",
+    icon: " ri-notification-4-fill",
+    parentId: 75,
   },
 
   // More items...

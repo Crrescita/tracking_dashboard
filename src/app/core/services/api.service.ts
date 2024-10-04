@@ -67,8 +67,13 @@ export class ApiService {
     this.cache = {};
     return this.http.post<any>(url, data);
   }
-  get(apiName: any, id: any): Observable<any> {
-    const url = `${this.apiUrl + apiName}/${id}`;
+  get(apiName: any, id: any, params?: any): Observable<any> {
+    let url = `${this.apiUrl + apiName}/${id}`;
+    if (params) {
+      const queryParams = new URLSearchParams(params).toString();
+      url += `?${queryParams}`;
+    }
+
     return this.http.get<any>(url);
   }
 
@@ -82,21 +87,16 @@ export class ApiService {
     const now = Date.now();
 
     if (this.cache[url] && now - this.cache[url].expiry < this.cacheDuration) {
-      // console.log("Serving data from cache:", this.cache[url].data);
       return this.cache[url].data;
     }
 
-    // console.log("Fetching new data from API");
-
-    // Fetch new data and update cache
     const observable = this.http.get(url).pipe(
       shareReplay(1),
       tap((data) => {
         this.cache[url] = {
-          data: of(data), // Store observable in cache
+          data: of(data),
           expiry: now + this.cacheDuration,
         };
-        // console.log("New data cached:", data);
       }),
       catchError((error) => {
         delete this.cache[url];
@@ -111,6 +111,34 @@ export class ApiService {
 
     return observable;
   }
+
+  // getwithoutid(apiName: any): Observable<any> {
+  //   const url = `${this.apiUrl}${apiName}`;
+  //   const now = Date.now();
+
+  //   // Check if the cache exists and is still valid
+  //   if (this.cache[url] && now < this.cache[url].expiry) {
+  //     // Return the cached data
+  //     return of(this.cache[url].data); // Emit cached data as an observable
+  //   }
+
+  //   // Fetch new data from the API
+  //   return this.http.get(url).pipe(
+  //     shareReplay(1),
+  //     tap((data) => {
+  //       // Update the cache with new data and set the expiry
+  //       this.cache[url] = {
+  //         data: data, // Store the raw data, not the observable
+  //         expiry: now + this.cacheDuration,
+  //       };
+  //     }),
+  //     catchError((error) => {
+  //       // Handle the error
+  //       delete this.cache[url]; // Optionally clear the cache on error
+  //       return of(error); // Return the error as observable
+  //     })
+  //   );
+  // }
 
   clearCache() {
     this.cache = {};

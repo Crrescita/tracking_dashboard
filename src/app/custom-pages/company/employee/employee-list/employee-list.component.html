@@ -186,21 +186,26 @@
                           alt=""
                           class="avatar-sm rounded"
                         />
-                        <span
+                        <!-- <span
                           [ngClass]="
-                            data.checkin_status ? 'bg-success' : 'bg-danger'
+                            data.checkin_status == 'Check-in'
+                              ? 'bg-success'
+                              : 'bg-danger'
                           "
                           class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
                           ><span class="visually-hidden"
                             >unread messages</span
                           ></span
-                        >
+                        > -->
                       </div>
                       <div class="flex-grow-1 ms-2">
                         <h5 class="fs-md">
-                          <a routerLink="/pages/profile" class="text-dark">{{
-                            data.name
-                          }}</a>
+                          <a
+                            [routerLink]="['/employee-detail', data.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ data.name }}</a
+                          >
                         </h5>
                         <p class="text-muted mb-0">
                           {{ data.designation_name }}

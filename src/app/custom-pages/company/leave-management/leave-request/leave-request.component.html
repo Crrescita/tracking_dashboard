@@ -1,10 +1,113 @@
 <!-- Start Breadcrumbs -->
 <app-breadcrumbs
-  title="Leave Request List"
+  title="Leave Applications "
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 <!-- End Breadcrumbs -->
 
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-4">
+          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-primary-subtle rounded-circle text-primary"
+                  >
+                    <i class="ri-user-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Total Leave Application</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="leaveRequestDataList?.length"
+                  >{{ leaveRequestDataList?.length }}</span
+                >
+              </h3>
+            </div>
+          </div>
+          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-user-follow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Approved</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.leaveCount?.totalApproval"
+                  >{{ this.leaveCount?.totalApproval }}</span
+                >
+              </h3>
+            </div>
+          </div>
+          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="ri-user-unfollow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Rejected</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.leaveCount?.totalReject"
+                  >{{ this.leaveCount?.totalReject }}</span
+                >
+              </h3>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-sm-6 border-end-sm ng-star-inserted">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
+                  >
+                    <i class="mdi mdi-account-alert-outline"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Pending</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.leaveCount?.totalPending"
+                  >{{ this.leaveCount?.totalPending }}</span
+                >
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="leave-request">
   <div class="row">
     <div class="col-lg-12">
@@ -12,7 +115,7 @@
         <div class="card-header d-flex align-items-center">
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
-              Leave Request
+              Leave Applications
               <span class="badge bg-dark-subtle text-dark ms-1">{{
                 leaveRequestData?.length
               }}</span>
@@ -130,14 +233,14 @@
                     class="sort cursor-pointer"
                     (click)="onSort('no_of_days')"
                   >
-                    Used Leave
+                    Applied For
                   </th>
-                  <th
+                  <!-- <th
                     class="sort cursor-pointer"
                     (click)="onSort('no_of_days')"
                   >
-                    Remaining Leave
-                  </th>
+                    Balance Leave
+                  </th> -->
                   <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
                   </th>
@@ -174,31 +277,40 @@
                   </td>
                   <td class="products">
                     <div class="d-flex align-items-center">
-                      @if(data.image){
-
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                      <div class="flex-shrink-0 position-relative">
                         <img
-                          src="{{ data.image }}"
+                          [src]="
+                            data.image
+                              ? data.image
+                              : 'assets/images/users/avatar-1.jpg'
+                          "
                           alt=""
-                          class="img-fluid d-block"
+                          class="avatar-sm rounded"
                         />
+                        <!-- <span
+                          [ngClass]="
+                            data.checkin_status == 'Check-in'
+                              ? 'bg-success'
+                              : 'bg-danger'
+                          "
+                          class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
+                          ><span class="visually-hidden"
+                            >unread messages</span
+                          ></span
+                        > -->
                       </div>
-
-                      }@else {
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
-                        <img
-                          src="assets/images/users/avatar-1.jpg"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-                      </div>
-
-                      }
-                      <div>
-                        <h6 class="mb-0">
-                          <a class="text-reset products">{{ data.name }}</a>
-                        </h6>
-                        <p class="text-muted mb-0">{{ data.designation }}</p>
+                      <div class="flex-grow-1 ms-2">
+                        <h5 class="fs-md">
+                          <a
+                            [routerLink]="['/employee-detail', data.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ data.name }}</a
+                          >
+                        </h5>
+                        <p class="text-muted mb-0">
+                          {{ data.designation }}
+                        </p>
                       </div>
                     </div>
                   </td>
@@ -210,20 +322,23 @@
                     {{ data.to_date | date : "dd MMM, YYYY" }}
                   </td>
                   <td class="products">
-                    {{ data.no_of_days }}
+                    {{ data.no_of_days }} Day{{
+                      data.no_of_days > 1 ? "s" : ""
+                    }}
                   </td>
-                  <td class="products">
+                  <!-- <td class="products">
                     Remaing {{ data.leave_type }} leave
                     {{
                       data.total_leave_days - data.no_of_days > 0
                         ? data.total_leave_days - data.no_of_days
                         : 0
                     }}
-                  </td>
+                  </td> -->
                   <td class="products">
-                    <select
+                    <!-- <select
                       class="form-control"
                       data-choices
+                      [(ngModel)]="data.status" 
                       (change)="setStatus(data, $event)"
                       id="statuss"
                     >
@@ -237,7 +352,45 @@
                       >
                         {{ option }}
                       </option>
+                    </select> -->
+                    @if(data.status == 'Pending'){
+                    <select
+                      class="form-control"
+                      data-choices
+                      [(ngModel)]="data.status"
+                      (change)="setStatus(data, $event)"
+                      id="statuss"
+                    >
+                      <option value="">Select Status</option>
+                      <option
+                        *ngFor="let option of ['Pending', 'Approve', 'Reject']"
+                        [value]="option"
+                      >
+                        {{ option }}
+                      </option>
                     </select>
+                    }@else if (data.status == 'Approve'){
+                    <button
+                      type="button"
+                      class="btn btn-success btn-label rounded-pill"
+                    >
+                      <i
+                        class="ri-check-double-line label-icon align-middle rounded-pill fs-lg me-2"
+                      ></i>
+                      Approved
+                    </button>
+
+                    }@else {
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-label rounded-pill"
+                    >
+                      <i
+                        class="ri-close-fill label-icon align-middle rounded-pill fs-lg me-2"
+                      ></i>
+                      Rejected
+                    </button>
+                    }
                   </td>
 
                   <td class="category">
@@ -506,11 +659,11 @@
         </div>
       </div>
 
-      <!-- <div class="col-lg-12">
+      <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
           <ng-select
-            [items]="attendanceMonthyDataList"
+            [items]="employeeDataList"
             [multiple]="true"
             bindLabel="name"
             bindValue="name"
@@ -521,7 +674,42 @@
           >
           </ng-select>
         </div>
-      </div> -->
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Date</p>
+
+          <input
+            type="text"
+            class="form-control"
+            mwlFlatpickr
+            [(ngModel)]="selectedDateRange"
+            [altInput]="true"
+            [convertModelValue]="true"
+            mode="range"
+            altFormat="d M, Y"
+            dateFormat="d M, Y"
+            (ngModelChange)="filterdata()"
+          />
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Leave Status</p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Approve">Approved</option>
+            <option value="Reject">Rejected</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
 
       <div class="col-lg-12">
         <div class="mb-3">

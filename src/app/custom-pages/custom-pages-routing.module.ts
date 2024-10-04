@@ -19,6 +19,7 @@ import { LogsComponent } from "./administrator/logs/logs.component";
 import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
 import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
 import { DashboardComponent } from "./company/dashboard/dashboard.component";
+import { NotificationComponent } from "./company/notification/notification.component";
 
 const routes: Routes = [
   {
@@ -64,6 +65,8 @@ const routes: Routes = [
   { path: "leave-record", component: LeaveRecordComponent },
 
   { path: "employe-leave-record/:emp_id", component: EmpLeaveComponent },
+
+  { path: "notification", component: NotificationComponent },
 ];
 
 @NgModule({

@@ -295,6 +295,13 @@ export class AttendanceListComponent implements OnInit {
   filterdata() {
     let filteredData = this.attendanceDataList;
 
+    if (this.selectedStatus == null) {
+      this.selectedStatus = "";
+    }
+    if (this.selectedCheckStatus == null) {
+      this.selectedCheckStatus = "";
+    }
+
     // Reset filter counts
     this.filterCounts.termCount = 0;
     this.filterCounts.designationCount = 0;
