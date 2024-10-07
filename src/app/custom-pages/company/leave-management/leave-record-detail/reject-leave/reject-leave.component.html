@@ -1,5 +1,5 @@
 <div class="card-header">
-  <h6 class="card-title mb-0">Approved Leaves</h6>
+  <h6 class="card-title mb-0">Rejected Leaves</h6>
 </div>
 <div class="card-body">
   <div class="row">
@@ -13,12 +13,12 @@
               <th scope="col">Applied For</th>
               <th scope="col">Applied On</th>
               <!-- <th scope="col">
-      <i class="ri-logout-box-r-line"></i>
-    </th> -->
+        <i class="ri-logout-box-r-line"></i>
+      </th> -->
             </tr>
           </thead>
           <tbody>
-            @for (item of approveLeave; track $index) {
+            @for (item of rejectLeave; track $index) {
             <tr>
               <td>
                 {{ item.name }}
@@ -33,10 +33,10 @@
               <td>{{ item.created_at | date : "dd MMM , yyyy" }}</td>
 
               <!-- <td>
-      <a href="javascript:void(0);" class="icon-link icon-link-hover"
-        >Logout <i class="bi bi-box-arrow-right"></i
-      ></a>
-    </td> -->
+        <a href="javascript:void(0);" class="icon-link icon-link-hover"
+          >Logout <i class="bi bi-box-arrow-right"></i
+        ></a>
+      </td> -->
             </tr>
             }
           </tbody>
@@ -47,9 +47,9 @@
         <div class="col-sm">
           <div class="text-muted text-center text-sm-start">
             Showing
-            <span class="fw-semibold">{{ approveLeave?.length }}</span>
+            <span class="fw-semibold">{{ rejectLeave?.length }}</span>
             of
-            <span class="fw-semibold">{{ approveLeaveList?.length }}</span>
+            <span class="fw-semibold">{{ rejectLeaveList?.length }}</span>
             Results
           </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="col-sm-auto mt-3 mt-sm-0">
           <pagination
             class="pagination-wrap hstack gap-2 justify-content-center"
-            [totalItems]="approveLeaveList?.length"
+            [totalItems]="rejectLeaveList?.length"
             [itemsPerPage]="this.itemsPerPage"
             [maxSize]="5"
             (pageChanged)="pageChanged($event)"

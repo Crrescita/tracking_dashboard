@@ -193,13 +193,13 @@
             Leave Details
           </a>
         </li>
-        <!-- <li class="nav-item" role="presentation">
+        <li class="nav-item" role="presentation">
           <a
             class="nav-link"
             data-bs-toggle="tab"
             href="javascript:void(0);"
-            [class.active]="currentTab === 'changePassword'"
-            (click)="changeTab('changePassword')"
+            [class.active]="currentTab === 'approvedLeave'"
+            (click)="changeTab('approvedLeave')"
             role="tab"
             aria-selected="false"
             tabindex="-1"
@@ -212,13 +212,13 @@
             class="nav-link"
             data-bs-toggle="tab"
             href="javascript:void(0);"
-            [class.active]="currentTab === 'education'"
-            (click)="changeTab('education')"
+            [class.active]="currentTab === 'RejectLeave'"
+            (click)="changeTab('RejectLeave')"
             role="tab"
             aria-selected="false"
             tabindex="-1"
           >
-            Education
+            Rejected Leave
           </a>
         </li>
         <li class="nav-item" role="presentation">
@@ -226,15 +226,29 @@
             class="nav-link"
             data-bs-toggle="tab"
             href="javascript:void(0);"
-            [class.active]="currentTab === 'securityPrivacy'"
-            (click)="changeTab('securityPrivacy')"
+            [class.active]="currentTab === 'pendingLeave'"
+            (click)="changeTab('pendingLeave')"
             role="tab"
             aria-selected="false"
             tabindex="-1"
           >
-            Security & Privacy
+            Pending Leaves
           </a>
-        </li> -->
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'expiredLeave'"
+            (click)="changeTab('expiredLeave')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Expired Leaves
+          </a>
+        </li>
       </ul>
       <div class="flex-shrink-0 ms-auto order-1 order-lg-2">
         <button class="btn btn-secondary" (click)="goBack()">
@@ -262,7 +276,7 @@
                 >
                   <thead class="table-active">
                     <tr>
-                      <th>Leave Type Name</th>
+                      <th>Leave Type</th>
                       <th>Allotted Leaves</th>
                       <th>Balance Leaves</th>
                       <th class="text-end">Total Leaves</th>
@@ -332,241 +346,142 @@
           </div>
         </div>
         <div
-          [hidden]="currentTab !== 'changePassword'"
+          [hidden]="currentTab !== 'approvedLeave'"
           class="tab-pane active"
-          id="changePassword"
+          id="approvedLeave"
           role="tabpanel"
         >
+          @if(this.approveLeaveList && approveLeaveList.length > 0){
+          <app-approved-leave
+            [approveLeaveList]="this.approveLeaveList"
+          ></app-approved-leave>
+          }@else {
           <div class="card-header">
-            <h6 class="card-title mb-0">Changes Password</h6>
+            <h6 class="card-title mb-0">Approved Leaves</h6>
           </div>
-          <div class="card-body"></div>
-        </div>
-        <!--end tab-pane-->
-        <div
-          [hidden]="currentTab !== 'education'"
-          class="tab-pane active"
-          id="education"
-          role="tabpanel"
-        >
-          <div class="card-header">
-            <h6 class="card-title mb-0">Education</h6>
-          </div>
-          <div class="card-body"></div>
-        </div>
-        <!--end tab-pane-->
-        <div
-          [hidden]="currentTab !== 'securityPrivacy'"
-          class="tab-pane active"
-          id="securityPrivacy"
-          role="tabpanel"
-        >
-          <div class="card-header">
-            <h6 class="card-title mb-0">Security & Privacy</h6>
-          </div>
-          <div class="card-body">
-            <div class="mb-4 pb-2">
-              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0">
-                <div class="flex-grow-1">
-                  <h6 class="fs-md mb-1">Two-factor Authentication</h6>
-                  <p class="text-muted">
-                    Two-factor authentication is an enhanced security. Once
-                    enabled, you'll be required to give two types of
-                    identification when you log into Google Authentication and
-                    SMS are Supported.
-                  </p>
-                </div>
-                <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Enable Two-factor Authentication</a
-                  >
-                </div>
-              </div>
-              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
-                <div class="flex-grow-1">
-                  <h6 class="fs-md mb-1">Secondary Verification</h6>
-                  <p class="text-muted">
-                    The first factor is a password and the second commonly
-                    includes a text with a code sent to your smartphone, or
-                    biometrics using your fingerprint, face, or retina.
-                  </p>
-                </div>
-                <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Set up secondary method</a
-                  >
-                </div>
-              </div>
-              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
-                <div class="flex-grow-1">
-                  <h6 class="fs-md mb-1">Backup Codes</h6>
-                  <p class="text-muted mb-sm-0">
-                    A backup code is automatically generated for you when you
-                    turn on two-factor authentication through your iOS or
-                    Android Twitter app. You can also generate a backup code on
-                    twitter.com.
-                  </p>
-                </div>
-                <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Generate backup codes</a
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="mb-3">
-              <h5 class="card-title text-decoration-underline mb-3">
-                Application Notifications:
-              </h5>
-              <ul class="list-unstyled mb-0">
-                <li class="d-flex">
-                  <div class="flex-grow-1">
-                    <label for="directMessage" class="form-check-label fs-md"
-                      >Direct messages</label
-                    >
-                    <p class="text-muted">Messages from people you follow</p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="directMessage"
-                        checked
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li class="d-flex mt-2">
-                  <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-md mb-1"
-                      for="desktopNotification"
-                    >
-                      Show desktop notifications
-                    </label>
-                    <p class="text-muted">
-                      Choose the option you want as your default setting. Block
-                      a site: Next to "Not allowed to send notifications," click
-                      Add.
-                    </p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="desktopNotification"
-                        checked
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li class="d-flex mt-2">
-                  <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-md mb-1"
-                      for="emailNotification"
-                    >
-                      Show email notifications
-                    </label>
-                    <p class="text-muted">
-                      Under Settings, choose Notifications. Under Select an
-                      account, choose the account to enable notifications for.
-                    </p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="emailNotification"
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li class="d-flex mt-2">
-                  <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-md mb-1"
-                      for="chatNotification"
-                    >
-                      Show chat notifications
-                    </label>
-                    <p class="text-muted">
-                      To prevent duplicate mobile notifications from the Gmail
-                      and Chat apps, in settings, turn off Chat notifications.
-                    </p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="chatNotification"
-                      />
-                    </div>
-                  </div>
-                </li>
-                <li class="d-flex mt-2">
-                  <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-md mb-1"
-                      for="purchaesNotification"
-                    >
-                      Show purchase notifications
-                    </label>
-                    <p class="text-muted">
-                      Get real-time purchase alerts to protect yourself from
-                      fraudulent charges.
-                    </p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="purchaesNotification"
-                      />
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h5 class="card-title text-decoration-underline mb-3">
-                Delete This Account:
-              </h5>
-              <p class="text-muted">
-                Go to the Data & Privacy section of your profile Account. Scroll
-                to "Your data & privacy options." Delete your Profile Account.
-                Follow the instructions to delete your account :
-              </p>
-              <div>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="passwordInput"
-                  placeholder="Enter your password"
-                  value="richard@321654987"
-                  style="max-width: 265px"
-                />
-              </div>
-              <div class="hstack gap-2 mt-3">
-                <a href="javascript:void(0);" class="btn btn-subtle-danger"
-                  >Close & Delete This Account</a
+          <div class="noresult">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
                 >
-                <a href="javascript:void(0);" class="btn btn-light">Cancel</a>
+                  <i class="bi bi-search"></i>
+                </div>
               </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <!-- <p class="text-muted mb-0">
+                  We've searched
+                  {{ this.leaveRequestDataList.length }} Leave Request We did not
+                  find any Leave Request for you search.
+                </p> -->
             </div>
           </div>
+          }
         </div>
         <!--end tab-pane-->
+        <div
+          [hidden]="currentTab !== 'RejectLeave'"
+          class="tab-pane active"
+          id="RejectLeave"
+          role="tabpanel"
+        >
+          @if(this.rejectLeaveList && rejectLeaveList.length > 0){
+          <app-reject-leave
+            [rejectLeaveList]="this.rejectLeaveList"
+          ></app-reject-leave>
+          }@else {
+          <div class="card-header">
+            <h6 class="card-title mb-0">Rejected Leaves</h6>
+          </div>
+          <div class="noresult">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <!-- <p class="text-muted mb-0">
+                  We've searched
+                  {{ this.leaveRequestDataList.length }} Leave Request We did not
+                  find any Leave Request for you search.
+                </p> -->
+            </div>
+          </div>
+          }
+        </div>
+        <!--end tab-pane-->
+        <div
+          [hidden]="currentTab !== 'pendingLeave'"
+          class="tab-pane active"
+          id="pendingLeave"
+          role="tabpanel"
+        >
+          @if(this.pendingLeaveList && pendingLeaveList.length > 0){
+          <app-pending-leave
+            [pendingLeaveList]="this.pendingLeaveList"
+          ></app-pending-leave>
+          }@else {
+          <div class="card-header">
+            <h6 class="card-title mb-0">Pending Leaves</h6>
+          </div>
+          <div class="noresult">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <!-- <p class="text-muted mb-0">
+                  We've searched
+                  {{ this.leaveRequestDataList.length }} Leave Request We did not
+                  find any Leave Request for you search.
+                </p> -->
+            </div>
+          </div>
+          }
+        </div>
+        <!--end tab-pane-->
+
+        <div
+          [hidden]="currentTab !== 'expiredLeave'"
+          class="tab-pane active"
+          id="expiredLeave"
+          role="tabpanel"
+        >
+          @if(this.expiredLeaveList && expiredLeaveList.length > 0){
+
+          <app-expired-leave
+            [expiredLeaveList]="this.expiredLeaveList"
+          ></app-expired-leave>
+          }@else {
+          <div class="card-header">
+            <h6 class="card-title mb-0">Expired Leaves</h6>
+          </div>
+          <div class="noresult">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <!-- <p class="text-muted mb-0">
+                We've searched
+                {{ this.leaveRequestDataList.length }} Leave Request We did not
+                find any Leave Request for you search.
+              </p> -->
+            </div>
+          </div>
+          }
+        </div>
       </div>
     </div>
   </div>

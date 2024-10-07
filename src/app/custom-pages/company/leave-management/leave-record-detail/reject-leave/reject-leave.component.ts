@@ -2,14 +2,13 @@ import { Component, Input } from "@angular/core";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 
 @Component({
-  selector: "app-approved-leave",
-
-  templateUrl: "./approved-leave.component.html",
-  styleUrl: "./approved-leave.component.scss",
+  selector: "app-reject-leave",
+  templateUrl: "./reject-leave.component.html",
+  styleUrl: "./reject-leave.component.scss",
 })
-export class ApprovedLeaveComponent {
-  @Input() approveLeaveList: any;
-  approveLeave: any = [];
+export class RejectLeaveComponent {
+  @Input() rejectLeaveList: any;
+  rejectLeave: any = [];
   //table
   term: string = "";
   currentPage = 1;
@@ -17,13 +16,14 @@ export class ApprovedLeaveComponent {
   totalItems: any = 0;
   itemsPerPage = 10;
   endItem: any;
+
   ngOnInit(): void {
-    this.approveLeave = this.approveLeaveList;
+    this.rejectLeave = this.rejectLeaveList;
   }
 
   filterdata() {
     if (this.term) {
-      this.approveLeave = this.approveLeaveList.filter((el: any) => {
+      this.rejectLeave = this.rejectLeaveList.filter((el: any) => {
         const searchTerm = this.term.toLowerCase();
         return (
           el.name.toLowerCase().includes(searchTerm) ||
@@ -32,7 +32,7 @@ export class ApprovedLeaveComponent {
         );
       });
     } else {
-      this.approveLeave = this.approveLeaveList.slice(0, 5);
+      this.rejectLeave = this.rejectLeaveList.slice(0, 5);
     }
     // noResultElement
     this.updateNoResultDisplay();
@@ -44,7 +44,7 @@ export class ApprovedLeaveComponent {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.approveLeave.length === 0) {
+    if (this.term && this.rejectLeave.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {
@@ -59,11 +59,11 @@ export class ApprovedLeaveComponent {
   }
   updatePagination() {
     // Update total items for pagination
-    this.totalItems = this.approveLeaveList.length;
+    this.totalItems = this.rejectLeaveList.length;
   }
   updateDisplayedItems(): void {
     const startItem = (this.currentPage - 1) * this.itemsPerPage;
     this.endItem = this.currentPage * this.itemsPerPage;
-    this.approveLeave = this.approveLeaveList.slice(startItem, this.endItem);
+    this.rejectLeave = this.rejectLeaveList.slice(startItem, this.endItem);
   }
 }

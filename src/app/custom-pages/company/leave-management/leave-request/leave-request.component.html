@@ -10,7 +10,7 @@
     <div class="card">
       <div class="card-body">
         <div class="row g-4">
-          <div class="col-lg-3 col-sm-6 border-end-sm">
+          <div class="col-lg col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -33,14 +33,14 @@
               </h3>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6 border-end-sm">
+          <div class="col-lg col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
                   <div
                     class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
                   >
-                    <i class="ri-user-follow-line"></i>
+                    <i class="ri-check-double-line"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1">
@@ -56,14 +56,14 @@
               </h3>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6 border-end-sm">
+          <div class="col-lg col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
                   <div
                     class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
                   >
-                    <i class="ri-user-unfollow-line"></i>
+                    <i class="ri-close-fill"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1">
@@ -80,14 +80,14 @@
             </div>
           </div>
 
-          <div class="col-lg-3 col-sm-6 border-end-sm">
+          <div class="col-lg col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
                   <div
                     class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
                   >
-                    <i class="mdi mdi-account-alert-outline"></i>
+                    <i class="bx bx-calendar"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1">
@@ -99,6 +99,29 @@
                   class="counter-value"
                   [countUp]="this.leaveCount?.totalPending"
                   >{{ this.leaveCount?.totalPending }}</span
+                >
+              </h3>
+            </div>
+          </div>
+          <div class="col-lg col-sm-6 border-end-sm">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-dark-subtle rounded-circle text-dark"
+                  >
+                    <i class="bx bx-calendar-minus"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Expired</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.leaveCount?.totalExpired"
+                  >{{ this.leaveCount?.totalExpired }}</span
                 >
               </h3>
             </div>
@@ -353,6 +376,7 @@
                         {{ option }}
                       </option>
                     </select> -->
+
                     @if(data?.status == 'Pending'){
                     <select
                       class="form-control"
@@ -380,7 +404,18 @@
                       Approved
                     </button>
 
-                    }@else {
+                    }@else if (data?.status == 'Expired'){
+                    <button
+                      type="button"
+                      class="btn btn-dark btn-label rounded-pill"
+                    >
+                      <i
+                        class="bx bx-calendar-minus label-icon align-middle rounded-pill fs-lg me-2"
+                      ></i>
+                      Expired
+                    </button>
+
+                    } @else {
                     <button
                       type="button"
                       class="btn btn-danger btn-label rounded-pill"

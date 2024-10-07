@@ -176,7 +176,7 @@
               @if(this.leaveDetailData?.status == 'Pending'){
               <button
                 class="btn btn-success me-1"
-                (click)="updateLeaveStatus('Approved')"
+                (click)="updateLeaveStatus('Approve')"
               >
                 <i class="bx bx-check align-baseline me-1"></i>
                 Approve
@@ -197,7 +197,15 @@
                 Approved
               </button>
 
-              }@else {
+              } @else if (this.leaveDetailData?.status == 'Expired'){
+              <button type="button" class="btn btn-dark btn-label rounded-pill">
+                <i
+                  class="bx bx-calendar-minus label-icon align-middle rounded-pill fs-lg me-2"
+                ></i>
+                Expired
+              </button>
+
+              } @else {
               <button
                 type="button"
                 class="btn btn-danger btn-label rounded-pill"
@@ -544,9 +552,9 @@
           <button
             type="button"
             class="btn btn-danger"
-            (click)="updateLeaveStatus('Declined')"
+            (click)="updateLeaveStatus('Reject')"
           >
-            Declined
+            Reject
           </button>
         </div>
       </div>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AllLeaveComponent } from './all-leave.component';
+import { ExpiredLeaveComponent } from './expired-leave.component';
 
-describe('AllLeaveComponent', () => {
-  let component: AllLeaveComponent;
-  let fixture: ComponentFixture<AllLeaveComponent>;
+describe('ExpiredLeaveComponent', () => {
+  let component: ExpiredLeaveComponent;
+  let fixture: ComponentFixture<ExpiredLeaveComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AllLeaveComponent]
+      imports: [ExpiredLeaveComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AllLeaveComponent);
+    fixture = TestBed.createComponent(ExpiredLeaveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

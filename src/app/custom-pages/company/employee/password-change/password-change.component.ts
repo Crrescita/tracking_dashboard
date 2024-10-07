@@ -152,7 +152,6 @@ export class PasswordChangeComponent implements OnInit {
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {
-          this.loginDetails = res.data;
           this.loginDetails = res.data || [];
           this.loginDetailsList = res.data || [];
           this.loginDetails = cloneDeep(this.loginDetailsList.slice(0, 10));

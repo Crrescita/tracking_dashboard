@@ -78,6 +78,10 @@ import { LogsComponent } from "./administrator/logs/logs.component";
 import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
 import { DashboardComponent } from "./company/dashboard/dashboard.component";
 import { NotificationComponent } from "./company/notification/notification.component";
+import { ApprovedLeaveComponent } from "./company/leave-management/leave-record-detail/approved-leave/approved-leave.component";
+import { RejectLeaveComponent } from "./company/leave-management/leave-record-detail/reject-leave/reject-leave.component";
+import { PendingLeaveComponent } from "./company/leave-management/leave-record-detail/pending-leave/pending-leave.component";
+import { ExpiredLeaveComponent } from "./company/leave-management/leave-record-detail/expired-leave/expired-leave.component";
 
 @NgModule({
   declarations: [
@@ -104,6 +108,10 @@ import { NotificationComponent } from "./company/notification/notification.compo
     EmpLeaveComponent,
     DashboardComponent,
     NotificationComponent,
+    ApprovedLeaveComponent,
+    RejectLeaveComponent,
+    PendingLeaveComponent,
+    ExpiredLeaveComponent,
   ],
   imports: [
     CommonModule,

@@ -21,6 +21,23 @@ export class EmpLeaveComponent implements OnInit {
   submitted: boolean = false;
   spinnerStatus: boolean = false;
   saveButtonActive: boolean = true;
+
+  // approveLeave: any = [];
+  approveLeaveList: any = [];
+
+  // rejectLeave: any = [];
+  rejectLeaveList: any = [];
+
+  pendingLeaveList: any = [];
+  expiredLeaveList: any = [];
+
+  //table
+  term: string = "";
+  currentPage = 1;
+  currentPagesss = 3;
+  totalItems = 0;
+  itemsPerPage = 10;
+  endItem: any;
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
@@ -105,9 +122,23 @@ export class EmpLeaveComponent implements OnInit {
         if (res && res.status) {
           this.toggleSpinner(false);
           this.leaveTypesData = res.data;
+          // this.approveLeave = res.leaveData.approvedLeaves || [];
+          this.approveLeaveList = res.leaveData.approvedLeaves || [];
+
+          // this.rejectLeave = res.leaveData.rejectedLeaves || [];
+          this.rejectLeaveList = res.leaveData.rejectedLeaves || [];
+
+          this.pendingLeaveList = res.leaveData.pendingLeaves || [];
+          this.expiredLeaveList = res.leaveData.expiredLeaves || [];
 
           // this.leaveDetailData = res.leave_details;
         } else {
+          // this.approveLeave = [];
+          this.approveLeaveList = [];
+          // this.rejectLeave = [];
+          this.rejectLeaveList = [];
+          this.pendingLeaveList = [];
+          this.expiredLeaveList = [];
           this.handleError("Unexpected response format");
         }
       },
@@ -139,4 +170,6 @@ export class EmpLeaveComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  // table
 }
