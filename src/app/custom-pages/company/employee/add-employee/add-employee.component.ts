@@ -535,6 +535,7 @@ export class AddEmployeeComponent implements OnInit {
 
   createFormDataDes() {
     const formData = {
+      company_id: this.company_id,
       name: this.d["name"].value,
       status: this.d["status"].value,
     };
@@ -591,6 +592,7 @@ export class AddEmployeeComponent implements OnInit {
 
   createFormDataDep() {
     const formData = {
+      company_id: this.company_id,
       name: this.de["name"].value,
       status: this.de["status"].value,
     };

@@ -20,6 +20,7 @@ import { LeaveRecordComponent } from "./company/leave-management/leave-record/le
 import { EmpLeaveComponent } from "./company/leave-management/leave-record-detail/emp-leave/emp-leave.component";
 import { DashboardComponent } from "./company/dashboard/dashboard.component";
 import { NotificationComponent } from "./company/notification/notification.component";
+import { TaskListComponent } from "./company/task/task-list/task-list.component";
 
 const routes: Routes = [
   {
@@ -67,6 +68,8 @@ const routes: Routes = [
   { path: "employe-leave-record/:emp_id", component: EmpLeaveComponent },
 
   { path: "notification", component: NotificationComponent },
+
+  { path: "assign-task", component: TaskListComponent },
 ];
 
 @NgModule({

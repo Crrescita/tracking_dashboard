@@ -63,6 +63,17 @@
     height: 500px;
   }
 
+  @media screen and (max-width:991px) {
+    .match-parent{
+      height: 300px !important;
+    }
+
+    .overflow{
+      height: auto;
+      margin-bottom: 10px;
+    }
+  }
+
 
 
   @keyframes rotate {

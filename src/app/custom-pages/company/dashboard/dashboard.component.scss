@@ -9,6 +9,18 @@ body { margin: 0; padding: 0; }
     height: 100%;
   }
 
+  @media screen and (max-width:991px) {
+    .match-parent{
+      height: 300px !important;
+    }
+
+    .overflow{
+      height: auto;
+      margin-bottom: 10px;
+    }
+  }
+
+
   .overflow{
     overflow-y: auto;
     height: 370px;
@@ -43,3 +55,13 @@ body { margin: 0; padding: 0; }
   }
   
   
+  @media screen and (max-width:991px) {
+    .match-parent{
+      height: 300px !important;
+    }
+
+    .overflow{
+      height: auto;
+      margin-bottom: 10px;
+    }
+  }

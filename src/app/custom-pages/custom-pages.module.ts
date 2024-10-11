@@ -82,6 +82,7 @@ import { ApprovedLeaveComponent } from "./company/leave-management/leave-record-
 import { RejectLeaveComponent } from "./company/leave-management/leave-record-detail/reject-leave/reject-leave.component";
 import { PendingLeaveComponent } from "./company/leave-management/leave-record-detail/pending-leave/pending-leave.component";
 import { ExpiredLeaveComponent } from "./company/leave-management/leave-record-detail/expired-leave/expired-leave.component";
+import { TaskListComponent } from "./company/task/task-list/task-list.component";
 
 @NgModule({
   declarations: [
@@ -112,6 +113,7 @@ import { ExpiredLeaveComponent } from "./company/leave-management/leave-record-d
     RejectLeaveComponent,
     PendingLeaveComponent,
     ExpiredLeaveComponent,
+    TaskListComponent,
   ],
   imports: [
     CommonModule,

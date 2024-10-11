@@ -120,7 +120,8 @@
       "LEAVE-REQUEST":"Leave Requests",
       "LEAVE-RECORD":"Leave Record",
       "NOTIFICATION":"Notification",
-      "LEAVE-APPLICATION":"Leave Application"
+      "LEAVE-APPLICATION":"Leave Application",
+      "ASSIGN-TASK":"Assign Task"
       }
     },
     "COMPONENTS": {

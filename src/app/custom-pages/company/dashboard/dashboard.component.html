@@ -220,7 +220,9 @@
       <div class="card-body">
         <div class="row">
           <div class="col-12 col-lg-9">
+            <!-- @if(checkIn && checkIn.length >0){ -->
             <div id="map" class="match-parent w-100 h-100"></div>
+            <!-- } -->
           </div>
           <div class="col-lg-3">
             <div class="mb-4">
@@ -293,7 +295,7 @@
                       <span class="float-end">{{ item.checkInTime }}</span> -->
                 </li>
                 }@empty {
-                <div class="d-flex flex-column align-items-center mt-4">
+                <div class="d-flex flex-column align-items-center mt-lg-4">
                   <img
                     src="assets/images/users/check-in.png"
                     alt=""

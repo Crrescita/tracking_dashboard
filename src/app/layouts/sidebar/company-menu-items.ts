@@ -41,6 +41,13 @@ export const COMPANY_MENU: MenuItem[] = [
     link: "/designation-list",
     icon: "ri-user-star-fill",
   },
+  {
+    id: 11,
+    label: "MENUITEMS.COMPANY.LIST.ASSIGN-TASK",
+    link: "/assign-task",
+    icon: "  ri-todo-fill",
+    parentId: 75,
+  },
   // {
   //   id: 1,
   //   label: "MENUITEMS.COMPANY.LIST.EMPLOYEE-MANAGEMENT",

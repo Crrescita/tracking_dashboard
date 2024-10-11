@@ -254,7 +254,7 @@ export class LeaveRequestComponent {
 
   handleStatusResponse(res: any) {
     this.toggleSpinner(false);
-    if (res == "Approved") {
+    if (res == "Approve") {
       this.toastService.success("Leave Request Approved Successfully!!");
     } else {
       this.toastService.success("The leave request has been Rejected.");

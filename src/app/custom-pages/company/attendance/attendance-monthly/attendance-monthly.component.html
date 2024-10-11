@@ -9,7 +9,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
-        <div class="card-header d-md-flex align-items-center">
+        <div class="card-header d-lg-flex align-items-center">
           <div class="flex-grow-1">
             <h5 class="card-title mb-0">
               Attendance
@@ -69,7 +69,7 @@
           </div>
 
           <div class="flex-shrink-0">
-            <div class="d-flex flex-wrap align-items-start gap-2">
+            <div class="d-xl-flex flex-wrap align-items-start gap-2">
               <div class="col-xxl">
                 <div class="input-group">
                   <input
@@ -92,7 +92,7 @@
                   </div>
                 </div>
               </div>
-              <div class="search-box">
+              <div class="search-box mt-2 mt-xl-0">
                 <input
                   type="text"
                   class="form-control search"
@@ -104,35 +104,34 @@
                 <i class="ri-search-line search-icon"></i>
               </div>
 
-              <!-- <a (click)="exportTableToExcel()" class="btn btn-success"
-                ><i class="ri-printer-line align-bottom me-1"></i> Dwon</a
-              > -->
+              <div class="d-flex mt-2 mt-xl-0">
+                <button
+                  (click)="exportTableToExcel()"
+                  type="button"
+                  id="download-button"
+                  class="btn btn-primary me-2"
+                >
+                  <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                  Download
+                </button>
 
-              <button
-                (click)="exportTableToExcel()"
-                type="button"
-                id="download-button"
-                class="btn btn-primary"
-              >
-                <i class="ri-file-excel-2-fill align-bottom me-1"></i> Download
-              </button>
-
-              <div class="col-lg-auto">
-                <div class="hstack flex-wrap gap-2">
-                  <div>
-                    <button
-                      type="button"
-                      class="btn btn-info me-1"
-                      (click)="openEnd()"
-                    >
-                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
-                      @if(totalFilterCount >0){
-                      <span
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                        >{{ totalFilterCount }}
-                      </span>
-                      }
-                    </button>
+                <div class="col-lg-auto">
+                  <div class="hstack flex-wrap gap-2">
+                    <div>
+                      <button
+                        type="button"
+                        class="btn btn-info me-1"
+                        (click)="openEnd()"
+                      >
+                        <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                        @if(totalFilterCount >0){
+                        <span
+                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                          >{{ totalFilterCount }}
+                        </span>
+                        }
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -170,31 +169,31 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
-                      @if(item.image){
-
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                      <!-- <div class="avatar-sm bg-light rounded"> -->
+                      <div class="flex-shrink-0 position-relative">
                         <img
-                          src="{{ item.image }}"
+                          [src]="
+                            item.image
+                              ? item.image
+                              : 'assets/images/users/avatar-1.jpg'
+                          "
                           alt=""
-                          class="img-fluid d-block"
+                          class="avatar-sm rounded"
                         />
                       </div>
 
-                      }@else {
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
-                        <img
-                          src="assets/images/users/avatar-1.jpg"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-                      </div>
-
-                      }
-                      <div>
-                        <h6 class="mb-0">
-                          <a class="text-reset products">{{ item.name }}</a>
-                        </h6>
-                        <p class="text-muted mb-0">{{ item.designation }}</p>
+                      <div class="flex-grow-1 ms-2">
+                        <h5 class="fs-md">
+                          <a
+                            [routerLink]="['/employee-detail', item.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ item.name }}</a
+                          >
+                        </h5>
+                        <p class="text-muted mb-0">
+                          {{ item.designation }}
+                        </p>
                       </div>
                     </div>
                     <!-- {{ item.name }} -->
