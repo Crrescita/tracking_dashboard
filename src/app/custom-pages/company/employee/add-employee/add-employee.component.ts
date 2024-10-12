@@ -426,11 +426,18 @@ export class AddEmployeeComponent implements OnInit {
     }
   }
 
+  capitalizeWords(str: string): string {
+    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
   createFormData(): FormData {
     const formData = new FormData();
     formData.append("company_id", this.company_id);
     formData.append("name", this.f["name"].value);
-    formData.append("mobile", this.f["mobile"].value);
+    formData.append(
+      "mobile",
+      this.capitalizeWords(this.f["name"].value.trim())
+    );
     formData.append("email", this.f["email"].value);
     formData.append("address", this.f["address"].value);
     formData.append("dob", this.f["dob"].value);

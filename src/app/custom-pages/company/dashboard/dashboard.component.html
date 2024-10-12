@@ -220,6 +220,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-12 col-lg-9">
+            <!-- [ngClass]="checkIn && checkIn.length > 0 ? 'd-block' : 'd-none'" -->
             <!-- @if(checkIn && checkIn.length >0){ -->
             <div id="map" class="match-parent w-100 h-100"></div>
             <!-- } -->
@@ -295,7 +296,7 @@
                       <span class="float-end">{{ item.checkInTime }}</span> -->
                 </li>
                 }@empty {
-                <div class="d-flex flex-column align-items-center mt-lg-4">
+                <div class="d-flex flex-column align-items-center mt-md-4">
                   <img
                     src="assets/images/users/check-in.png"
                     alt=""
@@ -452,7 +453,7 @@
                               class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
                               ><span class="visually-hidden"></span
                             ></span>
-                            > }
+                            }
                           </div>
                           <div>
                             <h6 class="mb-0">
