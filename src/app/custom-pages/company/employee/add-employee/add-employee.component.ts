@@ -433,11 +433,8 @@ export class AddEmployeeComponent implements OnInit {
   createFormData(): FormData {
     const formData = new FormData();
     formData.append("company_id", this.company_id);
-    formData.append("name", this.f["name"].value);
-    formData.append(
-      "mobile",
-      this.capitalizeWords(this.f["name"].value.trim())
-    );
+    formData.append("name", this.capitalizeWords(this.f["name"].value.trim()));
+    formData.append("mobile", this.f["mobile"].value);
     formData.append("email", this.f["email"].value);
     formData.append("address", this.f["address"].value);
     formData.append("dob", this.f["dob"].value);
