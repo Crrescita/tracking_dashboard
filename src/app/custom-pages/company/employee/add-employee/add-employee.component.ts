@@ -148,8 +148,8 @@ export class AddEmployeeComponent implements OnInit {
     this.formGroup = this.formBuilder.group(
       {
         name: ["", [Validators.maxLength(45), Validators.required]],
-        address: ["", [Validators.maxLength(100), Validators.required]],
-        dob: ["", [Validators.required]],
+        address: ["", [Validators.maxLength(100)]],
+        dob: [""],
         image: ["", this.imageValidator()],
         emp_id: ["", [Validators.required]],
 
@@ -171,9 +171,9 @@ export class AddEmployeeComponent implements OnInit {
 
         status: ["", [Validators.required]],
         gender: ["", [Validators.required]],
-        state: ["", [Validators.required]],
-        city: ["", [Validators.required]],
-        zip_code: ["", [Validators.required, Validators.maxLength(6)]],
+        state: [""],
+        city: [""],
+        zip_code: ["", [Validators.maxLength(6)]],
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
         joining_date: [""],
