@@ -427,6 +427,39 @@
                             @if(item.image){
                             <img
                               alt=""
+                              class="avatar-sm rounded"
+                              src="{{ item.image }}"
+                            /><span
+                              [ngClass]="
+                                item.latestCheckStatus == 'Check-in'
+                                  ? 'bg-success'
+                                  : ' bg-danger'
+                              "
+                              class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
+                              ><span class="visually-hidden"></span
+                            ></span>
+                            }@else {
+
+                            <img
+                              alt=""
+                              class="avatar-sm rounded"
+                              src="assets/images/users/avatar-1.jpg"
+                            /><span
+                              [ngClass]="
+                                item.latestCheckStatus == 'Check-in'
+                                  ? 'bg-success'
+                                  : ' bg-danger'
+                              "
+                              class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
+                              ><span class="visually-hidden"></span
+                            ></span>
+                            }
+                          </div>
+
+                          <!-- <div class="flex-shrink-0 position-relative p-1 me-2">
+                            @if(item.image){
+                            <img
+                              alt=""
                               class="avatar-sm rounded-circle rounded"
                               src="{{ item.image }}"
                             /><span
@@ -454,7 +487,7 @@
                               ><span class="visually-hidden"></span
                             ></span>
                             }
-                          </div>
+                          </div> -->
                           <div>
                             <h6 class="mb-0">
                               <a class="text-reset products">{{ item.name }}</a>
@@ -526,7 +559,7 @@
                               class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
                               ><span class="visually-hidden"></span
                             ></span>
-                            > }
+                            }
                           </div>
                           <div>
                             <h6 class="mb-0">

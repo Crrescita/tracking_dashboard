@@ -252,18 +252,18 @@
                 Showing
                 <span class="fw-semibold">{{ departmentData?.length }}</span> of
                 <span class="fw-semibold">{{
-                  departmentDataList?.length
+                  filteredDepartmentData?.length
                 }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(departmentDataList?.length){
+              @if(filteredDepartmentData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="departmentDataList?.length"
+                [totalItems]="filteredDepartmentData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"

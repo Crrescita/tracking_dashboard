@@ -239,10 +239,14 @@ export class DashboardComponent implements OnInit {
     this.clearMarkers();
 
     recordsArray.forEach((item, index) => {
+      console.log(item);
       const imageUrl = item.image || "assets/images/users/avatar-1.jpg";
 
       // Create a marker element with employee image
-      const markerElement = this.createMarkerElement(imageUrl);
+      const markerElement = this.createMarkerElement(
+        imageUrl,
+        item.latestCheckStatus
+      );
 
       // Create and add marker to the map
       const marker = new mapboxgl.Marker(markerElement)
@@ -262,7 +266,7 @@ export class DashboardComponent implements OnInit {
     this.fitMapToMarkers();
   }
 
-  createMarkerElement(imageUrl: string): HTMLElement {
+  createMarkerElement(imageUrl: string, checkInStatus: any): HTMLElement {
     // Create a div element for the marker
     const el = document.createElement("div");
     el.className = "custom-marker";
@@ -273,7 +277,10 @@ export class DashboardComponent implements OnInit {
     el.style.borderRadius = "50%";
     el.style.overflow = "hidden";
     el.style.backgroundColor = "#ffffff";
-    el.style.border = "2px solid rgb(255 58 0)";
+    el.style.border =
+      checkInStatus == "Check-in"
+        ? "2px solid rgb(13 169 0)"
+        : "2px solid rgb(255 58 0)";
 
     const img = document.createElement("img");
     img.src = imageUrl || "path/to/default-image.jpg";

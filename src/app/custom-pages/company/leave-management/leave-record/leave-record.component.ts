@@ -216,8 +216,8 @@ export class LeaveRecordComponent implements OnInit {
       filteredData = filteredData.filter(
         (el: any) =>
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.email.toLowerCase().includes(this.term.toLowerCase()) ||
+          // el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
+          // el.email.toLowerCase().includes(this.term.toLowerCase()) ||
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;

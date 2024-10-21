@@ -63,7 +63,7 @@
 
 <div class="p-3 border-bottom border-2">
   <div class="row align-items-center flex-lg-nowrap">
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
       <p class="text-muted mb-2 text-uppercase">Date</p>
       <h5 class="fs-md mb-0">
         <span id="total-amount">{{
@@ -72,7 +72,7 @@
       </h5>
     </div>
     @if(checkIndetails?.latestCheckInTime){
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
       <p class="text-muted mb-2 text-uppercase">Check-In At</p>
       <h5
         class="fs-md mb-0"
@@ -80,7 +80,7 @@
       ></h5>
     </div>
     } @if(checkIndetails?.latestCheckOutTime){
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
       <p class="text-muted mb-2 text-uppercase">Check-out At</p>
       <h5 class="fs-md mb-0">
         <span
@@ -90,14 +90,14 @@
       </h5>
     </div>
     } @if(checkIndetails?.latestCheckInTime) {
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
       <p class="text-muted mb-2 text-uppercase">Total Time</p>
       <h5 class="fs-md mb-0">
         <span id="invoice-due-date">{{ checkIndetails?.totalDuration }}</span>
       </h5>
     </div>
     } @if(totaldistanceToshow){
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-2">
       <p class="text-muted mb-2 text-uppercase">Total Distance</p>
       <h5 class="fs-md mb-0">
         <span id="invoice-due-date">{{ totaldistanceToshow }} km</span>

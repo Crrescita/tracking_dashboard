@@ -229,8 +229,8 @@
               <h5 class="mt-2">Sorry! No Result Found</h5>
               <p class="text-muted mb-0">
                 We've searched
-                {{ this.notificationDataList.length }} Department We did not
-                find any Department for you search.
+                {{ this.notificationDataList.length }} Notification We did not
+                find any Notification for you search.
               </p>
             </div>
           </div>
@@ -243,18 +243,18 @@
                 <span class="fw-semibold">{{ notificationData?.length }}</span>
                 of
                 <span class="fw-semibold">{{
-                  notificationDataList?.length
+                  filteredDepartmentData?.length
                 }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(notificationDataList?.length){
+              @if(filteredDepartmentData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="notificationDataList?.length"
+                [totalItems]="filteredDepartmentData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"

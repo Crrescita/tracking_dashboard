@@ -364,17 +364,19 @@
               <div class="text-muted text-center text-sm-start">
                 Showing
                 <span class="fw-semibold">{{ leaveData?.length }}</span> of
-                <span class="fw-semibold">{{ leaveDataList?.length }}</span>
+                <span class="fw-semibold">{{
+                  filteredLeaveTypeData?.length
+                }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(leaveDataList?.length){
+              @if(filteredLeaveTypeData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="leaveDataList?.length"
+                [totalItems]="filteredLeaveTypeData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"

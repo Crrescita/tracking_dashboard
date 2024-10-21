@@ -267,7 +267,7 @@ export class TimelineComponent implements OnInit {
       );
   }
 
-  // Filter coordinates based on the selected interval
+  // Filter coordinates based on the selected interval-not used
   filterCoordinatesByInterval(startTime: string, interval: number) {
     const [startHours, startMinutes, startSeconds] = startTime
       .split(":")

@@ -78,6 +78,15 @@
                 <i class="bi bi-plus-circle align-baseline me-1"></i> Add
                 Employee
               </button>
+              <!--(click)="exportData()"  -->
+              <!-- <button
+                type="button"
+                class="btn btn-success add-btn"
+                (click)="showModal.show()"
+              >
+                <i class="ri-download-2-line align-bottom me-1"></i>
+                Import Excel
+              </button> -->
 
               <div class="col-lg-auto">
                 <div class="hstack flex-wrap gap-2">
@@ -351,8 +360,8 @@
               <h5 class="mt-2">Sorry! No Result Found</h5>
               <p class="text-muted mb-0">
                 We've searched
-                {{ this.employeeDataList.length }} Department We did not find
-                any Department for you search.
+                {{ this.employeeDataList.length }} Empolyee We did not find any
+                Empolyee for you search.
               </p>
             </div>
           </div>
@@ -362,17 +371,19 @@
               <div class="text-muted text-center text-sm-start">
                 Showing
                 <span class="fw-semibold">{{ employeeData?.length }}</span> of
-                <span class="fw-semibold">{{ employeeDataList?.length }}</span>
+                <span class="fw-semibold">{{
+                  filteredemployeeData?.length
+                }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(employeeDataList?.length){
+              @if(filteredemployeeData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="employeeDataList?.length"
+                [totalItems]="filteredemployeeData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"
@@ -435,6 +446,127 @@
     </div>
   </div>
 </div>
+
+<!-- excel modal -->
+<div class="modal fade" bsModal #showModal="bs-modal">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModalLabel">
+          Instructions for Filling Out the Excel Template
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showModal.hide()"
+        ></button>
+      </div>
+      <!-- <h6 class="fs-base">
+        Please follow the steps below to correctly fill out the Excel sheet:
+      </h6> -->
+      <div class="modal-body">
+        <h6 class="fs-lg my-3">1. General Guidelines:</h6>
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+              Ensure that all
+              <span class="fw-bold"
+                >required fields (marked with an asterisk *)</span
+              >
+              are filled out.
+            </p>
+          </div>
+        </div>
+        <div class="d-flex mt-2">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+              Do not modify the structure of the Excel sheet, such as
+              adding/removing columns or renaming them.
+            </p>
+          </div>
+        </div>
+
+        <h6 class="fs-lg my-3">2. Department and Designation IDs:</h6>
+        <div class="d-flex mt-2">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+              For columns
+              <span class="fw-bold"> Department and Designation</span>, you are
+              required to enter the corresponding ID instead of the actual name.
+            </p>
+          </div>
+        </div>
+        <div class="d-flex mt-2">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+              The ID for each department and designation is provided in the
+              Sample Data sheet of the Excel file.
+            </p>
+            <div class="d-flex mt-2">
+              <div class="flex-shrink-0">
+                <i class="ri-checkbox-circle-fill text-success"></i>
+              </div>
+              <div class="flex-grow-1 ms-2">
+                <p class="text-muted mb-0">
+                  <span class="fw-bold"> Example:</span> If the department is
+                  "Human Resources" with ID 101, you must enter 101 in the
+                  <span class="fw-bold">Department</span> column.
+                </p>
+              </div>
+            </div>
+            <div class="d-flex mt-2">
+              <div class="flex-shrink-0">
+                <i class="ri-checkbox-circle-fill text-success"></i>
+              </div>
+              <div class="flex-grow-1 ms-2">
+                <p class="text-muted mb-0">
+                  <span class="fw-bold"> Example:</span> If the designation is
+                  "Manager" with ID 205, you must enter 205 in the
+                  <span class="fw-bold">Designation</span> column.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h6 class="fs-lg my-3">3. Date Format:</h6>
+        <div class="d-flex mt-2">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+              All date fields (e.g., Date of Birth, Joining Date) must follow
+              the format <span class="fw-bold"> YYYY-MM-DD.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="showModal.hide()">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -->
 <div class="custom-offcanvas" id="courseFilters">
   <div class="offcanvas-header border-bottom p-3">
     <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
@@ -530,123 +662,7 @@
           </ng-select>
         </div>
       </div>
-      <!-- <div class="col-lg-12">
-          <div class="mb-3">
-            <label
-              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
-              >Ratings</label
-            >
-            <div class="vstack gap-2">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-all"
-                />
-                <label class="form-check-label" for="rating-all">
-                  Select All
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter1"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter1"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter2"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter2"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">4 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter3"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter3"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">3 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter4"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter4"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">2 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter5"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter5"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">1 & Up</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div> -->
     </div>
-    <!-- </form> -->
   </div>
   <div class="offcanvas-header htsack gap-2 border-top p-3">
     <button class="btn btn-subtle-danger w-100" (click)="reset()">

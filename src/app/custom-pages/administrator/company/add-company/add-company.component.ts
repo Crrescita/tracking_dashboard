@@ -201,7 +201,7 @@ export class AddCompanyComponent implements OnInit {
         cin_id: data.cin_id,
         tax_no: data.tax_no,
         email: data.email,
-        password: data.password,
+        // password: data.password,
         status: data.status,
         mobile: data.mobile,
         business_type: data.business_type,

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "../../../../core/services/api.service";
 import { ToastrService } from "ngx-toastr";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
@@ -7,6 +7,8 @@ import Swal from "sweetalert2";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { cloneDeep } from "lodash";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ExcelService } from "../../../../core/services/excel.service";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: "app-employee-list",
@@ -46,6 +48,8 @@ export class EmployeeListComponent implements OnInit {
     dateCount: 0,
   };
 
+  formGroup!: FormGroup;
+
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
@@ -57,16 +61,22 @@ export class EmployeeListComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private api: ApiService,
+    private ExcelService: ExcelService,
     public toastService: ToastrService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
+
+  exportData() {
+    this.ExcelService.createSampleExcel(this.departments, this.designations);
+  }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: "Employee Management", active: true },
       { label: "Employees", active: true },
     ];
+    // this.initializeForm();
 
     const data = localStorage.getItem("currentUser");
 
@@ -101,6 +111,114 @@ export class EmployeeListComponent implements OnInit {
       this.getDesignation();
     }
   }
+
+  // initializeForm() {
+  //   this.formGroup = this.formBuilder.group(
+  //     {
+  //       name: ["", [Validators.maxLength(45), Validators.required]],
+  //       address: ["", [Validators.maxLength(100)]],
+  //       dob: [""],
+  //       image: ["", this.imageValidator()],
+  //       emp_id: ["", [Validators.required]],
+
+  //       email: [
+  //         "",
+  //         [
+  //           Validators.required,
+  //           Validators.email,
+  //           Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
+  //         ],
+  //       ],
+  //       mobile: [
+  //         "",
+  //         [
+  //           Validators.required,
+  //           Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
+  //         ],
+  //       ],
+
+  //       status: ["", [Validators.required]],
+  //       gender: ["", [Validators.required]],
+  //       state: [""],
+  //       city: [""],
+  //       zip_code: ["", [Validators.maxLength(6)]],
+  //       designation: ["", [Validators.required]],
+  //       department: ["", [Validators.required]],
+  //       joining_date: [""],
+  //       password: [
+  //         this.urlId ? "" : "123456",
+  //         this.urlId
+  //           ? [
+  //               Validators.pattern(
+  //                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  //               ),
+  //             ]
+  //           : [
+  //               Validators.required,
+  //               Validators.pattern(
+  //                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  //               ),
+  //             ],
+  //       ],
+  //       confirmPassword: [
+  //         this.urlId ? "" : "123456",
+  //         this.urlId ? [] : [Validators.required],
+  //       ],
+  //     },
+  //     { validator: this.passwordMatchValidator }
+  //   );
+  // }
+
+  onFileChange(event: any) {
+    const target: DataTransfer = <DataTransfer>event.target;
+    if (target.files.length !== 1) throw new Error("Cannot use multiple files");
+    const reader: FileReader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: "binary" });
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+      this.populateForm(data);
+    };
+
+    reader.readAsBinaryString(target.files[0]);
+  }
+
+  populateForm(data: any[]) {
+    const headers = data[0]; // Assume first row contains headers
+    const excelData = data.slice(1); // Skip headers
+
+    excelData.forEach((row) => {
+      this.formGroup.patchValue({
+        name: row[0], // Assuming the name is the first column
+        address: row[1],
+        dob: row[2],
+        emp_id: row[3],
+        email: row[4],
+        mobile: row[5],
+        status: row[6],
+        gender: row[7],
+        state: row[8],
+        city: row[9],
+        zip_code: row[10],
+        designation: row[11],
+        department: row[12],
+        joining_date: row[13],
+        password: row[14],
+        confirmPassword: row[15],
+      });
+    });
+  }
+
+  // passwordMatchValidator(formGroup: FormGroup) {
+  //   const password = formGroup.get('password')?.value;
+  //   const confirmPassword = formGroup.get('confirmPassword')?.value;
+
+  //   return password === confirmPassword ? null : { mismatch: true };
+  // }
 
   getDepartment() {
     this.toggleSpinner(true);
@@ -233,7 +351,7 @@ export class EmployeeListComponent implements OnInit {
     if (res["status"] === true) {
       this.toastService.success("Employee Data Delete Successfully!!");
       this.getemployeeData();
-      this.showModal?.hide();
+      // this.showModal?.hide();
     } else {
       this.toastService.error(res["message"]);
     }
@@ -471,7 +589,7 @@ export class EmployeeListComponent implements OnInit {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.employeeData.length === 0) {
+    if (this.employeeData.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {

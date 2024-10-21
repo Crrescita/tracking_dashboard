@@ -36,6 +36,7 @@ export class NotificationComponent implements OnInit {
   itemsPerPageOptions = [10, 20, 30, 50];
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
+
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
   deleteId: any;
@@ -355,7 +356,7 @@ export class NotificationComponent implements OnInit {
     const paginationElement = document.getElementById(
       "pagination-element"
     ) as HTMLElement;
-    if (this.term && this.notificationData.length === 0) {
+    if (this.notificationData.length === 0) {
       noResultElement.style.display = "block";
       paginationElement.classList.add("d-none");
     } else {

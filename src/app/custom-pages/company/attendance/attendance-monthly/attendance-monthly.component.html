@@ -327,18 +327,18 @@
                 }}</span>
                 of
                 <span class="fw-semibold">{{
-                  attendanceMonthyDataList?.length
+                  filteredAttendanceData?.length
                 }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(attendanceMonthyDataList?.length){
+              @if(filteredAttendanceData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="attendanceMonthyDataList?.length"
+                [totalItems]="filteredAttendanceData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"
@@ -682,121 +682,6 @@
           </ng-select>
         </div>
       </div>
-      <!-- <div class="col-lg-12">
-          <div class="mb-3">
-            <label
-              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
-              >Ratings</label
-            >
-            <div class="vstack gap-2">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-all"
-                />
-                <label class="form-check-label" for="rating-all">
-                  Select All
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter1"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter1"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter2"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter2"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">4 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter3"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter3"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">3 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter4"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter4"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">2 & Up</span>
-                </label>
-              </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="rating-filter5"
-                />
-                <label
-                  class="form-check-label text-warning"
-                  for="rating-filter5"
-                >
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <i class="bi bi-star-fill text-muted"></i>
-                  <span class="ms-1 text-muted">1 & Up</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div> -->
     </div>
     <!-- </form> -->
   </div>

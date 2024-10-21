@@ -256,18 +256,18 @@
                 <span class="fw-semibold">{{ leaveRecordData?.length }}</span>
                 of
                 <span class="fw-semibold">{{
-                  leaveRecordDataList?.length
+                  filteredLeaveRecordData?.length
                 }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
-              @if(leaveRecordDataList?.length){
+              @if(filteredLeaveRecordData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="leaveRecordDataList?.length"
+                [totalItems]="filteredLeaveRecordData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"

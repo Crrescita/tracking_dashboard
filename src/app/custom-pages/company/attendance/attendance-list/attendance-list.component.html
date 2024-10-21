@@ -478,13 +478,13 @@
                   </th>
                   <th class="sort cursor-pointer" (click)="onSort('email')">
                     Email
-                  </th>
+                  </th> -->
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('department')"
                   >
                     Department
-                  </th> -->
+                  </th>
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('check_in_time')"
@@ -509,12 +509,12 @@
                   >
                     Attendance Status
                   </th>
-                  <th
+                  <!-- <th
                     class="sort cursor-pointer"
                     (click)="onSort('checkin_statusv2')"
                   >
                     Check-in Status
-                  </th>
+                  </th> -->
                   <!-- <th
                     class="sort cursor-pointer"
                     (click)="onSort('timeDifferencev2')"
@@ -534,35 +534,6 @@
                     >
                   </td>
                   <td class="products">
-                    <!-- <div class="d-flex align-items-center">
-                      @if(data.image){
-
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
-                        <img
-                          src="{{ data.image }}"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-                      </div>
-
-                      }@else {
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
-                        <img
-                          src="assets/images/users/avatar-1.jpg"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-                      </div>
-
-                      }
-                      <div>
-                        <h6 class="mb-0">
-                          <a class="text-reset products">{{ data.name }}</a>
-                        </h6>
-                        <p class="text-muted mb-0">{{ data.designation }}</p>
-                      </div>
-                    </div> -->
-
                     <div class="d-flex align-items-center">
                       <!-- <div class="avatar-sm bg-light rounded"> -->
                       <div class="flex-shrink-0 position-relative">
@@ -575,18 +546,6 @@
                           alt=""
                           class="avatar-sm rounded"
                         />
-
-                        <!-- <span
-                          [ngClass]="
-                            data.latestCheckInStatus == 'Check-in'
-                              ? 'bg-success'
-                              : 'bg-danger'
-                          "
-                          class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
-                          ><span class="visually-hidden"
-                            >unread messages</span
-                          ></span
-                        > -->
                       </div>
                       <!-- </div> -->
                       <div class="flex-grow-1 ms-2">
@@ -605,10 +564,30 @@
                     </div>
                   </td>
                   <!-- <td class="discount">{{ data.mobile }}</td>
-                  <td class="category">{{ data.email }}</td>
-                  <td class="stock">{{ data.department }}</td> -->
+                  <td class="category">{{ data.email }}</td> -->
+                  <td class="stock">{{ data.department }}</td>
                   <td class="price">
-                    {{ formatTime(data.latestCheckInTime) }}
+                    <span class="text-center">{{
+                      formatTime(data.latestCheckInTime)
+                    }}</span>
+                    <br />
+                    @if(data.checkin_status != 'Absent' && data.checkin_status
+                    != 'Leave'){
+                    <span
+                      class="badge"
+                      [ngClass]="
+                        data.checkin_status == 'Early'
+                          ? 'bg-warning'
+                          : data.checkin_status == 'Late'
+                          ? 'bg-danger'
+                          : 'bg-success'
+                      "
+                      >{{ data.checkin_status }} @if(data.checkin_status !=
+                      'On-Time' && data.checkin_status != 'Leave'){ by
+                      {{ data.timeDifference }}
+                      }
+                    </span>
+                    }
                   </td>
                   <td class="orders">
                     {{ formatTime(data.latestCheckOutTime) }}
@@ -638,7 +617,7 @@
                     >
                   </td>
 
-                  <td class="published">
+                  <!-- <td class="published">
                     @if(data.checkin_status != 'Absent' && data.checkin_status
                     != 'Leave'){
                     <span
@@ -656,7 +635,7 @@
                       }
                     </span>
                     } @else { -}
-                  </td>
+                  </td> -->
                   <!-- <td class="published">
                     @if(data.checkin_status != 'Absent'){
 
@@ -765,18 +744,18 @@
                 Showing
                 <span class="fw-semibold">{{ attendanceData?.length }}</span> of
                 <span class="fw-semibold">{{
-                  attendanceDataList?.length
+                  filteredAttendanceData?.length
                 }}</span>
                 Results
               </div>
             </div>
 
             <div class="col-sm-auto mt-3 mt-sm-0">
-              @if(attendanceDataList?.length){
+              @if(filteredAttendanceData?.length){
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
                 [(ngModel)]="currentPage"
-                [totalItems]="attendanceDataList?.length"
+                [totalItems]="filteredAttendanceData?.length"
                 [itemsPerPage]="currentItemsPerPage"
                 (pageChanged)="pageChanged($event)"
                 [maxSize]="5"

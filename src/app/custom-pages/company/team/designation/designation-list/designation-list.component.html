@@ -252,7 +252,7 @@
                 Showing
                 <span class="fw-semibold">{{ departmentData?.length }}</span> of
                 <span class="fw-semibold">{{
-                  departmentDataList?.length
+                  filteredDepartmentData?.length
                 }}</span>
                 Results
               </div>
@@ -261,7 +261,7 @@
             <div class="col-sm-auto mt-3 mt-sm-0">
               <pagination
                 class="pagination-wrap hstack gap-2 justify-content-center"
-                [totalItems]="departmentDataList?.length"
+                [totalItems]="filteredDepartmentData?.length"
                 [itemsPerPage]="10"
                 (pageChanged)="pageChanged($event)"
               ></pagination>
