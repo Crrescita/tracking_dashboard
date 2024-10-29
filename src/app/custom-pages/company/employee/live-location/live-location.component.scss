@@ -1,9 +1,11 @@
-:host ::ng-deep #mapId {
-  width: 100% !important;
-  height: 500px !important;
+// :host ::ng-deep #mapId {
+//   width: 100% !important;
+//   height: 500px !important;
    
-  }
+//   }
   
+
+  #mapId { position: relative; top: 0; bottom: 0; width: 100% !important;  height: 500px !important;}
   .match-parent {
     height: 100%;
   }

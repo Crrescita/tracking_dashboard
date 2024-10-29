@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   defaultauth: "fakebackend",
-  // apiUrl: "http://localhost:3000/admin/",
+  apiUrl: "http://localhost:3000/admin/",
   // apifrontendUrl: "http://localhost:3000/frontend/",
-  apiUrl: "https://trackingapi.crrescita.com/admin/",
+  // apiUrl: "https://trackingapi.crrescita.com/admin/",
   apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
   // firebaseConfig: {
   //   apiKey: "AIzaSyCqS9cSPrDCNSQ-Ku2kZf5DBWjPPv7hvcA",
@@ -18,6 +18,18 @@ export const environment = {
   //   messagingSenderId: "916438010670",
   //   appId: "1:916438010670:web:c70cf404da6c0fe7b048bf",
   //   measurementId: "G-1N6FB2GG55",
+  // },
+
+  // working mine
+
+  // firebaseConfig: {
+  //   apiKey: "AIzaSyCgv0M0OycO8Q5IclQ6Koe8CSSBnaRaJ9s",
+  //   authDomain: "location-tracker-17a8e.firebaseapp.com",
+  //   projectId: "location-tracker-17a8e",
+  //   storageBucket: "location-tracker-17a8e.appspot.com",
+  //   messagingSenderId: "691315287200",
+  //   appId: "1:691315287200:web:975c7c891fdbc654c995c5",
+  //   measurementId: "G-1BYNWW0039",
   // },
 
   firebaseConfig: {

@@ -133,6 +133,9 @@ export class CompanyLoginComponent {
   requestPermission() {
     this.afMessaging.requestToken.subscribe(
       (token) => {
+        if (token) {
+          localStorage.setItem("fcm_token", token);
+        }
         // console.log("Admin FCM Token:", token);
         // Save the token to the backend
         const user_id = localStorage.getItem("currentUser");

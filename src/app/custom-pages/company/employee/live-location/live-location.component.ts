@@ -8,6 +8,8 @@ import {
 import * as mapboxgl from "mapbox-gl";
 import { ApiService } from "../../../../core/services/api.service";
 import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { AuthService } from "../../../../core/services/custom-pages/auth.service";
 
 @Component({
   selector: "app-live-location",
@@ -32,7 +34,12 @@ export class LiveLocationComponent implements OnInit {
   private refreshInterval = 30000;
   private liveLocationTimeout: any;
 
-  constructor(private api: ApiService, private route: ActivatedRoute) {}
+  constructor(
+    private api: ApiService,
+    private route: ActivatedRoute,
+    public toastService: ToastrService,
+    private authService: AuthService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (
@@ -57,6 +64,16 @@ export class LiveLocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.requestPermission();
+
+    this.authService.receiveMessage();
+
+    this.authService.currentMessage.subscribe((message) => {
+      if (message) {
+        console.log(message);
+      }
+    });
+
     this.selectedDate = new Date();
 
     if (this.selectedDate) {
@@ -74,7 +91,7 @@ export class LiveLocationComponent implements OnInit {
 
   refreshTimeline() {
     this.isRotatinglive = true;
-    this.getLiveLocation();
+    this.requestLiveLocation();
     setTimeout(() => {
       this.isRotatinglive = false;
     }, 500);
@@ -92,6 +109,36 @@ export class LiveLocationComponent implements OnInit {
     this.spinnerStatus = isLoading;
   }
 
+  requestLiveLocation() {
+    this.toggleSpinner(true);
+    const fcm_token = localStorage.getItem("fcm_token");
+
+    const url = `requestLiveLocation`;
+    const data = {
+      emp_id: this.urlId,
+      fcm_token: fcm_token,
+      type: 1,
+    };
+    this.api.post(url, data).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.toastService.success(res.message);
+          // this.getLiveLocation();
+          setTimeout(() => {
+            this.getLiveLocation();
+          }, 2000);
+        }
+      },
+      (error) => {
+        this.toggleSpinner(false);
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+        this.scheduleNextUpdate();
+      }
+    );
+  }
   getLiveLocation() {
     this.toggleSpinner(true);
     const url = `getEmpLiveLocation?emp_id=${this.urlId}&company_id=${this.companyId}&date=${this.formattedDate}`;
@@ -100,7 +147,7 @@ export class LiveLocationComponent implements OnInit {
         this.toggleSpinner(false);
         if (res && res.status) {
           this.liveCoordinates = res.data;
-
+          console.log(this.liveCoordinates);
           this.addMarkerToMap(this.liveCoordinates);
         } else {
           this.liveCoordinates = [];

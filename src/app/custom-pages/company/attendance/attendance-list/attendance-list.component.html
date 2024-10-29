@@ -655,7 +655,30 @@
                     } @else { -}
                   </td> -->
                   <td>
-                    <div dropdown class="dropdown">
+                    <ul class="d-flex gap-2 list-unstyled mb-0">
+                      <li>
+                        <a
+                          routerLink="/employee-detail/{{ data.id }}"
+                          [queryParams]="{
+                        tab: 'timeline',
+                     
+                      }"
+                          class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                          ><i class="ph-eye align-middle"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a
+                          routerLink="/attendance-calender/{{ data.id }}/{{
+                            this.company_id
+                          }}"
+                          class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                          ><i class="ri-folder-reduce-line align-middle"></i
+                        ></a>
+                      </li>
+                    </ul>
+
+                    <!-- <div dropdown class="dropdown">
                       <button
                         dropdownToggle
                         class="btn btn-subtle-secondary btn-sm btn-icon"
@@ -692,16 +715,9 @@
                             >Attendance Detail</a
                           >
                         </li>
-                        <!-- <li>
-                          <a
-                            class="dropdown-item remove-item-btn"
-                            href="javascript:void(0);"
-                            ><i class="ph-trash align-middle me-1"></i>
-                            Remove</a
-                          >
-                        </li> -->
+                       
                       </ul>
-                    </div>
+                    </div> -->
                   </td>
                 </tr>
                 }

@@ -171,7 +171,7 @@ export class TopbarComponent {
 
         const addedItems = res.data.length;
         this.totalNotify += addedItems;
-        this.newNotify += newNotifications[0].items.length;
+        this.newNotify += newNotifications[0]?.items?.length || 0;
       });
   }
 
