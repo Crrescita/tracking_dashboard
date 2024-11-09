@@ -71,7 +71,8 @@ export class LogsComponent implements OnInit {
 
   getLogs() {
     // logs?type=${this.fileType}&date=${this.formattedDate}
-    this.api.getwithoutid(`logs?date=${this.formattedDate}`).subscribe(
+    // ?date=${this.formattedDate}
+    this.api.getwithoutid(`logs`).subscribe(
       (res: any) => {
         this.logsAdminData = res.find((log: any) => log.logType === "admin");
         this.logsFrontData = res.find((log: any) => log.logType === "frontend");

@@ -6,6 +6,7 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { cloneDeep } from "lodash";
 import { ActivatedRoute, Router } from "@angular/router";
+import * as XLSX from "xlsx";
 
 @Component({
   selector: "app-attendance-list",
@@ -521,5 +522,82 @@ export class AttendanceListComponent implements OnInit {
   closeoffcanvas() {
     document.getElementById("courseFilters")?.classList.remove("show");
     document.querySelector(".backdrop3")?.classList.remove("show");
+  }
+
+  exportTableToExcel(): void {
+    const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+
+    const date = new Date(this.selectedDate);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+    const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${day}`;
+    const filename = `Attendance_${formattedDate}.xlsx`;
+
+    const uniqueDates = Array.from(
+      new Set(this.filteredAttendanceData.map((employee: any) => employee.date))
+    ).sort();
+
+    const worksheetData: any[][] = [
+      [
+        "Name",
+        "Mobile",
+        "Date",
+        "Check-In Time",
+        "Check-Out Time",
+        "Check-In Status",
+        "Time Difference",
+        "Attendance Status",
+      ],
+    ];
+
+    // Add each employee's data to worksheet rows
+    this.filteredAttendanceData.forEach((employee: any) => {
+      // For each date, add a row with the desired fields
+      uniqueDates.forEach((date) => {
+        if (employee.date === date) {
+          worksheetData.push([
+            employee.name,
+            employee.mobile,
+            employee.date,
+            employee.latestCheckInTime || "",
+            employee.latestCheckOutTime || "",
+            employee.checkin_status,
+            employee.timeDifference,
+            employee.attendance_status,
+          ]);
+        }
+      });
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Apply conditional formatting for "Absent" attendance status
+    worksheetData.forEach((row, rowIndex) => {
+      if (rowIndex === 0) return; // Skip header row
+      const attendanceStatus = row[7]; // Index 7 is "Attendance Status" column
+
+      if (attendanceStatus === "Absent") {
+        const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 7 }); // Column 8 (Attendance Status)
+        worksheet[cellAddress] = {
+          ...worksheet[cellAddress],
+          s: {
+            fill: {
+              fgColor: { rgb: "FF0000" }, // Red background for "Absent"
+            },
+          },
+        };
+      }
+    });
+
+    // Add the worksheet to the workbook and export it
+    workbook.SheetNames.push("Attendance Report");
+    workbook.Sheets["Attendance Report"] = worksheet;
+
+    // Export the workbook to an Excel file
+    XLSX.writeFile(workbook, filename);
   }
 }

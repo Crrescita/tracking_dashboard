@@ -382,6 +382,160 @@ export class AttendanceMonthlyComponent implements OnInit {
     this.updatePaginatedData();
   }
 
+  // exportTableToExcel(): void {
+  //   // Create a new workbook
+  //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+
+  //   // Get the month and year for the filename
+  //   const date = new Date(this.selectedDate);
+  //   const month = date.toLocaleString("default", { month: "long" });
+  //   const year = date.getFullYear();
+  //   const filename = `Attendance_${month}_${year}.xlsx`;
+
+  //   // Track names to ensure uniqueness
+  //   const usedSheetNames: { [key: string]: number } = {};
+
+  //   // Loop through each employee in the attendance data
+  //   this.filteredAttendanceData.forEach((employee: any, index: any) => {
+  //     // Create a new worksheet for the employee
+  //     const worksheetData = [
+  //       ["ID", "Name", "Mobile", "Email", "Designation", "Employee ID"],
+  //       [
+  //         employee.id,
+  //         employee.name,
+  //         employee.mobile,
+  //         employee.email,
+  //         employee.designation,
+  //         employee.employee_id,
+  //       ],
+  //       [],
+  //       [
+  //         "Date",
+  //         "Day",
+  //         "Check-in Status",
+  //         "Attendance Status",
+  //         // "Time Difference",
+  //         "Total Duration",
+  //         "Check-in Time",
+  //         "Check-out Time",
+  //       ],
+  //     ];
+
+  //     // Add attendance data to the worksheet
+  //     employee.attendance.forEach((record: any) => {
+  //       // Add holiday name to the day, if present
+  //       const dayWithHoliday = record.holiday_name
+  //         ? `${record.day} (${record.holiday_name})`
+  //         : record.day;
+
+  //       worksheetData.push([
+  //         record.date,
+  //         dayWithHoliday, // Add holiday in parentheses if available
+  //         record.checkin_status,
+  //         record.attendance_status,
+  //         // record.timeDifference,
+  //         record.totalDuration,
+  //         record.last_check_in_time,
+  //         record.last_check_out_time,
+  //       ]);
+  //     });
+
+  //     // Generate a unique sheet name
+  //     let sheetName = employee.name
+  //       ? employee.name.replace(/[^a-zA-Z0-9]/g, "")
+  //       : `Employee${index + 1}`;
+
+  //     // Check if the sheet name has been used before
+  //     if (usedSheetNames[sheetName]) {
+  //       usedSheetNames[sheetName] += 1;
+  //       sheetName += `_${usedSheetNames[sheetName]}`;
+  //     } else {
+  //       usedSheetNames[sheetName] = 1;
+  //     }
+
+  //     // Create the worksheet and add it to the workbook
+  //     const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+  //     // Set column width for better readability
+  //     const columnWidths = [
+  //       { wch: 12 }, // Date column width
+  //       { wch: 25 }, // Day (with holiday name) column width
+  //       { wch: 15 }, // Check-in Status column width
+  //       { wch: 20 }, // Attendance Status column width
+  //       { wch: 20 }, // Total Duration column width
+  //       { wch: 20 }, // Check-in Time column width
+  //       { wch: 20 }, // Check-out Time column width
+  //     ];
+
+  //     // Apply column widths to the worksheet
+  //     worksheet["!cols"] = columnWidths;
+
+  //     workbook.SheetNames.push(sheetName);
+  //     workbook.Sheets[sheetName] = worksheet;
+  //   });
+
+  //   // Write the workbook to an Excel file
+  //   XLSX.writeFile(workbook, filename);
+  // }
+
+  // exportTableToExcel(): void {
+  //   // Create a new workbook
+  //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+
+  //   // Get the month and year for the filename
+  //   const date = new Date(this.selectedDate);
+  //   const month = date.toLocaleString("default", { month: "long" });
+  //   const year = date.getFullYear();
+  //   const filename = `Attendance_${month}_${year}.xlsx`;
+
+  //   // Prepare the header row with Name, Mobile, and dates
+  //   const uniqueDates = Array.from(
+  //     new Set(
+  //       this.filteredAttendanceData.flatMap((employee: any) =>
+  //         employee.attendance.map((record: any) => record.date)
+  //       )
+  //     )
+  //   ).sort(); // Sort dates if needed
+
+  //   // Initialize worksheet data with header row
+  //   const worksheetData: any[][] = [["Name", "Mobile", ...uniqueDates]];
+
+  //   // Add each employee's data to worksheet rows
+  //   this.filteredAttendanceData.forEach((employee: any) => {
+  //     // Start the row with employee's name and mobile
+  //     const row = [employee.name, employee.mobile];
+
+  //     // Map each date column to the corresponding attendance status for this employee
+  //     uniqueDates.forEach((date) => {
+  //       const record = employee.attendance.find((r: any) => r.date === date);
+  //       row.push(record ? record.attendance_status : ""); // Leave blank if no record
+  //     });
+
+  //     worksheetData.push(row);
+  //   });
+
+  //   // Create the worksheet
+  //   const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+  //   // Set column widths for better readability
+  //   const columnWidths = [
+  //     { wch: 20 }, // Name column width
+  //     { wch: 15 }, // Mobile column width
+  //     ...uniqueDates.map(() => ({ wch: 12 })), // Date columns width
+  //   ];
+
+  //   // Apply column widths to the worksheet
+  //   worksheet["!cols"] = columnWidths;
+
+  //   // Add the worksheet to the workbook
+  //   const sheetName = `${month}_${year}`;
+  //   workbook.SheetNames.push(sheetName);
+  //   workbook.Sheets[sheetName] = worksheet;
+
+  //   // Write the workbook to an Excel file
+  //   XLSX.writeFile(workbook, filename);
+  // }
+
   exportTableToExcel(): void {
     // Create a new workbook
     const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
@@ -392,87 +546,70 @@ export class AttendanceMonthlyComponent implements OnInit {
     const year = date.getFullYear();
     const filename = `Attendance_${month}_${year}.xlsx`;
 
-    // Track names to ensure uniqueness
-    const usedSheetNames: { [key: string]: number } = {};
+    // Prepare the header row with Name, Mobile, and dates
+    const uniqueDates = Array.from(
+      new Set(
+        this.filteredAttendanceData.flatMap((employee: any) =>
+          employee.attendance.map((record: any) => record.date)
+        )
+      )
+    ).sort(); // Sort dates if needed
 
-    // Loop through each employee in the attendance data
-    this.attendanceMonthyData.forEach((employee: any, index: any) => {
-      // Create a new worksheet for the employee
-      const worksheetData = [
-        ["ID", "Name", "Mobile", "Email", "Designation", "Employee ID"],
-        [
-          employee.id,
-          employee.name,
-          employee.mobile,
-          employee.email,
-          employee.designation,
-          employee.employee_id,
-        ],
-        [],
-        [
-          "Date",
-          "Day",
-          "Check-in Status",
-          "Attendance Status",
-          // "Time Difference",
-          "Total Duration",
-          "Check-in Time",
-          "Check-out Time",
-        ],
-      ];
+    // Initialize worksheet data with header row
+    const worksheetData: any[][] = [["Name", "Mobile", ...uniqueDates]];
 
-      // Add attendance data to the worksheet
-      employee.attendance.forEach((record: any) => {
-        // Add holiday name to the day, if present
-        const dayWithHoliday = record.holiday_name
-          ? `${record.day} (${record.holiday_name})`
-          : record.day;
+    // Add each employee's data to worksheet rows
+    this.filteredAttendanceData.forEach((employee: any) => {
+      // Start the row with employee's name and mobile
+      const row = [employee.name, employee.mobile];
 
-        worksheetData.push([
-          record.date,
-          dayWithHoliday, // Add holiday in parentheses if available
-          record.checkin_status,
-          record.attendance_status,
-          // record.timeDifference,
-          record.totalDuration,
-          record.last_check_in_time,
-          record.last_check_out_time,
-        ]);
+      // Map each date column to the corresponding attendance status for this employee
+      uniqueDates.forEach((date) => {
+        const record = employee.attendance.find((r: any) => r.date == date);
+        row.push(record ? record.attendance_status : ""); // Leave blank if no record
       });
 
-      // Generate a unique sheet name
-      let sheetName = employee.name
-        ? employee.name.replace(/[^a-zA-Z0-9]/g, "")
-        : `Employee${index + 1}`;
-
-      // Check if the sheet name has been used before
-      if (usedSheetNames[sheetName]) {
-        usedSheetNames[sheetName] += 1;
-        sheetName += `_${usedSheetNames[sheetName]}`;
-      } else {
-        usedSheetNames[sheetName] = 1;
-      }
-
-      // Create the worksheet and add it to the workbook
-      const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-      // Set column width for better readability
-      const columnWidths = [
-        { wch: 12 }, // Date column width
-        { wch: 25 }, // Day (with holiday name) column width
-        { wch: 15 }, // Check-in Status column width
-        { wch: 20 }, // Attendance Status column width
-        { wch: 20 }, // Total Duration column width
-        { wch: 20 }, // Check-in Time column width
-        { wch: 20 }, // Check-out Time column width
-      ];
-
-      // Apply column widths to the worksheet
-      worksheet["!cols"] = columnWidths;
-
-      workbook.SheetNames.push(sheetName);
-      workbook.Sheets[sheetName] = worksheet;
+      worksheetData.push(row);
     });
+
+    // Create the worksheet
+    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Apply conditional formatting by manually setting cell style for "Absent" values
+    this.filteredAttendanceData.forEach((employee: any, rowIndex: number) => {
+      uniqueDates.forEach((date, colIndex) => {
+        const record = employee.attendance.find((r: any) => r.date == date);
+        if (record && record.attendance_status == "Absent") {
+          const cellAddress = XLSX.utils.encode_cell({
+            r: rowIndex + 1,
+            c: colIndex + 2,
+          }); // Offset for headers
+          worksheet[cellAddress] = {
+            ...worksheet[cellAddress],
+            s: {
+              fill: {
+                fgColor: { rgb: "FF0000" }, // Red background color
+              },
+            },
+          };
+        }
+      });
+    });
+
+    // Set column widths for better readability
+    const columnWidths = [
+      { wch: 20 }, // Name column width
+      { wch: 15 }, // Mobile column width
+      ...uniqueDates.map(() => ({ wch: 12 })), // Date columns width
+    ];
+
+    // Apply column widths to the worksheet
+    worksheet["!cols"] = columnWidths;
+
+    // Add the worksheet to the workbook
+    const sheetName = `${month}_${year}`;
+    workbook.SheetNames.push(sheetName);
+    workbook.Sheets[sheetName] = worksheet;
 
     // Write the workbook to an Excel file
     XLSX.writeFile(workbook, filename);
