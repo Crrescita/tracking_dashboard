@@ -50,7 +50,7 @@ export class LiveLocationComponent implements OnInit {
 
       this.urlId = newUrlId;
 
-      this.scheduleNextUpdate();
+      // this.scheduleNextUpdate();
     }
   }
 
@@ -83,9 +83,9 @@ export class LiveLocationComponent implements OnInit {
     this.route.params.subscribe((params) => {
       this.urlId = params["id"] ? Number(params["id"]) : null;
     });
-    if (this.companyId) {
-      this.scheduleNextUpdate();
-    }
+    // if (this.companyId) {
+    //   this.scheduleNextUpdate();
+    // }
     this.initializeMap();
   }
 
@@ -124,10 +124,10 @@ export class LiveLocationComponent implements OnInit {
         this.toggleSpinner(false);
         if (res && res.status) {
           this.toastService.success(res.message);
-          // this.getLiveLocation();
-          setTimeout(() => {
-            this.getLiveLocation();
-          }, 2000);
+          this.getLiveLocation();
+          // setTimeout(() => {
+          //   this.getLiveLocation();
+          // }, 2000);
         }
       },
       (error) => {
@@ -135,7 +135,7 @@ export class LiveLocationComponent implements OnInit {
         this.handleError(
           error.message || "An error occurred while fetching data"
         );
-        this.scheduleNextUpdate();
+        // this.scheduleNextUpdate();
       }
     );
   }
@@ -147,28 +147,28 @@ export class LiveLocationComponent implements OnInit {
         this.toggleSpinner(false);
         if (res && res.status) {
           this.liveCoordinates = res.data;
-          console.log(this.liveCoordinates);
+          // console.log(this.liveCoordinates);
           this.addMarkerToMap(this.liveCoordinates);
         } else {
           this.liveCoordinates = [];
         }
-        this.scheduleNextUpdate();
+        // this.scheduleNextUpdate();
       },
       (error) => {
         this.toggleSpinner(false);
         this.handleError(
           error.message || "An error occurred while fetching data"
         );
-        this.scheduleNextUpdate();
+        // this.scheduleNextUpdate();
       }
     );
   }
 
-  private scheduleNextUpdate() {
-    this.liveLocationTimeout = setTimeout(() => {
-      this.getLiveLocation();
-    }, this.refreshInterval);
-  }
+  // private scheduleNextUpdate() {
+  //   this.liveLocationTimeout = setTimeout(() => {
+  //     this.getLiveLocation();
+  //   }, this.refreshInterval);
+  // }
 
   handleError(error: any) {
     this.toggleSpinner(false);

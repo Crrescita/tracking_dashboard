@@ -7,7 +7,8 @@ export const environment = {
   defaultauth: "fakebackend",
   // apiUrl: "http://localhost:3000/admin/",
   // apifrontendUrl: "http://localhost:3000/frontend/",
-  apiUrl: "https://trackingapi.crrescita.com/admin/",
+  apiUrl: "https://telapi.crrescita.com/admin/",
+  // apiUrl: "https://trackingapi.crrescita.com/admin/",
   apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
   // firebaseConfig: {
   //   apiKey: "AIzaSyCqS9cSPrDCNSQ-Ku2kZf5DBWjPPv7hvcA",
