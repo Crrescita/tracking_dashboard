@@ -556,12 +556,28 @@ export class AttendanceMonthlyComponent implements OnInit {
     ).sort(); // Sort dates if needed
 
     // Initialize worksheet data with header row
-    const worksheetData: any[][] = [["Name", "Mobile", ...uniqueDates]];
+    const worksheetData: any[][] = [
+      [
+        "Name",
+        "Mobile",
+        "Total Present",
+        "Total Absent",
+        "Total Leave",
+        "",
+        ...uniqueDates,
+      ],
+    ];
 
     // Add each employee's data to worksheet rows
     this.filteredAttendanceData.forEach((employee: any) => {
       // Start the row with employee's name and mobile
-      const row = [employee.name, employee.mobile];
+      const row = [
+        employee.name,
+        employee.mobile,
+        employee.totals.totalPresent,
+        employee.totals.totalAbsent,
+        employee.totals.totalLeave,
+      ];
 
       // Map each date column to the corresponding attendance status for this employee
       uniqueDates.forEach((date) => {
