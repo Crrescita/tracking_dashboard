@@ -1,21 +1,20 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 // Page Route
-import { ExtrapagesRoutingModule } from './extraspages-routing.module';
+import { ExtrapagesRoutingModule } from "./extraspages-routing.module";
 
 // Component
-import { MaintenanceComponent } from './maintenance/maintenance.component';
-import { ComingSoonComponent } from './coming-soon/coming-soon.component';
+import { MaintenanceComponent } from "./maintenance/maintenance.component";
+import { ComingSoonComponent } from "./coming-soon/coming-soon.component";
+import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.component";
 
 @NgModule({
   declarations: [
     MaintenanceComponent,
-    ComingSoonComponent
+    ComingSoonComponent,
+    PrivacyPolicyComponent,
   ],
-  imports: [
-    CommonModule,
-    ExtrapagesRoutingModule
-  ]
+  imports: [CommonModule, ExtrapagesRoutingModule],
 })
-export class ExtraspagesModule { }
+export class ExtraspagesModule {}

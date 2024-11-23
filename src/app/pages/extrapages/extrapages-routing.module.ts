@@ -41,10 +41,10 @@ const routes: Routes = [
     path: "pricing",
     component: PricingComponent,
   },
-  {
-    path: "privacy-policy",
-    component: PrivacyPolicyComponent,
-  },
+  // {
+  //   path: "privacy-policy",
+  //   component: PrivacyPolicyComponent,
+  // },
   {
     path: "term-conditions",
     component: TermConditionsComponent,
