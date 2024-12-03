@@ -240,7 +240,6 @@ export class AddEmployeeComponent implements OnInit {
         this.convertedTime = time * 60 * 60 * 1000;
         break;
     }
-    console.log(this.convertedTime);
   }
 
   imageValidator() {
@@ -299,7 +298,7 @@ export class AddEmployeeComponent implements OnInit {
   //     return password === confirmPassword ? null : { mismatch: true };
 
   //     // if (password !== confirmPassword) {
-  //     //   console.log("mismatch");
+  //     //
   //     //   confirmPasswordControl.setErrors({ mismatch: true });
   //     // } else {
   //     //   confirmPasswordControl.setErrors(null);
@@ -484,14 +483,14 @@ export class AddEmployeeComponent implements OnInit {
 
   isTimerChanged(): boolean {
     const currentTimerValue = this.formGroup.get("timer")?.value || null;
-    console.log(currentTimerValue, this.originalTimerValue);
+
     return currentTimerValue !== this.originalTimerValue;
   }
 
   onSubmit() {
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
-      console.log(this.isTimerChanged());
+
       if (this.isTimerChanged()) {
         this.convertTime();
       }

@@ -239,7 +239,6 @@ export class DashboardComponent implements OnInit {
     this.clearMarkers();
 
     recordsArray.forEach((item, index) => {
-      console.log(item);
       const imageUrl = item.image || "assets/images/users/avatar-1.jpg";
 
       // Create a marker element with employee image
