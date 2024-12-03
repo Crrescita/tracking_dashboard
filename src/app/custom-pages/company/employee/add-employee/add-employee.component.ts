@@ -129,6 +129,8 @@ export class AddEmployeeComponent implements OnInit {
       this.useDefaultPassword = false;
 
       this.getemployeeData();
+    } else {
+      this.convertTime();
     }
 
     const data = localStorage.getItem("currentUser");
@@ -141,7 +143,6 @@ export class AddEmployeeComponent implements OnInit {
     this.getDepartment();
     this.getDesignation();
     this.getBranch();
-    this.convertTime();
 
     this.formGroupDesignation = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
@@ -490,6 +491,7 @@ export class AddEmployeeComponent implements OnInit {
   onSubmit() {
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
+      console.log(this.isTimerChanged());
       if (this.isTimerChanged()) {
         this.convertTime();
       }
@@ -526,7 +528,9 @@ export class AddEmployeeComponent implements OnInit {
     formData.append("state", this.f["state"].value);
     formData.append("city", this.f["city"].value);
     formData.append("zip_code", this.f["zip_code"].value);
-    formData.append("timer", this.convertedTime);
+    if (this.convertedTime) {
+      formData.append("timer", this.convertedTime);
+    }
     if (this.f["password"].value) {
       formData.append("password", this.f["password"].value);
     }
