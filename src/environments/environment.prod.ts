@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
-  // apiUrl: "https://trackingapi.crrescita.com/admin/",
-  apiUrl: "https://telapi.crrescita.com/admin/",
-  // apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
-  apifrontendUrl: "https://telapi.crrescita.com/frontend/",
+  apiUrl: "https://trackingapi.crrescita.com/admin/",
+  // apiUrl: "https://telapi.crrescita.com/admin/",
+  apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
+  // apifrontendUrl: "https://telapi.crrescita.com/frontend/",
   defaultauth: "fakebackend",
   // firebaseConfig: {
   //   apiKey: "",
