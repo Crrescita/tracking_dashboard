@@ -45,6 +45,8 @@ export class LeaveRequestComponent {
   itemsPerPageOptions = [10, 20, 30, 50];
 
   // filter
+  branch: any[] = [];
+  selectedBranch: any[] = [];
   selectedStatus: string = "";
   departments: any[] = [];
   selectedEmp: any[] = [];
@@ -56,6 +58,7 @@ export class LeaveRequestComponent {
 
   filterCounts = {
     termCount: 0,
+    branchCount: 0,
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
@@ -87,6 +90,9 @@ export class LeaveRequestComponent {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
+      this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
       this.selectedDepartments = params["selectedDepartments"]
         ? params["selectedDepartments"].split(",")
         : [];
@@ -125,6 +131,7 @@ export class LeaveRequestComponent {
       this.getDepartment();
       this.getDesignation();
       this.getemployeeData();
+      this.getBranch();
     }
 
     this.formGroup = this.formBuilder.group({
@@ -141,6 +148,28 @@ export class LeaveRequestComponent {
     this.spinnerStatus = isLoading;
     this.saveButtonActive = !isLoading;
     this.submitted = isLoading;
+  }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   getemployeeData() {
@@ -446,6 +475,7 @@ export class LeaveRequestComponent {
     }
     // Reset filter counts
     this.filterCounts.termCount = 0;
+    this.filterCounts.branchCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
@@ -472,6 +502,15 @@ export class LeaveRequestComponent {
           .includes(el.department.toLowerCase())
       );
       this.filterCounts.departmentCount = 1;
+    }
+
+    if (this.selectedBranch.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedBranch
+          .map((d) => d.toLowerCase())
+          .includes(el.branch.toLowerCase())
+      );
+      this.filterCounts.branchCount = 1;
     }
 
     // Filter by selected designations
@@ -541,6 +580,7 @@ export class LeaveRequestComponent {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -568,6 +608,7 @@ export class LeaveRequestComponent {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -606,6 +647,7 @@ export class LeaveRequestComponent {
         page: this.currentPage,
         itemsPerPage: this.currentItemsPerPage,
         term: this.term,
+        selectedBranch: this.selectedBranch.join(","),
         selectedDepartments: this.selectedDepartments.join(","),
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
@@ -629,6 +671,7 @@ export class LeaveRequestComponent {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
+      this.filterCounts.branchCount +
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
@@ -656,6 +699,7 @@ export class LeaveRequestComponent {
   reset() {
     // Clear filters
     this.term = "";
+    this.selectedBranch = [];
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedStatus = "";
@@ -669,6 +713,7 @@ export class LeaveRequestComponent {
       relativeTo: this.route,
       queryParams: {
         term: null,
+        selectedBranch: null,
         selectedDepartments: null,
         selectedDesignations: null,
         selectedStatus: null,

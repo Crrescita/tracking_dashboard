@@ -367,6 +367,41 @@
                 <div class="mb-3">
                   <div class="d-flex">
                     <div class="flex-grow-1">
+                      <label for="branch" class="form-label"
+                        >Branch <span class="text-danger">*</span></label
+                      >
+                    </div>
+                    <div class="flex-shrink-0">
+                      <a class="link-effect" (click)="onAddBranch()"
+                        >Create New
+                        <i class="bi bi-arrow-right align-baseline ms-1"></i
+                      ></a>
+                    </div>
+                  </div>
+
+                  <select
+                    class="form-select"
+                    id="branch"
+                    formControlName="branch"
+                    placeholder="Enter Branch"
+                  >
+                    <option selected>Select Branch</option>
+                    @for (item of branch; track $index) {
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                    }
+                  </select>
+
+                  @if (f['branch'] && f['branch'].hasError('required') &&
+                  f['branch'].touched) {
+                  <div class="invalid-text">Branch is required.</div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <div class="d-flex">
+                    <div class="flex-grow-1">
                       <label for="designation" class="form-label"
                         >Designation <span class="text-danger">*</span></label
                       >
@@ -390,22 +425,6 @@
                     <option value="{{ item.id }}">{{ item.name }}</option>
                     }
                   </select>
-
-                  <!-- <input
-                    type="text"
-                    class="form-control"
-                    id="designation"
-                    formControlName="designation"
-                    placeholder="Enter Designation"
-                    value="designation"
-                    [ngClass]="
-                      f['designation'] &&
-                      f['designation'].hasError('required') &&
-                      f['designation'].touched
-                        ? 'is-invalid'
-                        : ''
-                    "
-                  /> -->
 
                   @if (f['designation'] && f['designation'].hasError('required')
                   && f['designation'].touched) {
@@ -615,6 +634,45 @@
               </div>
 
               <div class="col-lg-6">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <label for="timeInput" class="form-label"
+                      >Enter Time:</label
+                    >
+                    <input
+                      id="timeInput"
+                      class="form-control"
+                      type="number"
+                      formControlName="timer"
+                      placeholder="Enter time"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label for="unitSelector" class="form-label"
+                      >Select Unit:</label
+                    >
+                    <select
+                      id="unitSelector"
+                      class="form-control"
+                      formControlName="unit"
+                      (change)="convertTime()"
+                    >
+                      <option value="seconds">Seconds</option>
+                      <option value="minutes">Minutes</option>
+                      <option value="hours">Hours</option>
+                    </select>
+                  </div>
+
+                  @if (f['time'] && f['time'].hasError('required') &&
+                  f['time'].touched && f['time'].invalid) {
+                  <div class="invalid-text">
+                    Time is required and must be a positive number.
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="statuss" class="form-label"
                     >Status <span class="text-danger">*</span></label
@@ -661,101 +719,103 @@
                 </li>
               </div>
 
-              <div *ngIf="!useDefaultPassword" class="col-lg-4">
-                <div class="auth-pass-inputgroup">
-                  <label for="password-input" class="form-label"
-                    >New Password*</label
-                  >
-                  <div class="position-relative">
-                    <input
-                      [type]="fieldTextType1 ? 'text' : 'password'"
-                      class="form-control password-input"
-                      id="password-input"
-                      formControlName="password"
-                      placeholder="Enter new password"
-                      (input)="checkPasswordPattern()"
-                      [ngClass]="{
-                        'is-invalid':
-                          f['password'].hasError('required') &&
-                          f['password'].touched
-                      }"
-                    />
-                    <button
-                      class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-                      type="button"
-                      (click)="toggleFieldTextType1()"
+              <div class="row mt-3">
+                <div *ngIf="!useDefaultPassword" class="col-lg-6">
+                  <div class="auth-pass-inputgroup">
+                    <label for="password-input" class="form-label"
+                      >New Password*</label
                     >
-                      <i
-                        class="ri-eye-fill align-middle"
+                    <div class="position-relative">
+                      <input
+                        [type]="fieldTextType1 ? 'text' : 'password'"
+                        class="form-control password-input"
+                        id="password-input"
+                        formControlName="password"
+                        placeholder="Enter new password"
+                        (input)="checkPasswordPattern()"
                         [ngClass]="{
-                          'mdi-eye-off-outline': !fieldTextType1,
-                          'mdi-eye-outline': fieldTextType1
+                          'is-invalid':
+                            f['password'].hasError('required') &&
+                            f['password'].touched
                         }"
-                      ></i>
-                    </button>
-                  </div>
-                  <div
-                    *ngIf="
-                      f['password'].hasError('required') &&
-                      f['password'].touched
-                    "
-                    class="invalid-text"
-                  >
-                    Password is required.
+                      />
+                      <button
+                        class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                        type="button"
+                        (click)="toggleFieldTextType1()"
+                      >
+                        <i
+                          class="ri-eye-fill align-middle"
+                          [ngClass]="{
+                            'mdi-eye-off-outline': !fieldTextType1,
+                            'mdi-eye-outline': fieldTextType1
+                          }"
+                        ></i>
+                      </button>
+                    </div>
+                    <div
+                      *ngIf="
+                        f['password'].hasError('required') &&
+                        f['password'].touched
+                      "
+                      class="invalid-text"
+                    >
+                      Password is required.
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div *ngIf="!useDefaultPassword" class="col-lg-4">
-                <div class="auth-pass-inputgroup">
-                  <label for="confirm-password-input" class="form-label"
-                    >Confirm Password*</label
-                  >
-                  <div class="position-relative">
-                    <input
-                      [type]="fieldTextType2 ? 'text' : 'password'"
-                      class="form-control password-input"
-                      id="confirm-password-input"
-                      formControlName="confirmPassword"
-                      placeholder="Confirm password"
-                      [ngClass]="{
-                        'is-invalid':
-                          f['confirmPassword'].hasError('required') &&
-                          f['confirmPassword'].touched
-                      }"
-                    />
-                    <button
-                      class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
-                      type="button"
-                      (click)="toggleFieldTextType2()"
+                <div *ngIf="!useDefaultPassword" class="col-lg-6">
+                  <div class="auth-pass-inputgroup">
+                    <label for="confirm-password-input" class="form-label"
+                      >Confirm Password*</label
                     >
-                      <i
-                        class="ri-eye-fill align-middle"
+                    <div class="position-relative">
+                      <input
+                        [type]="fieldTextType2 ? 'text' : 'password'"
+                        class="form-control password-input"
+                        id="confirm-password-input"
+                        formControlName="confirmPassword"
+                        placeholder="Confirm password"
                         [ngClass]="{
-                          'mdi-eye-off-outline': !fieldTextType2,
-                          'mdi-eye-outline': fieldTextType2
+                          'is-invalid':
+                            f['confirmPassword'].hasError('required') &&
+                            f['confirmPassword'].touched
                         }"
-                      ></i>
-                    </button>
-                  </div>
-                  <div
-                    *ngIf="
-                      f['confirmPassword'].hasError('required') &&
-                      f['confirmPassword'].touched
-                    "
-                    class="invalid-text"
-                  >
-                    Confirm Password is required.
-                  </div>
-                  <div
-                    *ngIf="
-                      formGroup.hasError('mismatch') &&
-                      f['confirmPassword']?.value &&
-                      f['password']?.value
-                    "
-                    class="invalid-text"
-                  >
-                    Password and Confirm Password does not match.
+                      />
+                      <button
+                        class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted password-addon"
+                        type="button"
+                        (click)="toggleFieldTextType2()"
+                      >
+                        <i
+                          class="ri-eye-fill align-middle"
+                          [ngClass]="{
+                            'mdi-eye-off-outline': !fieldTextType2,
+                            'mdi-eye-outline': fieldTextType2
+                          }"
+                        ></i>
+                      </button>
+                    </div>
+                    <div
+                      *ngIf="
+                        f['confirmPassword'].hasError('required') &&
+                        f['confirmPassword'].touched
+                      "
+                      class="invalid-text"
+                    >
+                      Confirm Password is required.
+                    </div>
+                    <div
+                      *ngIf="
+                        formGroup.hasError('mismatch') &&
+                        f['confirmPassword']?.value &&
+                        f['password']?.value
+                      "
+                      class="invalid-text"
+                    >
+                      Password and Confirm Password does not match.
+                    </div>
                   </div>
                 </div>
               </div>
@@ -825,7 +885,7 @@
               </div>
               }
             </div>
-            <div class="col-12">
+            <div class="col-12 mt-3">
               <div class="hstack gap-2 justify-content-end mb-3">
                 @if (saveButtonActive) {
                 <button class="btn btn-primary">Save</button>
@@ -860,6 +920,105 @@
   </div>
 </form>
 
+<!-- branch modal -->
+<div
+  class="modal fade"
+  bsModal
+  #showModalBranch="bs-modal"
+  (hidden.bs.modal)="resetFormBranch()"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header px-4 pt-4">
+        <h5 class="modal-title" id="exampleModalLabel">Add Branch</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showModalBranch.hide()"
+        ></button>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmitBranch()"
+        [formGroup]="formGroupBranch"
+        class="tablelist-form"
+        novalidate
+        autocomplete="off"
+      >
+        <div class="modal-body p-4">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="product-title-input-branch" class="form-label"
+              >Branch Name <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="product-title-input-branch"
+              formControlName="name"
+              class="form-control"
+              placeholder="Enter Designation Name"
+            />
+            @if (br['name'] && br['name'].hasError('required') &&
+            br['name'].touched) {
+            <div class="invalid-text">Branch name is required.</div>
+            } @if(br['name'] && br['name'].hasError('maxlength') &&
+            br['name'].touched){
+            <div class="invalid-text">
+              Branch name must be at most 45 characters
+            </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="statuss-branch" class="form-label"
+              >Status <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              formControlName="status"
+              data-choices
+              id="statuss-branch"
+              [ngClass]="
+                br['status'] &&
+                br['status'].hasError('required') &&
+                br['status'].touched
+                  ? 'is-invalid'
+                  : ''
+              "
+            >
+              <option value="">Select Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            @if (br['status'] && br['status'].hasError('required') &&
+            br['status'].touched) {
+            <div class="invalid-text">Status is required.</div>
+            }
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-danger"
+              (click)="showModalBranch.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="add-btn-branch">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- designation modal -->
 <div
   class="modal fade"
@@ -892,12 +1051,12 @@
           ></div>
 
           <div class="mb-3">
-            <label for="product-title-input" class="form-label"
+            <label for="product-title-input-designation" class="form-label"
               >Designation Name <span class="text-danger">*</span></label
             >
             <input
               type="text"
-              id="product-title-input"
+              id="product-title-input-designation"
               formControlName="name"
               class="form-control"
               placeholder="Enter Designation Name"
@@ -914,14 +1073,14 @@
           </div>
 
           <div class="mb-3">
-            <label for="statuss" class="form-label"
+            <label for="statuss-designation" class="form-label"
               >Status <span class="text-danger">*</span></label
             >
             <select
               class="form-control"
               formControlName="status"
               data-choices
-              id="statuss"
+              id="statuss-designation"
               [ngClass]="
                 d['status'] &&
                 d['status'].hasError('required') &&
@@ -949,7 +1108,11 @@
             >
               <i class="bi bi-x-lg align-baseline me-1"></i> Close
             </button>
-            <button type="submit" class="btn btn-primary" id="add-btn">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="add-btn-designation"
+            >
               Add
             </button>
           </div>
@@ -991,12 +1154,12 @@
           ></div>
 
           <div class="mb-3">
-            <label for="product-title-input" class="form-label"
+            <label for="product-title-input-department" class="form-label"
               >Department Name <span class="text-danger">*</span></label
             >
             <input
               type="text"
-              id="product-title-input"
+              id="product-title-input-department"
               formControlName="name"
               class="form-control"
               placeholder="Enter Department Name"
@@ -1013,14 +1176,14 @@
           </div>
 
           <div class="mb-3">
-            <label for="statuss" class="form-label"
+            <label for="statuss-department" class="form-label"
               >Status <span class="text-danger">*</span></label
             >
             <select
               class="form-control"
               formControlName="status"
               data-choices
-              id="statuss"
+              id="statuss-department"
               [ngClass]="
                 de['status'] &&
                 de['status'].hasError('required') &&
@@ -1048,7 +1211,11 @@
             >
               <i class="bi bi-x-lg align-baseline me-1"></i> Close
             </button>
-            <button type="submit" class="btn btn-primary" id="add-btn">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              id="add-btn-department"
+            >
               Add
             </button>
           </div>

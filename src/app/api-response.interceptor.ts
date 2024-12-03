@@ -98,6 +98,9 @@ export class ApiResponseInterceptor implements HttpInterceptor {
             this.is403MessageDisplayed = true;
           }
           break;
+        case 404:
+          this.toasterService.error(error.error.message || "Unauthorized");
+          break;
         case 500:
           // Checking both error.error.message and error.error.error.message for nested errors
           const errorMessage =

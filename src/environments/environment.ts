@@ -5,11 +5,12 @@
 export const environment = {
   production: false,
   defaultauth: "fakebackend",
-  // apiUrl: "http://localhost:3000/admin/",
-  // apifrontendUrl: "http://localhost:3000/frontend/",
+  apiUrl: "http://localhost:3000/admin/",
+  apifrontendUrl: "http://localhost:3000/frontend/",
+  // apiUrl: "https://trackingapi.crrescita.com/admin/",
+  // apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
   // apiUrl: "https://telapi.crrescita.com/admin/",
-  apiUrl: "https://trackingapi.crrescita.com/admin/",
-  apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
+  // apifrontendUrl: "https://telapi.crrescita.com/frontend/",
   // firebaseConfig: {
   //   apiKey: "AIzaSyCqS9cSPrDCNSQ-Ku2kZf5DBWjPPv7hvcA",
   //   authDomain: "test-demo-774f8.firebaseapp.com",

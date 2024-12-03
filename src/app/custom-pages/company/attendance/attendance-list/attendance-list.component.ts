@@ -6,8 +6,9 @@ import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { cloneDeep } from "lodash";
 import { ActivatedRoute, Router } from "@angular/router";
-import * as XLSX from "xlsx";
-
+// import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx-js-style";
+import * as ExcelJS from "exceljs";
 @Component({
   selector: "app-attendance-list",
   templateUrl: "./attendance-list.component.html",
@@ -58,6 +59,8 @@ export class AttendanceListComponent implements OnInit {
     "Iowa",
   ];
 
+  branch: any[] = [];
+  selectedBranch: any[] = [];
   departments: any[] = [];
   selectedDepartments: any[] = [];
   selectedDesignations: any[] = [];
@@ -66,10 +69,12 @@ export class AttendanceListComponent implements OnInit {
 
   filterCounts = {
     termCount: 0,
+    branchCount: 0,
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
     statusCheckCount: 0,
+    statusCheckInCount: 0,
     dateCount: 0,
     empCount: 0,
   };
@@ -89,6 +94,7 @@ export class AttendanceListComponent implements OnInit {
   // filter
   selectedStatus: string = "All";
   selectedCheckStatus: string = "All";
+  selectedCheckInStatus: string = "All";
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -108,6 +114,9 @@ export class AttendanceListComponent implements OnInit {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
+      this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
       this.selectedDepartments = params["selectedDepartments"]
         ? params["selectedDepartments"].split(",")
         : [];
@@ -116,6 +125,7 @@ export class AttendanceListComponent implements OnInit {
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
       this.selectedCheckStatus = params["selectedCheckStatus"] || null;
+      this.selectedCheckInStatus = params["selectedCheckInStatus"] || null;
       this.selectedEmp = params["selectedEmp"]
         ? params["selectedEmp"].split(",")
         : [];
@@ -146,7 +156,30 @@ export class AttendanceListComponent implements OnInit {
       this.getAttendance();
       this.getDepartment();
       this.getDesignation();
+      this.getBranch();
     }
+  }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   getDepartment() {
@@ -303,12 +336,18 @@ export class AttendanceListComponent implements OnInit {
       this.selectedCheckStatus = "";
     }
 
+    if (this.selectedCheckInStatus == null) {
+      this.selectedCheckInStatus = "";
+    }
+
     // Reset filter counts
     this.filterCounts.termCount = 0;
+    this.filterCounts.branchCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
     this.filterCounts.statusCheckCount = 0;
+    this.filterCounts.statusCheckInCount = 0;
     this.filterCounts.empCount = 0;
 
     // Filter by term
@@ -321,6 +360,15 @@ export class AttendanceListComponent implements OnInit {
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
+    }
+
+    if (this.selectedBranch.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedBranch
+          .map((d) => d.toLowerCase())
+          .includes(el.branch.toLowerCase())
+      );
+      this.filterCounts.branchCount = 1;
     }
 
     // Filter by selected departments
@@ -367,16 +415,26 @@ export class AttendanceListComponent implements OnInit {
       this.filterCounts.statusCheckCount = 1;
     }
 
+    if (this.selectedCheckInStatus) {
+      filteredData = filteredData.filter(
+        (el: any) => el.latestCheckInStatus === this.selectedCheckInStatus
+      );
+
+      this.filterCounts.statusCheckInCount = 1;
+    }
+
     // Update filtered data
     this.filteredAttendanceData = filteredData;
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
       this.selectedStatus ||
-      this.selectedCheckStatus
+      this.selectedCheckStatus ||
+      this.selectedCheckInStatus
     ) {
       if (this.filteredAttendanceData.length === 0) {
         this.currentPage = 1;
@@ -392,11 +450,13 @@ export class AttendanceListComponent implements OnInit {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
       this.selectedStatus ||
-      this.selectedCheckStatus
+      this.selectedCheckStatus ||
+      this.selectedCheckInStatus
     ) {
       if (startItem >= this.filteredAttendanceData.length) {
         this.currentPage = 1;
@@ -419,11 +479,14 @@ export class AttendanceListComponent implements OnInit {
         page: this.currentPage,
         itemsPerPage: this.currentItemsPerPage,
         term: this.term,
+        selectedBranch: this.selectedBranch.join(","),
         selectedDepartments: this.selectedDepartments.join(","),
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
         selectedStatus: this.selectedStatus,
         selectedCheckStatus: this.selectedCheckStatus,
+        selectedCheckInStatus: this.selectedCheckInStatus,
+
         date: this.formattedDate,
       },
       queryParamsHandling: "merge",
@@ -442,10 +505,12 @@ export class AttendanceListComponent implements OnInit {
   reset() {
     // Clear filters
     this.term = "";
+    this.selectedBranch = [];
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedStatus = "";
     this.selectedCheckStatus = "";
+    this.selectedCheckInStatus = "";
     this.attendanceData = this.attendanceDataList;
     this.selectedEmp = [];
     this.selectedDate = new Date();
@@ -457,10 +522,12 @@ export class AttendanceListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         term: null,
+        selectedBranch: null,
         selectedDepartments: null,
         selectedDesignations: null,
         selectedStatus: null,
         selectedCheckStatus: null,
+        selectedCheckInStatus: null,
         selectedEmp: null,
         page: 1,
         itemsPerPage: this.currentItemsPerPage,
@@ -475,10 +542,12 @@ export class AttendanceListComponent implements OnInit {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
+      this.filterCounts.branchCount +
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
       this.filterCounts.statusCheckCount +
+      this.filterCounts.statusCheckInCount +
       this.filterCounts.dateCount +
       this.filterCounts.empCount
     );
@@ -524,9 +593,88 @@ export class AttendanceListComponent implements OnInit {
     document.querySelector(".backdrop3")?.classList.remove("show");
   }
 
-  exportTableToExcel(): void {
-    const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+  // exportTableToExcel(): void {
+  //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
 
+  //   const date = new Date(this.selectedDate);
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   const month = date.toLocaleString("default", { month: "long" });
+  //   const year = date.getFullYear();
+  //   const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
+  //     2,
+  //     "0"
+  //   )}-${day}`;
+  //   const filename = `Attendance_${formattedDate}.xlsx`;
+
+  //   const uniqueDates = Array.from(
+  //     new Set(this.filteredAttendanceData.map((employee: any) => employee.date))
+  //   ).sort();
+
+  //   const worksheetData: any[][] = [
+  //     [
+  //       "Name",
+  //       "Mobile",
+  //       "Date",
+  //       "Check-In Time",
+  //       "Check-Out Time",
+  //       "Arrival Status",
+  //       "Time Difference",
+  //       "Attendance Status",
+  //     ],
+  //   ];
+
+  //   // Add each employee's data to worksheet rows
+  //   this.filteredAttendanceData.forEach((employee: any) => {
+  //     // For each date, add a row with the desired fields
+  //     uniqueDates.forEach((date) => {
+  //       if (employee.date === date) {
+  //         worksheetData.push([
+  //           employee.name,
+  //           employee.mobile,
+  //           employee.date,
+  //           employee.latestCheckInTime || "",
+  //           employee.latestCheckOutTime || "",
+  //           employee.checkin_status,
+  //           employee.timeDifference,
+  //           employee.attendance_status,
+  //         ]);
+  //       }
+  //     });
+  //   });
+
+  //   const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+  //   // Apply conditional formatting for "Absent" attendance status
+  //   worksheetData.forEach((row, rowIndex) => {
+  //     if (rowIndex === 0) return; // Skip header row
+  //     const attendanceStatus = row[7]; // Index 7 is "Attendance Status" column
+
+  //     if (attendanceStatus === "Absent") {
+  //       const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 7 }); // Column 8 (Attendance Status)
+  //       worksheet[cellAddress] = {
+  //         ...worksheet[cellAddress],
+  //         s: {
+  //           fill: {
+  //             fgColor: { rgb: "FF0000" }, // Red background for "Absent"
+  //           },
+  //         },
+  //       };
+  //     }
+  //   });
+
+  //   // Add the worksheet to the workbook and export it
+  //   workbook.SheetNames.push("Attendance Report");
+  //   workbook.Sheets["Attendance Report"] = worksheet;
+
+  //   // Export the workbook to an Excel file
+  //   XLSX.writeFile(workbook, filename);
+  // }
+
+  exportTableToExcel(): void {
+    const workbook = new ExcelJS.Workbook(); // Create a new workbook
+    const worksheet = workbook.addWorksheet("Attendance Report"); // Add a worksheet
+
+    // Format the selected date
     const date = new Date(this.selectedDate);
     const day = String(date.getDate()).padStart(2, "0");
     const month = date.toLocaleString("default", { month: "long" });
@@ -537,67 +685,94 @@ export class AttendanceListComponent implements OnInit {
     )}-${day}`;
     const filename = `Attendance_${formattedDate}.xlsx`;
 
-    const uniqueDates = Array.from(
-      new Set(this.filteredAttendanceData.map((employee: any) => employee.date))
-    ).sort();
-
-    const worksheetData: any[][] = [
-      [
-        "Name",
-        "Mobile",
-        "Date",
-        "Check-In Time",
-        "Check-Out Time",
-        "Check-In Status",
-        "Time Difference",
-        "Attendance Status",
-      ],
+    // Header row
+    const header = [
+      "Name",
+      "Mobile",
+      "Date",
+      "Check-In Time",
+      "Check-Out Time",
+      "Arrival Status",
+      "Time Difference",
+      "Attendance Status",
     ];
+    const headerRow = worksheet.addRow(header);
 
-    // Add each employee's data to worksheet rows
-    this.filteredAttendanceData.forEach((employee: any) => {
-      // For each date, add a row with the desired fields
-      uniqueDates.forEach((date) => {
-        if (employee.date === date) {
-          worksheetData.push([
-            employee.name,
-            employee.mobile,
-            employee.date,
-            employee.latestCheckInTime || "",
-            employee.latestCheckOutTime || "",
-            employee.checkin_status,
-            employee.timeDifference,
-            employee.attendance_status,
-          ]);
-        }
-      });
+    // Make the header row bold
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
     });
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    // Add employee data rows
+    this.filteredAttendanceData.forEach((employee: any) => {
+      const row = worksheet.addRow([
+        employee.name,
+        employee.mobile,
+        employee.date,
+        employee.latestCheckInTime || "",
+        employee.latestCheckOutTime || "",
+        employee.checkin_status,
+        employee.timeDifference,
+        employee.attendance_status,
+      ]);
 
-    // Apply conditional formatting for "Absent" attendance status
-    worksheetData.forEach((row, rowIndex) => {
-      if (rowIndex === 0) return; // Skip header row
-      const attendanceStatus = row[7]; // Index 7 is "Attendance Status" column
+      // Make the "Name" column (first column) bold
+      row.getCell(1).font = { bold: true };
 
-      if (attendanceStatus === "Absent") {
-        const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 7 }); // Column 8 (Attendance Status)
-        worksheet[cellAddress] = {
-          ...worksheet[cellAddress],
-          s: {
-            fill: {
-              fgColor: { rgb: "FF0000" }, // Red background for "Absent"
-            },
-          },
+      // Apply background color and white font for "Absent" and "Present"
+      const statusCell = row.getCell(8); // Attendance Status column
+      if (statusCell.value === "Absent") {
+        statusCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFF0000" }, // Red background
         };
+        statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
+      } else if (statusCell.value === "Present") {
+        statusCell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FF38b738" }, // Green background
+        };
+        statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
       }
     });
 
-    // Add the worksheet to the workbook and export it
-    workbook.SheetNames.push("Attendance Report");
-    workbook.Sheets["Attendance Report"] = worksheet;
+    // Set column widths
+    worksheet.columns = [
+      { width: 20 }, // Name
+      { width: 15 }, // Mobile
+      { width: 15 }, // Date
+      { width: 20 }, // Check-In Time
+      { width: 20 }, // Check-Out Time
+      { width: 20 }, // Arrival Status
+      { width: 20 }, // Time Difference
+      { width: 20 }, // Attendance Status
+    ];
+
+    // Add borders to all cells
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
 
     // Export the workbook to an Excel file
-    XLSX.writeFile(workbook, filename);
+    workbook.xlsx.writeBuffer().then((data) => {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.click();
+      window.URL.revokeObjectURL(url);
+    });
   }
 }

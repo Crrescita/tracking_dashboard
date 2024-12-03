@@ -121,7 +121,8 @@
       "LEAVE-RECORD":"Leave Record",
       "NOTIFICATION":"Notification",
       "LEAVE-APPLICATION":"Leave Application",
-      "ASSIGN-TASK":"Assign Task"
+      "ASSIGN-TASK":"Assign Task",
+      "BRANCH":"Branch"
       }
     },
     "COMPONENTS": {

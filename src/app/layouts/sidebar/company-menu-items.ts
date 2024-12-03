@@ -31,6 +31,12 @@ export const COMPANY_MENU: MenuItem[] = [
 
   {
     id: 2,
+    label: "MENUITEMS.COMPANY.LIST.BRANCH",
+    link: "/branch-list",
+    icon: "mdi mdi-office-building-cog-outline",
+  },
+  {
+    id: 2,
     label: "MENUITEMS.COMPANY.LIST.DEPARTMENT",
     link: "/department-list",
     icon: "bi bi-people-fill",

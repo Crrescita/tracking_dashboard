@@ -23,10 +23,13 @@ export class AddEmployeeComponent implements OnInit {
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("showModalDepartment", { static: false })
   showModalDepartment?: ModalDirective;
+  @ViewChild("showModalBranch", { static: false })
+  showModalBranch?: ModalDirective;
   breadCrumbItems!: Array<{}>;
   formGroup!: FormGroup;
   formGroupDesignation!: FormGroup;
   formGroupDepartment!: FormGroup;
+  formGroupBranch!: FormGroup;
 
   urlId: number | null = null;
 
@@ -95,6 +98,11 @@ export class AddEmployeeComponent implements OnInit {
 
   departments: any[] = [];
   designations: any[] = [];
+  branch: any[] = [];
+
+  timeValue: number = 0;
+  convertedTime: any;
+  originalTimerValue: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -132,6 +140,8 @@ export class AddEmployeeComponent implements OnInit {
     this.updateFormControls();
     this.getDepartment();
     this.getDesignation();
+    this.getBranch();
+    this.convertTime();
 
     this.formGroupDesignation = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
@@ -139,6 +149,11 @@ export class AddEmployeeComponent implements OnInit {
     });
 
     this.formGroupDepartment = this.formBuilder.group({
+      name: ["", [Validators.maxLength(45), Validators.required]],
+      status: ["", [Validators.required]],
+    });
+
+    this.formGroupBranch = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
       status: ["", [Validators.required]],
     });
@@ -174,9 +189,12 @@ export class AddEmployeeComponent implements OnInit {
         state: [""],
         city: [""],
         zip_code: ["", [Validators.maxLength(6)]],
+        branch: ["", [Validators.required]],
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
         joining_date: [""],
+        timer: [30, [Validators.required, Validators.min(0)]],
+        unit: ["seconds", Validators.required], // Default unit
         password: [
           this.urlId ? "" : "123456",
           this.urlId
@@ -199,6 +217,29 @@ export class AddEmployeeComponent implements OnInit {
       },
       { validator: this.passwordMatchValidator }
     );
+  }
+
+  convertTime(): void {
+    const time = this.formGroup.get("timer")?.value;
+    const unit = this.formGroup.get("unit")?.value;
+
+    if (!time || time < 0) {
+      this.convertedTime = null;
+      return;
+    }
+
+    switch (unit) {
+      case "seconds":
+        this.convertedTime = time * 1000;
+        break;
+      case "minutes":
+        this.convertedTime = time * 60 * 1000;
+        break;
+      case "hours":
+        this.convertedTime = time * 60 * 60 * 1000;
+        break;
+    }
+    console.log(this.convertedTime);
   }
 
   imageValidator() {
@@ -316,7 +357,34 @@ export class AddEmployeeComponent implements OnInit {
     return this.formGroupDepartment.controls;
   }
 
+  get br() {
+    return this.formGroupBranch.controls;
+  }
+
   // API Methods
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+
   getDepartment() {
     this.toggleSpinner(true);
     this.api
@@ -394,12 +462,14 @@ export class AddEmployeeComponent implements OnInit {
         joining_date: data.joining_date,
         gender: data.gender,
         designation: data.designation,
+        branch: data.branch,
         department: data.department,
         state: data.state,
         city: data.city,
         zip_code: data.zip_code,
+        timer: data.timer ? data.timer / 1000 : null,
       });
-
+      this.originalTimerValue = data.timer ? data.timer / 1000 : null;
       // Set uploaded image
       this.employeeuploadedImage = data.image || "";
     }
@@ -411,11 +481,19 @@ export class AddEmployeeComponent implements OnInit {
     this.submitted = isLoading;
   }
 
+  isTimerChanged(): boolean {
+    const currentTimerValue = this.formGroup.get("timer")?.value || null;
+    console.log(currentTimerValue, this.originalTimerValue);
+    return currentTimerValue !== this.originalTimerValue;
+  }
+
   onSubmit() {
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
+      if (this.isTimerChanged()) {
+        this.convertTime();
+      }
       const formData = this.createFormData();
-      console.log(this.urlId);
       if (this.urlId) {
         this.updateemployee(formData);
       } else {
@@ -442,11 +520,13 @@ export class AddEmployeeComponent implements OnInit {
     formData.append("status", this.f["status"].value);
     formData.append("joining_date", this.f["joining_date"].value);
     formData.append("gender", this.f["gender"].value);
+    formData.append("branch", this.f["branch"].value);
     formData.append("designation", this.f["designation"].value);
     formData.append("department", this.f["department"].value);
     formData.append("state", this.f["state"].value);
     formData.append("city", this.f["city"].value);
     formData.append("zip_code", this.f["zip_code"].value);
+    formData.append("timer", this.convertedTime);
     if (this.f["password"].value) {
       formData.append("password", this.f["password"].value);
     }
@@ -467,7 +547,6 @@ export class AddEmployeeComponent implements OnInit {
 
   updateemployee(formData: FormData) {
     const urlId = this.urlId as number;
-    console.log("up");
     this.api.put("employees", urlId, formData).subscribe(
       (res: any) => this.handleResponse(res),
       (error) => this.handleError(error)
@@ -508,6 +587,61 @@ export class AddEmployeeComponent implements OnInit {
     this.employeeselectedImagePreview = null;
   }
 
+  onAddBranch() {
+    this.resetFormBranch();
+    this.showModalBranch?.show();
+    var modaltitle = document.querySelector(".modal-title") as HTMLAreaElement;
+    modaltitle.innerHTML = "Add Branch";
+    var modalbtn = document.getElementById("add-btn") as HTMLAreaElement;
+    modalbtn.innerHTML = "Add";
+  }
+
+  resetFormBranch() {
+    this.formGroupBranch.reset();
+
+    this.formGroupBranch.patchValue({
+      name: "",
+      status: "",
+    });
+  }
+
+  onSubmitBranch() {
+    if (this.formGroupBranch.valid) {
+      this.toggleSpinner(true);
+      const formData = this.createFormDataBranch();
+      this.addBranch(formData);
+    } else {
+      this.formGroupBranch.markAllAsTouched();
+    }
+  }
+
+  createFormDataBranch() {
+    const formData = {
+      company_id: this.company_id,
+      name: this.br["name"].value,
+      status: this.br["status"].value,
+    };
+    return formData;
+  }
+
+  addBranch(formData: any) {
+    this.api.post("branch", formData).subscribe(
+      (res: any) => this.handleResponseBranch(res),
+      (error) => this.handleError(error)
+    );
+  }
+
+  handleResponseBranch(res: any) {
+    this.toggleSpinner(false);
+    if (res.status === true) {
+      this.formGroupBranch.reset();
+      this.toastService.success("Branch Created Successfully!!");
+      this.getBranch();
+      this.showModalBranch?.hide();
+    } else {
+      this.toastService.error(res["message"]);
+    }
+  }
   // desi
   onAdd() {
     this.resetFormDes();

@@ -30,6 +30,8 @@ export class LeaveRecordComponent implements OnInit {
   currentPage: number = 1;
 
   // filter
+  branch: any[] = [];
+  selectedBranch: any[] = [];
   selectedStatus: string = "";
   departments: any[] = [];
   selectedEmp: any[] = [];
@@ -39,6 +41,7 @@ export class LeaveRecordComponent implements OnInit {
 
   filterCounts = {
     termCount: 0,
+    branchCount: 0,
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
@@ -62,6 +65,9 @@ export class LeaveRecordComponent implements OnInit {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
+      this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
       this.selectedDepartments = params["selectedDepartments"]
         ? params["selectedDepartments"].split(",")
         : [];
@@ -88,7 +94,30 @@ export class LeaveRecordComponent implements OnInit {
       this.getLeaveRecord();
       this.getDepartment();
       this.getDesignation();
+      this.getBranch();
     }
+  }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   toggleSpinner(isLoading: boolean) {
@@ -190,15 +219,6 @@ export class LeaveRecordComponent implements OnInit {
     return v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
   }
 
-  // pageChanged(event: PageChangedEvent): void {
-  //   const startItem = (event.page - 1) * event.itemsPerPage;
-  //   this.endItem = event.page * event.itemsPerPage;
-  //   this.leaveRecordData = this.leaveRecordDataList.slice(
-  //     startItem,
-  //     this.endItem
-  //   );
-  // }
-
   // filterdata
 
   filterdata() {
@@ -206,6 +226,7 @@ export class LeaveRecordComponent implements OnInit {
 
     // Reset filter counts
     this.filterCounts.termCount = 0;
+    this.filterCounts.branchCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
@@ -216,11 +237,18 @@ export class LeaveRecordComponent implements OnInit {
       filteredData = filteredData.filter(
         (el: any) =>
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
-          // el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
-          // el.email.toLowerCase().includes(this.term.toLowerCase()) ||
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
+    }
+
+    if (this.selectedBranch.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedBranch
+          .map((d) => d.toLowerCase())
+          .includes(el.branch.toLowerCase())
+      );
+      this.filterCounts.branchCount = 1;
     }
 
     // Filter by selected departments
@@ -265,6 +293,7 @@ export class LeaveRecordComponent implements OnInit {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -284,6 +313,7 @@ export class LeaveRecordComponent implements OnInit {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -310,6 +340,7 @@ export class LeaveRecordComponent implements OnInit {
         page: this.currentPage,
         itemsPerPage: this.currentItemsPerPage,
         term: this.term,
+        selectedBranch: this.selectedBranch.join(","),
         selectedDepartments: this.selectedDepartments.join(","),
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
@@ -332,6 +363,7 @@ export class LeaveRecordComponent implements OnInit {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
+      this.filterCounts.branchCount +
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
@@ -339,17 +371,6 @@ export class LeaveRecordComponent implements OnInit {
       this.filterCounts.empCount
     );
   }
-  // filterdata() {
-  //   if (this.term) {
-  //     this.leaveRecordData = this.leaveRecordDataList.filter((el: any) =>
-  //       el.name.toLowerCase().includes(this.term.toLowerCase())
-  //     );
-  //   } else {
-  //     this.leaveRecordData = this.leaveRecordDataList;
-  //   }
-  //   // noResultElement
-  //   this.updateNoResultDisplay();
-  // }
 
   // no result
   updateNoResultDisplay() {
@@ -374,6 +395,7 @@ export class LeaveRecordComponent implements OnInit {
   reset() {
     // Clear filters
     this.term = "";
+    this.selectedBranch = [];
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedStatus = "";
@@ -386,6 +408,7 @@ export class LeaveRecordComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         term: null,
+        selectedBranch: null,
         selectedDepartments: null,
         selectedDesignations: null,
         selectedStatus: null,

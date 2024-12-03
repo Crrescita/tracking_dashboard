@@ -21,6 +21,8 @@ import { EmpLeaveComponent } from "./company/leave-management/leave-record-detai
 import { DashboardComponent } from "./company/dashboard/dashboard.component";
 import { NotificationComponent } from "./company/notification/notification.component";
 import { TaskListComponent } from "./company/task/task-list/task-list.component";
+import { LiveLocationComponent } from "./company/employee/live-location/live-location.component";
+import { BranchComponent } from "./company/team/branch/branch.component";
 
 const routes: Routes = [
   {
@@ -54,6 +56,7 @@ const routes: Routes = [
   { path: "department-list", component: DepartmentListComponent },
 
   { path: "designation-list", component: DesignationListComponent },
+  { path: "branch-list", component: BranchComponent },
   {
     path: "attendance-calender/:id/:company_id",
     component: AttenCalenderComponent,
@@ -70,6 +73,7 @@ const routes: Routes = [
   { path: "notification", component: NotificationComponent },
 
   { path: "assign-task", component: TaskListComponent },
+  { path: "live-location/:id", component: LiveLocationComponent },
 ];
 
 @NgModule({

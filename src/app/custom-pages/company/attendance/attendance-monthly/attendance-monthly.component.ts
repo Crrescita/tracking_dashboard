@@ -6,9 +6,10 @@ import { Subject } from "rxjs";
 import { debounceTime, filter } from "rxjs/operators";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { cloneDeep } from "lodash";
-import * as XLSX from "xlsx";
+// import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
 import { Router, ActivatedRoute } from "@angular/router";
-
+import * as ExcelJS from "exceljs";
 @Component({
   selector: "app-attendance-monthly",
   templateUrl: "./attendance-monthly.component.html",
@@ -35,6 +36,8 @@ export class AttendanceMonthlyComponent implements OnInit {
   term: any;
 
   // filter
+  branch: any[] = [];
+  selectedBranch: any[] = [];
   selectedStatus: string = "";
   departments: any[] = [];
   selectedEmp: any[] = [];
@@ -44,6 +47,7 @@ export class AttendanceMonthlyComponent implements OnInit {
 
   filterCounts = {
     termCount: 0,
+    branchCount: 0,
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
@@ -87,6 +91,9 @@ export class AttendanceMonthlyComponent implements OnInit {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
+      this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
       this.selectedDepartments = params["selectedDepartments"]
         ? params["selectedDepartments"].split(",")
         : [];
@@ -123,7 +130,30 @@ export class AttendanceMonthlyComponent implements OnInit {
       this.getMonthlyCalenderData();
       this.getDepartment();
       this.getDesignation();
+      this.getBranch();
     }
+  }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   onDateChange(newDate: Date): void {
@@ -244,6 +274,7 @@ export class AttendanceMonthlyComponent implements OnInit {
 
     // Reset filter counts
     this.filterCounts.termCount = 0;
+    this.filterCounts.branchCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
@@ -259,6 +290,15 @@ export class AttendanceMonthlyComponent implements OnInit {
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
+    }
+
+    if (this.selectedBranch.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedBranch
+          .map((d) => d.toLowerCase())
+          .includes(el.branch.toLowerCase())
+      );
+      this.filterCounts.branchCount = 1;
     }
 
     // Filter by selected departments
@@ -303,6 +343,7 @@ export class AttendanceMonthlyComponent implements OnInit {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -322,6 +363,7 @@ export class AttendanceMonthlyComponent implements OnInit {
 
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -348,6 +390,7 @@ export class AttendanceMonthlyComponent implements OnInit {
         page: this.currentPage,
         itemsPerPage: this.currentItemsPerPage,
         term: this.term,
+        selectedBranch: this.selectedBranch.join(","),
         selectedDepartments: this.selectedDepartments.join(","),
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
@@ -392,102 +435,6 @@ export class AttendanceMonthlyComponent implements OnInit {
   //   const year = date.getFullYear();
   //   const filename = `Attendance_${month}_${year}.xlsx`;
 
-  //   // Track names to ensure uniqueness
-  //   const usedSheetNames: { [key: string]: number } = {};
-
-  //   // Loop through each employee in the attendance data
-  //   this.filteredAttendanceData.forEach((employee: any, index: any) => {
-  //     // Create a new worksheet for the employee
-  //     const worksheetData = [
-  //       ["ID", "Name", "Mobile", "Email", "Designation", "Employee ID"],
-  //       [
-  //         employee.id,
-  //         employee.name,
-  //         employee.mobile,
-  //         employee.email,
-  //         employee.designation,
-  //         employee.employee_id,
-  //       ],
-  //       [],
-  //       [
-  //         "Date",
-  //         "Day",
-  //         "Check-in Status",
-  //         "Attendance Status",
-  //         // "Time Difference",
-  //         "Total Duration",
-  //         "Check-in Time",
-  //         "Check-out Time",
-  //       ],
-  //     ];
-
-  //     // Add attendance data to the worksheet
-  //     employee.attendance.forEach((record: any) => {
-  //       // Add holiday name to the day, if present
-  //       const dayWithHoliday = record.holiday_name
-  //         ? `${record.day} (${record.holiday_name})`
-  //         : record.day;
-
-  //       worksheetData.push([
-  //         record.date,
-  //         dayWithHoliday, // Add holiday in parentheses if available
-  //         record.checkin_status,
-  //         record.attendance_status,
-  //         // record.timeDifference,
-  //         record.totalDuration,
-  //         record.last_check_in_time,
-  //         record.last_check_out_time,
-  //       ]);
-  //     });
-
-  //     // Generate a unique sheet name
-  //     let sheetName = employee.name
-  //       ? employee.name.replace(/[^a-zA-Z0-9]/g, "")
-  //       : `Employee${index + 1}`;
-
-  //     // Check if the sheet name has been used before
-  //     if (usedSheetNames[sheetName]) {
-  //       usedSheetNames[sheetName] += 1;
-  //       sheetName += `_${usedSheetNames[sheetName]}`;
-  //     } else {
-  //       usedSheetNames[sheetName] = 1;
-  //     }
-
-  //     // Create the worksheet and add it to the workbook
-  //     const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-  //     // Set column width for better readability
-  //     const columnWidths = [
-  //       { wch: 12 }, // Date column width
-  //       { wch: 25 }, // Day (with holiday name) column width
-  //       { wch: 15 }, // Check-in Status column width
-  //       { wch: 20 }, // Attendance Status column width
-  //       { wch: 20 }, // Total Duration column width
-  //       { wch: 20 }, // Check-in Time column width
-  //       { wch: 20 }, // Check-out Time column width
-  //     ];
-
-  //     // Apply column widths to the worksheet
-  //     worksheet["!cols"] = columnWidths;
-
-  //     workbook.SheetNames.push(sheetName);
-  //     workbook.Sheets[sheetName] = worksheet;
-  //   });
-
-  //   // Write the workbook to an Excel file
-  //   XLSX.writeFile(workbook, filename);
-  // }
-
-  // exportTableToExcel(): void {
-  //   // Create a new workbook
-  //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
-
-  //   // Get the month and year for the filename
-  //   const date = new Date(this.selectedDate);
-  //   const month = date.toLocaleString("default", { month: "long" });
-  //   const year = date.getFullYear();
-  //   const filename = `Attendance_${month}_${year}.xlsx`;
-
   //   // Prepare the header row with Name, Mobile, and dates
   //   const uniqueDates = Array.from(
   //     new Set(
@@ -498,17 +445,32 @@ export class AttendanceMonthlyComponent implements OnInit {
   //   ).sort(); // Sort dates if needed
 
   //   // Initialize worksheet data with header row
-  //   const worksheetData: any[][] = [["Name", "Mobile", ...uniqueDates]];
+  //   const worksheetData: any[][] = [
+  //     [
+  //       "Name",
+  //       "Mobile",
+  //       "Total Present",
+  //       "Total Absent",
+  //       "Total Leave",
+  //       "Total Holidays",
+  //       ...uniqueDates,
+  //     ],
+  //   ];
 
   //   // Add each employee's data to worksheet rows
   //   this.filteredAttendanceData.forEach((employee: any) => {
-  //     // Start the row with employee's name and mobile
-  //     const row = [employee.name, employee.mobile];
+  //     const row = [
+  //       employee.name,
+  //       employee.mobile,
+  //       employee.totals.totalPresent,
+  //       employee.totals.totalAbsent,
+  //       employee.totals.totalLeave,
+  //       employee.totals.totalHolidays,
+  //     ];
 
-  //     // Map each date column to the corresponding attendance status for this employee
   //     uniqueDates.forEach((date) => {
-  //       const record = employee.attendance.find((r: any) => r.date === date);
-  //       row.push(record ? record.attendance_status : ""); // Leave blank if no record
+  //       const record = employee.attendance.find((r: any) => r.date == date);
+  //       row.push(record ? record.attendance_status : "");
   //     });
 
   //     worksheetData.push(row);
@@ -517,15 +479,59 @@ export class AttendanceMonthlyComponent implements OnInit {
   //   // Create the worksheet
   //   const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-  //   // Set column widths for better readability
+  //   // Apply column widths for better readability
   //   const columnWidths = [
   //     { wch: 20 }, // Name column width
   //     { wch: 15 }, // Mobile column width
+  //     { wch: 15 }, // Total Present
+  //     { wch: 15 }, // Total Absent
+  //     { wch: 15 }, // Total Leave
+  //     { wch: 15 }, // Total Holidays
   //     ...uniqueDates.map(() => ({ wch: 12 })), // Date columns width
   //   ];
-
-  //   // Apply column widths to the worksheet
   //   worksheet["!cols"] = columnWidths;
+
+  //   // Apply borders and conditional formatting
+  //   worksheetData.forEach((row, rowIndex) => {
+  //     row.forEach((cell, colIndex) => {
+  //       const cellAddress = XLSX.utils.encode_cell({
+  //         r: rowIndex,
+  //         c: colIndex,
+  //       });
+  //       if (!worksheet[cellAddress]) worksheet[cellAddress] = { v: cell };
+
+  //       worksheet[cellAddress].s = {
+  //         border: {
+  //           top: { style: "thin", color: { rgb: "000000" } },
+  //           bottom: { style: "thin", color: { rgb: "000000" } },
+  //           left: { style: "thin", color: { rgb: "000000" } },
+  //           right: { style: "thin", color: { rgb: "000000" } },
+  //         },
+  //         alignment: {
+  //           vertical: "center",
+  //           horizontal: "center",
+  //         },
+  //         font: {
+  //           bold: true,
+  //           color: {
+  //             rgb:
+  //               cell === "Absent"
+  //                 ? "FF0000" // Red for "Absent"
+  //                 : cell === "Present"
+  //                 ? "38b738" // Green for "Present"
+  //                 : "#000000", // Default black color
+  //           },
+  //         },
+  //       };
+  //     });
+  //   });
+
+  //   // Manually adding freeze functionality by adding the necessary pane options
+  //   worksheet["!freeze"] = {
+  //     xSplit: 6, // Freeze first 6 columns (after "Total Holidays")
+  //     // ySplit: 1, // Freeze header row
+  //     // topLeftCell: "A1", // Ensure the top left cell is frozen
+  //   };
 
   //   // Add the worksheet to the workbook
   //   const sheetName = `${month}_${year}`;
@@ -537,8 +543,9 @@ export class AttendanceMonthlyComponent implements OnInit {
   // }
 
   exportTableToExcel(): void {
-    // Create a new workbook
-    const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Attendance");
 
     // Get the month and year for the filename
     const date = new Date(this.selectedDate);
@@ -556,79 +563,109 @@ export class AttendanceMonthlyComponent implements OnInit {
     ).sort(); // Sort dates if needed
 
     // Initialize worksheet data with header row
-    const worksheetData: any[][] = [
-      [
-        "Name",
-        "Mobile",
-        "Total Present",
-        "Total Absent",
-        "Total Leave",
-        "",
-        ...uniqueDates,
-      ],
+    const header = [
+      "Name",
+      "Mobile",
+      "Total Present",
+      "Total Absent",
+      "Total Leave",
+      "Total Holidays",
+      ...uniqueDates,
     ];
+
+    // worksheet.addRow(header);
+    const headerRow = worksheet.addRow(header);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true }; // Make header cells bold
+    });
 
     // Add each employee's data to worksheet rows
     this.filteredAttendanceData.forEach((employee: any) => {
-      // Start the row with employee's name and mobile
       const row = [
         employee.name,
         employee.mobile,
         employee.totals.totalPresent,
         employee.totals.totalAbsent,
         employee.totals.totalLeave,
+        employee.totals.totalHolidays,
       ];
 
-      // Map each date column to the corresponding attendance status for this employee
       uniqueDates.forEach((date) => {
         const record = employee.attendance.find((r: any) => r.date == date);
-        row.push(record ? record.attendance_status : ""); // Leave blank if no record
+        row.push(record ? record.attendance_status : "");
       });
 
-      worksheetData.push(row);
+      const dataRow = worksheet.addRow(row);
+
+      // Make the first 6 columns (Name, Mobile, etc.) bold
+      for (let i = 1; i <= 6; i++) {
+        const cell = dataRow.getCell(i);
+        cell.font = { bold: true };
+      }
     });
 
-    // Create the worksheet
-    const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    // Apply column widths for better readability
+    worksheet.columns = [
+      { width: 20 }, // Name column width
+      { width: 15 }, // Mobile column width
+      { width: 15 }, // Total Present
+      { width: 15 }, // Total Absent
+      { width: 15 }, // Total Leave
+      { width: 15 }, // Total Holidays
+      ...uniqueDates.map(() => ({ width: 12 })), // Date columns width
+    ];
 
-    // Apply conditional formatting by manually setting cell style for "Absent" values
-    this.filteredAttendanceData.forEach((employee: any, rowIndex: number) => {
-      uniqueDates.forEach((date, colIndex) => {
-        const record = employee.attendance.find((r: any) => r.date == date);
-        if (record && record.attendance_status == "Absent") {
-          const cellAddress = XLSX.utils.encode_cell({
-            r: rowIndex + 1,
-            c: colIndex + 2,
-          }); // Offset for headers
-          worksheet[cellAddress] = {
-            ...worksheet[cellAddress],
-            s: {
-              fill: {
-                fgColor: { rgb: "FF0000" }, // Red background color
-              },
-            },
-          };
+    // Apply borders, colors, and conditional formatting
+    worksheet.eachRow({ includeEmpty: true }, (row, rowIndex) => {
+      row.eachCell({ includeEmpty: true }, (cell, colIndex) => {
+        // Apply borders
+        cell.border = {
+          top: { style: "thin", color: { argb: "000000" } },
+          left: { style: "thin", color: { argb: "000000" } },
+          bottom: { style: "thin", color: { argb: "000000" } },
+          right: { style: "thin", color: { argb: "000000" } },
+        };
+
+        // Apply colors (conditional formatting)
+        if (rowIndex > 0 && colIndex >= 6) {
+          // Skip header and fixed columns
+          if (cell.value === "Absent") {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFFF0000" }, // Red fill for Absent
+            };
+            cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Absent"
+          } else if (cell.value === "Present") {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "38b738" }, // Green fill for Present
+            };
+            cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Present"
+          }
         }
       });
     });
 
-    // Set column widths for better readability
-    const columnWidths = [
-      { wch: 20 }, // Name column width
-      { wch: 15 }, // Mobile column width
-      ...uniqueDates.map(() => ({ wch: 12 })), // Date columns width
+    // Freeze the first 6 columns (up to "Total Holidays") and the header row
+    worksheet.views = [
+      {
+        state: "frozen",
+        xSplit: 6, // Freeze first 6 columns
+        ySplit: 1, // Freeze header row
+        // topLeftCell: "A1", // Freeze starting from top-left cell
+      },
     ];
 
-    // Apply column widths to the worksheet
-    worksheet["!cols"] = columnWidths;
-
-    // Add the worksheet to the workbook
-    const sheetName = `${month}_${year}`;
-    workbook.SheetNames.push(sheetName);
-    workbook.Sheets[sheetName] = worksheet;
-
     // Write the workbook to an Excel file
-    XLSX.writeFile(workbook, filename);
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    });
   }
 
   timeLineData: any;
@@ -659,6 +696,7 @@ export class AttendanceMonthlyComponent implements OnInit {
   reset() {
     // Clear filters
     this.term = "";
+    this.selectedBranch = [];
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedStatus = "";
@@ -674,6 +712,7 @@ export class AttendanceMonthlyComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         term: null,
+        selectedBranch: null,
         selectedDepartments: null,
         selectedDesignations: null,
         selectedStatus: null,
@@ -691,6 +730,7 @@ export class AttendanceMonthlyComponent implements OnInit {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
+      this.filterCounts.branchCount +
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +

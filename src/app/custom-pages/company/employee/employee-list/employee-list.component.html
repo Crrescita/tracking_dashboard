@@ -136,19 +136,14 @@
                     Mobile
                   </th>
 
-                  <th
-                    class="sort cursor-pointer"
-                    (click)="onSort('employee_id')"
-                  >
-                    Employee ID
+                  <th class="sort cursor-pointer" (click)="onSort('email')">
+                    Email
                   </th>
 
-                  <th
-                    class="sort cursor-pointer"
-                    (click)="onSort('designation')"
-                  >
-                    Designation
+                  <th class="sort cursor-pointer" (click)="onSort('branch')">
+                    Branch
                   </th>
+
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('department')"
@@ -221,34 +216,6 @@
                         </p>
                       </div>
                     </div>
-
-                    <!-- <div class="d-flex align-items-center">
-                      <div class="avatar-sm bg-light rounded p-1 me-2">
-                        @if(data.image){
-                        <img
-                          src="{{ data.image }}"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-                        }@else {
-                        <img
-                          src="assets/images/users/avatar-1.jpg"
-                          alt=""
-                          class="img-fluid d-block"
-                        />
-
-                        }
-                      </div>
-                      <div>
-                        <h6 class="mb-0">
-                          <a
-                            routerLink="/ecommerce/product-details"
-                            class="text-reset products"
-                            >{{ data.name }}</a
-                          >
-                        </h6>
-                      </div>
-                    </div> -->
                   </td>
 
                   <td class="category">
@@ -256,12 +223,12 @@
                   </td>
 
                   <td class="category">
-                    {{ data.employee_id }}
+                    {{ data.email }}
+                  </td>
+                  <td class="category">
+                    {{ data.branch_name }}
                   </td>
 
-                  <td class="category">
-                    {{ data.designation_name }}
-                  </td>
                   <td class="category">
                     {{ data.department_name }}
                   </td>
@@ -294,7 +261,7 @@
                     </div>
                   </td>
                   <td>
-                    <div dropdown class="dropdown">
+                    <!-- <div dropdown class="dropdown">
                       <button
                         dropdownToggle
                         class="btn btn-subtle-secondary btn-sm btn-icon"
@@ -330,7 +297,41 @@
                           >
                         </li>
                       </ul>
-                    </div>
+                    </div> -->
+
+                    <ul class="d-flex gap-2 list-unstyled mb-0">
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="View"
+                          class="btn btn-subtle-secondary btn-icon btn-sm remove-item-btn"
+                          routerLink="/employee-detail/{{ data.id }}"
+                          [queryParams]="{ tab: 'personalDetails' }"
+                          ><i class="ph-eye align-middle"></i>
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="Edit"
+                          routerLink="/edit-employee/{{ data.id }}"
+                          class="btn btn-subtle-success btn-icon btn-sm remove-item-btn"
+                          ><i class="ph-pencil align-middle"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="Delete Cal."
+                          (click)="removeItem(data.id)"
+                          class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                          ><i class="ph-trash align-middle"></i
+                        ></a>
+                      </li>
+                    </ul>
                   </td>
                 </tr>
                 }
@@ -632,6 +633,23 @@
 
       <div class="col-lg-12">
         <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
           <ng-select
             [items]="departments"
@@ -641,7 +659,7 @@
             (change)="filterdata()"
             [(ngModel)]="selectedDepartments"
             name="departments"
-            placeholder="Select departments"
+            placeholder="Select Departments"
           >
           </ng-select>
         </div>
@@ -657,7 +675,7 @@
             (change)="filterdata()"
             [(ngModel)]="selectedDesignations"
             name="designations"
-            placeholder="Select designations"
+            placeholder="Select Designations"
           >
           </ng-select>
         </div>

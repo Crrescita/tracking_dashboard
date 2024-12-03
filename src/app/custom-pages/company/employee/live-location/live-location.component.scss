@@ -4,8 +4,21 @@
    
 //   }
   
+ #mapId {
+  width: 100%; /* Adjust to your requirement */
+  height: 80vh !important; /* Adjust to your requirement */
+  position: relative;
+}
 
-  #mapId { position: relative; top: 0; bottom: 0; width: 100% !important;  height: 500px !important;}
+
+// .container {
+//   display:grid;
+//   grid-template-columns:1fr 1fr;
+//   height:500px;
+//   border:2px solid red;
+// }
+
+  // #mapId { position: relative; top: 0; bottom: 0; width: 100% !important;  height: 500px !important;}
   .match-parent {
     height: 100%;
   }
@@ -25,4 +38,26 @@
 
   .bi-arrow-clockwise{
     font-size: 22px;
+  }
+
+
+  .battery-status {
+    display: flex;
+    align-items: center;
+  }
+  
+  .battery-status .ri-battery-saver-line {
+    margin-right: 5px;
+  }
+  
+  .battery-high {
+    color: green;
+  }
+  
+  .battery-mid {
+    color: orange;
+  }
+  
+  .battery-low {
+    color: red;
   }

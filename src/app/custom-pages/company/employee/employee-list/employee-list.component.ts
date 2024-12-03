@@ -33,6 +33,8 @@ export class EmployeeListComponent implements OnInit {
 
   // filter
   selectedStatus: string = "";
+  branch: any[] = [];
+  selectedBranch: any[] = [];
   departments: any[] = [];
   selectedDepartments: any[] = [];
   selectedDesignations: any[] = [];
@@ -41,6 +43,7 @@ export class EmployeeListComponent implements OnInit {
 
   filterCounts = {
     termCount: 0,
+    branchCount: 0,
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
@@ -89,6 +92,9 @@ export class EmployeeListComponent implements OnInit {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
+      this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
       this.selectedDepartments = params["selectedDepartments"]
         ? params["selectedDepartments"].split(",")
         : [];
@@ -109,65 +115,9 @@ export class EmployeeListComponent implements OnInit {
       this.getemployeeData();
       this.getDepartment();
       this.getDesignation();
+      this.getBranch();
     }
   }
-
-  // initializeForm() {
-  //   this.formGroup = this.formBuilder.group(
-  //     {
-  //       name: ["", [Validators.maxLength(45), Validators.required]],
-  //       address: ["", [Validators.maxLength(100)]],
-  //       dob: [""],
-  //       image: ["", this.imageValidator()],
-  //       emp_id: ["", [Validators.required]],
-
-  //       email: [
-  //         "",
-  //         [
-  //           Validators.required,
-  //           Validators.email,
-  //           Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"),
-  //         ],
-  //       ],
-  //       mobile: [
-  //         "",
-  //         [
-  //           Validators.required,
-  //           Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
-  //         ],
-  //       ],
-
-  //       status: ["", [Validators.required]],
-  //       gender: ["", [Validators.required]],
-  //       state: [""],
-  //       city: [""],
-  //       zip_code: ["", [Validators.maxLength(6)]],
-  //       designation: ["", [Validators.required]],
-  //       department: ["", [Validators.required]],
-  //       joining_date: [""],
-  //       password: [
-  //         this.urlId ? "" : "123456",
-  //         this.urlId
-  //           ? [
-  //               Validators.pattern(
-  //                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  //               ),
-  //             ]
-  //           : [
-  //               Validators.required,
-  //               Validators.pattern(
-  //                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  //               ),
-  //             ],
-  //       ],
-  //       confirmPassword: [
-  //         this.urlId ? "" : "123456",
-  //         this.urlId ? [] : [Validators.required],
-  //       ],
-  //     },
-  //     { validator: this.passwordMatchValidator }
-  //   );
-  // }
 
   onFileChange(event: any) {
     const target: DataTransfer = <DataTransfer>event.target;
@@ -219,6 +169,28 @@ export class EmployeeListComponent implements OnInit {
 
   //   return password === confirmPassword ? null : { mismatch: true };
   // }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
 
   getDepartment() {
     this.toggleSpinner(true);
@@ -395,6 +367,7 @@ export class EmployeeListComponent implements OnInit {
 
     // Reset filter counts
     this.filterCounts.termCount = 0;
+    this.filterCounts.branchCount = 0;
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
@@ -410,6 +383,16 @@ export class EmployeeListComponent implements OnInit {
           el.employee_id.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
+    }
+
+    // Filter by selected branch
+    if (this.selectedBranch.length > 0) {
+      filteredData = filteredData.filter((el: any) =>
+        this.selectedBranch
+          .map((d) => d.toLowerCase())
+          .includes(el.branch_name.toLowerCase())
+      );
+      this.filterCounts.branchCount = 1;
     }
 
     // Filter by selected departments
@@ -455,6 +438,7 @@ export class EmployeeListComponent implements OnInit {
     // If no data is found, reset to the first page
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -481,6 +465,7 @@ export class EmployeeListComponent implements OnInit {
     // If start index is greater than or equal to filtered data length, reset to page 1
     if (
       this.term ||
+      this.selectedBranch.length ||
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
@@ -509,6 +494,7 @@ export class EmployeeListComponent implements OnInit {
         page: this.currentPage,
         itemsPerPage: this.currentItemsPerPage,
         term: this.term,
+        selectedBranch: this.selectedBranch.join(","),
         selectedDepartments: this.selectedDepartments.join(","),
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
@@ -530,6 +516,7 @@ export class EmployeeListComponent implements OnInit {
   reset() {
     // Clear filters
     this.term = "";
+    this.selectedBranch = [];
     this.selectedDepartments = [];
     this.selectedDesignations = [];
     this.selectedEmp = [];
@@ -544,6 +531,7 @@ export class EmployeeListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {
         term: null,
+        selectedBranch: null,
         selectedDepartments: null,
         selectedDesignations: null,
         selectedEmp: null,
@@ -558,6 +546,7 @@ export class EmployeeListComponent implements OnInit {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
+      this.filterCounts.branchCount +
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +

@@ -23,9 +23,10 @@ export class LiveLocationComponent implements OnInit {
   urlId: number | null = null;
   livemap!: mapboxgl.Map;
   marker!: mapboxgl.Marker;
-
+  employeeDetail: any;
   selectedDate: Date = new Date();
   formattedDate: any;
+  address: any;
 
   liveCoordinates: any;
   spinnerStatus: boolean = false;
@@ -64,13 +65,19 @@ export class LiveLocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.urlId = params["id"] ? Number(params["id"]) : null;
+    });
+    if (this.urlId) {
+      this.getemployeeData();
+      this.refreshTimeline();
+    }
     this.authService.requestPermission();
 
     this.authService.receiveMessage();
 
     this.authService.currentMessage.subscribe((message) => {
       if (message) {
-        console.log(message);
       }
     });
 
@@ -80,13 +87,36 @@ export class LiveLocationComponent implements OnInit {
       this.formattedDate = this.formatDate(this.selectedDate);
     }
 
-    this.route.params.subscribe((params) => {
-      this.urlId = params["id"] ? Number(params["id"]) : null;
-    });
     // if (this.companyId) {
     //   this.scheduleNextUpdate();
     // }
     this.initializeMap();
+  }
+
+  getemployeeData() {
+    this.toggleSpinner(true);
+    this.api.get("employees", this.urlId).subscribe(
+      (res: any) => {
+        if (res && res.status) {
+          this.toggleSpinner(false);
+          this.employeeDetail = res.data[0];
+
+          this.companyId = this.employeeDetail.company_id;
+          if (this.employeeDetail.image) {
+            this.emp_image = this.employeeDetail.image;
+          } else {
+            this.emp_image = "assets/images/users/avatar-1.jpg";
+          }
+        } else {
+          this.handleError("Unexpected response format");
+        }
+      },
+      (error) => {
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+      }
+    );
   }
 
   refreshTimeline() {
@@ -123,7 +153,7 @@ export class LiveLocationComponent implements OnInit {
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {
-          this.toastService.success(res.message);
+          this.toastService.success("Location update Successfully");
           this.getLiveLocation();
           // setTimeout(() => {
           //   this.getLiveLocation();
@@ -147,7 +177,7 @@ export class LiveLocationComponent implements OnInit {
         this.toggleSpinner(false);
         if (res && res.status) {
           this.liveCoordinates = res.data;
-          // console.log(this.liveCoordinates);
+
           this.addMarkerToMap(this.liveCoordinates);
         } else {
           this.liveCoordinates = [];
@@ -205,13 +235,19 @@ export class LiveLocationComponent implements OnInit {
     ];
 
     try {
-      const address = await this.geocodeCoordinates(
+      this.address = await this.geocodeCoordinates(
         coordinates.longitude,
         coordinates.latitude
       );
 
-      const popup = new mapboxgl.Popup({ offset: 25 }).setText(
-        `Address: ${address}\nMotion: ${coordinates.motion}`
+      // const popup = new mapboxgl.Popup({ offset: 25 }).setText(
+      //   `Address: ${this.address}\Battery Percentage: ${coordinates.battery_status}`
+      // );
+
+      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+        ` <p>Address: ${this.address}</p>
+          <p>Battery Percentage: ${coordinates.battery_status}</p>
+         `
       );
 
       // Create a DOM element for the marker
@@ -252,5 +288,15 @@ export class LiveLocationComponent implements OnInit {
         console.error("Error fetching address:", error);
         return "Unknown location";
       });
+  }
+
+  getBatteryClass(batteryStatus: number): string {
+    if (batteryStatus >= 75) {
+      return "battery-high";
+    } else if (batteryStatus >= 35) {
+      return "battery-mid";
+    } else {
+      return "battery-low";
+    }
   }
 }

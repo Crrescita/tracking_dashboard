@@ -496,7 +496,7 @@ export class TimelineComponent implements OnInit {
         // Create start marker
         const popupStart = new mapboxgl.Popup({ offset: 25 }).setHTML(
           `<h6>${firstCoordinate.formattedTime}</h6>
-              <p>Battery Percentage: ${firstCoordinate.battery_status}%</p>
+              <p>Battery Percentage: ${firstCoordinate.battery_status}</p>
               <p>Address: ${firstCoordinate.address}</p>`
         );
 
@@ -508,7 +508,7 @@ export class TimelineComponent implements OnInit {
         // Create end marker
         const popupEnd = new mapboxgl.Popup({ offset: 25 }).setHTML(
           `<h6>${lastCoordinate.formattedTime}</h6>
-              <p>Battery Percentage: ${lastCoordinate.battery_status}%</p>
+              <p>Battery Percentage: ${lastCoordinate.battery_status}</p>
               <p>Address: ${lastCoordinate.address}</p>`
         );
 
@@ -1029,7 +1029,7 @@ export class TimelineComponent implements OnInit {
     // Create a new popup
     const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
       `<h6>${item.end.formattedTime}</h6>
-        <p>Battery Percentage: ${item.end.battery_status}%</p>
+        <p>Battery Percentage: ${item.end.battery_status}</p>
         <p>Address: ${item.end.address}</p>`
     );
 

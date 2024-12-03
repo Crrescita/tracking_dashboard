@@ -555,6 +555,15 @@
                           alt=""
                           class="avatar-sm rounded"
                         />
+                        <span
+                          [ngClass]="
+                            data.latestCheckInStatus == 'Check-in'
+                              ? 'bg-success'
+                              : ' bg-danger'
+                          "
+                          class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
+                          ><span class="visually-hidden"></span
+                        ></span>
                       </div>
                       <!-- </div> -->
                       <div class="flex-grow-1 ms-2">
@@ -667,6 +676,9 @@
                     <ul class="d-flex gap-2 list-unstyled mb-0">
                       <li>
                         <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="View Timeline"
                           routerLink="/employee-detail/{{ data.id }}"
                           [queryParams]="{
                         tab: 'timeline',
@@ -678,11 +690,24 @@
                       </li>
                       <li>
                         <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="Live Location"
+                          routerLink="/live-location/{{ data.id }}"
+                          class="btn btn-subtle-success btn-icon btn-sm remove-item-btn"
+                          ><i class="bx bx-current-location align-middle"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="Attendance Cal."
                           routerLink="/attendance-calender/{{ data.id }}/{{
                             this.company_id
                           }}"
                           class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
-                          ><i class="ri-folder-reduce-line align-middle"></i
+                          ><i class="bx bx-calendar-event align-middle"></i
                         ></a>
                       </li>
                     </ul>
@@ -974,6 +999,22 @@
           </p>
           <select
             class="form-control"
+            [(ngModel)]="selectedCheckInStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Check-in">Check-In</option>
+            <option value="Check-out">Check-Out</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Arrival Status</p>
+          <select
+            class="form-control"
             [(ngModel)]="selectedCheckStatus"
             (change)="filterdata()"
             [ngModelOptions]="{ standalone: true }"
@@ -985,6 +1026,24 @@
           </select>
         </div>
       </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
       <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
