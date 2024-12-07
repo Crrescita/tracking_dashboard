@@ -551,6 +551,153 @@ export class AttendanceMonthlyComponent implements OnInit {
     });
   }
 
+  exportTableToExcel2(): void {
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Attendance");
+
+    // Get the month and year for the filename
+    const date = new Date(this.selectedDate);
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+    const filename = `Attendance_${month}_${year}.xlsx`;
+
+    // Prepare the header row with Name, Mobile, and dates
+    const uniqueDates = Array.from(
+      new Set(
+        this.filteredAttendanceData.flatMap((employee: any) =>
+          employee.attendance.map((record: any) => record.date)
+        )
+      )
+    ).sort(); // Sort dates if needed
+
+    // Initialize worksheet data with header row
+    const header = [
+      "Name",
+      "Mobile",
+      "Total Present",
+      "Total Absent",
+      "Total Leave",
+      "Total Holidays",
+      "On Time",
+      "Early",
+      "Late",
+      "Avg. Check-in Time",
+      "Avg. Check-out Time",
+      "Avg. Working Hours",
+      "Total Working Hours",
+      // ...uniqueDates,
+    ];
+
+    // worksheet.addRow(header);
+    const headerRow = worksheet.addRow(header);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true }; // Make header cells bold
+    });
+
+    // Add each employee's data to worksheet rows
+    this.filteredAttendanceData.forEach((employee: any) => {
+      const row = [
+        employee.name,
+        employee.mobile,
+        employee.totals.totalPresent,
+        employee.totals.totalAbsent,
+        employee.totals.totalLeave,
+        employee.totals.totalHolidays,
+        employee.totals.totalOntime,
+        employee.totals.totalEarly,
+        employee.totals.totalLate,
+        employee.totals.avgCheckInTime,
+        employee.totals.avgCheckOutTime,
+        employee.totals.avgWorkHours,
+        employee.totals.totalWorkHours,
+      ];
+
+      // uniqueDates.forEach((date) => {
+      //   const record = employee.attendance.find((r: any) => r.date == date);
+      //   row.push(record ? record.attendance_status : "");
+      // });
+
+      const dataRow = worksheet.addRow(row);
+
+      // Make the first 6 columns (Name, Mobile, etc.) bold
+      for (let i = 1; i <= 6; i++) {
+        const cell = dataRow.getCell(i);
+        cell.font = { bold: true };
+      }
+    });
+
+    // Apply column widths for better readability
+    worksheet.columns = [
+      { width: 20 }, // Name column width
+      { width: 15 }, // Mobile column width
+      { width: 15 }, // Total Present
+      { width: 15 }, // Total Absent
+      { width: 15 }, // Total Leave
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      { width: 15 }, // Total Holidays
+      // ...uniqueDates.map(() => ({ width: 12 })), // Date columns width
+    ];
+
+    // Apply borders, colors, and conditional formatting
+    // worksheet.eachRow({ includeEmpty: true }, (row, rowIndex) => {
+    //   row.eachCell({ includeEmpty: true }, (cell, colIndex) => {
+    //     // Apply borders
+    //     cell.border = {
+    //       top: { style: "thin", color: { argb: "000000" } },
+    //       left: { style: "thin", color: { argb: "000000" } },
+    //       bottom: { style: "thin", color: { argb: "000000" } },
+    //       right: { style: "thin", color: { argb: "000000" } },
+    //     };
+
+    //     // Apply colors (conditional formatting)
+    //     if (rowIndex > 0 && colIndex >= 6) {
+    //       // Skip header and fixed columns
+    //       if (cell.value === "Absent") {
+    //         cell.fill = {
+    //           type: "pattern",
+    //           pattern: "solid",
+    //           fgColor: { argb: "FFFF0000" }, // Red fill for Absent
+    //         };
+    //         cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Absent"
+    //       } else if (cell.value === "Present") {
+    //         cell.fill = {
+    //           type: "pattern",
+    //           pattern: "solid",
+    //           fgColor: { argb: "38b738" }, // Green fill for Present
+    //         };
+    //         cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Present"
+    //       }
+    //     }
+    //   });
+    // });
+
+    // Freeze the first 6 columns (up to "Total Holidays") and the header row
+    // worksheet.views = [
+    //   {
+    //     state: "frozen",
+    //     xSplit: 6, // Freeze first 6 columns
+    //     ySplit: 1, // Freeze header row
+    //     // topLeftCell: "A1", // Freeze starting from top-left cell
+    //   },
+    // ];
+
+    // Write the workbook to an Excel file
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: "application/octet-stream" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    });
+  }
+
   timeLineData: any;
   setModalData(data: any, userName: any, userImage: any) {
     this.timeLineData = { ...data, userName, userImage };

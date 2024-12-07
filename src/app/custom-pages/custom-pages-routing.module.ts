@@ -23,6 +23,7 @@ import { NotificationComponent } from "./company/notification/notification.compo
 import { TaskListComponent } from "./company/task/task-list/task-list.component";
 import { LiveLocationComponent } from "./company/employee/live-location/live-location.component";
 import { BranchComponent } from "./company/team/branch/branch.component";
+import { LeavePolicyComponent } from "./company/leave-management/leave-policy/leave-policy.component";
 
 const routes: Routes = [
   {
@@ -63,6 +64,7 @@ const routes: Routes = [
   },
   { path: "attendance-monthly", component: AttendanceMonthlyComponent },
   { path: "holidays", component: HolidaysListComponent },
+  { path: "leave-policy", component: LeavePolicyComponent },
   { path: "leave-types", component: LeaveTypeComponent },
   { path: "leave-requests", component: LeaveRequestComponent },
   { path: "leave-detail/:id/:emp_id", component: LeaveRequestDeatilComponent },

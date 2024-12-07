@@ -58,6 +58,14 @@ import { PopoverModule } from "ngx-bootstrap/popover";
 import { FlatpickrModule } from "angularx-flatpickr";
 import { TabsModule } from "ngx-bootstrap/tabs";
 
+//Wizard
+import { CdkStepperModule } from "@angular/cdk/stepper";
+import { NgStepperModule } from "angular-ng-stepper";
+
+// lord-icon
+import lottie from "lottie-web";
+import { defineElement } from "@lordicon/element";
+
 import { CompanyListComponent } from "./administrator/company/company-list/company-list.component";
 import { AddCompanyComponent } from "./administrator/company/add-company/add-company.component";
 import { EmployeeListComponent } from "./company/employee/employee-list/employee-list.component";
@@ -84,6 +92,7 @@ import { PendingLeaveComponent } from "./company/leave-management/leave-record-d
 import { ExpiredLeaveComponent } from "./company/leave-management/leave-record-detail/expired-leave/expired-leave.component";
 import { TaskListComponent } from "./company/task/task-list/task-list.component";
 import { BranchComponent } from "./company/team/branch/branch.component";
+import { LeavePolicyComponent } from "./company/leave-management/leave-policy/leave-policy.component";
 
 @NgModule({
   declarations: [
@@ -116,6 +125,7 @@ import { BranchComponent } from "./company/team/branch/branch.component";
     ExpiredLeaveComponent,
     TaskListComponent,
     BranchComponent,
+    LeavePolicyComponent,
   ],
   imports: [
     CommonModule,
@@ -144,9 +154,15 @@ import { BranchComponent } from "./company/team/branch/branch.component";
     RatingModule.forRoot(),
     DropzoneModule,
     FlatpickrModule.forRoot(),
+    CdkStepperModule,
+    NgStepperModule,
     FullCalendarModule,
     PopoverModule,
     TabsModule.forRoot(),
   ],
 })
-export class CustomPagesModule {}
+export class CustomPagesModule {
+  constructor() {
+    defineElement(lottie.loadAnimation);
+  }
+}
