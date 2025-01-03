@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Input,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import {
   FormBuilder,
@@ -20,18 +27,20 @@ import { Location } from "@angular/common";
   styleUrl: "./add-employee.component.scss",
 })
 export class AddEmployeeComponent implements OnInit {
+  @Input() urlId: number | null = null;
+  @Output() dataFetched = new EventEmitter<boolean>();
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("showModalDepartment", { static: false })
   showModalDepartment?: ModalDirective;
   @ViewChild("showModalBranch", { static: false })
   showModalBranch?: ModalDirective;
-  breadCrumbItems!: Array<{}>;
+
   formGroup!: FormGroup;
   formGroupDesignation!: FormGroup;
   formGroupDepartment!: FormGroup;
   formGroupBranch!: FormGroup;
 
-  urlId: number | null = null;
+  // urlId: number | null = null;
 
   submitted: boolean = false;
   spinnerStatus: boolean = false;
@@ -114,14 +123,9 @@ export class AddEmployeeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.breadCrumbItems = [
-      { label: "Employee", active: true },
-      { label: "Add", active: true },
-    ];
-
-    this.route.params.subscribe((params) => {
-      this.urlId = params["id"] ? Number(params["id"]) : null;
-    });
+    // this.route.params.subscribe((params) => {
+    //   this.urlId = params["id"] ? Number(params["id"]) : null;
+    // });
 
     this.initializeForm();
 
@@ -184,7 +188,7 @@ export class AddEmployeeComponent implements OnInit {
             Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
           ],
         ],
-
+        salary: ["", [Validators.required]],
         status: ["", [Validators.required]],
         gender: ["", [Validators.required]],
         state: [""],
@@ -436,6 +440,7 @@ export class AddEmployeeComponent implements OnInit {
         if (res && res.status) {
           this.toggleSpinner(false);
           this.setemployeeDetails(res.data[0]);
+          this.dataFetched.emit(true);
         } else {
           this.handleError("Unexpected response format");
         }
@@ -459,6 +464,7 @@ export class AddEmployeeComponent implements OnInit {
         password: data.password,
         status: data.status,
         mobile: data.mobile,
+        salary: data.salary,
         joining_date: data.joining_date,
         gender: data.gender,
         designation: data.designation,
@@ -514,6 +520,7 @@ export class AddEmployeeComponent implements OnInit {
     formData.append("company_id", this.company_id);
     formData.append("name", this.capitalizeWords(this.f["name"].value.trim()));
     formData.append("mobile", this.f["mobile"].value);
+    formData.append("salary", this.f["salary"].value);
     formData.append("email", this.f["email"].value);
     formData.append("address", this.f["address"].value);
     formData.append("dob", this.f["dob"].value);
@@ -762,4 +769,5 @@ export class AddEmployeeComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+  change(event: any) {}
 }

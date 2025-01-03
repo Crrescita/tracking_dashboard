@@ -1,3 +1,4 @@
+import { EmployeeComponent } from "./company/employee/employee/employee.component";
 import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
 import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
 import { DesignationListComponent } from "./company/team/designation/designation-list/designation-list.component";
@@ -93,6 +94,11 @@ import { ExpiredLeaveComponent } from "./company/leave-management/leave-record-d
 import { TaskListComponent } from "./company/task/task-list/task-list.component";
 import { BranchComponent } from "./company/team/branch/branch.component";
 import { LeavePolicyComponent } from "./company/leave-management/leave-policy/leave-policy.component";
+import { GernalReportsComponent } from "./company/reports/gernal-reports/gernal-reports.component";
+import { BankDetailComponent } from "./company/employee/bank-detail/bank-detail.component";
+import { BackgroundVerificationComponent } from "./company/employee/background-verification/background-verification.component";
+import { SalaryDetailComponent } from "./company/employee/salary-detail/salary-detail.component";
+import { AllowanceComponent } from "./company/employee/salary/allowance/allowance.component";
 
 @NgModule({
   declarations: [
@@ -126,6 +132,12 @@ import { LeavePolicyComponent } from "./company/leave-management/leave-policy/le
     TaskListComponent,
     BranchComponent,
     LeavePolicyComponent,
+    GernalReportsComponent,
+    EmployeeComponent,
+    BankDetailComponent,
+    BackgroundVerificationComponent,
+    SalaryDetailComponent,
+    AllowanceComponent,
   ],
   imports: [
     CommonModule,

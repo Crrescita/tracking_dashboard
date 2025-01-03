@@ -194,19 +194,19 @@ ngx-dropzone-preview {
           border-color: rgba(var(--tb-primary-rgb), 1);
         }
 
-        &.completed {
-          .nav-link {
-            .step-title {
-              i {
-                color: var(--tb-success);
-              }
-            }
+        // &.completed {
+        //   .nav-link {
+        //     .step-title {
+        //       i {
+        //         color: var(--tb-success);
+        //       }
+        //     }
 
-            color: var(--tb-success);
-          }
+        //     color: var(--tb-success);
+        //   }
 
-          border-color: rgba(var(--tb-success-rgb), 1);
-        }
+        //   border-color: rgba(var(--tb-success-rgb), 1);
+        // }
       }
     }
   }

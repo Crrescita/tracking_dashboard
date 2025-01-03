@@ -1,3 +1,4 @@
+import { EmployeeComponent } from "./company/employee/employee/employee.component";
 import { NgModule, Component } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
@@ -24,6 +25,7 @@ import { TaskListComponent } from "./company/task/task-list/task-list.component"
 import { LiveLocationComponent } from "./company/employee/live-location/live-location.component";
 import { BranchComponent } from "./company/team/branch/branch.component";
 import { LeavePolicyComponent } from "./company/leave-management/leave-policy/leave-policy.component";
+import { GernalReportsComponent } from "./company/reports/gernal-reports/gernal-reports.component";
 
 const routes: Routes = [
   {
@@ -48,8 +50,8 @@ const routes: Routes = [
   { path: "dashboard", component: DashboardComponent },
   { path: "employee", component: EmployeeListComponent },
 
-  { path: "add-employee", component: AddEmployeeComponent },
-  { path: "edit-employee/:id", component: AddEmployeeComponent },
+  { path: "add-employee", component: EmployeeComponent },
+  { path: "edit-employee/:id", component: EmployeeComponent },
   { path: "employee-detail/:id", component: EmployeeDetailComponent },
 
   { path: "attendance-list", component: AttendanceListComponent },
@@ -76,6 +78,7 @@ const routes: Routes = [
 
   { path: "assign-task", component: TaskListComponent },
   { path: "live-location/:id", component: LiveLocationComponent },
+  { path: "gernal-report", component: GernalReportsComponent },
 ];
 
 @NgModule({

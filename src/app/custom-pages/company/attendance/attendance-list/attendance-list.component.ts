@@ -357,7 +357,10 @@ export class AttendanceListComponent implements OnInit {
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
           el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.designation.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.department.toLowerCase().includes(this.term.toLowerCase())
+        // el.branch.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
     }

@@ -105,7 +105,36 @@
               </div>
 
               <div class="d-flex mt-2 mt-xl-0">
-                <button
+                <!-- Dropdown Variant -->
+                <div dropdown class="btn-group">
+                  <button
+                    type="button"
+                    dropdownToggle
+                    class="btn btn-primary dropdown-toggle me-2"
+                  >
+                    <i class="mdi mdi-book-account"></i>
+                    Reports
+                  </button>
+                  <div *dropdownMenu class="dropdown-menu">
+                    <a class="dropdown-item" (click)="exportTableToExcel()">
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Absent/Present Report</a
+                    >
+                    <a class="dropdown-item" (click)="exportTableToExcel2()">
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Avg. Working Hours Report</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      (click)="exportTableToExcelAddress()"
+                    >
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Check-in Location Report
+                    </a>
+                  </div>
+                </div>
+
+                <!-- <button
                   (click)="exportTableToExcel()"
                   type="button"
                   id="download-button"
@@ -124,6 +153,16 @@
                   <i class="ri-file-excel-2-fill align-bottom me-1"></i>
                   Download 2
                 </button>
+
+                <button
+                  (click)="exportTableToExcelAddress()"
+                  type="button"
+                  id="download-button"
+                  class="btn btn-primary me-2"
+                >
+                  <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                  Download 3
+                </button> -->
 
                 <div class="col-lg-auto">
                   <div class="hstack flex-wrap gap-2">

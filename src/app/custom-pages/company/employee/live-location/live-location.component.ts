@@ -7,9 +7,10 @@ import {
 } from "@angular/core";
 import * as mapboxgl from "mapbox-gl";
 import { ApiService } from "../../../../core/services/api.service";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "../../../../core/services/custom-pages/auth.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "app-live-location",
@@ -17,6 +18,7 @@ import { AuthService } from "../../../../core/services/custom-pages/auth.service
   styleUrl: "./live-location.component.scss",
 })
 export class LiveLocationComponent implements OnInit {
+  breadCrumbItems!: Array<{}>;
   @Input() companyId!: string;
   @Input() emp_image!: string;
   @Input() employeeChange: any;
@@ -27,19 +29,21 @@ export class LiveLocationComponent implements OnInit {
   selectedDate: Date = new Date();
   formattedDate: any;
   address: any;
-
+  selectedEmployeeId: number | null = null;
   liveCoordinates: any;
   spinnerStatus: boolean = false;
   isRotatinglive = false;
-
+  employeeDataList: any = [];
   private refreshInterval = 30000;
   private liveLocationTimeout: any;
 
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
+    private router: Router,
     public toastService: ToastrService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -65,13 +69,40 @@ export class LiveLocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.breadCrumbItems = [
+      { label: "Employee Management" },
+      { label: "Live Location", active: true },
+    ];
+
+    const data = localStorage.getItem("currentUser");
+    if (data) {
+      const user = JSON.parse(data);
+      this.companyId = user.id;
+    }
+
     this.route.params.subscribe((params) => {
       this.urlId = params["id"] ? Number(params["id"]) : null;
     });
-    if (this.urlId) {
+
+    this.selectedEmployeeId = this.urlId || this.employeeDataList[0]?.id;
+
+    if (this.urlId && this.companyId) {
       this.getemployeeData();
       this.refreshTimeline();
+      this.employeegetDataList();
     }
+
+    // this.route.params.subscribe((params) => {
+    //   this.urlId = params["id"] ? Number(params["id"]) : null;
+    //   console.log(this.urlId);
+    //   if (this.urlId) {
+    //     this.selectedEmployeeId = this.urlId;
+    //     this.employeegetDataList();
+    //     this.getemployeeData();
+    //     this.refreshTimeline();
+    //   }
+    // });
+
     this.authService.requestPermission();
 
     this.authService.receiveMessage();
@@ -93,6 +124,18 @@ export class LiveLocationComponent implements OnInit {
     this.initializeMap();
   }
 
+  handleEmployeeChange(event: Event): void {
+    const newEmployeeId = +(event.target as HTMLSelectElement).value; // Get new employee ID as a number
+
+    if (newEmployeeId) {
+      this.router.navigate([`/live-location/${newEmployeeId}`]);
+      this.urlId = newEmployeeId;
+
+      this.getemployeeData();
+      this.refreshTimeline();
+    }
+  }
+
   getemployeeData() {
     this.toggleSpinner(true);
     this.api.get("employees", this.urlId).subscribe(
@@ -101,7 +144,8 @@ export class LiveLocationComponent implements OnInit {
           this.toggleSpinner(false);
           this.employeeDetail = res.data[0];
 
-          this.companyId = this.employeeDetail.company_id;
+          // this.companyId = this.employeeDetail.company_id;
+
           if (this.employeeDetail.image) {
             this.emp_image = this.employeeDetail.image;
           } else {
@@ -112,6 +156,28 @@ export class LiveLocationComponent implements OnInit {
         }
       },
       (error) => {
+        this.handleError(
+          error.message || "An error occurred while fetching data"
+        );
+      }
+    );
+  }
+
+  employeegetDataList() {
+    this.toggleSpinner(true);
+    const url = `employees?company_id=${this.companyId}`;
+    this.api.getwithoutid(url).subscribe(
+      (res: any) => {
+        this.toggleSpinner(false);
+        if (res && res.status) {
+          this.employeeDataList = res.data || [];
+        } else {
+          this.employeeDataList = [];
+          this.toggleSpinner(false);
+        }
+      },
+      (error) => {
+        this.toggleSpinner(false);
         this.handleError(
           error.message || "An error occurred while fetching data"
         );
@@ -298,5 +364,9 @@ export class LiveLocationComponent implements OnInit {
     } else {
       return "battery-low";
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

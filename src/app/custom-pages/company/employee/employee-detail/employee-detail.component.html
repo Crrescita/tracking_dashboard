@@ -204,20 +204,21 @@
           </a>
         </li>
 
-        <!-- <li class="nav-item" role="presentation">
+        <li class="nav-item" role="presentation">
+          <!-- href="javascript:void(0);"
+          [class.active]="currentTab === 'liveLocation'"
+          (click)="changeTab('liveLocation')" -->
           <a
             class="nav-link"
             data-bs-toggle="tab"
-            href="javascript:void(0);"
-            [class.active]="currentTab === 'liveLocation'"
-            (click)="changeTab('liveLocation')"
+            routerLink="/live-location/{{ this.urlId }}"
             role="tab"
             aria-selected="false"
             tabindex="-1"
           >
             Live Location
           </a>
-        </li> -->
+        </li>
       </ul>
       <div class="flex-shrink-0 ms-auto order-1 order-lg-2">
         <a routerLink="/edit-employee/{{ this.urlId }}" class="btn btn-primary"

@@ -287,7 +287,10 @@ export class AttendanceMonthlyComponent implements OnInit {
           el.name.toLowerCase().includes(this.term.toLowerCase()) ||
           el.mobile.toLowerCase().includes(this.term.toLowerCase()) ||
           el.email.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.employee_id.toLowerCase().includes(this.term.toLowerCase())
+          el.employee_id.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.designation.toLowerCase().includes(this.term.toLowerCase()) ||
+          el.department.toLowerCase().includes(this.term.toLowerCase())
+        // el.branch.toLowerCase().includes(this.term.toLowerCase())
       );
       this.filterCounts.termCount = 1;
     }
@@ -437,17 +440,19 @@ export class AttendanceMonthlyComponent implements OnInit {
     const filename = `Attendance_${month}_${year}.xlsx`;
 
     // Prepare the header row with Name, Mobile, and dates
-    const uniqueDates = Array.from(
+    const uniqueDates: any[] = Array.from(
       new Set(
         this.filteredAttendanceData.flatMap((employee: any) =>
           employee.attendance.map((record: any) => record.date)
         )
       )
-    ).sort(); // Sort dates if needed
+    ).sort();
+    // Sort dates if needed
 
     // Initialize worksheet data with header row
     const header = [
       "Name",
+      "Department",
       "Mobile",
       "Total Present",
       "Total Absent",
@@ -466,6 +471,7 @@ export class AttendanceMonthlyComponent implements OnInit {
     this.filteredAttendanceData.forEach((employee: any) => {
       const row = [
         employee.name,
+        employee.department,
         employee.mobile,
         employee.totals.totalPresent,
         employee.totals.totalAbsent,
@@ -574,7 +580,7 @@ export class AttendanceMonthlyComponent implements OnInit {
     // Initialize worksheet data with header row
     const header = [
       "Name",
-      "Mobile",
+      "Department",
       "Total Present",
       "Total Absent",
       "Total Leave",
@@ -599,7 +605,7 @@ export class AttendanceMonthlyComponent implements OnInit {
     this.filteredAttendanceData.forEach((employee: any) => {
       const row = [
         employee.name,
-        employee.mobile,
+        employee.department,
         employee.totals.totalPresent,
         employee.totals.totalAbsent,
         employee.totals.totalLeave,
@@ -642,51 +648,7 @@ export class AttendanceMonthlyComponent implements OnInit {
       { width: 15 }, // Total Holidays
       { width: 15 }, // Total Holidays
       { width: 15 }, // Total Holidays
-      // ...uniqueDates.map(() => ({ width: 12 })), // Date columns width
     ];
-
-    // Apply borders, colors, and conditional formatting
-    // worksheet.eachRow({ includeEmpty: true }, (row, rowIndex) => {
-    //   row.eachCell({ includeEmpty: true }, (cell, colIndex) => {
-    //     // Apply borders
-    //     cell.border = {
-    //       top: { style: "thin", color: { argb: "000000" } },
-    //       left: { style: "thin", color: { argb: "000000" } },
-    //       bottom: { style: "thin", color: { argb: "000000" } },
-    //       right: { style: "thin", color: { argb: "000000" } },
-    //     };
-
-    //     // Apply colors (conditional formatting)
-    //     if (rowIndex > 0 && colIndex >= 6) {
-    //       // Skip header and fixed columns
-    //       if (cell.value === "Absent") {
-    //         cell.fill = {
-    //           type: "pattern",
-    //           pattern: "solid",
-    //           fgColor: { argb: "FFFF0000" }, // Red fill for Absent
-    //         };
-    //         cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Absent"
-    //       } else if (cell.value === "Present") {
-    //         cell.fill = {
-    //           type: "pattern",
-    //           pattern: "solid",
-    //           fgColor: { argb: "38b738" }, // Green fill for Present
-    //         };
-    //         cell.font = { color: { argb: "FFFFFFFF" } }; // White text for "Present"
-    //       }
-    //     }
-    //   });
-    // });
-
-    // Freeze the first 6 columns (up to "Total Holidays") and the header row
-    // worksheet.views = [
-    //   {
-    //     state: "frozen",
-    //     xSplit: 6, // Freeze first 6 columns
-    //     ySplit: 1, // Freeze header row
-    //     // topLeftCell: "A1", // Freeze starting from top-left cell
-    //   },
-    // ];
 
     // Write the workbook to an Excel file
     workbook.xlsx.writeBuffer().then((buffer) => {
@@ -696,6 +658,248 @@ export class AttendanceMonthlyComponent implements OnInit {
       link.download = filename;
       link.click();
     });
+  }
+
+  // new
+
+  async fetchAddresses(
+    minLat: number,
+    minLong: number,
+    maxLat: number,
+    maxLong: number
+  ) {
+    let minCheckInAddress = "";
+    let maxCheckOutAddress = "";
+
+    if (minLong != 0 && minLat != 0) {
+      minCheckInAddress = await this.geocodeCoordinates(minLong, minLat); // Await Promise
+    }
+
+    if (maxLong != 0 && maxLat != 0) {
+      maxCheckOutAddress = await this.geocodeCoordinates(maxLong, maxLat); // Await Promise
+    }
+
+    return { minCheckInAddress, maxCheckOutAddress };
+  }
+
+  async exportTableToExcelAddress() {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Attendance");
+
+    // Get month and year for the filename
+    const date = new Date(this.selectedDate);
+    const month = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+    const filename = `Attendance_${month}_${year}.xlsx`;
+
+    // Prepare header rows
+    const headerRow1 = [
+      "Name",
+      "Mobile",
+      "Total Present",
+      "Total Absent",
+      "Total Leave",
+      "Total Holidays",
+    ];
+    const headerRow2 = ["", "", "", "", "", ""]; // Placeholder for merged cells
+
+    const uniqueDates = Array.from(
+      new Set(
+        this.filteredAttendanceData.flatMap((employee: any) =>
+          employee.attendance.map((record: any) => record.date)
+        )
+      )
+    ).sort();
+
+    // Add dynamic columns for each unique date
+    uniqueDates.forEach((date) => {
+      headerRow1.push(date as string, "", "", "", "");
+      headerRow2.push(
+        "Total Distance",
+        "Check-In Time",
+        "Check-In Address",
+        "Check-Out Time",
+        "Check-Out Address"
+      );
+    });
+
+    // Add header rows
+    worksheet.addRow(headerRow1);
+    worksheet.addRow(headerRow2);
+
+    // Merge date header cells (row 1)
+    let colIndex = 7;
+    uniqueDates.forEach(() => {
+      worksheet.mergeCells(1, colIndex, 1, colIndex + 4);
+      colIndex += 5;
+    });
+
+    // Style the header rows
+    [worksheet.getRow(1), worksheet.getRow(2)].forEach((row) => {
+      row.eachCell((cell) => {
+        cell.font = { bold: true, size: 12 };
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFC0C0C0" }, // Light gray
+        };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    // Add employee data rows
+    for (const employee of this.filteredAttendanceData) {
+      // Base row data
+      const baseRow = [
+        employee.name,
+        employee.mobile,
+        employee.totals.totalPresent,
+        employee.totals.totalAbsent,
+        employee.totals.totalLeave,
+        employee.totals.totalHolidays,
+      ];
+
+      // Rows to store data under each date
+      const rowData: any[] = [...baseRow];
+
+      for (const date of uniqueDates) {
+        const record = employee.attendance.find((r: any) => r.date === date);
+
+        let totalDistance = "0 km";
+        let lastCheckInTime = "-";
+        let lastCheckOutTime = "-";
+        let checkInAddress = "-";
+        let checkOutAddress = "-";
+
+        if (record) {
+          totalDistance = record.totalDistance
+            ? `${new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(record.totalDistance)} km`
+            : "0 km";
+
+          lastCheckInTime = record.last_check_in_time || "-";
+          lastCheckOutTime = record.last_check_out_time || "-";
+
+          if (
+            record.min_lat_check_in !== "0" &&
+            record.min_long_check_in !== "0"
+          ) {
+            const addresses = await this.fetchAddresses(
+              parseFloat(record.min_lat_check_in),
+              parseFloat(record.min_long_check_in),
+              parseFloat(record.max_lat_check_out),
+              parseFloat(record.max_long_check_out)
+            );
+            checkInAddress = addresses.minCheckInAddress || "-";
+            checkOutAddress = addresses.maxCheckOutAddress || "-";
+            const data = {
+              employeeId: employee.id,
+              lat_check_in: record.min_lat_check_in,
+              long_check_in: record.min_long_check_in,
+              lat_check_out: record.max_lat_check_out,
+              long_check_out: record.max_long_check_out,
+              checkInAddress,
+              checkOutAddress,
+              date,
+            };
+            console.log(data);
+            this.api.post("setCheckAddress", data).subscribe((res: any) => {
+              console.log(res);
+            });
+          }
+        }
+
+        rowData.push(
+          totalDistance,
+          lastCheckInTime,
+          checkInAddress,
+          lastCheckOutTime,
+          checkOutAddress
+        );
+      }
+
+      // Add row to worksheet
+      const newRow = worksheet.addRow(rowData);
+
+      // Apply borders to the row
+      newRow.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    }
+
+    // Set column widths
+    worksheet.columns = [
+      { width: 20 }, // Name
+      { width: 15 }, // Mobile
+      { width: 15 }, // Total Present
+      { width: 15 }, // Total Absent
+      { width: 15 }, // Total Leave
+      { width: 15 }, // Total Holidays
+      ...uniqueDates.flatMap(() => [
+        { width: 15 },
+        { width: 15 },
+        { width: 25 },
+        { width: 15 },
+        { width: 25 },
+      ]),
+    ];
+
+    // Freeze panes
+    worksheet.views = [
+      {
+        state: "frozen",
+        xSplit: 6,
+        ySplit: 2,
+      },
+    ];
+
+    // Save and trigger download
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: "application/octet-stream" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
+
+  // Geocode using latitude and longitude
+  geocodeCoordinates(lng: number, lat: number): Promise<string> {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www`;
+
+    return fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Error fetching geocode data: ${response.statusText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.features && data.features.length > 0) {
+          return data.features[0].place_name;
+        } else {
+          console.warn("No valid address found for coordinates:", lng, lat);
+          return "";
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching address:", error);
+        return "";
+      });
   }
 
   timeLineData: any;
