@@ -1,0 +1,1119 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Payroll"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="productList">
+  <!-- <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row g-4 parent">
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-primary-subtle rounded-circle text-primary"
+                  >
+                    <i class="ri-user-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Total Employee</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="payrollDataList?.length"
+                  >{{ payrollDataList?.length }}</span
+                >
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-user-follow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Present</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalPresent"
+                  >{{ this.attendanceCount?.totalPresent }}</span
+                >
+              
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="ri-user-unfollow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Absent</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalAbsent"
+                  >{{ this.attendanceCount?.totalAbsent }}</span
+                >
+               
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
+                  >
+                    <i class="mdi mdi-account-alert-outline"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Leave</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalLeave"
+                  >{{ this.attendanceCount?.totalLeave }}</span
+                >
+              
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-timer-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">On Time</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalOnTime
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
+                  >
+                    <i class="bi bi-clock-history"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Early</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalEarly
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="bx bx-timer"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Late</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalLate
+                }}</span>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div> -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-lg-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Payroll
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                payrollData?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="payrollDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </h5>
+
+            <p class="text-muted mb-0 mt-2">
+              Showing Result of Date:
+              <span class="fw-bold">
+                {{ this.formattedDate | date : "MMM , yyyy" }}</span
+              >
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <div class="col-xxl">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="form-control"
+                    showWeekNumbers="false"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [(ngModel)]="selectedDate"
+                    (bsValueChange)="onDateChange($event)"
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepicker"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name, mobile etc..."
+                />
+
+                <i class="ri-search-line search-icon"></i>
+              </div>
+
+              <div class="col-lg-auto">
+                <div class="hstack flex-wrap gap-2">
+                  <div>
+                    <button
+                      (click)="exportTableToExcel()"
+                      type="button"
+                      id="download-button"
+                      class="btn btn-primary me-2"
+                    >
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Download
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-info me-1"
+                      (click)="openEnd()"
+                    >
+                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                      @if(totalFilterCount >0){
+                      <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                        >{{ totalFilterCount }}
+                      </span>
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!--end col-->
+
+              <!-- <button class="btn btn-subtle-danger d-none" id="remove-actions">
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <button type="button" class="btn btn-primary add-btn">
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
+                Product
+              </button> -->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-centered align-middle table-nowrap mb-0">
+              <thead class="table-active">
+                <tr>
+                  <th>
+                    <div class="form-check">
+                      <!-- <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="option"
+                        [(ngModel)]="masterSelected"
+                        (change)="checkUncheckAll($event)"
+                        id="checkAll"
+                      /> -->
+                      <label class="form-check-label" for="checkAll"></label>
+                    </div>
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('name')">
+                    Name
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('mobile')">
+                    Mobile
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('paid_days')">
+                    Paid Days
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('earning_amount')"
+                  >
+                  Earning Amount
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('deduction_amount')"
+                  >
+                  Deduction Amount
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('net_pay')"
+                  >
+                    Net Pay
+                  </th>
+                
+                  <!-- <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('checkin_statusv2')"
+                  >
+                    Check-in Status
+                  </th> -->
+                  <!-- <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('timeDifferencev2')"
+                  >
+                    Time Difference
+                  </th> -->
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list form-check-all">
+                @for ( data of payrollData; track $index) {
+                <tr id="p_{{ data._id }}">
+                  <td></td>
+                  <td class="id" style="display: none">
+                    <a href="javascript:void(0);" class="fw-medium link-primary"
+                      >#TB01</a
+                    >
+                  </td>
+                  <td class="products">
+                    <div class="d-flex align-items-center">
+                      <!-- <div class="avatar-sm bg-light rounded"> -->
+                      <div class="flex-shrink-0 position-relative">
+                        <img
+                          [src]="
+                            data.image
+                              ? data.image
+                              : 'assets/images/users/avatar-1.jpg'
+                          "
+                          alt=""
+                          class="avatar-sm rounded"
+                        />
+                     
+                      </div>
+                      <!-- </div> -->
+                      <div class="flex-grow-1 ms-2">
+                        <h5 class="fs-md">
+                          <a
+                            [routerLink]="['/employee-detail', data.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ data.name }}</a
+                          >
+                        </h5>
+                        <p class="text-muted mb-0">
+                          {{ data.designation }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="discount">{{ data.mobile }}</td>
+                  <td class="category">{{ data.paid_days }}</td>
+                  <td class="stock">{{ data.earning_amount }}</td>
+                  <td class="price">
+                    {{ data.deduction_amount }}
+                  </td>
+                  <td class="orders">
+                    {{ data.net_pay }}
+                  
+                  </td>
+                 
+
+                  <!-- <td class="published">
+                    @if(data.checkin_status != 'Absent' && data.checkin_status
+                    != 'Leave'){
+                    <span
+                      class="badge"
+                      [ngClass]="
+                        data.checkin_status == 'Early'
+                          ? 'bg-warning'
+                          : data.checkin_status == 'Late'
+                          ? 'bg-danger'
+                          : 'bg-success'
+                      "
+                      >{{ data.checkin_status }} @if(data.checkin_status !=
+                      'On-Time' && data.checkin_status != 'Leave'){ by
+                      {{ data.timeDifference }}
+                      }
+                    </span>
+                    } @else { -}
+                  </td> -->
+                  <!-- <td class="published">
+                    @if(data.checkin_status != 'Absent'){
+
+                    <p
+                      [ngClass]="
+                        data.checkin_status == 'Early'
+                          ? 'text-warning'
+                          : data.checkin_status == 'Late'
+                          ? 'text-danger'
+                          : 'text-success'
+                      "
+                      class="mb-0"
+                    >
+                      {{ data.timeDifference }}
+                    </p>
+
+                    } @else { -}
+                  </td> -->
+                  <td>
+                    <ul class="d-flex gap-2 list-unstyled mb-0">
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="View"
+                          routerLink="/edit-employee/{{ data.id }}"
+                         
+                          class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                          ><i class="ph-eye align-middle"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="Pay Slip"
+                          (click)="
+                          tooltipmodal.show();
+                          updatePaySlipData(data)
+                        "
+                          class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                          ><i class="ri-article-fill"></i
+                        ></a>
+                      </li>
+                     
+                    </ul>
+
+                    <!-- <div dropdown class="dropdown">
+                      <button
+                        dropdownToggle
+                        class="btn btn-subtle-secondary btn-sm btn-icon"
+                      >
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+
+                      <ul
+                        *bsDropdownMenu
+                        class="dropdown-menu dropdown-menu-end"
+                      >
+                        <li>
+                          <a
+                            class="dropdown-item"
+                            routerLink="/employee-detail/{{ data.id }}"
+                            [queryParams]="{
+                              tab: 'timeline',
+                           
+                            }"
+                            href="javascript:void(0);"
+                            ><i class="ph-eye align-middle me-1"></i> View
+                            Timeline</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            routerLink="/attendance-calender/{{ data.id }}/{{
+                              this.company_id
+                            }}"
+                            class="dropdown-item edit-item-btn"
+                            ><i
+                              class="ri-folder-reduce-line align-middle me-1"
+                            ></i
+                            >Attendance Detail</a
+                          >
+                        </li>
+                       
+                      </ul>
+                    </div> -->
+                  </td>
+                </tr>
+                }
+              </tbody>
+              @if (spinnerStatus) {
+              <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              }
+            </table>
+          </div>
+          <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched {{ payrollDataList?.length }} Employee Data.
+                We did not find any Employee for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+          <div class="row mt-3 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{ payrollData?.length }}</span> of
+                <span class="fw-semibold">{{
+                  filteredAttendanceData?.length
+                }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(filteredAttendanceData?.length){
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
+                [totalItems]="filteredAttendanceData?.length"
+                [itemsPerPage]="currentItemsPerPage"
+                (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
+              ></pagination>
+              }
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>
+
+<div
+  bsModal
+  #tooltipmodal="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="tooltipmodal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+            <div class="col-xxl-12">
+                <div class="hstack gap-2 justify-content-end d-print-none mb-4">
+                    <a href="javascript:window.print()" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Print</a>
+                    <!-- <button type="button" id="download-button" class="btn btn-primary" (click)="printModal()"><i class="ri-download-2-line align-bottom me-1"></i> Download</button> -->
+                </div>
+                <div class="card overflow-hidden myDivToPrint" id="invoice">
+                    <!-- <div class="invoice-effect-top position-absolute start-0">
+                        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 764 182" width="764" height="182">
+                            <title>&lt;Group&gt;</title>
+                            <g id="&lt;Group&gt;">
+                                <g id="&lt;Group&gt;">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-light);" d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z" />
+                                </g>
+                                <g id="&lt;Group&gt;">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-secondary);" d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z" />
+                                </g>
+                                <g id="&lt;Group&gt;" style="opacity: .5">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-primary);" d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div> -->
+                    <div class="card-body z-1 position-relative">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <img
+              src="https://trackingapi.crrescita.com/{{ this.company_logo }}"
+              class="card-logo"
+              alt="logo light"
+              height="80"
+            />
+                            </div>
+                            <div class="flex-shrink-0 mt-sm-0 mt-3">
+                                <h6><span class="text-muted fw-normal">A.B.PAL ELECTRICALS PVT. LTD.</span></h6>
+                                <h6><span class="text-muted fw-normal">1826,BHAGIRATH PALACE,</span></h6>
+                                <h6><span class="text-muted fw-normal">CHANDNI CHOWK, DELHI-110006</span> </h6>
+                                
+                            </div>
+                        </div>
+                        <div class="mt-3 ">
+                            <div class="row g-3">
+                                <div class="col-12 bg-light text-center p-3 text-uppercase" >SALARY SLIP FOR THE MONTH OF {{payslipData?.payslip_for_month | date : "MMMM, YYYY"}}</div>
+                                <!-- <div class="col-lg col-6">
+                                    <p class="text-muted mb-2 text-uppercase">Invoice No</p>
+                                    <h5 class="fs-md mb-0">#TBS<span id="invoice-no">24301901</span></h5>
+                                </div>
+                              
+                                <div class="col-lg col-6">
+                                    <p class="text-muted mb-2 text-uppercase">Date</p>
+                                    <h5 class="fs-md mb-0"><span id="invoice-date">10 April, 2023</span></h5>
+                                </div>
+                                <div class="col-lg col-6">
+                                    <p class="text-muted mb-2 text-uppercase">Due Date</p>
+                                    <h5 class="fs-md mb-0"><span id="invoice-due-date">10 April, 2023</span></h5>
+                                </div>
+                               
+                                <div class="col-lg col-6">
+                                    <p class="text-muted mb-2 text-uppercase">Payment Status</p>
+                                    <span class="badge bg-success-subtle text-success fs-xxs" id="payment-status">Paid</span>
+                                </div>
+                               
+                                <div class="col-lg col-6">
+                                    <p class="text-muted mb-2 text-uppercase">Total Amount</p>
+                                    <h5 class="fs-md mb-0">$<span id="total-amount">2,050.18</span></h5>
+                                </div> -->
+                               
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <h6>CODE :&nbsp;<span class="text-muted fw-normal">{{payslipData?.employee_id}}</span></h6>
+                                    <h6>NAME :&nbsp;<span class="text-muted fw-normal">{{payslipData?.name}}</span></h6>
+                                    <h6>DESIGNATION :&nbsp;<span class="text-muted fw-normal">{{payslipData?.designation}}</span> </h6>
+                                  
+                                </div>
+                                
+                                <div class="col-6">
+                                    <h6>BANK NAME :&nbsp;<span class="text-muted fw-normal"></span></h6>
+                                    <h6>BANK A/C NO. :&nbsp;<span class="text-muted fw-normal"></span></h6>
+                                    <h6>PAID DAY :&nbsp;<span class="text-muted fw-normal">{{payslipData?.paid_days}}</span> </h6>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="table-responsive mt-4">
+                                    <table class="table table-borderless text-center table-nowrap align-middle mb-0">
+                                        <thead>
+                                            <tr class="table-light">
+                                               
+                                                <th scope="col" class="text-start">Earning</th>
+                                               
+                                                <th scope="col" class="text-end">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="products-list">
+                                            @for (item of payslipData?.earning; track $index) {
+                                                <tr>
+                                                   
+                                                    <td class="text-start">
+                                                        <span class="fw-medium">{{item.name}}</span>
+                                                       
+                                                    </td>
+                                                  
+                                                    <td class="text-end">Rs. {{item.amount}}</td>
+                                                </tr>
+                                            }             
+                                        </tbody>
+                                    </table><!--end table-->
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="table-responsive mt-4">
+                                    <table class="table table-borderless text-center table-nowrap align-middle mb-0">
+                                        <thead>
+                                            <tr class="table-light">
+                                                <th scope="col " class="text-start">Deduction</th>
+                                               
+                                                <th scope="col" class="text-end">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="products-list">
+                                            @for (item of payslipData?.deduction; track $index) {
+                                                <tr>
+                                                   
+                                                    <td class="text-start">
+                                                        <span class="fw-medium">{{item.name}}</span>
+                                                       
+                                                    </td>
+                                                  
+                                                    <td class="text-end">Rs. {{item.amount}}</td>
+                                                </tr>
+                                            }    
+                                        </tbody>
+                                    </table><!--end table-->
+                                </div>
+                            </div>
+                        </div>
+                      
+                        <div class="border-top border-top-dashed mt-2" id="products-list-total">
+                            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
+                                <tbody>
+                                    <tr>
+                                        <td>Total Earning</td>
+                                        <td class="text-end">Rs.{{payslipData?.earning_amount}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Deduction </td>
+                                        <td class="text-end">Rs.{{payslipData?.deduction_amount}}</td>
+                                    </tr>
+                                   
+                                    <tr class="border-top border-top-dashed fs-base">
+                                        <th scope="row">Total Amount</th>
+                                        <th class="text-end">Rs.{{payslipData?.net_pay}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--end table-->
+                        </div>
+                        <!-- <div class="mt-3">
+                            <h6 class="text-muted text-uppercase fw-semibold mb-3">Payment Details:</h6>
+                            <p class="text-muted mb-1">Payment Method: <span class="fw-medium" id="payment-method">Mastercard</span></p>
+                            <p class="text-muted mb-1">Card Holder: <span class="fw-medium" id="card-holder-name">Jennifer Mayert</span></p>
+                            <p class="text-muted mb-1">Card Number: <span class="fw-medium" id="card-number">xxx xxxx xxxx 1234</span></p>
+                            <p class="text-muted mb-0">Total Amount: <span class="fw-medium">$</span><span id="card-total-amount">2,050.18</span></p>
+                        </div> -->
+                        <div class="mt-4 mb-4">
+                            <div class="alert alert-danger mb-0">
+                                <span class="fw-semibold">NOTES:</span>
+                                <span id="note"> This is Computer Generated Statement and does not require any signature.
+                                </span>
+                            </div>
+                        </div>
+                        <!-- <div>
+                            <p class="mb-4 pb-2"><b>Congratulations on your recent purchase!</b> It has been our pleasure to serve you, and we hope we see you again soon.</p>
+        
+                            <div class="invoice-signature text-center">
+                                <img src="assets/images/invoice-signature.svg" alt="" id="sign-img" height="30">
+                                <h6 class="mb-0 mt-3">Authorized Sign</h6>
+                            </div>
+                        </div> -->
+                    </div>
+                    <!-- <div class="invoice-effect-top position-absolute end-0" style="transform: rotate(180deg); bottom: -80px;">
+                        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 764 182" width="764" height="182">
+                            <title>&lt;Group&gt;</title>
+                            <g id="&lt;Group&gt;">
+                                <g id="&lt;Group&gt;">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-light);" d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z" />
+                                </g>
+                                <g id="&lt;Group&gt;">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-secondary);" d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z" />
+                                </g>
+                                <g id="&lt;Group&gt;" style="opacity: .5">
+                                    <path id="&lt;Path&gt;" style="fill: var(--tb-primary);" d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div> -->
+                </div>
+                <!--end card-->
+            </div>
+            <!--end col-->
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <div class="col-lg-12">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              (click)="tooltipmodal.hide()"
+              class="btn btn-light"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Date</p>
+          <div class="input-group">
+            <input
+              type="text"
+              id="datepickers"
+              class="form-control"
+              showWeekNumbers="false"
+              bsDatepicker
+              [bsConfig]="bsConfig"
+              [(ngModel)]="selectedDate"
+              (bsValueChange)="onDateChange($event)"
+            />
+            <div class="input-group-append">
+              <label for="datepickers" class="input-group-text cursor-pointer">
+                <i class="ri-calendar-fill"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="payrollDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Attendance Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Leave">Leave</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Check-in Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedCheckInStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Check-in">Check-In</option>
+            <option value="Check-out">Check-Out</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Arrival Status</p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedCheckStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="On-Time">On Time</option>
+            <option value="Early">Early</option>
+            <option value="Late">Late</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <label
+              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
+              >Ratings</label
+            >
+            <div class="vstack gap-2">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-all"
+                />
+                <label class="form-check-label" for="rating-all">
+                  Select All
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter1"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter1"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter2"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter2"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">4 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter3"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter3"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">3 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter4"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter4"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">2 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter5"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter5"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">1 & Up</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>

@@ -26,6 +26,8 @@ import { LiveLocationComponent } from "./company/employee/live-location/live-loc
 import { BranchComponent } from "./company/team/branch/branch.component";
 import { LeavePolicyComponent } from "./company/leave-management/leave-policy/leave-policy.component";
 import { GernalReportsComponent } from "./company/reports/gernal-reports/gernal-reports.component";
+import { PayrollListComponent } from './company/payroll/payroll-list/payroll-list.component';
+
 
 const routes: Routes = [
   {
@@ -79,6 +81,7 @@ const routes: Routes = [
   { path: "assign-task", component: TaskListComponent },
   { path: "live-location/:id", component: LiveLocationComponent },
   { path: "gernal-report", component: GernalReportsComponent },
+  {path:"payroll" , component: PayrollListComponent}
 ];
 
 @NgModule({

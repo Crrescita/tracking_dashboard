@@ -16,10 +16,14 @@ export class EmployeeComponent implements OnInit {
   }
   breadCrumbItems!: Array<{}>;
   urlId: any;
-  empData: boolean = false;
+  empData: any;
   empBankData: boolean = false;
   empBackData: boolean = false;
-  empSalaryData: boolean = false;
+  empSalaryData:any;
+  salaryInvioceData:any
+  advanceData:any;
+
+  currentTab = 'personal-detail';
   constructor(private route: ActivatedRoute, private location: Location) {}
 
   ngOnInit(): void {
@@ -32,6 +36,10 @@ export class EmployeeComponent implements OnInit {
       this.urlId = params["id"] ? Number(params["id"]) : null;
     });
   }
+
+  changeTab(tab: string) {
+    this.currentTab = tab;
+}
 
   goBack(): void {
     this.location.back();
@@ -57,6 +65,19 @@ export class EmployeeComponent implements OnInit {
   onSalaryDataFecthed(isFetched: any) {
     if (isFetched) {
       this.empSalaryData = isFetched;
+    }
+  }
+
+  onSalaryInvoiceDataFected(isFetched:any){
+    if(isFetched){
+      this.salaryInvioceData = isFetched
+    }
+  }
+
+  onAdvanceDatafected(isFetched:any){
+    if(isFetched){
+      this.advanceData = isFetched
+      console.log(this.advanceData)
     }
   }
 }

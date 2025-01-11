@@ -77,10 +77,10 @@ export class ApiService {
     return this.http.get<any>(url);
   }
 
-  // getwithoutid(apiName: any): Observable<any> {
-  //   const url = `${this.apiUrl + apiName}`;
-  //   return this.http.get<any>(url);
-  // }
+  getwithoutcache(apiName: any): Observable<any> {
+    const url = `${this.apiUrl + apiName}`;
+    return this.http.get<any>(url);
+  }
 
   getwithoutid(apiName: any): Observable<any> {
     const url = `${this.apiUrl + apiName}`;

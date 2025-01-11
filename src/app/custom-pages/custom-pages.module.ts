@@ -1,3 +1,5 @@
+import { AdvanceDetailComponent } from './company/employee/salary/advance-detail/advance-detail.component';
+import { SalaryInvoiceComponent } from './company/employee/salary/salary-invoice/salary-invoice.component';
 import { EmployeeComponent } from "./company/employee/employee/employee.component";
 import { LeaveRecordComponent } from "./company/leave-management/leave-record/leave-record.component";
 import { HolidaysListComponent } from "./company/holidays/holidays-list/holidays-list.component";
@@ -97,8 +99,10 @@ import { LeavePolicyComponent } from "./company/leave-management/leave-policy/le
 import { GernalReportsComponent } from "./company/reports/gernal-reports/gernal-reports.component";
 import { BankDetailComponent } from "./company/employee/bank-detail/bank-detail.component";
 import { BackgroundVerificationComponent } from "./company/employee/background-verification/background-verification.component";
-import { SalaryDetailComponent } from "./company/employee/salary-detail/salary-detail.component";
+import { SalaryDetailComponent } from "./company/employee/salary/salary-detail/salary-detail.component";
 import { AllowanceComponent } from "./company/employee/salary/allowance/allowance.component";
+import { PayrollListComponent } from './company/payroll/payroll-list/payroll-list.component';
+
 
 @NgModule({
   declarations: [
@@ -138,6 +142,9 @@ import { AllowanceComponent } from "./company/employee/salary/allowance/allowanc
     BackgroundVerificationComponent,
     SalaryDetailComponent,
     AllowanceComponent,
+    SalaryInvoiceComponent,
+    AdvanceDetailComponent,
+    PayrollListComponent
   ],
   imports: [
     CommonModule,

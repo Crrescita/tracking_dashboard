@@ -3,227 +3,558 @@
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 <div class="row">
-  <div class="text-end">
+  <!-- <div class="text-end">
     <button class="btn btn-secondary mb-2" (click)="goBack()">
       <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
       Back
     </button>
-  </div>
+  </div> -->
+
   <div class="col-xl-12">
-    <div class="card">
-      <!-- <div class="card-header">
-          <h4 class="card-title mb-0">Vertical nav Steps</h4>
-        </div> -->
-      <!-- end card header -->
-
-      <div class="card-body form-steps">
-        <div class="vertical-navs-step">
-          <div class="row">
-            <div class="col-lg-12">
-              <ng-stepper
-                #cdkStepper
-                id="vertical-example"
-                class="vertical-wizard"
-              >
-                <!-- [ngClass]="
-              isMobile ? 'step-arrow-nav wizard' : 'vertical-wizard'
-            " -->
-                <cdk-step
-                  [optional]="false"
-                  class="steps nav flex-column custom-nav nav-pills"
+    <div class="p-3 user-chat-topbar border-bottom border-2">
+      <div class="row align-items-center justify-content-between flex-nowrap">
+        <div class="col-sm-4 col">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 d-block d-lg-none me-3">
+              <a href="javascript: void(0);" class="user-chat-remove fs-lg p-1"
+                ><i class="ri-arrow-left-s-line align-bottom"></i
+              ></a>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <div class="d-flex align-items-center">
+                <div
+                  class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0"
                 >
-                  <ng-template cdkStepLabel>
-                    <button
-                      [ngClass]="empData ? 'done completed' : 'active'"
-                      [attr.aria-selected]="empData ? 'true' : 'false'"
-                      class="nav-link"
-                      id="v-pills-bill-info-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-bill-info"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-bill-info"
+                  <img
+                    src="assets/images/users/48/avatar-2.jpg"
+                    class="rounded-circle avatar-xs"
+                    alt=""
+                  />
+                  <span class="user-status"></span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <h5 class="text-truncate mb-1 fs-lg">
+                    <a
+                      class="text-reset username"
+                      data-bs-toggle="offcanvas"
+                      href="javascript:void(0);"
+                      aria-controls="userProfileCanvasExample"
+                      >{{this.empData?.name}}</a
                     >
-                      <span class="step-title me-2">
-                        <i
-                          [ngClass]="
-                            empData
-                              ? 'ri-checkbox-circle-fill completed'
-                              : 'ri-close-circle-fill'
-                          "
-                          class="align-bottom step-icon me-2"
-                        ></i>
-                      </span>
-                      Personal Details
-                    </button>
-                  </ng-template>
-                  <div class="centered-content ms-lg-4">
-                    <app-add-employee
-                      (dataFetched)="onEmpDataFetched($event)"
-                      [urlId]="this.urlId"
-                    ></app-add-employee>
-                  </div>
-                </cdk-step>
-
-                <cdk-step
-                  [optional]="false"
-                  class="steps nav flex-column custom-nav nav-pills"
-                  [completed]="true"
-                >
-                  <ng-template cdkStepLabel>
-                    <button
-                      [ngClass]="empBankData ? 'done completed' : 'active'"
-                      [attr.aria-selected]="empBankData ? 'true' : 'false'"
-                      class="nav-link"
-                      id="v-pills-bill-address-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-bill-address"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-bill-address"
-                    >
-                      <span class="step-title me-2">
-                        <i
-                          [ngClass]="
-                            empBankData
-                              ? 'ri-checkbox-circle-fill completed'
-                              : 'ri-close-circle-fill'
-                          "
-                          class="align-bottom step-icon me-2"
-                        ></i>
-                      </span>
-                      Bank account details
-                    </button>
-                  </ng-template>
-
-                  <div class="centered-content ms-lg-4">
-                    <app-bank-detail
-                      (bankDataFetched)="onEmpbankDataFetched($event)"
-                      [urlId]="this.urlId"
-                    ></app-bank-detail>
-                  </div>
-                  <!-- <div class="d-flex align-items-start gap-3 mt-4 ms-4">
-                    <button
-                      type="button"
-                      class="btn btn-light btn-label previestab"
-                      awPreviousStep
-                    >
-                      <i
-                        class="ri-arrow-left-line label-icon align-middle fs-16 me-2"
-                      ></i>
-                      Back to Billing Info
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-success btn-label right ms-auto nexttab nexttab"
-                      awNextStep
-                    >
-                      <i
-                        class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"
-                      ></i
-                      >Go to Payment
-                    </button>
-                  </div> -->
-                </cdk-step>
-
-                <cdk-step
-                  [optional]="false"
-                  class="steps nav flex-column custom-nav nav-pills"
-                  [completed]="true"
-                >
-                  <ng-template cdkStepLabel>
-                    <button
-                      [ngClass]="empBackData ? 'done completed' : 'active'"
-                      [attr.aria-selected]="empBackData ? 'true' : 'false'"
-                      class="nav-link"
-                      id="v-pills-bill-address-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-bill-address"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-bill-address"
-                    >
-                      <span class="step-title me-2">
-                        <i
-                          [ngClass]="
-                            empBackData
-                              ? 'ri-checkbox-circle-fill completed'
-                              : 'ri-close-circle-fill'
-                          "
-                          class="align-bottom step-icon me-2"
-                        ></i>
-                      </span>
-                      Background Verification
-                    </button>
-                  </ng-template>
-
-                  <div
-                    class="centered-content ms-lg-4"
-                    style="transform: none !important"
-                  >
-                    <app-background-verification
-                      (backGroundDetail)="onEmpbankBagbroundDataFetched($event)"
-                      [urlId]="this.urlId"
-                    ></app-background-verification>
-                    <!-- <app-bank-detail
-                    (bankDataFetched)="onEmpbankDataFetched($event)"
-                    [urlId]="this.urlId"
-                  ></app-bank-detail> -->
-                  </div>
-                </cdk-step>
-
-                <cdk-step
-                  [optional]="false"
-                  class="steps nav flex-column custom-nav nav-pills"
-                  [completed]="true"
-                >
-                  <ng-template cdkStepLabel>
-                    <button
-                      [ngClass]="empSalaryData ? 'done completed' : 'active'"
-                      [attr.aria-selected]="empSalaryData ? 'true' : 'false'"
-                      class="nav-link"
-                      id="v-pills-bill-address-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-bill-address"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-bill-address"
-                    >
-                      <span class="step-title me-2">
-                        <i
-                          [ngClass]="
-                            empSalaryData
-                              ? 'ri-checkbox-circle-fill completed'
-                              : 'ri-close-circle-fill'
-                          "
-                          class="align-bottom step-icon me-2"
-                        ></i>
-                      </span>
-                      Salary Detail
-                    </button>
-                  </ng-template>
-
-                  <div
-                    class="centered-content ms-lg-4"
-                    style="transform: none !important"
-                  >
-                    <app-salary-detail
-                      (salaryDataFetched)="onSalaryDataFecthed($event)"
-                      [urlId]="this.urlId"
-                    ></app-salary-detail>
-                    <!-- <app-bank-detail
-                    (bankDataFetched)="onEmpbankDataFetched($event)"
-                    [urlId]="this.urlId"
-                  ></app-bank-detail> -->
-                  </div>
-                </cdk-step>
-              </ng-stepper>
+                  </h5>
+                  <p class="text-truncate text-muted fs-md mb-0 userStatus">
+                    <small>{{this.empData?.designation_name}}</small>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- end row -->
+        </div>
+        <div class="col-lg-4 col-auto">
+          <div class="text-end">
+            <button class="btn btn-secondary mb-2" (click)="goBack()">
+              <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+              Back
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="chat-wrapper d-lg-flex gap-1 p-1 mb-3">
+      <div class="chat-wrapper-menu p-3 d-flex flex-column rounded">
+        <!-- <div class="mb-3 position-relative d-none d-lg-block">
+              <a href="javascript:void(0);"><img src="assets/images/users/48/avatar-1.jpg" alt="" class="avatar-sm rounded"></a>
+              <span class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1"><span class="visually-hidden">unread messages</span></span>
+          </div> -->
+        <ul
+          class="chat-menu list-unstyled text-center nav nav-pills justify-content-center"
+        >
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Personal Details"
+            [class.active]="currentTab === 'personal-detail'"
+            (click)="changeTab('personal-detail')"
+            placement="right"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link active"
+              [ngClass]="{ active: currentTab === 'personal-detail' }"
+              ><i class="ri-user-2-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Bank account Details"
+            [class.active]="currentTab === 'bank'"
+            (click)="changeTab('bank')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'bank' }"
+              ><i class="ri-bank-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Background Verification"
+            [class.active]="currentTab === 'background-verification'"
+            (click)="changeTab('background-verification')"
+            placement="right"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'background-verification' }"
+              ><i class="bi bi-file-earmark-richtext"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Salary Details"
+            [class.active]="currentTab === 'salary-detail'"
+            (click)="changeTab('salary-detail')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'salary-detail' }"
+              ><i class="ri-article-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Salary Invoice"
+            [class.active]="currentTab === 'salary-invoice'"
+            (click)="changeTab('salary-invoice')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'salary-invoice' }"
+              ><i class="bi bi-file-earmark-richtext"></i
+            ></a>
+          </li>
+
+          <li
+          class="nav-item"
+          placement="right"
+          tooltip="Advance"
+          [class.active]="currentTab === 'advance'"
+          (click)="changeTab('advance')"
+        >
+          <a
+            href="javascript:void(0);"
+            class="nav-link"
+            [ngClass]="{ active: currentTab === 'advance' }"
+            ><i class="ri-hand-coin-fill"></i
+          ></a>
+        </li>
+
+          
+        </ul>
+
+        <!-- <div class="mt-auto text-center d-none d-lg-block">
+          <div dropdown [dropup]="true" container="body" class="dropdown">
+            <button
+              dropdownToggle
+              class="btn btn-secondary btn-icon"
+              type="button"
+            >
+              <i class="bi bi-gear"></i>
+            </button>
+            <ul *bsDropdownMenu class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);">Action</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  >Another action</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  >Something else here</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div> -->
+      </div>
+      <!-- <div class="chat-leftsidebar">
+        <div class="tab-content">
+          <div
+            [hidden]="currentTab !== 'personal-detail'"
+            class="tab-pane show active"
+            id="pills-chats"
+          >
+            <div class="p-4">
+              <div class="d-flex align-items-start">
+                <div class="flex-grow-1">
+                  <h5 class="mb-4">Personal Details</h5>
+                </div>
+                <div class="flex-shrink-0">
+                  <div placement="bottom" tooltip="Add Contact">
+                 
+                    <button type="button" class="btn btn-subtle-primary btn-sm">
+                      <i class="ri-add-line align-bottom"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            
+            </div>
+          
+
+           
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'bank'"
+            class="tab-pane fade show active"
+            id="pills-bank"
+          >
+            <div>
+              <div class="p-4">
+                <div class="d-flex align-items-start">
+                  <div class="flex-grow-1">
+                    <h5 class="mb-4">Bank account details</h5>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div placement="bottom" tooltip="Add Contact">
+                     
+                      <button
+                        type="button"
+                        class="btn btn-subtle-primary btn-sm"
+                      >
+                        <i class="ri-add-line align-bottom"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="search-box">
+                  <input
+                    type="text"
+                    class="form-control bg-light border-light"
+                    placeholder="Search here..."
+                  />
+                  <i class="ri-search-2-line search-icon"></i>
+                </div>
+              </div>
+   
+              <div>
+                <ngx-simplebar class="chat-room-list"> </ngx-simplebar>
+              </div>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'background-verification'"
+            class="tab-pane show fade active"
+            id="pills-calls"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Background Verification</h5>
+              </div>
+              <ngx-simplebar
+                data-simplebar-track="light"
+                class="chat-message-list chat-call-list"
+              >
+                <ul class="list-unstyled chat-list"></ul>
+              </ngx-simplebar>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'salary-detail'"
+            class="tab-pane show fade active"
+            id="pills-bookmark"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Salary details</h5>
+              </div>
+              
+              <ngx-simplebar class="chat-message-list chat-bookmark-list">
+                <ul class="list-unstyled chat-list">
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Salary</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.netSalary}}</p>   
+                        </div>
+                    </div>
+                </li>
+                   
+                    <li>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Earning</a></h5>
+                            </div>
+
+                            <div class="flex-shrink-0 ms-3">
+                              <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.earn}}</p>   
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                      <div class="d-flex align-items-center">
+                          <div class="flex-grow-1 overflow-hidden">
+                              <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Deduction</a></h5>
+                          </div>
+
+                          <div class="flex-shrink-0 ms-3">
+                            <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.deductionsTotal}}</p>   
+                          </div>
+                      </div>
+                  </li>
+
+                 
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Net Pay</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <h5 class=" text-truncate fs-xs mb-0">{{empSalaryData?.totalAmount}}</h5>   
+                    </div>
+                </div>
+            </li>
+                    
+                </ul>
+            </ngx-simplebar>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'salary-invoice'"
+            class="tab-pane show fade active"
+            id="pills-salary-invoice"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Salary Invoice</h5>
+              </div>
+              <ngx-simplebar class="chat-message-list chat-bookmark-list">
+                <ul class="list-unstyled chat-list">
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Invoice of Month</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.invoiceOfMonth | date : " MMMM"}}</p>   
+                        </div>
+                    </div>
+                </li>
+                   
+                    <li>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Paid Days</a></h5>
+                            </div>
+
+                            <div class="flex-shrink-0 ms-3">
+                              <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.paidDays}}</p>   
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                      <div class="d-flex align-items-center">
+                          <div class="flex-grow-1 overflow-hidden">
+                              <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Balance Advance</a></h5>
+                          </div>
+
+                          <div class="flex-shrink-0 ms-3">
+                            <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.totalAdv}}</p>   
+                          </div>
+                      </div>
+                  </li>
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Earning</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.earnTotal}}</p>   
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                  <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                          <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Deduction</a></h5>
+                      </div>
+
+                      <div class="flex-shrink-0 ms-3">
+                        <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.deductionsTotal}}</p>   
+                      </div>
+                  </div>
+              </li>
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Net Pay</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <h5 class=" text-truncate fs-xs mb-0">{{salaryInvioceData?.totalamount}}</h5>   
+                    </div>
+                </div>
+            </li>
+                    
+                </ul>
+            </ngx-simplebar>
+             
+           
+            </div>
+          </div>
+
+         
+
+        <div
+        [hidden]="currentTab !== 'advance'"
+        class="tab-pane show fade active"
+        id="pills-advance"
+      >
+        <div>
+          <div class="px-4 pt-4">
+            <h5 class="mb-4">Advance</h5>
+          </div>
+
+          <ngx-simplebar class="chat-message-list chat-bookmark-list">
+            <ul class="list-unstyled chat-list">
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Advanced Paid</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <p class="text-muted text-truncate fs-xs mb-0">{{advanceData?.totalAmount}}</p>   
+                    </div>
+                </div>
+            </li>
+               
+                <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Advanced Adjusted</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{advanceData?.totalAdjustment}}</p>   
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                  <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                          <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Balance Advance</a></h5>
+                      </div>
+
+                      <div class="flex-shrink-0 ms-3">
+                        <h5 class=" text-truncate fs-xs mb-0">{{advanceData?.totalBalance}}</h5>   
+                      </div>
+                  </div>
+              </li>    
+            </ul>
+        </ngx-simplebar>
+        </div>
+      </div>
+        
+        </div>
+      </div> -->
+
+      <div class="user-chat w-100 overflow-hidden">
+        <div class="flex-column justify-content-between h-100 video-content">
+          <div
+            [hidden]="currentTab !== 'personal-detail'"
+            class="tab-pane show active"
+          >
+            <app-add-employee
+              (dataFetched)="onEmpDataFetched($event)"
+              [urlId]="this.urlId"
+            ></app-add-employee>
+          </div>
+
+          <div [hidden]="currentTab !== 'bank'" class="tab-pane show active">
+            <app-bank-detail
+              (bankDataFetched)="onEmpbankDataFetched($event)"
+              [urlId]="this.urlId"
+            ></app-bank-detail>
+          </div>
+          <div
+            [hidden]="currentTab !== 'background-verification'"
+            class="tab-pane show active"
+          >
+          <app-background-verification
+          (backGroundDetail)="onEmpbankBagbroundDataFetched($event)"
+          [urlId]="this.urlId"
+        ></app-background-verification>
+          </div>
+
+          <div
+          [hidden]="currentTab !== 'salary-detail'"
+          class="tab-pane show active"
+        >
+        <app-salary-detail
+                      (salaryDataFetched)="onSalaryDataFecthed($event)"
+                      [urlId]="this.urlId"
+                    ></app-salary-detail>
+        </div>
+
+        <div
+        [hidden]="currentTab !== 'salary-invoice'"
+        class="tab-pane show active"
+      >
+      <app-salary-invoice
+      (salaryInvoiceData)="onSalaryInvoiceDataFected($event)"
+      [urlId]="this.urlId"
+      [isActive]="currentTab === 'salary-invoice'"
+    ></app-salary-invoice>
+      </div>
+
+      <div
+      [hidden]="currentTab !== 'advance'"
+      class="tab-pane show active"
+    >
+    <app-advance-detail
+    (advanceData)="onAdvanceDatafected($event)"
+                      [urlId]="this.urlId"
+                      [isActive]="currentTab === 'advance'"
+                    ></app-advance-detail>
+    </div>
+        </div>
+      </div>
+      
+    </div>
+
+   
     <!-- end -->
   </div>
   <!-- end col -->

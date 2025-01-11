@@ -154,6 +154,13 @@ export const COMPANY_MENU: MenuItem[] = [
     icon: " ri-notification-4-fill",
     parentId: 75,
   },
+  {
+    id: 11,
+    label: "MENUITEMS.COMPANY.LIST.PAYROLL",
+    link: "/payroll",
+    icon: " bx bx-rupee",
+    parentId: 75,
+  },
 
   // More items...
 ];

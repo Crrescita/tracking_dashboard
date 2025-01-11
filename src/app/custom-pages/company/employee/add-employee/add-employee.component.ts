@@ -28,7 +28,7 @@ import { Location } from "@angular/common";
 })
 export class AddEmployeeComponent implements OnInit {
   @Input() urlId: number | null = null;
-  @Output() dataFetched = new EventEmitter<boolean>();
+  @Output() dataFetched = new EventEmitter<any>();
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("showModalDepartment", { static: false })
   showModalDepartment?: ModalDirective;
@@ -188,7 +188,6 @@ export class AddEmployeeComponent implements OnInit {
             Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
           ],
         ],
-        salary: ["", [Validators.required]],
         status: ["", [Validators.required]],
         gender: ["", [Validators.required]],
         state: [""],
@@ -440,7 +439,7 @@ export class AddEmployeeComponent implements OnInit {
         if (res && res.status) {
           this.toggleSpinner(false);
           this.setemployeeDetails(res.data[0]);
-          this.dataFetched.emit(true);
+          this.dataFetched.emit(res.data[0]);
         } else {
           this.handleError("Unexpected response format");
         }
@@ -464,7 +463,6 @@ export class AddEmployeeComponent implements OnInit {
         password: data.password,
         status: data.status,
         mobile: data.mobile,
-        salary: data.salary,
         joining_date: data.joining_date,
         gender: data.gender,
         designation: data.designation,
@@ -520,7 +518,6 @@ export class AddEmployeeComponent implements OnInit {
     formData.append("company_id", this.company_id);
     formData.append("name", this.capitalizeWords(this.f["name"].value.trim()));
     formData.append("mobile", this.f["mobile"].value);
-    formData.append("salary", this.f["salary"].value);
     formData.append("email", this.f["email"].value);
     formData.append("address", this.f["address"].value);
     formData.append("dob", this.f["dob"].value);

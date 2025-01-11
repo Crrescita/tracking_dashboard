@@ -5,6 +5,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { MaintenanceComponent } from "./maintenance/maintenance.component";
 import { ComingSoonComponent } from "./coming-soon/coming-soon.component";
 import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.component";
+import { SupportComponent } from './support/support.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
   {
     path: "privacy-policy",
     component: PrivacyPolicyComponent,
+  },
+  {
+    path: "support",
+    component: SupportComponent,
   },
 ];
 
