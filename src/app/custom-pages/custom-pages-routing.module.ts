@@ -1,3 +1,4 @@
+import { SalarySettingComponent } from './company/employee/salary/salary-setting/salary-setting.component';
 import { EmployeeComponent } from "./company/employee/employee/employee.component";
 import { NgModule, Component } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
@@ -81,7 +82,8 @@ const routes: Routes = [
   { path: "assign-task", component: TaskListComponent },
   { path: "live-location/:id", component: LiveLocationComponent },
   { path: "gernal-report", component: GernalReportsComponent },
-  {path:"payroll" , component: PayrollListComponent}
+  {path:"payroll" , component: PayrollListComponent},
+  {path:"salary-setting" , component: SalarySettingComponent}
 ];
 
 @NgModule({

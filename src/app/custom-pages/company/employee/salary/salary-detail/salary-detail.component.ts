@@ -16,6 +16,8 @@ import { ToastrService } from "ngx-toastr";
 
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { ApiService } from "../../../../../core/services/api.service";
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: "app-salary-detail",
@@ -48,19 +50,21 @@ export class SalaryDetailComponent {
   //   { id: 4, name: "Medical Allowance" },
   // ];
   allowances = [
-    { id: 1, name: "HRA", formula: "Basic / 2" },
-    { id: 2, name: "Travel Allowance" },
+    // { id: 1, name: "Basic", formula: "Net_Salary / 2" },
+    { id: 2, name: "HRA", formula: "Basic / 2" },
+    { id: 3, name: "Travel Allowance" },
     {
-      id: 3,
+      id: 4,
       name: "Special Allowance",
       formula: "Net_Salary -  Basic - HRA - Travel_Allowance",
     },
   ];
   allowancesList = [
-    { id: 1, name: "HRA", formula: "Basic / 2" },
-    { id: 2, name: "Travel Allowance" },
+    { id: 1, name: "Basic", formula: "Net_Salary / 2" },
+    { id: 2, name: "HRA", formula: "Basic / 2" },
+    { id: 3, name: "Travel Allowance" },
     {
-      id: 3,
+      id: 4,
       name: "Special Allowance",
       formula: "Net_Salary -  Basic - HRA - Travel_Allowance",
     },
@@ -83,7 +87,8 @@ export class SalaryDetailComponent {
   constructor(
     private formBuilder: FormBuilder,
     public toastService: ToastrService,
-    private api: ApiService
+    private api: ApiService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -122,33 +127,31 @@ export class SalaryDetailComponent {
     });
   }
 
-  // onSalaryChange(){
-  //   this.formGroup.get('salary')?.valueChanges.subscribe((salaryValue) => {
-  //     this.recalculateDeductions();
+  onSalaryChange(){
+    this.formGroup.get('salary')?.valueChanges.subscribe((salaryValue) => {
+      this.recalculateDeductions();
 
-  //     this.updateVariable("Net Salary", salaryValue || 0); // Update the "Net Salary" variable
+      this.updateVariable("Net Salary", salaryValue || 0); // Update the "Net Salary" variable
 
-  //     const netSalaryRowIndex = this.findRowIndex("Net Salary");
-  //     console.log(netSalaryRowIndex)
-  //     if (netSalaryRowIndex !== -1) {
-  //       console.log(netSalaryRowIndex)
-  //       this.updateDependentRows(netSalaryRowIndex);
-  //     }
-  //   });
+      const netSalaryRowIndex = this.findRowIndex("Net Salary");
+      if (netSalaryRowIndex !== -1) {
+        this.updateDependentRows(netSalaryRowIndex);
+      }
+    });
 
-  //   this.breakup.valueChanges.subscribe(() => {
-  //     this.populateDependencyMap();
-  //   });
-  // }
+    this.breakup.valueChanges.subscribe(() => {
+      this.populateDependencyMap();
+    });
+  }
 
   initializeForm() {
     this.formGroup = this.formBuilder.group({
       salary: ["", [Validators.required, Validators.min(0)]],
       breakup: this.formBuilder.array([this.createPermanentRow()]),
       deductions: this.formBuilder.array([
-        this.createDeductionRow("PF", "none", "", 0),
-        this.createDeductionRow("ESI", "none", "", 0),
-        this.createDeductionRow("TDS", "none", "", 0),
+        this.createDeductionRow("PF", "none", "", 0, true),
+        this.createDeductionRow("ESI", "none", "", 0 , true),
+        this.createDeductionRow("TDS", "none", "", 0, true),
       ]),
     });
   }
@@ -224,7 +227,7 @@ export class SalaryDetailComponent {
     return this.formBuilder.group({
       name: ["Basic", Validators.required],
       calculationType: ["custom"],
-      formula: [""],
+      formula: ["Net_Salary / 2"],
       amount: [0, [Validators.required, Validators.min(0)]],
     });
   }
@@ -243,13 +246,15 @@ export class SalaryDetailComponent {
     name: string,
     calculationType: string,
     formula: string,
-    amount: number
+    amount: number,
+    nameReadonly:boolean
   ): FormGroup {
     return this.formBuilder.group({
       name: [name, Validators.required],
       calculationType: [calculationType, Validators.required],
       formula: [formula], // Optional, depends on calculation type
       amount: [amount, [Validators.required, Validators.min(0)]],
+      nameReadonly: [nameReadonly],
     });
   }
 
@@ -281,6 +286,10 @@ export class SalaryDetailComponent {
             // Patch earnings and deductions if data is valid
             this.patchEarnings(data.earning);
             this.patchDeductions(data.deduction);
+
+            this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+            this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+            this.totalctc = data.employeer_ctc.totalctc || 0;
 
             this.calculateTotalAmount();
           }
@@ -316,7 +325,7 @@ export class SalaryDetailComponent {
         this.allowances = this.allowances.filter(
           (item) => item.name !== earningItem.name
         );
-
+        row.get("nameReadonly")?.setValue(true);
         breakupArray.push(row);
       });
     }
@@ -332,9 +341,11 @@ export class SalaryDetailComponent {
           deductionItem.name || "",
           deductionItem.calculationType || "none",
           deductionItem.formula || "",
-          deductionItem.amount || 0
+          deductionItem.amount || 0,
+          true
         );
         this.updateVariable(deductionItem.name, deductionItem.amount);
+        row.get("nameReadonly")?.setValue(true);
         deductionsArray.push(row);
       });
     }
@@ -346,25 +357,70 @@ export class SalaryDetailComponent {
     this.submitted = isLoading;
   }
 
+  // onSubmit() {
+  //   if (!this.urlId) {
+  //     this.toastService.error("Please add Personal Details First");
+  //   } else {
+  //     if (this.formGroup.valid) {
+  //       this.toggleSpinner(true);
+
+  //       const formData = this.createFormData();
+
+  //       if (this.urlId) {
+  //         this.update(formData);
+  //       } else {
+  //         this.add(formData);
+  //       }
+  //     } else {
+  //       this.formGroup.markAllAsTouched();
+  //     }
+  //   }
+  // }
+
   onSubmit() {
     if (!this.urlId) {
       this.toastService.error("Please add Personal Details First");
+      return;
+    }
+  
+    if (!this.formGroup.valid) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
+  
+    const salary = this.f["salary"].value;
+    const deductions = (this.formGroup.get("deductions") as FormArray).getRawValue();
+    const esiDeduction = deductions.find(d => d.name === "ESI")?.amount || 0;
+  
+    // Validation: ESI should not be applicable if salary > 21000
+    if (salary > 21000 && esiDeduction > 0) {
+      this.toastService.error("ESI is not applicable for salary above Rs.21,000.");
+      return;
+    }
+  
+    // Validation: Employer ESI Amount should not exist if salary > 21000
+    if (salary > 21000 && this.employeerEsiAmount > 0) {
+      this.toastService.error("Employer ESI should not be applicable for salary above Rs.21,000.");
+      return;
+    }
+  
+    // Validation: Earning Total must be equal to salary
+    if (this.earningTotal !== salary) {
+      this.toastService.error("Total Earnings must be equal to Salary.");
+      return;
+    }
+  
+    this.toggleSpinner(true);
+  
+    const formData = this.createFormData();
+  
+    if (this.urlId) {
+      this.update(formData);
     } else {
-      if (this.formGroup.valid) {
-        this.toggleSpinner(true);
-
-        const formData = this.createFormData();
-
-        if (this.urlId) {
-          this.update(formData);
-        } else {
-          this.add(formData);
-        }
-      } else {
-        this.formGroup.markAllAsTouched();
-      }
+      this.add(formData);
     }
   }
+  
 
   get f() {
     return this.formGroup.controls;
@@ -377,12 +433,12 @@ export class SalaryDetailComponent {
       // earning: this.f["breakup"].value,
       earning: (this.formGroup.get("breakup") as FormArray).getRawValue(),
       deduction: (this.formGroup.get("deductions") as FormArray).getRawValue(),
-      // deductions: this.formGroup.get("deductions")!.value.map((deduction: any) => ({
-      //   name: deduction.name,
-      //   calculationType: deduction.calculationType,
-      //   formula: deduction.formula,
-      //   amount: deduction.amount,
-      // })),
+      employeer_ctc:{
+       totalEarning: this.earningTotal,
+       employeerPfAmount:this.employeerPfAmount,
+       employeerEsiAmount: this.employeerEsiAmount,
+       totalctc: this.totalctc
+      }
     };
     return formData;
   }
@@ -502,21 +558,14 @@ export class SalaryDetailComponent {
     });
   }
 
+  addDeduction(){
+    const deductionsArray = this.formGroup.get("deductions") as FormArray;
+    const row =  this.createDeductionRow( "", "none", "", 0, false);
+    deductionsArray.push(row);
+  }
+
   // Remove a row
 
-  // removeRow(index: number): void {
-  //   if (index === 0) {
-  //     this.toastService.error("The first row cannot be deleted.");
-  //     return;
-  //   }
-
-  //   const rowDescription = this.breakup.at(index).get("name")?.value;
-
-  //   this.removeVariable(rowDescription);
-
-  //   this.breakup.removeAt(index);
-  //   this.calculateTotalAmount();
-  // }
 
   removeRow(index: number): void {
     if (index === 0) {
@@ -562,9 +611,12 @@ export class SalaryDetailComponent {
   }
 
   // remove deduction
-  removeDeductionRow(index: number, arrayName: string): void {
-    const array = this.formGroup.get(arrayName) as FormArray;
-    array.removeAt(index);
+  removeDeductionRow(index: number): void {
+    const row = this.deductions.at(index); 
+    const rowName = row.get("name")?.value;
+    this.removeVariable(rowName)
+    this.deductions.removeAt(index);
+    this.calculateTotalAmount();
   }
 
   updateVariable(name: string, value: number): void {
@@ -682,6 +734,13 @@ export class SalaryDetailComponent {
     this.evaluateFormula(rowIndex);
   }
 
+  onFormulaInputDeduction(event: Event, rowIndex: number): void {
+    const input = event.target as HTMLInputElement;
+    const control = this.deductions.at(rowIndex);
+    control.get("amount")?.setValue(input.value);
+    this.updateVariable( control.get("name")?.value, Number(input.value));
+  }
+
   validateTotal(): void {
     this.totalAmount = this.breakup.controls
       .map((control) => control.get("amount")?.value || 0)
@@ -783,15 +842,14 @@ export class SalaryDetailComponent {
       if (evaluatedValue < 0) {
         evaluatedValue = 0;
       }
-      if (evaluatedValue < 0) {
-        evaluatedValue = 0;
-      }
+
       // Update the current row's amount
       control.get("amount")?.setValue(evaluatedValue);
 
       const calculationType = control.get("calculationType")?.value;
       if (calculationType == "formula") {
-        control.get("amount")?.disable({ onlySelf: true });
+        // control.get("amount")?.disable({ onlySelf: true });
+        control.get("nameReadonly")?.setValue( true)
       }
 
       // Update the variable value
@@ -808,45 +866,12 @@ export class SalaryDetailComponent {
     }
   }
 
-  //   updateDependentRows(rowIndex: number): void {
-  //     const control = this.breakup.at(rowIndex);
-  //     const variableName = control.value.name.trim().replace(/\s+/g, "_");
-
-  // console.log(variableName)
-  // console.log(this.dependencyMap)
-  //     if (this.dependencyMap[variableName]) {
-  //       Array.from(this.dependencyMap[variableName]).forEach(
-  //         (dependentRowIndex) => {
-  //           const dependentRow = this.breakup.at(dependentRowIndex);
-  //           const dependentFormula = dependentRow.get("formula")?.value;
-
-  //           if (dependentFormula) {
-  //             const evaluatedValue = this.evaluateExpression(
-  //               dependentFormula,
-  //               dependentRowIndex
-  //             );
-
-  //             dependentRow.get("amount")?.setValue(evaluatedValue);
-  //             dependentRow.get("amount")?.markAsDirty();
-  //             dependentRow.get("amount")?.markAsTouched();
-
-  //             // Recursively update this dependent row's dependencies
-  //             this.updateDependentRows(dependentRowIndex);
-  //           }
-  //         }
-  //       );
-  //     }
-  //   }
 
   updateDependentRows(rowIndex: number): void {
     if (rowIndex === -2) {
-      // Special case: "Net Salary" or external variable
+    
       const netSalaryValue = this.formGroup.get("salary")?.value || 0;
 
-      // console.log('Net Salary Value:', netSalaryValue);
-      // console.log('Dependency Map:', this.dependencyMap);
-
-      // Update dependents of "Net Salary"
       if (this.dependencyMap["Net_Salary"]) {
         Array.from(this.dependencyMap["Net_Salary"]).forEach(
           (dependentRowIndex) => {
@@ -867,7 +892,6 @@ export class SalaryDetailComponent {
               dependentRow.get("amount")?.markAsDirty();
               dependentRow.get("amount")?.markAsTouched();
 
-              // Recursively update dependent rows
               this.updateDependentRows(dependentRowIndex);
             }
           }
@@ -912,53 +936,7 @@ export class SalaryDetailComponent {
     }
   }
 
-  // evaluateExpression(expression: string, rowIndex: number): number {
-  //   const variables: Record<string, number> = {};
-
-  //   // Extract variables from breakup controls
-  //   this.breakup.controls.forEach((control, i) => {
-  //     const variableName = control.value.name?.trim().replace(/\s+/g, "_");
-  //     if (!variableName) return;
-
-  //     const amount = control.get("amount")?.value || 0;
-  //     variables[variableName] = amount;
-
-  //     // Track dependencies
-  //     if (rowIndex !== i && expression.includes(variableName)) {
-  //       if (!this.dependencyMap[variableName]) {
-  //         this.dependencyMap[variableName] = new Set<number>();
-  //       }
-  //       this.dependencyMap[variableName].add(rowIndex);
-  //     }
-  //   });
-
-  //   // Include variables from availableVariables
-  //   this.availableVariables.forEach((variable) => {
-  //     if (!(variable.name in variables)) {
-  //       variables[variable.name] = variable.value || 0;
-  //     }
-  //   });
-
-  //   // Replace placeholders with actual values
-  //   let parsedExpression = expression.replace(
-  //     /\b[A-Za-z][A-Za-z0-9_]*\b/g,
-  //     (match) => (match in variables ? String(variables[match]) : "0")
-  //   );
-
-  //   // Handle percentage (%) operator
-  //   parsedExpression = parsedExpression.replace(
-  //     /(\d+(\.\d+)?)\s*%\s*(\d+(\.\d+)?)/g,
-  //     (fullMatch, num1, _, num2) => `(${num1} * ${num2} / 100)`
-  //   );
-
-  //   try {
-  //     return new Function("return " + parsedExpression)();
-  //   } catch (error) {
-  //     console.error("Invalid expression:", error);
-  //     this.toastService.error("Invalid formula. Please check and try again.");
-  //     return 0;
-  //   }
-  // }
+  
 
   evaluateExpression(
     expression: string,
@@ -1029,55 +1007,9 @@ export class SalaryDetailComponent {
     }
   }
 
-  // calculateTotalAmount(): void {
-  //   this.totalAmount = this.breakup.controls
-  //     .map((control) => control.get("amount")?.value || 0)
-  //     .reduce((acc, value) => acc + value, 0);
-  // }
-
-  // calculateDeductions(index: number): void {
-  //   const salary = this.formGroup.get("salary")?.value || 0;
-  //   const breakup = this.formGroup.get("breakup") as FormArray;
-  //   const deductions = this.formGroup.get("deductions") as FormArray;
-  //   const control = deductions.at(index) as FormGroup;
-
-  //   const name = control.get("name")?.value;
-  //   const calculationType = control.get("calculationType")?.value;
-
-  //   let amount = 0;
-
-  //     // Enable "amount" input only for custom calculation
-  //     if (calculationType === "custom") {
-  //       control.get("amount")?.enable({ onlySelf: true });
-  //     } else {
-  //       control.get("amount")?.disable();
-  //     }
-
-  //   if (calculationType === "percentage") {
-  //     if (name === "PF") {
-  //       // const basicSalary = salary * 0.4;
-  //       // amount = (basicSalary * 12) / 100; // PF = Basic * 12%
-  //        const basicRow = breakup.controls.find((row) => row.get("name")?.value === "Basic");
-  //     const basicSalary = basicRow?.get("amount")?.value || 0;
-  //     amount = (basicSalary * 12) / 100;
-  //     control.get("formula")?.setValue('(Basic * 12)/ 100');
-  //     } else if (name === "ESI") {
-  //       amount = (salary * 0.75) / 100; // ESI = 0.75% of salary
-  //       control.get("formula")?.setValue('(Net_Salary * 0.75)/ 100');
-  //     }
-  //   } else if (calculationType === "custom" && name === "TDS") {
-  //     // Custom logic for TDS (amount entered manually)
-  //     // Leave amount unchanged for custom calculation
-  //   } else {
-  //     amount = 0;
-  //   }
-
-  //   control.get("amount")?.setValue(amount);
-
-  //   this.calculateTotalAmount();
-  // }
-
-  calculateDeductions(index: number): void {
+ employeerPfAmount:any =0
+ employeerEsiAmount:any = 0
+ calculateDeductions(index: number, fromDropdownChange: boolean = false): void {
     const salary = this.formGroup.get("salary")?.value || 0;
     const breakup = this.formGroup.get("breakup") as FormArray;
     const deductions = this.formGroup.get("deductions") as FormArray;
@@ -1088,12 +1020,20 @@ export class SalaryDetailComponent {
 
     let amount = 0;
 
-    // Handle input state based on calculation type
-    if (calculationType === "custom") {
-      control.get("amount")?.enable({ onlySelf: true });
-    } else {
-      control.get("amount")?.disable();
+    if (fromDropdownChange && name === "ESI" && salary > 21000) {
+      this.toastService.error("ESI is not applicable for salary above 21,000.");
+      control.get("calculationType")?.setValue("none");
+      control.get("amount")?.setValue(0); 
+      this.employeerEsiAmount = 0;
+      return;
     }
+
+    // Handle input state based on calculation type
+    // if (calculationType === "custom") {
+    //   control.get("amount")?.enable({ onlySelf: true });
+    // } else {
+    //   control.get("amount")?.disable();
+    // }
 
     switch (calculationType) {
       case "percentage":
@@ -1103,10 +1043,12 @@ export class SalaryDetailComponent {
           );
           const basicSalary = basicRow?.get("amount")?.value || 0;
           amount = (basicSalary * 12) / 100;
+          this.employeerPfAmount = amount
           control.get("formula")?.setValue("(Basic * 12) / 100");
-        } else if (name === "ESI") {
-          amount = (salary * 0.75) / 100;
-          control.get("formula")?.setValue("(Net_Salary * 0.75) / 100");
+        } else if (name === "ESI") {  
+            amount = (salary * 0.75) / 100;
+            this.employeerEsiAmount = (salary * 3.25) / 100;
+            control.get("formula")?.setValue("(Net_Salary * 0.75) / 100");
         }
         break;
 
@@ -1154,13 +1096,13 @@ export class SalaryDetailComponent {
       default:
         amount = 0;
     }
-
     control.get("amount")?.setValue(Math.round(amount));
     this.calculateTotalAmount();
   }
 
   evaluateDeductionFormula(rowIndex: number): void {
     const control = this.deductions.at(rowIndex);
+    console.log(control)
     const formula = control.get("formula")?.value;
 
     try {
@@ -1185,7 +1127,8 @@ export class SalaryDetailComponent {
 
       const calculationType = control.get("calculationType")?.value;
       if (calculationType == "formula") {
-        control.get("amount")?.disable({ onlySelf: true });
+        control.get("nameReadonly")?.setValue( true)
+
       }
 
       // Update the variable value
@@ -1236,29 +1179,100 @@ export class SalaryDetailComponent {
     }
   }
 
+  earningTotal:any
+  deductionsTotal:any
+  totalctc:any = 0
+  // grossEarning:any
   calculateTotalAmount(): void {
-    // Get breakup array and calculate the total from it
+   
     const breakup = this.formGroup.get("breakup") as FormArray;
-    const breakupTotal = breakup.controls.reduce((total, control) => {
+    this.earningTotal = breakup.controls.reduce((total, control) => {
       return total + (control.get("amount")?.value || 0);
     }, 0);
 
-    // Get deductions array and calculate the total from it
     const deductions = this.formGroup.get("deductions") as FormArray;
-    const deductionsTotal = deductions.controls.reduce((total, control) => {
+    this.deductionsTotal = deductions.controls.reduce((total, control) => {
+      //   if (control.get("name")?.value.toLowerCase() === 'esi') {
+      //     this.employeerEsiAmount = Math.round(( control.get("amount")?.value * 3.25) / 100);
+      // }
+      // if (control.get("name")?.value.toLowerCase() === 'pf') {
+      //   this.employeerPfAmount = control.get("amount")?.value;
+      // }
       return total + (control.get("amount")?.value || 0);
     }, 0);
 
-    // Calculate the final total by subtracting deductions from breakup total
-    this.totalAmount = Math.round(breakupTotal - deductionsTotal);
+    this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
+
+    this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
 
     const data = {
-      earn: breakupTotal,
-      deductionsTotal: deductionsTotal,
+      earn: this.earningTotal,
+      deductionsTotal: this.deductionsTotal,
       totalAmount: this.totalAmount,
       netSalary: this.netSalary,
     };
 
     this.salaryDataFetched.emit(data);
+  }
+
+
+
+  convertNumberToWords(num: any): string {
+    if (num === null || num === undefined || isNaN(num)) {
+      return 'Invalid amount';
+    }
+  
+    const a = [
+      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+      'eighteen', 'nineteen'
+    ];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const scales = ['thousand', 'lakh', 'crore'];
+  
+    if (num === 0) return 'Zero';
+
+    let isNegative = false;
+    if (num < 0) {
+      isNegative = true;
+      num = Math.abs(num); // Convert negative number to positive for processing
+    }
+  
+    let words = '';
+  
+    // Ensure the number is converted to a string and split for decimals
+    const numStr = num.toString();
+    const [integerPart, decimalPart] = numStr.split('.');
+  
+    const numberToWords = (n: number): string => {
+      let word = '';
+      if (n < 20) {
+        word = a[n];
+      } else if (n < 100) {
+        word = b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+      } else if (n < 1000) {
+        word = a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numberToWords(n % 100) : '');
+      } else {
+        for (let i = 0, divisor = 1000; i < scales.length; i++, divisor *= 100) {
+          if (n < divisor * 100) {
+            word = numberToWords(Math.floor(n / divisor)) + ' ' + scales[i] +
+              (n % divisor ? ' ' + numberToWords(n % divisor) : '');
+            break;
+          }
+        }
+      }
+      return word;
+    };
+  
+    // Convert integer part to words
+    words = numberToWords(parseInt(integerPart, 10));
+  
+    // Add decimal part if available
+    if (decimalPart) {
+      words += ` and ${numberToWords(parseInt(decimalPart, 10))} paise`;
+    }
+  
+    // Capitalize the first letter
+    return words.charAt(0).toUpperCase() + words.slice(1);
   }
 }

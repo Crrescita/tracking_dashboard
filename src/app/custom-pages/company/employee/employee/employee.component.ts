@@ -77,7 +77,6 @@ export class EmployeeComponent implements OnInit {
   onAdvanceDatafected(isFetched:any){
     if(isFetched){
       this.advanceData = isFetched
-      console.log(this.advanceData)
     }
   }
 }

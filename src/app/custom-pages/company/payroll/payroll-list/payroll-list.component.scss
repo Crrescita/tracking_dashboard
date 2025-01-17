@@ -38,18 +38,55 @@
   }
   
 
-  @media print {
+//   @media print {
+//     body * {
+//       display: none;
+//     }
+//     .myDivToPrint {
+//         background-color: white;
+//         height: 100%;
+//         width: 100%;
+//         position: fixed;
+//         top: 0;
+//         left: 0;
+//         margin: 0;
+//         padding: 0px;
+//     }
+// }
+
+@media print {
     body * {
-      display: none;
+      display: none; /* Hide everything except the printable content */
     }
+    // .myDivToPrint, .myDivToPrint * {
+    //   display: block;
+    // }
     .myDivToPrint {
-        background-color: white;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        margin: 0;
-        padding: 0px;
+      background-color: white;
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: 0;
+      padding: 0;
+      page-break-after: always; /* Ensure each section starts on a new page if needed */
     }
-}
+    .myDivToPrint h6, .myDivToPrint table, .myDivToPrint div {
+      page-break-inside: avoid; /* Avoid breaking inside these elements */
+    }
+    .myDivToPrint table {
+      width: 100%;
+    }
+    .myDivToPrint table th, .myDivToPrint table td {
+      page-break-inside: avoid; /* Prevent table rows from splitting across pages */
+      word-wrap: break-word; /* Handle long text gracefully */
+    }
+    .myDivToPrint .page-break {
+      page-break-before: always; /* Force a new page at specific points */
+    }
+    /* Reset margins and padding for better print layout */
+    @page {
+      margin: 1in; /* Adjust margins as needed */
+    }
+  }

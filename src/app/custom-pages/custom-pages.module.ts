@@ -1,3 +1,4 @@
+import { SalarySettingComponent } from './company/employee/salary/salary-setting/salary-setting.component';
 import { AdvanceDetailComponent } from './company/employee/salary/advance-detail/advance-detail.component';
 import { SalaryInvoiceComponent } from './company/employee/salary/salary-invoice/salary-invoice.component';
 import { EmployeeComponent } from "./company/employee/employee/employee.component";
@@ -144,7 +145,8 @@ import { PayrollListComponent } from './company/payroll/payroll-list/payroll-lis
     AllowanceComponent,
     SalaryInvoiceComponent,
     AdvanceDetailComponent,
-    PayrollListComponent
+    PayrollListComponent,
+    SalarySettingComponent
   ],
   imports: [
     CommonModule,

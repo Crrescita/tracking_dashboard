@@ -25,12 +25,16 @@
                 <div
                   class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0"
                 >
-                  <img
-                    src="assets/images/users/48/avatar-2.jpg"
-                    class="rounded-circle avatar-xs"
-                    alt=""
-                  />
-                  <span class="user-status"></span>
+                <img
+                [src]="
+                  this.empData?.image
+                    ? this.empData?.image
+                    : 'assets/images/users/avatar-1.jpg'
+                "
+                alt=""
+                class="rounded-circle avatar-xs"
+              />
+                 
                 </div>
                 <div class="flex-grow-1 overflow-hidden">
                   <h5 class="text-truncate mb-1 fs-lg">
@@ -532,11 +536,15 @@
         [hidden]="currentTab !== 'salary-invoice'"
         class="tab-pane show active"
       >
-      <app-salary-invoice
-      (salaryInvoiceData)="onSalaryInvoiceDataFected($event)"
-      [urlId]="this.urlId"
-      [isActive]="currentTab === 'salary-invoice'"
-    ></app-salary-invoice>
+      @if(empSalaryData){
+        <app-salary-invoice
+        (salaryInvoiceData)="onSalaryInvoiceDataFected($event)"
+        [salaryDetailData]="this.empSalaryData"
+        [urlId]="this.urlId"
+        [isActive]="currentTab === 'salary-invoice'"
+      ></app-salary-invoice>
+      }
+      
       </div>
 
       <div

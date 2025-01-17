@@ -88,11 +88,7 @@ export class BackgroundVerificationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const data = localStorage.getItem("currentUser");
-    if (data) {
-      const user = JSON.parse(data);
-      this.company_id = user.id;
-    }
+  
     this.formGroup = this.formBuilder.group({
       documentNo: ["", [Validators.required, Validators.maxLength(100)]],
       documentFile: [""],
@@ -256,7 +252,7 @@ export class BackgroundVerificationComponent implements OnInit {
       if (this.formGroup.valid) {
         const formData = new FormData();
         formData.append("emp_id", this.urlId.toString());
-        formData.append("company_id", this.company_id);
+
         formData.append("documentType", this.selectedDocument);
         formData.append("documentNo", this.f["documentNo"].value);
         formData.append("documentFile", this.selectedImage);
@@ -291,6 +287,7 @@ export class BackgroundVerificationComponent implements OnInit {
   }
 
   resetForm(): void {
+    this.showModal?.hide()
     this.formGroup.reset();
     this.selectedImage = null;
     this.selectedImagePreview = null;

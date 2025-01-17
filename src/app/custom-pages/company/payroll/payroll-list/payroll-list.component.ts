@@ -39,27 +39,7 @@ export class PayrollListComponent {
   currentItemsPerPage = 10;
   itemsPerPageOptions = [10, 20, 30, 50];
 
-  selectValue = [
-    "Alaska",
-    "Hawaii",
-    "California",
-    "Nevada",
-    "Oregon",
-    "Washington",
-    "Arizona",
-    "Colorado",
-    "Idaho",
-    "Montana",
-    "Nebraska",
-    "New Mexico",
-    "North Dakota",
-    "Utah",
-    "Wyoming",
-    "Alabama",
-    "Arkansas",
-    "Illinois",
-    "Iowa",
-  ];
+  
 
   branch: any[] = [];
   selectedBranch: any[] = [];
@@ -158,7 +138,7 @@ export class PayrollListComponent {
     });
 
     if (this.company_id) {
-      this.getAttendance();
+      // this.getAttendance();
       this.getDepartment();
       this.getDesignation();
       this.getBranch();
@@ -304,7 +284,14 @@ export class PayrollListComponent {
   //
   updatePaySlipData(data: any) {
     this.payslipData = data
+    console.log(this.payslipData)
   }
+
+  getMaxLength(earnings: any[], deductions: any[]): number[] {
+    const maxLength = Math.max(earnings?.length || 0, deductions?.length || 0);
+    return Array.from({ length: maxLength }, (_, i) => i);
+  }
+  
 
   // table
 
@@ -784,38 +771,60 @@ export class PayrollListComponent {
   }
 
 
-  printModal(): void {
-    const modalContent = document.getElementById('invoice')?.innerHTML;
-    console.log(modalContent)
-    if (modalContent) {
-      const printWindow = window.open('', '', 'width=800,height=600');
-      if (printWindow) {
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>Payslip</title>
-              <style>
-                body {
-                  font-family: Arial, sans-serif;
-                  margin: 0;
-                  padding: 20px;
-                }
-                .modal-dialog {
-                  margin: auto;
-                  max-width: 800px;
-                }
-              </style>
-            </head>
-            <body>
-              ${modalContent}
-            </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-      }
+ 
+
+  convertNumberToWords(num: any): string {
+    if (num === null || num === undefined || isNaN(num)) {
+      return 'Invalid amount';
     }
+  
+    const a = [
+      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+      'eighteen', 'nineteen'
+    ];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const scales = ['thousand', 'lakh', 'crore'];
+  
+    if (num === 0) return 'Zero';
+  
+    let words = '';
+  
+    // Ensure the number is converted to a string and split for decimals
+    const numStr = num.toString();
+    const [integerPart, decimalPart] = numStr.split('.');
+  
+    const numberToWords = (n: number): string => {
+      let word = '';
+      if (n < 20) {
+        word = a[n];
+      } else if (n < 100) {
+        word = b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+      } else if (n < 1000) {
+        word = a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numberToWords(n % 100) : '');
+      } else {
+        for (let i = 0, divisor = 1000; i < scales.length; i++, divisor *= 100) {
+          if (n < divisor * 100) {
+            word = numberToWords(Math.floor(n / divisor)) + ' ' + scales[i] +
+              (n % divisor ? ' ' + numberToWords(n % divisor) : '');
+            break;
+          }
+        }
+      }
+      return word;
+    };
+  
+    // Convert integer part to words
+    words = numberToWords(parseInt(integerPart, 10));
+  
+    // Add decimal part if available
+    if (decimalPart) {
+      words += ` and ${numberToWords(parseInt(decimalPart, 10))} paise`;
+    }
+  
+    // Capitalize the first letter
+    return words.charAt(0).toUpperCase() + words.slice(1);
   }
+  
+  
 }

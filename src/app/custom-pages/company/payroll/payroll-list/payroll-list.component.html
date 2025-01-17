@@ -317,21 +317,18 @@
                     class="sort cursor-pointer"
                     (click)="onSort('earning_amount')"
                   >
-                  Earning Amount
+                    Earning Amount
                   </th>
                   <th
                     class="sort cursor-pointer"
                     (click)="onSort('deduction_amount')"
                   >
-                  Deduction Amount
+                    Deduction Amount
                   </th>
-                  <th
-                    class="sort cursor-pointer"
-                    (click)="onSort('net_pay')"
-                  >
+                  <th class="sort cursor-pointer" (click)="onSort('net_pay')">
                     Net Pay
                   </th>
-                
+
                   <!-- <th
                     class="sort cursor-pointer"
                     (click)="onSort('checkin_statusv2')"
@@ -369,7 +366,6 @@
                           alt=""
                           class="avatar-sm rounded"
                         />
-                     
                       </div>
                       <!-- </div> -->
                       <div class="flex-grow-1 ms-2">
@@ -389,15 +385,13 @@
                   </td>
                   <td class="discount">{{ data.mobile }}</td>
                   <td class="category">{{ data.paid_days }}</td>
-                  <td class="stock">{{ data.earning_amount }}</td>
+                  <td class="stock"><i class="bx bx-rupee"></i>{{ data.earning_amount | number:'1.0-2'}}</td>
                   <td class="price">
-                    {{ data.deduction_amount }}
+                    <i class="bx bx-rupee"></i> {{ data.deduction_amount | number:'1.0-2'}}
                   </td>
                   <td class="orders">
-                    {{ data.net_pay }}
-                  
+                    <i class="bx bx-rupee"></i> {{ data.net_pay | number:'1.0-2'}}
                   </td>
-                 
 
                   <!-- <td class="published">
                     @if(data.checkin_status != 'Absent' && data.checkin_status
@@ -444,7 +438,6 @@
                           placement="top"
                           tooltip="View"
                           routerLink="/edit-employee/{{ data.id }}"
-                         
                           class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
                           ><i class="ph-eye align-middle"></i
                         ></a>
@@ -454,15 +447,11 @@
                           data-bs-toggle="tooltip"
                           placement="top"
                           tooltip="Pay Slip"
-                          (click)="
-                          tooltipmodal.show();
-                          updatePaySlipData(data)
-                        "
+                          (click)="tooltipmodal.show(); updatePaySlipData(data)"
                           class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
                           ><i class="ri-article-fill"></i
                         ></a>
                       </li>
-                     
                     </ul>
 
                     <!-- <div dropdown class="dropdown">
@@ -534,8 +523,8 @@
               </div>
               <h5 class="mt-2">Sorry! No Result Found</h5>
               <p class="text-muted mb-0">
-                We've searched {{ payrollDataList?.length }} Employee Data.
-                We did not find any Employee for you search.
+                We've searched {{ payrollDataList?.length }} Employee Data. We
+                did not find any Employee for you search.
               </p>
             </div>
           </div>
@@ -594,225 +583,364 @@
       </div>
       <div class="modal-body">
         <div class="row justify-content-center">
-            <div class="col-xxl-12">
-                <div class="hstack gap-2 justify-content-end d-print-none mb-4">
-                    <a href="javascript:window.print()" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Print</a>
-                    <!-- <button type="button" id="download-button" class="btn btn-primary" (click)="printModal()"><i class="ri-download-2-line align-bottom me-1"></i> Download</button> -->
-                </div>
-                <div class="card overflow-hidden myDivToPrint" id="invoice">
-                    <!-- <div class="invoice-effect-top position-absolute start-0">
-                        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 764 182" width="764" height="182">
-                            <title>&lt;Group&gt;</title>
-                            <g id="&lt;Group&gt;">
-                                <g id="&lt;Group&gt;">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-light);" d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z" />
-                                </g>
-                                <g id="&lt;Group&gt;">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-secondary);" d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z" />
-                                </g>
-                                <g id="&lt;Group&gt;" style="opacity: .5">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-primary);" d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z" />
-                                </g>
-                            </g>
-                        </svg>
-                    </div> -->
-                    <div class="card-body z-1 position-relative">
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                <img
-              src="https://trackingapi.crrescita.com/{{ this.company_logo }}"
-              class="card-logo"
-              alt="logo light"
-              height="80"
-            />
-                            </div>
-                            <div class="flex-shrink-0 mt-sm-0 mt-3">
-                                <h6><span class="text-muted fw-normal">A.B.PAL ELECTRICALS PVT. LTD.</span></h6>
-                                <h6><span class="text-muted fw-normal">1826,BHAGIRATH PALACE,</span></h6>
-                                <h6><span class="text-muted fw-normal">CHANDNI CHOWK, DELHI-110006</span> </h6>
-                                
-                            </div>
-                        </div>
-                        <div class="mt-3 ">
-                            <div class="row g-3">
-                                <div class="col-12 bg-light text-center p-3 text-uppercase" >SALARY SLIP FOR THE MONTH OF {{payslipData?.payslip_for_month | date : "MMMM, YYYY"}}</div>
-                                <!-- <div class="col-lg col-6">
-                                    <p class="text-muted mb-2 text-uppercase">Invoice No</p>
-                                    <h5 class="fs-md mb-0">#TBS<span id="invoice-no">24301901</span></h5>
-                                </div>
-                              
-                                <div class="col-lg col-6">
-                                    <p class="text-muted mb-2 text-uppercase">Date</p>
-                                    <h5 class="fs-md mb-0"><span id="invoice-date">10 April, 2023</span></h5>
-                                </div>
-                                <div class="col-lg col-6">
-                                    <p class="text-muted mb-2 text-uppercase">Due Date</p>
-                                    <h5 class="fs-md mb-0"><span id="invoice-due-date">10 April, 2023</span></h5>
-                                </div>
-                               
-                                <div class="col-lg col-6">
-                                    <p class="text-muted mb-2 text-uppercase">Payment Status</p>
-                                    <span class="badge bg-success-subtle text-success fs-xxs" id="payment-status">Paid</span>
-                                </div>
-                               
-                                <div class="col-lg col-6">
-                                    <p class="text-muted mb-2 text-uppercase">Total Amount</p>
-                                    <h5 class="fs-md mb-0">$<span id="total-amount">2,050.18</span></h5>
-                                </div> -->
-                               
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-2">
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    <h6>CODE :&nbsp;<span class="text-muted fw-normal">{{payslipData?.employee_id}}</span></h6>
-                                    <h6>NAME :&nbsp;<span class="text-muted fw-normal">{{payslipData?.name}}</span></h6>
-                                    <h6>DESIGNATION :&nbsp;<span class="text-muted fw-normal">{{payslipData?.designation}}</span> </h6>
-                                  
-                                </div>
-                                
-                                <div class="col-6">
-                                    <h6>BANK NAME :&nbsp;<span class="text-muted fw-normal"></span></h6>
-                                    <h6>BANK A/C NO. :&nbsp;<span class="text-muted fw-normal"></span></h6>
-                                    <h6>PAID DAY :&nbsp;<span class="text-muted fw-normal">{{payslipData?.paid_days}}</span> </h6>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="table-responsive mt-4">
-                                    <table class="table table-borderless text-center table-nowrap align-middle mb-0">
-                                        <thead>
-                                            <tr class="table-light">
-                                               
-                                                <th scope="col" class="text-start">Earning</th>
-                                               
-                                                <th scope="col" class="text-end">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="products-list">
-                                            @for (item of payslipData?.earning; track $index) {
-                                                <tr>
-                                                   
-                                                    <td class="text-start">
-                                                        <span class="fw-medium">{{item.name}}</span>
-                                                       
-                                                    </td>
-                                                  
-                                                    <td class="text-end">Rs. {{item.amount}}</td>
-                                                </tr>
-                                            }             
-                                        </tbody>
-                                    </table><!--end table-->
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="table-responsive mt-4">
-                                    <table class="table table-borderless text-center table-nowrap align-middle mb-0">
-                                        <thead>
-                                            <tr class="table-light">
-                                                <th scope="col " class="text-start">Deduction</th>
-                                               
-                                                <th scope="col" class="text-end">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="products-list">
-                                            @for (item of payslipData?.deduction; track $index) {
-                                                <tr>
-                                                   
-                                                    <td class="text-start">
-                                                        <span class="fw-medium">{{item.name}}</span>
-                                                       
-                                                    </td>
-                                                  
-                                                    <td class="text-end">Rs. {{item.amount}}</td>
-                                                </tr>
-                                            }    
-                                        </tbody>
-                                    </table><!--end table-->
-                                </div>
-                            </div>
-                        </div>
-                      
-                        <div class="border-top border-top-dashed mt-2" id="products-list-total">
-                            <table class="table table-borderless table-nowrap align-middle mb-0 ms-auto" style="width:250px">
-                                <tbody>
-                                    <tr>
-                                        <td>Total Earning</td>
-                                        <td class="text-end">Rs.{{payslipData?.earning_amount}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total Deduction </td>
-                                        <td class="text-end">Rs.{{payslipData?.deduction_amount}}</td>
-                                    </tr>
-                                   
-                                    <tr class="border-top border-top-dashed fs-base">
-                                        <th scope="row">Total Amount</th>
-                                        <th class="text-end">Rs.{{payslipData?.net_pay}}</th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <!--end table-->
-                        </div>
-                        <!-- <div class="mt-3">
-                            <h6 class="text-muted text-uppercase fw-semibold mb-3">Payment Details:</h6>
-                            <p class="text-muted mb-1">Payment Method: <span class="fw-medium" id="payment-method">Mastercard</span></p>
-                            <p class="text-muted mb-1">Card Holder: <span class="fw-medium" id="card-holder-name">Jennifer Mayert</span></p>
-                            <p class="text-muted mb-1">Card Number: <span class="fw-medium" id="card-number">xxx xxxx xxxx 1234</span></p>
-                            <p class="text-muted mb-0">Total Amount: <span class="fw-medium">$</span><span id="card-total-amount">2,050.18</span></p>
-                        </div> -->
-                        <div class="mt-4 mb-4">
-                            <div class="alert alert-danger mb-0">
-                                <span class="fw-semibold">NOTES:</span>
-                                <span id="note"> This is Computer Generated Statement and does not require any signature.
-                                </span>
-                            </div>
-                        </div>
-                        <!-- <div>
-                            <p class="mb-4 pb-2"><b>Congratulations on your recent purchase!</b> It has been our pleasure to serve you, and we hope we see you again soon.</p>
-        
-                            <div class="invoice-signature text-center">
-                                <img src="assets/images/invoice-signature.svg" alt="" id="sign-img" height="30">
-                                <h6 class="mb-0 mt-3">Authorized Sign</h6>
-                            </div>
-                        </div> -->
-                    </div>
-                    <!-- <div class="invoice-effect-top position-absolute end-0" style="transform: rotate(180deg); bottom: -80px;">
-                        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 764 182" width="764" height="182">
-                            <title>&lt;Group&gt;</title>
-                            <g id="&lt;Group&gt;">
-                                <g id="&lt;Group&gt;">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-light);" d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z" />
-                                </g>
-                                <g id="&lt;Group&gt;">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-secondary);" d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z" />
-                                </g>
-                                <g id="&lt;Group&gt;" style="opacity: .5">
-                                    <path id="&lt;Path&gt;" style="fill: var(--tb-primary);" d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z" />
-                                </g>
-                            </g>
-                        </svg>
-                    </div> -->
-                </div>
-                <!--end card-->
+          <div class="col-xxl-12">
+            <div class="hstack gap-2 justify-content-end d-print-none mb-4">
+              <a href="javascript:window.print()" class="btn btn-success"
+                ><i class="ri-printer-line align-bottom me-1"></i> Print</a
+              >
             </div>
-            <!--end col-->
-        </div>
-      </div>
-      <!-- <div class="modal-footer">
-        <div class="col-lg-12">
-          <div class="hstack gap-2 justify-content-end">
-            <button
-              type="button"
-              (click)="tooltipmodal.hide()"
-              class="btn btn-light"
-            >
-              Close
-            </button>
+            <div class=" overflow-hidden myDivToPrint" id="invoice">
+              <div class=" z-1 position-relative">
+                <div class="d-flex">
+                  <div class="flex-grow-1">
+                    <img
+                      src="/assets/payslip-header.png"
+                      class="card-logo img-fluid"
+                      alt="logo light"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-12 bg-light text-center py-3">
+                  <h6 class="fw-bold">A B Pal Electricals (P) Limited</h6>
+                  <h6 class="fw-normal">
+                    1826, Bhagirath Palace, Chandni Chowk, Delhi-110006, India
+                  </h6>
+                  <h6 class="fw-normal">
+                    Phone: +91 98914 98555, +9111 43 111 333
+                  </h6>
+                  <h6 class="fw-normal">Email Id: contact&#64;abpal.com</h6>
+                  <h6 class="fw-normal mb-0">Website: www.abpal.com</h6>
+                </div>
+
+                <div class="col-12 ">
+                    <div class="mt-2">
+                        <div class=" bg-light text-center p-2">
+                       <strong>Pay Slip for
+                        {{ payslipData?.payslip_for_month | date : "MMMM, YYYY" }}</strong>   
+                        </div>
+                      </div>
+                     
+                </div>
+                <div class="row mt-3">
+                   
+                      <div class="col-6">
+                        <h6>
+                          Employee Name :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.name }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Employee Code :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.employee_id }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Work Location :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.branch }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Designation :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.designation
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Department :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.department
+                          }}</span>
+                        </h6>
+                      </div>
+  
+                      <div class="col-6">
+                        <h6>
+                          Date of Joining :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.joining_date  | date : "dd MMM, YYYY"}}</span
+                          >
+                        </h6>
+                        <h6>
+                          Aadhar No. :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.aadhaar
+                          }}</span>
+                        </h6>
+                        <h6>
+                          PAN No. :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.pan
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank Name :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.bank_name
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank A/c No. :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.acc_number }}</span
+                          >
+                        </h6>
+                      </div>
+                   
+                  </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive mt-2">
+                      <table
+                        class="table table-bordered text-center table-nowrap align-middle mb-0"
+                      >
+                        <thead>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">
+                              Salary Monthly
+                            </th>
+                            <th scope="col" class="text-end">
+                              <i class="bx bx-rupee"></i>
+                              {{ payslipData?.emp_salary | number:'1.0-2'}}
+                            </th>
+                            <th scope="col" class="text-start">
+                              Total Paid Days
+                            </th>
+                            <th scope="col" class="text-end">
+                              {{ payslipData?.paid_days }}
+                            </th>
+                          </tr>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">Earnings</th>
+                            <th scope="col" class="text-end">Amount</th>
+                            <th scope="col" class="text-start">Deductions</th>
+                            <th scope="col" class="text-end">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody id="products-list">
+                          <ng-container
+                            *ngFor="
+                              let i of getMaxLength(
+                                payslipData?.earning,
+                                payslipData?.deduction
+                              )
+                            "
+                          >
+                            <tr>
+                              @if(payslipData?.earning[i]?.name){
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.earning[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.earning[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.earning[i]?.amount | number:'1.0-2' }}
+                                }@else { Nil }
+                              </td>
+                              } @if(payslipData?.deduction[i]?.name){
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.deduction[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.deduction[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.deduction[i]?.amount | number:'1.0-2' }}
+                                }@else { Nil }
+                              </td>
+                              }
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                        <tfoot>
+                          <tr class="table-light">
+                            <td class="text-start">
+                              <strong>Total Earnings</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.earning_amount | number:'1.0-2'}}
+                            </td>
+                            <td class="text-start">
+                              <strong>Total Deductions</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.deduction_amount | number:'1.0-2'}}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="border-top border-top-dashed mt-1"
+                  id="products-list-total"
+                >
+                  <table
+                    class="table table-bordered table-nowrap align-middle mb-0"
+                  >
+                    <tbody>
+                      <tr class="border-top border-top-dashed fs-base">
+                        <th scope="row">Net Pay</th>
+                        <th class="text-end">
+                          <i class="bx bx-rupee"></i>{{ payslipData?.net_pay | number:'1.0-2'}}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="row">In Words:</th>
+                        <th class="text-end">
+                            <i class="bx bx-rupee"></i>  {{ convertNumberToWords(payslipData?.net_pay || 0) }}
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                      <thead>
+                        <tr class="table-light">
+                          <th scope="col" colspan="3">
+                            Employer's Contribution (CTC)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="border-top border-top-dashed fs-base">
+                          <td scope="row">Earning Gross:</td>
+                          <td></td>
+                          <td class="text-end">
+                            <i class="bx bx-rupee"></i
+                            >{{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's Provident Fund</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Pension Fund
+                          </td>
+                          <td class="text-end">Nil</td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Provident Fund
+                          </td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's State Insurance</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerEsiAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{
+                                      payslipData?.employeer_ctc?.employeerEsiAmount| number:'1.0-2'
+                                    }}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                        </tr>
+
+                        <tr class="table-light">
+                          <th scope="row">Total CTC</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalctc | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                     
+                      <tbody>
+                      
+                        <tr class="table-light">
+                          <th scope="row">Gross Salary</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <!-- <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr> -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!--end table-->
+                </div>
+
+        
+                  <div class="mb-0 mt-3 bg-light text-center py-2 ">
+                    
+                    <span id="note">
+                        This is a computer-generated document and does not require a signature.
+                    </span>
+                  </div>
+             
+              </div>
+            </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </div>

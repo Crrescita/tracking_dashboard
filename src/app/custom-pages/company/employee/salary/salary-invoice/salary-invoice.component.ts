@@ -27,6 +27,7 @@ import { Subject } from "rxjs";
 })
 export class SalaryInvoiceComponent {
   @Input() isActive!: boolean; 
+  @Input()salaryDetailData:any
   @Output() salaryInvoiceData = new EventEmitter<any>();
   bsConfig?: Partial<BsDatepickerConfig>;
   selectedDate: Date = new Date();
@@ -49,6 +50,8 @@ export class SalaryInvoiceComponent {
   totalAdvBal= 0;
   totalAmount = 0;
   totalError = false;
+
+  gernated:boolean =false;
 
 
   allowances = [
@@ -90,34 +93,23 @@ export class SalaryInvoiceComponent {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isActive'] && changes['isActive'].currentValue) {
-      this.selectedDate = new Date();
+    this.getOpenAdvances()
+  
+    // this.getPresentDays()
+    // if (changes['isActive'] && changes['isActive'].currentValue) {
+    //   this.selectedDate = new Date();
 
-    this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
+    // this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
 
-      this.handleDateChange(newDate);
-    });
-    if (this.urlId) {
-      this.initializeFormWithData()
-      // this.getPresentDays()    
-      
-    } else {
-      this.initializeForm();
-    }
-
-    // this.breakup.valueChanges.subscribe(() => {
-    //   this.populateDependencyMap();
+    //   this.handleDateChange(newDate);
     // });
-    
-    // Listen to changes in breakup (basic salary)
-    const breakup = this.formGroup.get('breakup') as FormArray;
-    breakup.valueChanges.subscribe(() => {
-      this.recalculateDeductions();
-    });
-
-    this.setupSalaryChangeSubscription();
-    this.setupBreakupChangeSubscription();
-    }
+    // if (this.urlId) {
+    //   this.initializeFormWithData()
+    //   // this.getPresentDays()    
+      
+    // } else {
+    //   this.initializeForm();
+    // }
   }
 
   ngOnInit(): void {
@@ -232,12 +224,9 @@ export class SalaryInvoiceComponent {
       }
     });
   
-    // Ensure "Net_Salary" is included in the dependency map
     if (!this.dependencyMap["Net_Salary"]) {
-      this.dependencyMap["Net_Salary"] = new Set(); // Initialize if not present
+      this.dependencyMap["Net_Salary"] = new Set();
     }
-  
-    // console.log("Updated Dependency Map:", this.dependencyMap);
   }
   
 
@@ -248,7 +237,7 @@ export class SalaryInvoiceComponent {
     if (sluggedName === "Net_Salary") {
       return -2; // Use a custom code to signify external variables
     }
-  
+
     // Default case: Search in the breakup array
     return this.breakup.controls.findIndex(
       (control) => control.value.name.trim().replace(/\s+/g, "_") === sluggedName
@@ -273,7 +262,6 @@ export class SalaryInvoiceComponent {
 
   recalculateDeductions(): void {
     const deductions = this.formGroup.get("deductions") as FormArray;
-    
     // Trigger deductions recalculation for each row
     deductions.controls.forEach((_, index) => {
       this.calculateDeductions(index);
@@ -311,9 +299,10 @@ export class SalaryInvoiceComponent {
   createDeductionRow(name: string, calculationType: string, formula: string, amount: number): FormGroup {
     return this.formBuilder.group({
       name: [name, Validators.required],
-      calculationType: [calculationType, Validators.required],
-      formula: [formula], // Optional, depends on calculation type
+      calculationType: [calculationType || 'none', Validators.required],
+      formula: [formula],
       amount: [amount, [Validators.required, Validators.min(0)]],
+      nameReadonly: [false],
     });
   }
 
@@ -350,12 +339,17 @@ export class SalaryInvoiceComponent {
         if (res?.status) {
           this.presentDays = res.presentDays;
           this.daysInMonth = res.daysInMonth;
-  
+
+  if(this.presentDays == 0){
+    this.employeerPfAmount =0
+    this.employeerEsiAmount = 0
+    this.initializeFormWithData()
+    this.calculateTotalAmount();
+  }
           // Ensure both values are valid before fetching salary details
-          if (this.presentDays && this.daysInMonth && !isNaN(this.presentDays) && !isNaN(this.daysInMonth)) {
-            console.log(this.presentDays)
-            this.getSalaryPayslip();
-            
+          if (this.presentDays && this.daysInMonth ) {
+          
+            this.getSalaryPayslip();           
           }
         } else {
           this.getSalaryDetail()
@@ -363,6 +357,7 @@ export class SalaryInvoiceComponent {
         }
       },
       (error) => {
+       
         this.toggleSpinner(false);
         this.handleError(error.message || "An error occurred while fetching attendance data");
       }
@@ -381,7 +376,7 @@ export class SalaryInvoiceComponent {
         
           const data = res.data[0];
           if (data) {
-            
+            this.gernated = true
             const netSalary = Number(data.salary);
             if (!isNaN(netSalary)) {
               if (this.presentDays && this.daysInMonth && !isNaN(this.presentDays) && !isNaN(this.daysInMonth)) {
@@ -394,8 +389,11 @@ export class SalaryInvoiceComponent {
                 // Recalculate earnings and deductions
                 this.patchEarnings(data.earning);
                 this.patchDeductions(data.deduction);
+                this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+                this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+                this.totalctc = data.employeer_ctc.totalctc || 0;
                 this.calculateTotalAmount();
-               
+              
               } else {
                 this.toastService.error("Invalid attendance data. Please ensure daysInMonth and presentDays are correct.");
               }
@@ -404,6 +402,7 @@ export class SalaryInvoiceComponent {
             }
           }
         } else {
+          this.gernated = false
           this.getSalaryDetail();
           this.initializeForm();
           // this.handleError("Unexpected response format");
@@ -433,7 +432,7 @@ export class SalaryInvoiceComponent {
             if (!isNaN(netSalary)) {
               if (this.presentDays && this.daysInMonth && !isNaN(this.presentDays) && !isNaN(this.daysInMonth)) {
                 const salaryForPresentDays = Math.round((netSalary / this.daysInMonth) * this.presentDays);
-  
+ 
                 // Patch the calculated salary
                 this.formGroup.patchValue({ salary: salaryForPresentDays });
                 this.updateVariable("Net Salary", salaryForPresentDays);
@@ -465,21 +464,25 @@ export class SalaryInvoiceComponent {
  
   patchEarnings(earnings: any[]): void {
     const breakupArray = this.formGroup.get("breakup") as FormArray;
-    breakupArray.clear(); // Clear previous data
+    breakupArray.clear();
   
     if (Array.isArray(earnings)) {
-      // First pass: Patch values into the form
+    
       earnings.forEach((earningItem: any) => {
         const row = this.createBreakupItem();
-  
-        // If "Basic" field, calculate based on attendance
-        if (earningItem.name.toLowerCase() === "basic" && this.presentDays && this.daysInMonth) {
-          const netBasicSalary = Number(earningItem.amount);
-          if (!isNaN(netBasicSalary)) {
-            earningItem.amount = Math.round((netBasicSalary / this.daysInMonth) * this.presentDays);
+      
+        if(!this.gernated){
+          if (earningItem.name.toLowerCase() === 'basic' && this.presentDays && this.daysInMonth) {
+            // Recalculate basic amount based on the current attendance data
+            const netBasicSalary = Number(earningItem.amount);
+
+            if (!isNaN(netBasicSalary)) {
+              earningItem.amount = Math.round((netBasicSalary / this.daysInMonth) * this.presentDays);
+            }
           }
         }
-  
+       
+
         // Patch values into the row
         row.patchValue({
           name: earningItem.name || "",
@@ -494,14 +497,19 @@ export class SalaryInvoiceComponent {
           (item) => item.name !== earningItem.name
         );
   
+       
         breakupArray.push(row);
+        row.get("nameReadonly")?.setValue(true);
+
+        this.populateDependencyMap();
       });
-  
       // Second pass: Trigger dependent updates for each row
       breakupArray.controls.forEach((control, index) => {
         const variableName = control.get("name")?.value;
         if (variableName) {
+        
           const rowIndex = this.findRowIndex(variableName);
+         
           if (rowIndex !== -1) {
             this.updateDependentRows(rowIndex);
           }
@@ -510,15 +518,12 @@ export class SalaryInvoiceComponent {
     }
   }
   
-
-
   patchDeductions(deductions: any[]) {
     const deductionsArray = this.formGroup.get("deductions") as FormArray;
     deductionsArray.clear();
 
     if (Array.isArray(deductions)) {
       deductions.forEach((deductionItem: any) => {
-       
         const row = this.createDeductionRow(
           deductionItem.name || "",
           deductionItem.calculationType || "none",
@@ -526,10 +531,12 @@ export class SalaryInvoiceComponent {
           deductionItem.amount || 0
         );
         deductionsArray.push(row);
+        row.get("nameReadonly")?.setValue(true);
+        // row.get("name")?.disable();
       });
     }
   
-    
+    if(!this.gernated){
     const advanceExists = deductions.some(
       (deductionItem) => deductionItem.name === "Advance"
     );
@@ -542,15 +549,16 @@ export class SalaryInvoiceComponent {
         this.totalAdvBal
       );
     // this.updateVariable("Advance", this.totalAdvBal);
-      
+    advanceRow.get("nameReadonly")?.setValue(true);
       deductionsArray.push(advanceRow);
     }
-  
-    this.recalculateDeductions();
+
   }
-  
-  
-  
+  // if(!this.gernated){
+    this.recalculateDeductions();
+  // }
+   
+  }
 
   toggleSpinner(isLoading: boolean) {
     this.spinnerStatus = isLoading;
@@ -592,8 +600,14 @@ export class SalaryInvoiceComponent {
       // earning: this.f["breakup"].value,
       earning: (this.formGroup.get("breakup") as FormArray).getRawValue(),
       deduction: (this.formGroup.get("deductions") as FormArray).getRawValue(),
-      earning_amount:this.breakupTotal.toFixed(2),
-      deduction_amount:this.deductionsTotal.toFixed(2)
+      earning_amount:this.earningTotal.toFixed(2),
+      deduction_amount:this.deductionsTotal.toFixed(2),
+      employeer_ctc:{
+        totalEarning: this.earningTotal,
+        employeerPfAmount:this.employeerPfAmount,
+        employeerEsiAmount: this.employeerEsiAmount,
+        totalctc: this.totalctc
+       }
       // deductions: this.formGroup.get("deductions")!.value.map((deduction: any) => ({
       //   name: deduction.name,
       //   calculationType: deduction.calculationType,
@@ -723,6 +737,12 @@ export class SalaryInvoiceComponent {
     });
   }
 
+  addDeduction(){
+    const deductionsArray = this.formGroup.get("deductions") as FormArray;
+    const row =  this.createDeductionRow( "", "none", "", 0);
+    deductionsArray.push(row);
+  }
+
   // Remove a row
 
   removeRow(index: number): void {
@@ -772,8 +792,11 @@ export class SalaryInvoiceComponent {
 
   // remove deduction
   removeDeductionRow(index: number, arrayName: string): void {
-    const array = this.formGroup.get(arrayName) as FormArray;
-    array.removeAt(index);
+    const row = this.deductions.at(index); 
+    const rowName = row.get("name")?.value;
+    this.removeVariable(rowName)
+    this.deductions.removeAt(index);
+    this.calculateTotalAmount();
   }
   
 
@@ -813,20 +836,7 @@ export class SalaryInvoiceComponent {
     }
   }
 
-  // insertOperation(operation: string, rowIndex: number): void {
-  //   const control = this.breakup.at(rowIndex);
-  //   const currentFormula = control.get("formula")?.value || "";
-  //   control.get("formula")?.setValue(currentFormula + ` ${operation} `);
-  // }
-
-  // insertVariable(
-  //   variable: { name: string; value: number },
-  //   rowIndex: number
-  // ): void {
-  //   const control = this.breakup.at(rowIndex);
-  //   const currentFormula = control.get("formula")?.value || "";
-  //   control.get("formula")?.setValue(currentFormula + variable.name);
-  // }
+ 
   insertOperation(operation: string, rowIndex: number, isDeduction: boolean = false): void {
     const control = isDeduction ? this.deductions.at(rowIndex) : this.breakup.at(rowIndex);
     const currentFormula = control.get("formula")?.value || "";
@@ -872,6 +882,15 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
     control.get("formula")?.setValue(input.value);
     this.evaluateFormula(rowIndex);
   }
+
+  onFormulaInputDeduction(event: Event, rowIndex: number): void {
+    const input = event.target as HTMLInputElement;
+    const control = this.deductions.at(rowIndex);
+    control.get("amount")?.setValue(input.value);
+    this.updateVariable( control.get("name")?.value, Number(input.value));
+  }
+
+
 
   validateTotal(): void {
     this.totalAmount = this.breakup.controls
@@ -961,7 +980,7 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
   evaluateFormula(rowIndex: number): void {
     const control = this.breakup.at(rowIndex);
     const formula = control.get("formula")?.value;
-  
+
     try {
       const variableName = control.value.name.trim().replace(/\s+/g, "_"); // Handle spaces in names
 
@@ -971,21 +990,23 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
       }
 
       // Evaluate the formula
-      let evaluatedValue = Math.round(this.evaluateExpression(formula, rowIndex));
+      let evaluatedValue = Math.round(
+        this.evaluateExpression(formula, rowIndex)
+      );
 
       if (evaluatedValue < 0) {
         evaluatedValue = 0;
       }
-
+     
       // Update the current row's amount
       control.get("amount")?.setValue(evaluatedValue);
 
-
       const calculationType = control.get("calculationType")?.value;
-      if(calculationType == 'formula'){
-        control.get("amount")?.disable({ onlySelf: true });
+      if (calculationType == "formula") {
+        // control.get("amount")?.disable({ onlySelf: true });
+        control.get("nameReadonly")?.setValue(true);
       }
-     
+
       // Update the variable value
       this.updateVariable(variableName, evaluatedValue);
 
@@ -1000,137 +1021,116 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
     }
   }
 
-
-
-updateDependentRows(rowIndex: number): void {
-  if (rowIndex === -2) {
-    // Special case: "Net Salary" or external variable
-    const netSalaryValue = this.formGroup.get("salary")?.value || 0;
-
-   
-
-    // Update dependents of "Net Salary"
-    if (this.dependencyMap["Net_Salary"]) {
+  updateDependentRows(rowIndex: number): void {
+    if (rowIndex === -2) {
+      const netSalaryValue = this.formGroup.get("salary")?.value || 0;
+  
+      if (!this.dependencyMap["Net_Salary"] || !Array.isArray(this.dependencyMap["Net_Salary"])) {
+        console.warn('"Net_Salary" is not defined in the dependency map or is not an array.');
+        return;
+      }
+  
       Array.from(this.dependencyMap["Net_Salary"]).forEach((dependentRowIndex) => {
+        if (typeof dependentRowIndex !== 'number' || dependentRowIndex < 0 || dependentRowIndex >= this.breakup.length) {
+          console.error(`Invalid dependent row index: ${dependentRowIndex}`);
+          return;
+        }
+  
         const dependentRow = this.breakup.at(dependentRowIndex) as FormGroup;
-        const dependentFormula = dependentRow.get("formula")?.value;
+        if (!dependentRow) {
+          console.error(`FormGroup not found for index: ${dependentRowIndex}`);
+          return;
+        }
+  
+        const dependentFormulaControl = dependentRow.get("formula");
+        if (!dependentFormulaControl) {
+          console.error(`"formula" control is missing in the FormGroup for index: ${dependentRowIndex}`);
+          return;
+        }
+  
+        const dependentFormula = dependentFormulaControl.value;
+  
         if (dependentFormula) {
-          let evaluatedValue = Math.round(this.evaluateExpression(dependentFormula, dependentRowIndex));
-
+          let evaluatedValue = Math.round(
+            this.evaluateExpression(dependentFormula, dependentRowIndex)
+          );
+  
           if (evaluatedValue < 0) {
             evaluatedValue = 0;
           }
-
+  
           dependentRow.get("amount")?.setValue(evaluatedValue);
           dependentRow.get("amount")?.markAsDirty();
           dependentRow.get("amount")?.markAsTouched();
-
+  
           // Recursively update dependent rows
           this.updateDependentRows(dependentRowIndex);
         }
       });
-    } else {
-      console.warn('"Net_Salary" is not defined in the dependency map.');
+      return;
     }
-    return;
+  
+    // Handle other rows
+    const control = this.breakup.at(rowIndex) as FormGroup;
+    if (!control) {
+      console.error(`FormGroup not found for index: ${rowIndex}`);
+      return;
+    }
+  
+    const variableName = control.value.name.trim().replace(/\s+/g, "_");
+
+    if (this.dependencyMap[variableName]) {
+      Array.from(this.dependencyMap[variableName]).forEach((dependentRowIndex) => {
+        const dependentRow = this.breakup.at(dependentRowIndex) as FormGroup;
+        if (!dependentRow) {
+          console.error(`FormGroup not found for index: ${dependentRowIndex}`);
+          return;
+        }
+  
+        const dependentFormulaControl = dependentRow.get("formula");
+        if (!dependentFormulaControl) {
+          console.error(`"formula" control is missing in the FormGroup for index: ${dependentRowIndex}`);
+          return;
+        }
+        
+        const dependentFormula = dependentFormulaControl.value;
+
+        if (dependentFormula) {
+          let evaluatedValue = Math.round(
+            this.evaluateExpression(dependentFormula, dependentRowIndex)
+          );
+
+          if (evaluatedValue < 0) {
+            evaluatedValue = 0;
+          }
+  
+          dependentRow.get("amount")?.setValue(evaluatedValue);
+          dependentRow.get("amount")?.markAsDirty();
+          dependentRow.get("amount")?.markAsTouched();
+  
+        
+          this.updateDependentRows(dependentRowIndex);
+        }
+      });
+    }
   }
-
-  // Default case for rows within the breakup array
-  const control = this.breakup.at(rowIndex) as FormGroup;
-  const variableName = control.value.name.trim().replace(/\s+/g, "_");
-
-
-  if (this.dependencyMap[variableName]) {
-    Array.from(this.dependencyMap[variableName]).forEach((dependentRowIndex) => {
-      const dependentRow = this.breakup.at(dependentRowIndex) as FormGroup;
-      const dependentFormula = dependentRow.get("formula")?.value;
-
-      if (dependentFormula) {
-        let evaluatedValue = Math.round(this.evaluateExpression(dependentFormula, dependentRowIndex));
-
-
-if (evaluatedValue < 0) {
-  evaluatedValue = 0;
-}
-        dependentRow.get("amount")?.setValue(evaluatedValue);
-        dependentRow.get("amount")?.markAsDirty();
-        dependentRow.get("amount")?.markAsTouched();
-
-        // Recursively update dependent rows
-        this.updateDependentRows(dependentRowIndex);
-      }
-    });
-  }
-}
-
-
-
-
   
 
-  // evaluateExpression(expression: string, rowIndex: number): number {
-  //   const variables: Record<string, number> = {};
-
-  //   // Extract variables from breakup controls
-  //   this.breakup.controls.forEach((control, i) => {
-  //     const variableName = control.value.name?.trim().replace(/\s+/g, "_");
-  //     if (!variableName) return;
-
-  //     const amount = control.get("amount")?.value || 0;
-  //     variables[variableName] = amount;
-
-  //     // Track dependencies
-  //     if (rowIndex !== i && expression.includes(variableName)) {
-  //       if (!this.dependencyMap[variableName]) {
-  //         this.dependencyMap[variableName] = new Set<number>();
-  //       }
-  //       this.dependencyMap[variableName].add(rowIndex);
-  //     }
-  //   });
-
-  //   // Include variables from availableVariables
-  //   this.availableVariables.forEach((variable) => {
-  //     if (!(variable.name in variables)) {
-  //       variables[variable.name] = variable.value || 0;
-  //     }
-  //   });
-
-
-
-  //   // Replace placeholders with actual values
-  //   let parsedExpression = expression.replace(
-  //     /\b[A-Za-z][A-Za-z0-9_]*\b/g,
-  //     (match) => (match in variables ? String(variables[match]) : "0")
-  //   );
-   
-
-  //   // Handle percentage (%) operator
-  //   parsedExpression = parsedExpression.replace(
-  //     /(\d+(\.\d+)?)\s*%\s*(\d+(\.\d+)?)/g,
-  //     (fullMatch, num1, _, num2) => `(${num1} * ${num2} / 100)`
-  //   );
-    
-
-  //   try {
-  //     return new Function("return " + parsedExpression)();
-  //   } catch (error) {
-  //     console.error("Invalid expression:", error);
-  //     this.toastService.error("Invalid formula. Please check and try again.");
-  //     return 0;
-  //   }
-  // }
-
-  evaluateExpression(expression: string, rowIndex: number, isDeduction: boolean = false): number {
+  evaluateExpression(
+    expression: string,
+    rowIndex: number,
+    isDeduction: boolean = false
+  ): number {
     const variables: Record<string, number> = {};
-  
+
     // Extract variables from breakup controls
     this.breakup.controls.forEach((control, i) => {
       const variableName = control.value.name?.trim().replace(/\s+/g, "_");
       if (!variableName) return;
-  
+
       const amount = control.get("amount")?.value || 0;
       variables[variableName] = amount;
-  
+
       // Track dependencies
       if (!isDeduction && rowIndex !== i && expression.includes(variableName)) {
         if (!this.dependencyMap[variableName]) {
@@ -1139,11 +1139,12 @@ if (evaluatedValue < 0) {
         this.dependencyMap[variableName].add(rowIndex);
       }
     });
-  
+
     // Extract variables from deductions controls
     this.deductions.controls.forEach((control, i) => {
       const variableName = control.value.name?.trim().replace(/\s+/g, "_");
       if (!variableName) return;
+
       const amount = control.get("amount")?.value || 0;
       variables[variableName] = amount;
 
@@ -1155,26 +1156,26 @@ if (evaluatedValue < 0) {
         this.dependencyMap[variableName].add(rowIndex);
       }
     });
-  
+
     // Include variables from availableVariables
     this.availableVariables.forEach((variable) => {
       if (!(variable.name in variables)) {
         variables[variable.name] = variable.value || 0;
       }
     });
-  
+
     // Replace placeholders with actual values
     let parsedExpression = expression.replace(
       /\b[A-Za-z][A-Za-z0-9_]*\b/g,
       (match) => (match in variables ? String(variables[match]) : "0")
     );
-  
+
     // Handle percentage (%) operator
     parsedExpression = parsedExpression.replace(
       /(\d+(\.\d+)?)\s*%\s*(\d+(\.\d+)?)/g,
       (fullMatch, num1, _, num2) => `(${num1} * ${num2} / 100)`
     );
-  
+
     try {
       return new Function("return " + parsedExpression)();
     } catch (error) {
@@ -1196,11 +1197,14 @@ if (evaluatedValue < 0) {
     control.get("calculationType")?.markAsTouched();
     control.get("calculationType")?.updateValueAndValidity();
 
-    this.calculateDeductions(index);
+    this.calculateDeductions(index, true);
   }
 
 
-  calculateDeductions(index: number): void {
+  employeerPfAmount:any =0
+  employeerEsiAmount:any = 0
+
+  calculateDeductions(index: number, fromDropdownChange: boolean = false): void {
     const salary = this.formGroup.get("salary")?.value || 0;
     const breakup = this.formGroup.get("breakup") as FormArray;
     const deductions = this.formGroup.get("deductions") as FormArray;
@@ -1209,32 +1213,54 @@ if (evaluatedValue < 0) {
     const name = control.get("name")?.value;
     const calculationType = control.get("calculationType")?.value;
 
+
   control.get("calculationType")?.markAsDirty();
   control.get("calculationType")?.markAsTouched();
 
 
   control.get("calculationType")?.updateValueAndValidity();
 
+  if(!this.gernated && fromDropdownChange){
+    if (name === "ESI" && this.salaryDetailData.netSalary > 21000) {
+      this.toastService.error("ESI is not applicable for salary above Rs.21,000.");
+      control.get("calculationType")?.setValue("none");
+      control.get("amount")?.setValue(0); 
+      this.employeerEsiAmount = 0;
+      return;
+    }
+  }
   
+
     let amount = 0;
 
     // Handle input state based on calculation type
-    if (calculationType === "custom") {
-      console.log(calculationType)
-      control.get("amount")?.enable({ onlySelf: true });
-    } else {
-      control.get("amount")?.disable();
-    }
+    // if (calculationType === "custom") {
+    //   console.log(name,calculationType)
+    //   control.get("amount")?.enable({ onlySelf: true });
+    // } else {
+    //   control.get("amount")?.disable();
+    // }
   
     switch (calculationType) {
+      case "none":
+        amount = 0
+        if(name === "PF"){
+          this.employeerPfAmount =0
+        }else if (name === "ESI"){
+          this.employeerEsiAmount = 0
+        }
+       break;
       case "percentage":
         if (name === "PF") {
           const basicRow = breakup.controls.find((row) => row.get("name")?.value === "Basic");
           const basicSalary = basicRow?.get("amount")?.value || 0;
           amount = Math.round((basicSalary * 12) / 100);
+          this.employeerPfAmount = amount
           control.get("formula")?.setValue('(Basic * 12) / 100');
         } else if (name === "ESI") {
           amount = Math.round((salary * 0.75) / 100);
+          this.employeerEsiAmount = Math.round( (salary * 3.25) / 100);
+
           control.get("formula")?.setValue('(Net_Salary * 0.75) / 100');
         }
         break;
@@ -1268,26 +1294,34 @@ if (evaluatedValue < 0) {
         break;
   
       case "custom":
-        return; // Keep existing amount for custom calculation
+        return;
   
       default:
-        if (name === "Advance") {
-          switch (calculationType) {
-            case "100%":
-              amount = this.totalAdvBal;
-              break;
-            case "50%":
-              amount = Math.round(this.totalAdvBal * 0.5);
-              break;
-            case "custom":
-              return; // Allow manual input for custom
+        // if(!this.gernated){
+          if (name === "Advance") {
+            switch (calculationType) {
+              case "100%":
+                amount = this.totalAdvBal;
+                break;
+              case "50%":
+                amount = Math.round(this.totalAdvBal * 0.5);
+                break;
+              case "custom":
+                return;
+            }
+          } 
+          else {
+            amount = 0;
           }
-        } else {
-          amount = 0;
-        }
+        // }
+       
     }
-  
-    control.get("amount")?.setValue(amount);
+    if(this.gernated){
+      control.get("amount")?.setValue(control.get("amount")?.value);
+    }else{
+      control.get("amount")?.setValue(amount);
+    }
+    
     control.get("amount")?.updateValueAndValidity(); // Ensure re-evaluation
     this.calculateTotalAmount();
   }
@@ -1318,7 +1352,8 @@ if (evaluatedValue < 0) {
   
       const calculationType = control.get("calculationType")?.value;
       if(calculationType == 'formula') {
-        control.get("amount")?.disable({ onlySelf: true });
+        // control.get("amount")?.disable({ onlySelf: true });
+        control.get("nameReadonly")?.setValue(true);
       }
   
       // Update the variable value
@@ -1362,34 +1397,103 @@ if (evaluatedValue < 0) {
       });
     }
   }
-  
-  breakupTotal:any
+
+  earningTotal:any
   deductionsTotal:any
+  totalctc:any = 0
   calculateTotalAmount(): void {
     // Get breakup array and calculate the total from it
-    const breakup = this.formGroup.get('breakup') as FormArray;
-     this.breakupTotal = breakup.controls.reduce((total, control) => {
+    const breakup = this.formGroup.get('breakup') as FormArray; 
+     this.earningTotal = breakup.controls.reduce((total, control) => {
       return total + (control.get('amount')?.value || 0);
     }, 0);
   
     // Get deductions array and calculate the total from it
     const deductions = this.formGroup.get('deductions') as FormArray;
      this.deductionsTotal = deductions.controls.reduce((total, control) => {
+      // if (control.get("name")?.value.toLowerCase() === 'esi') {
+      //   this.employeerEsiAmount = ( control.get("amount")?.value * 3.25) / 100;
+      //   console.log(this.employeerEsiAmount)
+      // }
+      // if (control.get("name")?.value.toLowerCase() === 'pf') {
+      //   this.employeerPfAmount = control.get("amount")?.value;
+      // }
       return total + (control.get('amount')?.value || 0);
     }, 0);
 
-    // Calculate the final total by subtracting deductions from breakup total
-    this.totalAmount =Math.round( this.breakupTotal - this.deductionsTotal);
+    this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
+
+   
+    this.totalAmount = Math.round( this.earningTotal - this.deductionsTotal);
 
     const dataToEmit = {
       invoiceOfMonth:this.formattedDate,
       totalAdv: this.totalAdvBal.toFixed(2),
       paidDays:this.presentDays,
       totalamount :this.totalAmount.toFixed(2),
-      earnTotal:this.breakupTotal.toFixed(2),
+      earnTotal:this.earningTotal.toFixed(2),
       deductionsTotal:this.deductionsTotal.toFixed(2)
     }
 
     this.salaryInvoiceData.emit(dataToEmit)
+  }
+
+  convertNumberToWords(num: any): string {
+    if (num === null || num === undefined || isNaN(num)) {
+      return 'Invalid amount';
+    }
+  
+    const a = [
+      '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+      'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+      'eighteen', 'nineteen'
+    ];
+    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const scales = ['thousand', 'lakh', 'crore'];
+  
+    if (num === 0) return 'Zero';
+
+    let isNegative = false;
+    if (num < 0) {
+      isNegative = true;
+      num = Math.abs(num); // Convert negative number to positive for processing
+    }
+  
+    let words = '';
+  
+    // Ensure the number is converted to a string and split for decimals
+    const numStr = num.toString();
+    const [integerPart, decimalPart] = numStr.split('.');
+  
+    const numberToWords = (n: number): string => {
+      let word = '';
+      if (n < 20) {
+        word = a[n];
+      } else if (n < 100) {
+        word = b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
+      } else if (n < 1000) {
+        word = a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + numberToWords(n % 100) : '');
+      } else {
+        for (let i = 0, divisor = 1000; i < scales.length; i++, divisor *= 100) {
+          if (n < divisor * 100) {
+            word = numberToWords(Math.floor(n / divisor)) + ' ' + scales[i] +
+              (n % divisor ? ' ' + numberToWords(n % divisor) : '');
+            break;
+          }
+        }
+      }
+      return word;
+    };
+  
+    // Convert integer part to words
+    words = numberToWords(parseInt(integerPart, 10));
+  
+    // Add decimal part if available
+    if (decimalPart) {
+      words += ` and ${numberToWords(parseInt(decimalPart, 10))} paise`;
+    }
+  
+    // Capitalize the first letter
+    return words.charAt(0).toUpperCase() + words.slice(1);
   }
 }
