@@ -58,6 +58,8 @@ import { RatingModule } from "ngx-bootstrap/rating";
 import { FullCalendarModule } from "@fullcalendar/angular";
 import { PopoverModule } from "ngx-bootstrap/popover";
 
+import { UiSwitchModule } from 'ngx-ui-switch';
+
 // Flat Picker
 import { FlatpickrModule } from "angularx-flatpickr";
 import { TabsModule } from "ngx-bootstrap/tabs";
@@ -178,6 +180,7 @@ import { PayrollListComponent } from './company/payroll/payroll-list/payroll-lis
     CdkStepperModule,
     NgStepperModule,
     FullCalendarModule,
+    UiSwitchModule,
     PopoverModule,
     TabsModule.forRoot(),
   ],

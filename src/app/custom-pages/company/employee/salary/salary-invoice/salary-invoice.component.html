@@ -79,7 +79,7 @@
 
                       <div class="flex-shrink-0 ms-3">
                         <p class="text-muted text-truncate fs-xs mb-0">
-                          {{ this.totalAdvBal }}
+                            <i class="bx bx-rupee"></i>  {{ this.totalAdvBal | number:'1.0-2'}}
                         </p>
                       </div>
                     </div>
@@ -104,8 +104,303 @@
                       </div>
                     </div>
                   </li>
+                  <li>
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1">
+                          <a
+                            href="javascript:void(0);"
+                            class="text-truncate p-0"
+                            >Monthly Salary</a
+                          >
+                        </h5>
+                      </div>
+
+                      <div class="flex-shrink-0 ms-3">
+                        <p class="text-muted text-truncate fs-xs mb-0">
+                            <i class="bx bx-rupee"></i>  {{ this.salaryDetailData.netSalary | number:'1.0-2'}}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </ngx-simplebar>
+            </div>
+            <div class="col-4 ">
+                <div class="p-3 bg-light rounded courses-calendar-dashboard">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <!-- <div class="flex-shrink-0">
+                            <button class="btn btn-sm btn-secondary"><i class="bi bi-chevron-left"></i></button>
+                        </div> -->
+                        <h6 class="flex-grow-1 mb-0 text-center fs-md">
+                            {{this.formattedDate | date : " MMMM - YYYY"}}
+                        </h6>
+                        <!-- <div class="flex-shrink-0">
+                            <button class="btn btn-sm btn-secondary"><i class="bi bi-chevron-right"></i></button>
+                        </div> -->
+                    </div>
+                    <div class="calendar-container">
+                        <!-- Week Days Header (Static) -->
+                     
+                        <div class="weekdays ">
+                          <div *ngFor="let day of weekDays" class="weekday">{{ day }}</div>
+                        </div>
+                      
+                        <!-- Dates Grid (for the entire month) -->
+                        <div class="dates-grid ">
+                          <!-- Empty cells for correct alignment (if month starts on a day other than Sunday) -->
+                          <div *ngFor="let empty of emptyCells" class="date-box">
+                            <div class="date-box"></div>
+                          </div>
+                      
+                          <!-- Dates with attendance highlighting -->
+                          <!-- <div 
+                            *ngFor="let date of highlightedDates"
+                            class="date-box"
+                            (click)="
+                            template.show();
+                            setModalData(date)
+                          "
+                            [ngClass]="date.className">
+                            <div class="date">
+                              {{ date.date | date: 'dd' }}
+                            </div>
+                          </div> -->
+
+                          <div  *ngFor="let date of highlightedDates" dropdown class="btn-group">
+                            <a dropdownToggle class="date-box "[ngClass]="date.className"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ date.date | date: 'dd' }}
+                            </a>
+                            <div *dropdownMenu class="dropdown-menu dropdown-menu-md p-4">
+
+                                <div class="d-flex align-items-center  px-2" [ngClass]="date.updated_by  || date.attendance_status === 'Absent' ||  date.attendance_status === 'Holiday'? 'mb-3':''">        
+                                    <div>
+                                      <span class="text-mute me-2">{{
+                                        date.date | date : "EEE, MMM d, y"
+                                      }}</span>
+                                      <span
+                                        class="badge"
+                                        [ngClass]="
+                                          date.attendance_status == 'Absent'
+                                            ? 'bg-danger'
+                                            : 'bg-success'
+                                        "
+                                        >{{ date.attendance_status }}
+                                   
+                                      </span>
+                                    </div>
+                                  </div>
+                                <!-- {{ date.date | date: 'dd,MMM,YYYY' }}
+                                {{date.attendance_status}} -->
+                                @if(date.updated_by || date.attendance_status === 'Absent' ||  date.attendance_status === 'Holiday'){
+                                    <form [formGroup]="formGroupSetPresent">
+                                        <h6 class="ms-2" >Edit Attendance</h6>
+                                        <div class="mb-3 d-flex justify-content-evenly">
+                                          <button
+                                            type="button"
+                                            class="btn"
+                                            [ngClass]="{
+                                              'btn-danger': date.attendance_status === 'Absent',
+                                              'btn-outline-danger': date.attendance_status !== 'Absent'
+                                            }"
+                                            (click)="setStatus('Absent', date.date)"
+                                          >
+                                            Absent
+                                          </button>
+                                      
+                                          <button
+                                            type="button"
+                                            class="btn"
+                                            [ngClass]="{
+                                              'btn-success': date.attendance_status === 'Present',
+                                              'btn-outline-success': date.attendance_status !== 'Present'
+                                            }"
+                                            (click)="setStatus('Present', date.date)"
+                                          >
+                                            Present
+                                          </button>
+                                        </div>
+                                      </form>
+                                }
+                               
+                                  
+                            </div>
+                        </div>
+                        </div>
+                      </div>
+                </div>
+
+                <!-- <div>
+                    <div
+                      bsModal
+                      #template="bs-modal"
+                      id="myModal"
+                      class="modal fade"
+                      tabindex="-1"
+                      aria-labelledby="myModalLabel"
+                      aria-hidden="true"
+                      style="display: none"
+                    >
+                      <div class="modal-dialog modal-xs">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title fs-lg" id="myModalLabel">Attendance Info</h5>
+                            <button
+                              type="button"
+                              class="btn-close"
+                              (click)="template.hide()"
+                            ></button>
+                          </div>
+                          <div class="modal-body">
+                            @if(this.timeLineData ){
+                                @if(this.timeLineData.attendance_status == 'Present'){
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                          <div class="card">
+                                            <div class="card-header">
+                                              <h6 class="card-title mb-0">Timesheet</h6>
+                            
+                                              <div class="d-flex align-items-center mt-3">
+                                              
+                                                <div>
+                                               
+                                                  <span class="text-mute me-2">{{
+                                                    this.timeLineData.date | date : "EEE, MMM d, y"
+                                                  }}</span>
+                                                  <span
+                                                    class="badge"
+                                                    [ngClass]="
+                                                      this.timeLineData.checkin_status == 'Early'
+                                                        ? 'bg-warning'
+                                                        : this.timeLineData.checkin_status == 'Late'
+                                                        ? 'bg-danger'
+                                                        : 'bg-success'
+                                                    "
+                                                    >{{ this.timeLineData.checkin_status }}
+                                                    @if(this.timeLineData.checkin_status != 'On-Time'){ by
+                                                    {{ this.timeLineData.timeDifference }}
+                                                    }
+                                                  </span>
+                                                </div>
+                                              </div>
+                                             
+                                            </div>
+                            
+                                            <div class="card-body">
+                                              <div class="row g-3">
+                                                <div class="col-md-12">
+                                                  <div class="card border shadow-none mb-0 check-bg">
+                                                    <div class="card-body p-2">
+                                                      <div class="text-center">
+                                                        <p class="text-muted text-truncate mb-2">
+                                                          Check In at
+                                                        </p>
+                                                        <h6 class="fs-lg">
+                                                          {{
+                                                            formatTime(this.timeLineData.earliestCheckInTime)
+                                                          }}
+                                                        </h6>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                            
+                                                <div class="punch-info">
+                                                  <div class="punch-hours">
+                                                    <span>{{ this.timeLineData.totalDuration }} hrs</span>
+                                                  </div>
+                                                </div>
+                            
+                                                <div class="col-md-12">
+                                                  <div class="card border shadow-none mb-0 check-bg">
+                                                    <div class="card-body p-2">
+                                                      <div class="text-center">
+                                                        <p class="text-muted text-truncate mb-2">
+                                                          Check Out at
+                                                        </p>
+                                                        <h6 class="fs-lg">
+                                                          @if( this.timeLineData.latestCheckOutTime ==
+                                                          '-'){ Not Check-out Yet } @else {
+                                                          {{
+                                                            formatTime(
+                                                              this.timeLineData.latestCheckOutTime
+                                                            )
+                                                          }}
+                                                          }
+                                                        </h6>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      
+                                      </div>
+                                }@else {
+                                    
+                                    <form
+                                    (ngSubmit)="onSubmitStatus()"
+                                    [formGroup]="formGroupSetPresent"
+                                    class="tablelist-form"
+                                    novalidate
+                                    autocomplete="off"
+                                  >
+                                    <div class="modal-body p-4">
+                                      <div class="mb-3 d-flex justify-content-evenly">
+                                        <button
+                                          type="button"
+                                          class="btn btn-label"
+                                          [ngClass]="{
+                                            'btn-danger': selectedStatus === 'Absent',
+                                            'btn-outline-danger': selectedStatus !== 'Absent'
+                                          }"
+                                          (click)="setStatus('Absent')"
+                                        >
+                                          <i class="ri-check-double-line label-icon align-middle fs-lg me-2"></i>
+                                          Absent
+                                        </button>
+                                  
+                                        <button
+                                          type="button"
+                                          class="btn btn-label"
+                                          [ngClass]="{
+                                            'btn-success': selectedStatus === 'Present',
+                                            'btn-outline-success': selectedStatus !== 'Present'
+                                          }"
+                                          (click)="setStatus('Present')"
+                                        >
+                                          <i class="ri-check-double-line label-icon align-middle fs-lg me-2"></i>
+                                          Present
+                                        </button>
+                                      </div>
+                                    </div>
+                                  
+                                    <div class="modal-footer">
+                                      <div class="hstack gap-2 justify-content-end">
+                                       
+                                        <button type="submit" class="btn btn-primary" id="add-btn">
+                                          Save
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </form>
+                                  
+
+                                }
+                           
+                            }
+                          </div>
+                        
+                        </div>
+                       
+                      </div>
+                     
+                    </div>
+                   
+                  </div> -->
             </div>
           </div>
         </div>
@@ -215,28 +510,40 @@
 
                               <td class="text-end">
                                 <div>
-                                  <select
-                                    class="form-select"
-                                    [formControlName]="'calculationType'"
-                                    (change)="
-                                      onCalculationTypeChange(
-                                        $event,
-                                        $index,
-                                        data
-                                      )
-                                    "
-                                  >
-                                    <option
-                                      *ngIf="data.get('formula')?.value"
-                                      value="default"
-                                    >
-                                      Default
-                                    </option>
-                                    <option value="custom">Custom</option>
-                                    <option value="formula">
-                                      Formula Builder
-                                    </option>
-                                  </select>
+                                    <div class="d-flex align-items-center">
+                                     
+                                        <select
+                                        class="form-select"
+                                        [value]="data.get('calculationType')?.value"
+                                        [formControlName]="'calculationType'"
+                                        (change)="
+                                          onCalculationTypeChange(
+                                            $event,
+                                            $index,
+                                            data
+                                          )
+                                        "
+                                      >
+                                      <ng-container
+                                  *ngIf="data.get('formula')?.value"
+                                >
+                                  <option [value]="'default'">Default</option>
+                                </ng-container>
+                                   
+                                        <option [value]="'custom'">Custom</option>
+                                        <option [value]="'formula'">
+                                          Formula Builder
+                                        </option>
+                                      </select>
+    
+                                      @if(data.get('calculationType')?.value == 'default' || data.get('calculationType')?.value === 'formula'){
+                                        <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                        [tooltip]="data.get('formula')?.value">
+                                        <i class=" ri-information-fill"></i>
+                                        </a>                                  
+                                     }
+                                    </div>
+                                 
 
                                   <!-- Formula Builder Input -->
                                   <div
@@ -731,22 +1038,27 @@
                               <div
                                 class="hstack gap-2 justify-content-end align-items-end"
                               >
+                              @if(!this.gernated){
                                 @if (saveButtonActive) {
-                                <button class="btn btn-primary">Save</button>
-                                } @else {
-                                <button
-                                  class="btn btn-secondary"
-                                  type="button"
-                                  disabled
-                                >
-                                  <span
-                                    class="spinner-border spinner-border-sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                  ></span>
-                                  Please wait
-                                </button>
-                                }
+                                    <button class="btn btn-primary">Generate Payroll</button>
+                                    } @else {
+                                    <button
+                                      class="btn btn-secondary"
+                                      type="button"
+                                      disabled
+                                    >
+                                      <span
+                                        class="spinner-border spinner-border-sm"
+                                        role="status"
+                                        aria-hidden="true"
+                                      ></span>
+                                      Please wait
+                                    </button>
+                                    }
+                              }@else {
+                                <a  (click)="tooltipmodal.show()" class="btn btn-success">Print Payroll</a>
+                              }
+                                
                               </div>
                             </th>
                           </tr>
@@ -794,79 +1106,57 @@
                                 </div>
                               </td>
                               <td class="text-end">
-                                <!-- <select
-                                                    class="form-select "
-                                                    [formControlName]="'calculationType'"
-                                                    [value]="data.get('calculationType')?.value"
-                                                    (change)="onCalculationDeductionTypeChange($event, $index)"
-                                                  
-                                                  >
-
-                                                  <option [ngValue]="'none'">None</option>
-                                                  <ng-container
-                                                  *ngIf="data.get('name')?.value === 'PF'"
-                                                >
-                                                  
-                                                  <option [ngValue]="'percentage'">12%</option>
-                                                </ng-container>
-                    
-                                                <ng-container
-                                                  *ngIf="data.get('name')?.value === 'ESI'"
-                                                >
+                              <div class="d-flex align-items-center">
               
-                                                  <option [ngValue]="'percentage'">0.75%</option>
-                                                </ng-container>
-                                                <ng-container *ngIf="data.get('name')?.value === 'Advance'">
-                                                   
-                                                    <option [value]="'100%'">100%</option>
-                                                    <option [value]="'50%'">50%</option>
-                                                   
-                                                  </ng-container>
-                                                  <option [ngValue]="'custom'">Custom</option>
-                                                  <option [ngValue]="'formula'">
-                                                    Formula Builder
-                                                  </option>
-                                                  </select> -->
-
                                 <select
-                                  class="form-select"
-                                  [formControlName]="'calculationType'"
-                                  [value]="data.get('calculationType')?.value"
-                                  (change)="
-                                    onCalculationDeductionTypeChange(
-                                      $event,
-                                      $index
-                                    )
+                                class="form-select"
+                                [formControlName]="'calculationType'"
+                                [value]="data.get('calculationType')?.value"
+                                (change)="
+                                  onCalculationDeductionTypeChange(
+                                    $event,
+                                    $index
+                                  )
+                                "
+                              >
+                                <option [value]="'none'">None</option>
+                                <ng-container
+                                  *ngIf="data.get('name')?.value === 'PF'"
+                                >
+                                  <option [value]="'percentage'">12%</option>
+                                </ng-container>
+
+                                <ng-container
+                                  *ngIf="data.get('name')?.value === 'ESI'"
+                                >
+                                  <option [value]="'percentage'">
+                                    0.75%
+                                  </option>
+                                </ng-container>
+
+                                <ng-container
+                                  *ngIf="
+                                    data.get('name')?.value === 'Advance'
                                   "
                                 >
-                                  <option [value]="'none'">None</option>
-                                  <ng-container
-                                    *ngIf="data.get('name')?.value === 'PF'"
-                                  >
-                                    <option [value]="'percentage'">12%</option>
-                                  </ng-container>
+                                  <option [value]="'100%'">100%</option>
+                                  <option [value]="'50%'">50%</option>
+                                </ng-container>
+                                <option [value]="'custom'">Custom</option>
+                                <option [value]="'formula'">
+                                  Formula Builder
+                                </option>
+                              </select>
 
-                                  <ng-container
-                                    *ngIf="data.get('name')?.value === 'ESI'"
-                                  >
-                                    <option [value]="'percentage'">
-                                      0.75%
-                                    </option>
-                                  </ng-container>
+                              @if(data.get('calculationType')?.value == 'percentage' || data.get('calculationType')?.value === 'formula'){
+                                  <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                  [tooltip]="data.get('formula')?.value">
+                                  <i class=" ri-information-fill"></i>
+                                  </a>                                  
+                               }
+                              </div>
 
-                                  <ng-container
-                                    *ngIf="
-                                      data.get('name')?.value === 'Advance'
-                                    "
-                                  >
-                                    <option [value]="'100%'">100%</option>
-                                    <option [value]="'50%'">50%</option>
-                                  </ng-container>
-                                  <option [value]="'custom'">Custom</option>
-                                  <option [value]="'formula'">
-                                    Formula Builder
-                                  </option>
-                                </select>
+                               
 
                                 <div
                                   *ngIf="
@@ -1335,7 +1625,9 @@
                       <th scope="row">Employer's Provident Fund</th>
                       <td></td>
                       <td class="text-end">
-                        <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2'}}
+                        @if(employeerPfAmount){
+                            <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2'}}
+                        }        
                       </td>
                     </tr>
                     <tr>
@@ -1350,7 +1642,9 @@
                         &gt; Provident Fund
                       </td>
                       <td>
-                        <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2' }}
+                        @if(employeerPfAmount){
+                            <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2'}}
+                        }    
                       </td>
                       <td class="text-end"></td>
                     </tr>
@@ -1366,15 +1660,15 @@
                       <th scope="row">Total CTC</th>
 
                       <td class="text-end" colspan="2">
-                        <i class="bx bx-rupee"></i>{{ totalctc | number:'1.0-2'}}
+                       <strong><i class="bx bx-rupee"></i>{{ totalctc | number:'1.0-2'}}</strong> 
                       </td>
                     </tr>
                     <tr class="table-light">
                       <th scope="row">In Words</th>
 
                       <td class="text-end" colspan="2">
-                        <i class="bx bx-rupee"></i>
-                        {{ convertNumberToWords(totalctc || 0) }}
+                      <strong><i class="bx bx-rupee"></i>
+                        {{ convertNumberToWords(totalctc || 0) }}</strong>  
                       </td>
                     </tr>
                   </tbody>
@@ -1382,6 +1676,397 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div
+  bsModal
+  #tooltipmodal="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="tooltipmodal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-xxl-12">
+            <div class="hstack gap-2 justify-content-end d-print-none mb-4">
+              <a href="javascript:window.print()" class="btn btn-success"
+                ><i class="ri-printer-line align-bottom me-1"></i> Print</a
+              >
+            </div>
+            <div class=" overflow-hidden myDivToPrint" id="invoice">
+              <div class=" z-1 position-relative">
+                <div class="d-flex">
+                  <div class="flex-grow-1">
+                    <img
+                      src="/assets/payslip-header.png"
+                      class="card-logo img-fluid"
+                      alt="logo light"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-12 bg-light text-center py-3">
+                  <h6 class="fw-bold">A B Pal Electricals (P) Limited</h6>
+                  <h6 class="fw-normal">
+                    1826, Bhagirath Palace, Chandni Chowk, Delhi-110006, India
+                  </h6>
+                  <h6 class="fw-normal">
+                    Phone: +91 98914 98555, +9111 43 111 333
+                  </h6>
+                  <h6 class="fw-normal">Email Id: contact&#64;abpal.com</h6>
+                  <h6 class="fw-normal mb-0">Website: www.abpal.com</h6>
+                </div>
+
+                <div class="col-12 ">
+                    <div class="mt-2">
+                        <div class=" bg-light text-center p-2">
+                       <strong>Pay Slip for
+                        {{ payslipData?.payslip_for_month | date : "MMMM, YYYY" }}</strong>   
+                        </div>
+                      </div>
+                     
+                </div>
+                <div class="row mt-3">
+                   
+                      <div class="col-6">
+                        <h6>
+                          Employee Name :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ empData?.name }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Employee Code :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ empData?.employee_id }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Work Location :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ empData?.branch }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Designation :&nbsp;<span class="text-muted fw-normal">{{
+                            empData?.designation_name
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Department :&nbsp;<span class="text-muted fw-normal">{{
+                            empData?.department_name
+                          }}</span>
+                        </h6>
+                      </div>
+  
+                      <div class="col-6">
+                        <h6>
+                          Date of Joining :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ empData?.joining_date  | date : "dd MMM, YYYY"}}</span
+                          >
+                        </h6>
+                        <h6>
+                          Aadhar No. :&nbsp;<span class="text-muted fw-normal">{{
+                            empBackGroundData?.aadhaar
+                          }}</span>
+                        </h6>
+                        <h6>
+                          PAN No. :&nbsp;<span class="text-muted fw-normal">{{
+                            empBackGroundData?.pan
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank Name :&nbsp;<span class="text-muted fw-normal">{{
+                            empBankDetail?.bank_name
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank A/c No. :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ empBankDetail?.acc_number }}</span
+                          >
+                        </h6>
+                      </div>
+                   
+                  </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive mt-2">
+                      <table
+                        class="table table-bordered text-center table-nowrap align-middle mb-0"
+                      >
+                        <thead>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">
+                              Salary Monthly
+                            </th>
+                            <th scope="col" class="text-end">
+                              <i class="bx bx-rupee"></i>
+                              {{ this.salaryDetailData.netSalary | number:'1.0-2'}}
+              
+                            </th>
+                            <th scope="col" class="text-start">
+                              Total Paid Days
+                            </th>
+                            <th scope="col" class="text-end">
+                              {{ payslipData?.paid_days }}
+                            </th>
+                          </tr>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">Earnings</th>
+                            <th scope="col" class="text-end">Amount</th>
+                            <th scope="col" class="text-start">Deductions</th>
+                            <th scope="col" class="text-end">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody id="products-list">
+                          <ng-container
+                            *ngFor="
+                              let i of getMaxLength(
+                                payslipData?.earning,
+                                payslipData?.deduction
+                              )
+                            "
+                          >
+                            <tr>
+                              <!-- @if(payslipData?.earning[i]?.name){ -->
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.earning[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.earning[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.earning[i]?.amount | number:'1.0-2' }}
+                                }@else if (!payslipData?.earning[i]?.name) {
+                                    
+                                }@else {
+                                    Nil 
+                                }
+                              </td>
+                              <!-- }  -->
+                              <!-- @if(payslipData?.deduction[i]?.name){ -->
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.deduction[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.deduction[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.deduction[i]?.amount | number:'1.0-2' }}
+                                }@else if (!payslipData?.deduction[i]?.name) {
+
+                                }
+                                 @else { Nil }
+                              </td>
+                              <!-- } -->
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                        <tfoot>
+                          <tr class="table-light">
+                            <td class="text-start">
+                              <strong>Total Earnings</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.earning_amount | number:'1.0-2'}}
+                            </td>
+                            <td class="text-start">
+                              <strong>Total Deductions</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.deduction_amount | number:'1.0-2'}}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="border-top border-top-dashed mt-1"
+                  id="products-list-total"
+                >
+                  <table
+                    class="table table-bordered table-nowrap align-middle mb-0"
+                  >
+                    <tbody>
+                      <tr class="border-top border-top-dashed fs-base">
+                        <th scope="row">Net Pay</th>
+                        <th class="text-end">
+                          <i class="bx bx-rupee"></i>{{ payslipData?.net_pay | number:'1.0-2'}}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="row">In Words:</th>
+                        <th class="text-end">
+                            <i class="bx bx-rupee"></i>  {{ convertNumberToWords(payslipData?.net_pay || 0) }}
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                      <thead>
+                        <tr class="table-light">
+                          <th scope="col" colspan="3">
+                            Employer's Contribution (CTC)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="border-top border-top-dashed fs-base">
+                          <td scope="row">Earning Gross:</td>
+                          <td></td>
+                          <td class="text-end">
+                            <i class="bx bx-rupee"></i
+                            >{{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's Provident Fund</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Pension Fund
+                          </td>
+                          <td class="text-end">Nil</td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Provident Fund
+                          </td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's State Insurance</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerEsiAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{
+                                      payslipData?.employeer_ctc?.employeerEsiAmount| number:'1.0-2'
+                                    }}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                        </tr>
+
+                        <tr class="table-light">
+                          <th scope="row">Total CTC</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalctc | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                     
+                      <tbody>
+                      
+                        <tr class="table-light">
+                          <th scope="row">Gross Salary</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <!-- <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr> -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!--end table-->
+                </div>
+
+        
+                  <div class="mb-0 mt-3 bg-light text-center py-2 ">
+                    
+                    <span id="note">
+                        This is a computer-generated document and does not require a signature.
+                    </span>
+                  </div>
+             
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

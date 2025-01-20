@@ -560,6 +560,29 @@ export class SalaryDetailComponent {
 
   addDeduction(){
     const deductionsArray = this.formGroup.get("deductions") as FormArray;
+
+    const lastRow = this.deductions.at(this.deductions.length - 1);
+
+    if(lastRow.get("name")?.value !== 'TDS'){
+      if (!lastRow.get("amount")?.value || lastRow.get("amount")?.value <= 0  ) {
+        this.toastService.error(
+          "Please enter a valid amount before adding a new row."
+        );
+        lastRow.get("amount")?.markAsTouched();
+        return;
+      }
+    }
+   
+
+    if (
+      !lastRow.get("name")?.value ||
+      lastRow.get("name")?.value.trim() === ""
+    ) {
+      this.toastService.error("Please enter a name before adding a new row.");
+      lastRow.get("name")?.markAsTouched();
+      return;
+    }
+
     const row =  this.createDeductionRow( "", "none", "", 0, false);
     deductionsArray.push(row);
   }
@@ -795,6 +818,8 @@ export class SalaryDetailComponent {
         // Update the current row's amount field
         data.get("amount")?.setValue(evaluatedValue);
 
+        data.get("formula")?.setValue(formula);
+
         // Update the variable value for dependency tracking
         this.updateVariable(variableName, evaluatedValue);
 
@@ -1020,7 +1045,7 @@ export class SalaryDetailComponent {
 
     let amount = 0;
 
-    if (fromDropdownChange && name === "ESI" && salary > 21000) {
+    if (fromDropdownChange && name === "ESI" && calculationType !=='none' && salary > 21000) {
       this.toastService.error("ESI is not applicable for salary above 21,000.");
       control.get("calculationType")?.setValue("none");
       control.get("amount")?.setValue(0); 
@@ -1102,7 +1127,7 @@ export class SalaryDetailComponent {
 
   evaluateDeductionFormula(rowIndex: number): void {
     const control = this.deductions.at(rowIndex);
-    console.log(control)
+
     const formula = control.get("formula")?.value;
 
     try {

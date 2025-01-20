@@ -10,7 +10,7 @@ import { ApiService } from "../../../../core/services/api.service";
 })
 export class BankDetailComponent implements OnInit {
   @Input() urlId: number | null = null;
-  @Output() bankDataFetched = new EventEmitter<boolean>();
+  @Output() bankDataFetched = new EventEmitter<any>();
   company_id: any;
   formGroup!: FormGroup;
   submitted: boolean = false;
@@ -73,7 +73,7 @@ export class BankDetailComponent implements OnInit {
             bank_name: data.bank_name,
             ifsc_code: data.ifsc_code,
           });
-          this.bankDataFetched.emit(true);
+          this.bankDataFetched.emit(data);
 
           // this.departmentData = res.data || [];
           // // this.departmentDataList = res.data || [];

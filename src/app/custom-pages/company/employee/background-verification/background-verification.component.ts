@@ -19,7 +19,7 @@ import { ToastrService } from "ngx-toastr";
 })
 export class BackgroundVerificationComponent implements OnInit {
   @Input() urlId: number | null = null;
-  @Output() backGroundDetail = new EventEmitter<boolean>();
+  @Output() backGroundDetail = new EventEmitter<any>();
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
 
@@ -128,7 +128,7 @@ export class BackgroundVerificationComponent implements OnInit {
           //   bank_name: data.bank_name,
           //   ifsc_code: data.ifsc_code,
           // });
-          this.backGroundDetail.emit(true);
+          this.backGroundDetail.emit(data);
         } else {
           this.handleError("Unexpected response format");
         }

@@ -19,6 +19,7 @@ import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { debounceTime, filter } from "rxjs/operators";
 import { Subject } from "rxjs";
 
+
 @Component({
   selector: 'app-salary-invoice',
 
@@ -27,7 +28,10 @@ import { Subject } from "rxjs";
 })
 export class SalaryInvoiceComponent {
   @Input() isActive!: boolean; 
-  @Input()salaryDetailData:any
+  @Input()salaryDetailData:any;
+  @Input()empData:any;
+  @Input()empBackGroundData:any
+  @Input()empBankDetail:any
   @Output() salaryInvoiceData = new EventEmitter<any>();
   bsConfig?: Partial<BsDatepickerConfig>;
   selectedDate: Date = new Date();
@@ -41,6 +45,7 @@ export class SalaryInvoiceComponent {
   formula: string = "";
   company_id: any;
   formGroup!: FormGroup;
+  formGroupSetPresent!: FormGroup;
   submitted: boolean = false;
   spinnerStatus: boolean = false;
   saveButtonActive: boolean = true;
@@ -53,6 +58,11 @@ export class SalaryInvoiceComponent {
 
   gernated:boolean =false;
 
+  employeerPfAmount:any =0;
+  employeerEsiAmount:any = 0;
+  earningTotal:any= 0;
+  deductionsTotal:any= 0;
+  totalctc:any = 0;
 
   allowances = [
     { id: 1, name: "HRA", formula: "Basic / 2" },
@@ -66,6 +76,8 @@ export class SalaryInvoiceComponent {
   ];
   // selectedAllowances: any[] = [];
   showAllowanceSelect: boolean = false;
+
+  selectedStatus: string = 'Absent';
 
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: Event): void {
@@ -93,23 +105,40 @@ export class SalaryInvoiceComponent {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.getOpenAdvances()
+    // this.getOpenAdvances()
   
-    // this.getPresentDays()
-    // if (changes['isActive'] && changes['isActive'].currentValue) {
-    //   this.selectedDate = new Date();
+    this.selectedDate = new Date();
 
-    // this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
+    this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
 
-    //   this.handleDateChange(newDate);
-    // });
-    // if (this.urlId) {
-    //   this.initializeFormWithData()
-    //   // this.getPresentDays()    
+      this.handleDateChange(newDate);
+    });
+    if (this.urlId) {
+      this.initializeFormWithData()
+      // this.getPresentDays()    
       
-    // } else {
-    //   this.initializeForm();
-    // }
+    } 
+    else {
+      this.initializeForm();
+    }
+
+    this.formGroupSetPresent = this.formBuilder.group({
+      date: ["", [Validators.required]],
+      status: ["", [Validators.required]],
+    });
+
+    // this.breakup.valueChanges.subscribe(() => {
+    //   this.populateDependencyMap();
+    // });
+    
+    // Listen to changes in breakup (basic salary)
+    const breakup = this.formGroup.get('breakup') as FormArray;
+    breakup.valueChanges.subscribe(() => {
+      this.recalculateDeductions();
+    });
+
+    this.setupSalaryChangeSubscription();
+    this.setupBreakupChangeSubscription();
   }
 
   ngOnInit(): void {
@@ -127,6 +156,11 @@ export class SalaryInvoiceComponent {
       this.initializeForm();
     }
 
+    this.formGroupSetPresent = this.formBuilder.group({
+      date: ["", [Validators.required]],
+      status: ["", [Validators.required]],
+    });
+
     // this.breakup.valueChanges.subscribe(() => {
     //   this.populateDependencyMap();
     // });
@@ -141,6 +175,129 @@ export class SalaryInvoiceComponent {
     this.setupBreakupChangeSubscription();
    
   }
+  highlightedDates: any[] = []
+  getCheckInDetail() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(
+        `getEmployeeAttendance?emp_id=${this.urlId}&date=${this.formattedDate}`
+      )
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            const data = res.data.checkInsByDate;
+            this.highlightedDates = data.map((entry: any) => ({
+             
+              attendance_status:entry.attendance_status,
+              date: entry.date, 
+              earliestCheckInTime: entry.earliestCheckInTime,
+              latestCheckOutTime: entry.latestCheckOutTime,
+              timeDifference:entry.timeDifference,
+              totalDuration:entry.totalDuration,
+              checkin_status:entry.checkin_status,
+              // className: entry.attendance_status === "Present"
+              // ? "present-day"
+              // : entry.attendance_status === "Absent"
+              // ? "absent-day"
+              // : "hoilday-day"
+              updated_by:entry.updated_by,
+              className:
+              entry.attendance_status === "Present"
+                ? entry.updated_by === "admin"
+                  ? "admin-updated-present-day" 
+                  : "present-day"
+                : entry.attendance_status === "Absent"
+                ? "absent-day"
+                : "hoilday-day"
+            
+            }));
+          
+          } else {
+            this.highlightedDates = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+  
+
+  
+  // Helper function to format date as YYYY-MM-DD
+ 
+
+  weekDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  monthDates: Date[] = [];
+  emptyCells: number[] = [];
+  
+  generateMonthDates(selectedDate: Date) {
+    this.monthDates = [];
+    this.emptyCells = [];
+  
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+  
+    // Get first day of the month (0=Sunday, 1=Monday, ...)
+    const firstDay = new Date(year, month, 1).getDay();
+  
+    // Get total days in the month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+    // Add empty slots to align first date correctly
+    this.emptyCells = Array(firstDay).fill(0);
+  
+    // Generate dates for the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      this.monthDates.push(new Date(year, month, day));
+    }
+  }
+  
+  
+  timeLineData: any;
+  setModalData(data: any,) {
+    this.timeLineData = data;
+    this.selectedStatus  =  this.timeLineData.attendance_status
+  }
+
+  setStatus(status: string, date:any) {
+    this.selectedStatus = status; 
+    this.formGroupSetPresent.patchValue({ 
+      status: status,
+      date: date 
+    });
+    this.onSubmitStatus();
+  }
+  
+
+  onSubmitStatus() {  
+    const formData = {
+      date: this.formGroupSetPresent.value.date,
+      emp_id: this.urlId,
+      status: this.formGroupSetPresent.value.status,
+    };
+  
+    this.api.post("markAsPresent", formData).subscribe(
+      (res: any) => this.handleResponse(res),
+      (error) => this.handleError(error)
+    );
+  }
+  
+
+ 
+  formatTime(time: string): string {
+    // Assuming time format is "HH:mm:ss" or similar
+    const [hour, minute, second] = time.split(":");
+    const period = +hour >= 12 ? "PM" : "AM";
+    const formattedHour = +hour % 12 || 12; // Convert hour to 12-hour format
+
+    return `${formattedHour}:${minute} ${period}`;
+  }
+
 
   setupSalaryChangeSubscription(): void {
     this.formGroup.get('salary')?.valueChanges.subscribe((salaryValue) => {
@@ -167,9 +324,10 @@ export class SalaryInvoiceComponent {
   handleDateChange(newDate: Date): void {
     this.selectedDate = newDate;
     this.formattedDate = this.formatDate(newDate);
-
+    this.generateMonthDates(newDate);
     this.getPresentDays();
     this.getOpenAdvances();
+    this.getCheckInDetail()
   }
 
   formatDate(date: Date): string {
@@ -187,7 +345,8 @@ export class SalaryInvoiceComponent {
   initializeForm() {
     this.formGroup = this.formBuilder.group({
       salary: ["", [Validators.required, Validators.min(0)]],
-      breakup: this.formBuilder.array([this.createPermanentRow()]),
+      // this.createPermanentRow()
+      breakup: this.formBuilder.array([]),
       deductions: this.formBuilder.array([
         this.createDeductionRow("PF", "none", "", 0),
         this.createDeductionRow("ESI", "none", "", 0),
@@ -341,6 +500,7 @@ export class SalaryInvoiceComponent {
           this.daysInMonth = res.daysInMonth;
 
   if(this.presentDays == 0){
+    this.gernated = false
     this.employeerPfAmount =0
     this.employeerEsiAmount = 0
     this.initializeFormWithData()
@@ -376,6 +536,7 @@ export class SalaryInvoiceComponent {
         
           const data = res.data[0];
           if (data) {
+            this.payslipData = data
             this.gernated = true
             const netSalary = Number(data.salary);
             if (!isNaN(netSalary)) {
@@ -389,9 +550,12 @@ export class SalaryInvoiceComponent {
                 // Recalculate earnings and deductions
                 this.patchEarnings(data.earning);
                 this.patchDeductions(data.deduction);
-                this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
-                this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
-                this.totalctc = data.employeer_ctc.totalctc || 0;
+                if(data.employeer_ctc){
+                  this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+                  this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+                  this.totalctc = data.employeer_ctc.totalctc || 0;
+                }
+              
                 this.calculateTotalAmount();
               
               } else {
@@ -415,7 +579,7 @@ export class SalaryInvoiceComponent {
     );
   }
 
-  
+
   getSalaryDetail() {
     this.toggleSpinner(true);
     const url = `salaryDetail?emp_id=${this.urlId}`;
@@ -639,6 +803,8 @@ export class SalaryInvoiceComponent {
       // this.formGroup.reset();
       this.toastService.success("Data Saved Successfully!!");
       this.getOpenAdvances()
+      this.getCheckInDetail()
+      this.getPresentDays()
       // this.getDesignation();
     } else {
       this.toastService.error(res["message"]);
@@ -739,6 +905,28 @@ export class SalaryInvoiceComponent {
 
   addDeduction(){
     const deductionsArray = this.formGroup.get("deductions") as FormArray;
+    const lastRow = this.deductions.at(this.deductions.length - 1);
+
+    if(lastRow.get("name")?.value !== 'TDS'){
+      if (!lastRow.get("amount")?.value || lastRow.get("amount")?.value <= 0  ) {
+        this.toastService.error(
+          "Please enter a valid amount before adding a new row."
+        );
+        lastRow.get("amount")?.markAsTouched();
+        return;
+      }
+    }
+   
+
+    if (
+      !lastRow.get("name")?.value ||
+      lastRow.get("name")?.value.trim() === ""
+    ) {
+      this.toastService.error("Please enter a name before adding a new row.");
+      lastRow.get("name")?.markAsTouched();
+      return;
+    }
+
     const row =  this.createDeductionRow( "", "none", "", 0);
     deductionsArray.push(row);
   }
@@ -949,6 +1137,8 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
 
         // Update the current row's amount field
         data.get("amount")?.setValue(evaluatedValue);
+
+        data.get("formula")?.setValue(formula);
 
         // Update the variable value for dependency tracking
         this.updateVariable(variableName, evaluatedValue);
@@ -1201,8 +1391,7 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
   }
 
 
-  employeerPfAmount:any =0
-  employeerEsiAmount:any = 0
+
 
   calculateDeductions(index: number, fromDropdownChange: boolean = false): void {
     const salary = this.formGroup.get("salary")?.value || 0;
@@ -1220,9 +1409,10 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
 
   control.get("calculationType")?.updateValueAndValidity();
 
-  if(!this.gernated && fromDropdownChange){
-    if (name === "ESI" && this.salaryDetailData.netSalary > 21000) {
+  if( fromDropdownChange){
+    if (name === "ESI" &&  calculationType !=='none' && this.salaryDetailData.netSalary > 21000) {
       this.toastService.error("ESI is not applicable for salary above Rs.21,000.");
+      console.log(calculationType)
       control.get("calculationType")?.setValue("none");
       control.get("amount")?.setValue(0); 
       this.employeerEsiAmount = 0;
@@ -1245,8 +1435,10 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
       case "none":
         amount = 0
         if(name === "PF"){
+          control.get("amount")?.setValue(amount);
           this.employeerPfAmount =0
         }else if (name === "ESI"){
+          control.get("amount")?.setValue(amount);
           this.employeerEsiAmount = 0
         }
        break;
@@ -1257,8 +1449,10 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
           amount = Math.round((basicSalary * 12) / 100);
           this.employeerPfAmount = amount
           control.get("formula")?.setValue('(Basic * 12) / 100');
+          control.get("amount")?.setValue(amount);
         } else if (name === "ESI") {
           amount = Math.round((salary * 0.75) / 100);
+          control.get("amount")?.setValue(amount);
           this.employeerEsiAmount = Math.round( (salary * 3.25) / 100);
 
           control.get("formula")?.setValue('(Net_Salary * 0.75) / 100');
@@ -1317,6 +1511,7 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
        
     }
     if(this.gernated){
+     
       control.get("amount")?.setValue(control.get("amount")?.value);
     }else{
       control.get("amount")?.setValue(amount);
@@ -1398,9 +1593,7 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
     }
   }
 
-  earningTotal:any
-  deductionsTotal:any
-  totalctc:any = 0
+
   calculateTotalAmount(): void {
     // Get breakup array and calculate the total from it
     const breakup = this.formGroup.get('breakup') as FormArray; 
@@ -1492,8 +1685,30 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
     if (decimalPart) {
       words += ` and ${numberToWords(parseInt(decimalPart, 10))} paise`;
     }
-  
-    // Capitalize the first letter
+
     return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+
+  payslipData:any
+  
+
+  getMaxLength(earnings: any[], deductions: any[]): number[] {
+    // Ensure that both earnings and deductions are not null or undefined
+    const safeEarnings = earnings || [];
+    const safeDeductions = deductions || [];
+    
+    const maxLength = Math.max(safeEarnings.length, safeDeductions.length);
+    
+    // Pad shorter array with nulls if necessary
+    if (safeEarnings.length < maxLength) {
+      safeEarnings.push(...Array(maxLength - safeEarnings.length).fill(null));
+    }
+    
+    if (safeDeductions.length < maxLength) {
+      safeDeductions.push(...Array(maxLength - safeDeductions.length).fill(null));
+    }
+  
+    // Return an array of indexes up to the max length
+    return Array.from({ length: maxLength }, (_, i) => i);
   }
 }

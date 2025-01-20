@@ -103,24 +103,32 @@
         
                                 <td class="text-end">
                                   <div>
-                                    <select
-                                      class="form-select"
-                                      [formControlName]="'calculationType'"
-                                      (change)="
-                                        onCalculationTypeChange($event, $index, data)
-                                      "
-                                    >
-                                      <option
-                                        *ngIf="data.get('formula')?.value"
-                                        value="default"
+                                    <div class="d-flex align-items-center">
+                                        <select
+                                        class="form-select"
+                                        [formControlName]="'calculationType'"
+                                        (change)="
+                                          onCalculationTypeChange($event, $index, data)
+                                        "
                                       >
-                                        Default
-                                      </option>
-                                      <option value="custom">Custom</option>
-                                      <option value="formula">Formula Builder</option>
-                                    </select>
-        
-                                    
+                                        <option
+                                          *ngIf="data.get('formula')?.value"
+                                          value="default"
+                                        >
+                                          Default
+                                        </option>
+                                        <option value="custom">Custom</option>
+                                        <option value="formula">Formula Builder</option>
+                                      </select>
+                                      <!-- Tooltips -->
+                                       @if(data.get('calculationType')?.value == 'default' || data.get('calculationType')?.value === 'formula'){
+                                          <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                          [tooltip]="data.get('formula')?.value">
+                                          <i class=" ri-information-fill"></i>
+                                          </a>                                  
+                                       }
+                                    </div>
+                                  
                                     <!-- Formula Builder Input -->
                                     <div
                                       *ngIf="
@@ -567,8 +575,8 @@
                                   </div>
                                 </td>
                                 <td class="text-end">
-                                   
-                                  <select
+                                   <div class="d-flex align-items-center">
+                                    <select
                                     class="form-select"
                                     [formControlName]="'calculationType'"
                                     (change)="calculateDeductions($index, true)"
@@ -591,7 +599,16 @@
                                       Formula Builder
                                     </option>
                                   </select>
-        
+
+                                  @if(data.get('calculationType')?.value == 'percentage' || data.get('calculationType')?.value === 'formula'){
+                                    <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                    [tooltip]="data.get('formula')?.value">
+                                    <i class=" ri-information-fill"></i>
+                                    </a>                                  
+                                 }
+                                   </div>
+                                 
+                          
                                   <!-- Formula Builder Input -->
                                   <div
                                     *ngIf="
@@ -870,7 +887,7 @@
                                           data.get('calculationType')?.value !== 'custom'
                                         "
                                       />
-                                
+                               
                                     </div>
                                 </td>
 
@@ -1006,7 +1023,7 @@
                         <th scope="row">Total CTC</th>
                        
                         <td class="text-end" colspan="2">
-                          <i class="bx bx-rupee"></i>{{ totalctc | number:'1.0-2' }}
+                       <strong><i class="bx bx-rupee"></i>{{ totalctc | number:'1.0-2' }}</strong>   
                          
                         </td>
                       </tr>
@@ -1014,8 +1031,8 @@
                         <th scope="row">In Words</th>
                        
                         <td class="text-end" colspan="2">
-                          <i class="bx bx-rupee"></i>
-                          {{ convertNumberToWords(totalctc || 0) }}
+                        <strong><i class="bx bx-rupee"></i>
+                            {{ convertNumberToWords(totalctc || 0) }}</strong>  
                         </td>
                       </tr>
                     </tbody>

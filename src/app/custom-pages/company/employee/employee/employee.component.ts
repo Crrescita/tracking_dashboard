@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from "@angular/common";
 
 @Component({
@@ -24,7 +24,11 @@ export class EmployeeComponent implements OnInit {
   advanceData:any;
 
   currentTab = 'personal-detail';
-  constructor(private route: ActivatedRoute, private location: Location) {}
+  constructor(private route: ActivatedRoute, private location: Location, private router:Router) {
+    this.route.queryParams.subscribe((params) => {
+      this.currentTab = params["tab"] || "personal-detail";
+    });
+  }
 
   ngOnInit(): void {
     this.isMobile = window.innerWidth <= 768;
@@ -38,8 +42,12 @@ export class EmployeeComponent implements OnInit {
   }
 
   changeTab(tab: string) {
-    this.currentTab = tab;
-}
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tab },
+      queryParamsHandling: 'merge',
+    });
+  }
 
   goBack(): void {
     this.location.back();

@@ -48,6 +48,7 @@ export class PayrollListComponent {
   selectedDesignations: any[] = [];
   selectedEmp: any[] = [];
   designations: any[] = [];
+  showFinalizedPayroll: boolean = true;
 
   filterCounts = {
     termCount: 0,
@@ -284,13 +285,34 @@ export class PayrollListComponent {
   //
   updatePaySlipData(data: any) {
     this.payslipData = data
-    console.log(this.payslipData)
   }
 
+  // getMaxLength(earnings: any[], deductions: any[]): number[] {
+  //   const maxLength = Math.max(earnings?.length || 0, deductions?.length || 0);
+  //   return Array.from({ length: maxLength }, (_, i) => i);
+  // }
+
   getMaxLength(earnings: any[], deductions: any[]): number[] {
-    const maxLength = Math.max(earnings?.length || 0, deductions?.length || 0);
+    // Ensure that both earnings and deductions are not null or undefined
+    const safeEarnings = earnings || [];
+    const safeDeductions = deductions || [];
+    
+    const maxLength = Math.max(safeEarnings.length, safeDeductions.length);
+    
+    // Pad shorter array with nulls if necessary
+    if (safeEarnings.length < maxLength) {
+      safeEarnings.push(...Array(maxLength - safeEarnings.length).fill(null));
+    }
+    
+    if (safeDeductions.length < maxLength) {
+      safeDeductions.push(...Array(maxLength - safeDeductions.length).fill(null));
+    }
+  
+    // Return an array of indexes up to the max length
     return Array.from({ length: maxLength }, (_, i) => i);
   }
+  
+  
   
 
   // table
@@ -340,6 +362,12 @@ export class PayrollListComponent {
     this.filterCounts.statusCheckCount = 0;
     this.filterCounts.statusCheckInCount = 0;
     this.filterCounts.empCount = 0;
+
+    if (this.showFinalizedPayroll) {
+      filteredData = filteredData.filter((el: any) => el.payroll_finalized === 1);
+    }else{
+      filteredData = filteredData.filter((el: any) => el.payroll_finalized === 0);
+    }
 
     // Filter by term
     if (this.term) {
@@ -585,6 +613,23 @@ export class PayrollListComponent {
   closeoffcanvas() {
     document.getElementById("courseFilters")?.classList.remove("show");
     document.querySelector(".backdrop3")?.classList.remove("show");
+  }
+
+  //  togglebtn(event: any) {
+  //   var followbtn = event.target.closest(".custom-toggle");
+  //   if (followbtn.classList.contains("active")) {
+  //     followbtn.classList.remove("active");
+  //     this.showFinalizedPayroll = false;
+  //   } else {
+  //     followbtn.classList.add("active");
+  //     this.showFinalizedPayroll = true;
+  //   }
+
+  //   this.filterdata();
+  // }
+  togglebtn(event: any) {
+    this.showFinalizedPayroll = !this.showFinalizedPayroll;
+    this.filterdata();
   }
 
   // exportTableToExcel(): void {

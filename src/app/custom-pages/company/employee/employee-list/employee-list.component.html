@@ -317,6 +317,10 @@
                           placement="top"
                           tooltip="Edit"
                           routerLink="/edit-employee/{{ data.id }}"
+                          [queryParams]="{
+                            tab: 'personal-detail',
+
+                          }"
                           class="btn btn-subtle-secondary btn-icon btn-sm remove-item-btn"
                           ><i class="ph-pencil align-middle"></i
                         ></a>

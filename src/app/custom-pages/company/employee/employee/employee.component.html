@@ -540,9 +540,33 @@
         <app-salary-invoice
         (salaryInvoiceData)="onSalaryInvoiceDataFected($event)"
         [salaryDetailData]="this.empSalaryData"
+        [empData]="this.empData"
+        [empBankDetail]="this.empBankData"
+        [empBackGroundData]="this.empBackData"
         [urlId]="this.urlId"
         [isActive]="currentTab === 'salary-invoice'"
       ></app-salary-invoice>
+      }@else {
+        <div class="noresult mt-5 pt-5" >
+          <div class="text-center py-4">
+            <div class="avatar-md mx-auto mb-4">
+              <div
+                class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+              >
+              <i class="ri-error-warning-fill text-danger display-5"></i>
+                <!-- <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon> -->
+
+              </div>
+            </div>
+            <h5 class="mt-2">Oops! Payroll Cannot Be Created</h5>
+            <p class="text-muted mb-0">
+              To generate payroll, you need to set up salary details first.
+            </p>
+            <a (click)="changeTab('salary-detail')" class="btn btn-primary mt-2">
+              <i class="bi bi-gear-fill me-2"></i> Create Salary Details
+            </a>
+          </div>
+        </div>
       }
       
       </div>
