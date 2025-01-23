@@ -212,18 +212,21 @@
           </div>
           <div class="flex-shrink-0">
             <div class="d-flex flex-wrap align-items-start gap-2">
-                <div class="mt-2">
+              
+                <div class="" >
                     <ui-switch 
+                    class="text-white"
                     [(ngModel)]="showFinalizedPayroll" 
                     uncheckedLabel="Pending" 
                     checkedLabel="Finalized" 
-                   
                     (change)="togglebtn($event)">
                 </ui-switch>
+
+                
                 </div>
-               
             
               <div class="col-xxl">
+              
                 
                 <div class="input-group">
                   <input
@@ -436,7 +439,7 @@
                             tab: 'salary-invoice',
                          
                           }"
-                          class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                          class="btn btn-subtle-primary btn-icon btn-sm edit-item-btn"
                           ><i class="ph-eye align-middle"></i
                         ></a>
                       </li>

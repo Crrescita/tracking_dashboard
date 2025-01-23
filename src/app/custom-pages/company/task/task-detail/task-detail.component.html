@@ -1,0 +1,468 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs title="Overview" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+<div class="row align-items-center justify-content-between flex-nowrap">
+    <div class="col-sm-4 col">
+      
+        @if(taskDetail?.isOverdue){
+            <alert type="danger alert-label-icon rounded-label" >
+                <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - Task is overdue!
+                </alert>
+         }
+
+         <!-- Success Alert -->
+          @if(taskDetail?.status === 'Completed'){
+            <alert type="success alert-label-icon rounded-label" class="">
+                <i class="ri-user-smile-line label-icon "></i><strong>Success</strong>
+                - Task is Completed
+                </alert>
+          }
+
+          @if(taskDetail?.status === 'On-Hold'){
+          <!-- Secondary Alert -->
+<alert type="secondary alert-label-icon rounded-label" >
+<i class="bx bx-stop-circle label-icon"></i><strong>Hold</strong>
+- Task is On-Hold
+</alert>
+          }
+
+          @if(taskDetail?.status === 'Pending-Review'){
+            <!-- Secondary Alert -->
+  <alert type="warning alert-label-icon rounded-label" >
+  <i class="ri-information-fill label-icon"></i><strong>Pending-Review</strong>
+  </alert>
+            }
+
+          @if(taskDetail?.status === 'Cancelled'){
+            <alert type="danger alert-label-icon rounded-label" >
+                <i class="ri-alert-line label-icon"></i><strong>Cancelled</strong> - Task is Cancelled!
+                </alert>
+         }
+
+         @if(taskDetail?.status === 'In-Progress'){
+            <alert type="info alert-label-icon rounded-label" >
+                <i class=" ri-information-fill label-icon"></i><strong>In-Progress</strong> - Task is In-Progress!
+                </alert>
+         }
+    </div>
+    <div class="col-lg-4 col-auto">
+      <div class="text-end">
+        <button class="btn btn-secondary mb-2" (click)="goBack()">
+          <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+          Back
+        </button>
+      </div>
+    </div>
+  </div>
+<div class="card">
+    <div class="row g-0">
+        <div class="col-xl-9 col-lg-8">
+            <div class="card-body border-end h-100">
+                <div class="row mb-4 pb-2 g-3">
+                    <div class="col-auto">
+                        <div class="avatar-sm">
+                            <div class="avatar-title bg-success-subtle rounded">
+                                <img src="assets/images/companies/img-3.png" alt="" class="avatar-xs">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md order-3 order-md-2">
+                        <div>
+                            <h5>#{{taskDetail?.task_id}} - {{taskDetail?.task_title}}</h5>
+                            <div class="hstack gap-2 gap-md-3 flex-wrap">
+                                <!-- <div class="text-muted"><i class="ri-building-line align-bottom me-1"></i><span id="ticket-client">Themesbrand</span></div>
+                                <div class="vr"></div> -->
+                                <div class="text-muted">Start Date : <span class="fw-medium " id="create-date"> {{ taskDetail?.start_date | date : "dd MMM, YYYY" }}</span></div>
+                                <div class="vr"></div>
+                                <div class="text-muted">Due Date : <span class="fw-medium" id="due-date">{{ taskDetail?.end_date | date : "dd MMM, YYYY" }}</span></div>
+                                <div class="vr"></div>
+                                <div class="text-muted">Priority :    <span
+                                    class="badge"
+                                    [ngClass]="{
+                                      'bg-danger': taskDetail?.priority === 'High',
+                                      'bg-info': taskDetail?.priority === 'Medium',
+                                      'bg-success': taskDetail?.priority === 'Low'
+                                    }"
+                                    >{{ taskDetail?.priority }}</span
+                                  ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto ms-auto order-2 order-md-3">
+                        <!-- <a routerLink="/assign-task" class="btn btn-primary btn-sm"> Add Ticket</a> -->
+
+                        <div
+                        dropdown
+                        [insideClick]="true"
+                        class="dropdown topbar-head-dropdown ms-1 header-item"
+                        id="notificationDropdown"
+                      >
+                      <!-- Buttons Group -->
+
+                        <button
+                          dropdownToggle
+                          type="button"
+                          class="btn btn-primary rounded-circle"
+                          id="page-header-notifications-dropdown"
+                          data-bs-toggle="dropdown"
+                          data-bs-auto-close="outside"
+                          aria-haspopup="true"
+                          aria-expanded="false"
+                        >
+                          <i class="mdi mdi-bell-ring fs-2xl"></i>
+                         
+                        </button>
+                        <div
+                          *dropdownMenu
+                          class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                          aria-labelledby="page-header-notifications-dropdown"
+                        >
+                          <div class="dropdown-head rounded-top">
+                            <div class="p-3 border-bottom border-bottom-dashed">
+                              <div class="row align-items-center">
+                                <div class="col">
+                                  <h6 class="mb-0 fs-lg fw-semibold">
+                                    Reminder
+
+                                  </h6>
+                               
+                                </div>
+                             
+                              </div>
+                            </div>
+                          </div>
+              
+                          <div class="py-2 ps-2" id="notificationItemsTabContent">
+                          
+                            <ngx-simplebar
+                              data-simplebar-track="light"
+                              style="max-height: 300px"
+                              class="pe-2"
+                            >
+                              @for (data of taskDetail?.employeeDetails; track $index) {
+                              <div>
+                          
+                                <div
+                                  class="text-reset notification-item d-block dropdown-item position-relative unread-message"
+                                  
+                                >
+                           
+                                  <div class="d-flex">
+                                  
+                                    <div class="position-relative me-3 flex-shrink-0">
+                                      <img
+                                      [src]="data.image ? data.image : 'assets/images/users/avatar-1.jpg'"
+                                     
+                                        class="rounded-circle avatar-xs"
+                                        alt="user-pic"
+                                      />
+                                   
+                                    </div>
+                                  
+                                    <div class="flex-grow-1">
+                                   
+                                        <a  class="stretched-link">
+                                          <h6 class="mt-0 mb-1 fs-md fw-semibold">
+                                            {{ data.name }}
+                                          </h6>
+                                        </a>
+                                    
+              
+                                      <p
+                                        class="mb-0 fs-11 fw-medium text-uppercase text-muted"
+                                      >
+                                      <span
+                                      class="badge"
+                                      [ngClass]="{
+                                        'bg-primary-subtle text-primary': data.status === 'To-Do',
+                                        'bg-info-subtle text-info': data.status === 'In-Progress',
+                                        'bg-warning-subtle text-warning':data.status === 'Pending-Review',
+                                        'bg-success-subtle text-success':data.status === 'Completed',
+                                        'bg-secondary-subtle text-dark':data.status === 'On-Hold',
+                                        'bg-danger-subtle text-danger': data.status === 'Cancelled'
+                                      }"
+                                      >{{ data.status }}</span
+                                    >
+                                      </p>
+                                    </div>
+                                    <div class="px-2 fs-base">
+                                      <div class="form-check notification-check">
+                                        <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        [value]="data.id"
+                                        (change)="toggleSelection(data.id, $event)"
+          
+                                      />
+                                      <label class="form-check-label"></label>
+                                        
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              }
+                            </ngx-simplebar>
+                            <div class="notification-actions" id="notification-actions" *ngIf="selectedEmpIds.length > 0">
+                                <div class="d-flex text-muted justify-content-center align-items-center">
+                                  <!-- <button type="button" class="btn btn-primary" (click)="sendReminder()">
+                                    Send
+                                  </button>
+                                  <button
+                                  type="button"
+                                  class="btn btn-link link-danger p-0 ms-2"
+                                  (click)="sendReminder()"
+                                >
+                                Send
+                                </button> -->
+
+                                <button  (click)="sendReminder()" class="btn btn-dark chat-send waves-effect waves-light mt-3">
+                                    <i class="ph-paper-plane-right align-middle me-2"></i> Send
+                                  </button>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-semibold text-uppercase mb-2">Task Descriptions</h6>
+                <p class="text-muted mb-4">{{taskDetail?.task_description}}</p>
+                <!-- <h6 class="fw-semibold text-uppercase mb-3">Create an Excellent UI for a Dashboard</h6>
+                <ul class="text-muted vstack gap-2 mb-4 list-unstyled">
+                    <li><i class="bi bi-check-lg text-success"></i> App Registry Error in React</li>
+                    <li><i class="bi bi-check-lg text-success"></i> Development Server Error in React</li>
+                    <li><i class="bi bi-check-lg text-success"></i> Undefined is not an object error in React</li>
+                    <li><i class="bi bi-check-lg text-success"></i> Not following the ReactJS folder structure</li>
+                    <li><i class="bi bi-check-lg text-success"></i> Webstorm does not recognize tags</li>
+                </ul> -->
+                <h6 class="fw-semibold text-uppercase mb-4">Team Status and Comments</h6>
+                @for (employee of taskDetail?.employeeDetails; track $index) {
+                    <div  class="d-flex my-4">
+                        <div class="flex-shrink-0">
+                          <img  [src]="employee.image ? employee.image : 'assets/images/users/avatar-1.jpg'"  alt="" class="avatar-xs rounded-circle">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            
+                          <h6>{{ employee.name }}
+
+                             
+                            <!-- <small class="text-muted">({{ employee.status }})</small> -->
+                          </h6>
+                          <p class="text-truncate text-muted fs-md mb-0 userStatus">
+                            <span
+                            class="badge"
+                            [ngClass]="{
+                              'bg-primary-subtle text-primary': employee.status === 'To-Do',
+                              'bg-info-subtle text-info': employee.status === 'In-Progress',
+                              'bg-warning-subtle text-warning':employee.status === 'Pending-Review',
+                              'bg-success-subtle text-success':employee.status === 'Completed',
+                              'bg-secondary-subtle text-dark':employee.status === 'On-Hold',
+                              'bg-danger-subtle text-danger': employee.status === 'Cancelled'
+                            }"
+                            >{{ employee.status }}</span
+                          >
+                          </p>
+                          </div>
+                    </div>
+                    <ngx-simplebar style="max-height: 200px;" class="px-3 ms-4">
+                       
+                            @for (item of employee.comment; track $index) {
+                               <small class="text-muted">{{item.timestamp | date : "dd MMM, YYYY - HH:mm a"}}</small>
+                                <p class="text-muted">{{item.text}}</p>
+                                <!-- <p class="text-muted">{{ employee.comment || 'No comment available' }}</p>
+                                <a href="javascript:void(0);" class="badge text-muted bg-light">
+                                  <i class="mdi mdi-reply"></i> Reply
+                                </a> -->
+                            }
+                           
+                         
+                   
+                </ngx-simplebar>
+                }
+              
+
+              
+                <!-- <ngx-simplebar style="height: 300px;" class="px-3 mx-n3">
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <img src="assets/images/users/avatar-8.jpg" alt="" class="avatar-xs rounded-circle">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6>Joseph Parker <small class="text-muted">20 Dec 2023 - 05:47AM</small></h6>
+                            <p class="text-muted">I am getting message from customers that when they place order always
+                                get error message .</p>
+                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
+                            <div class="d-flex mt-4">
+                                <div class="flex-shrink-0">
+                                    <img src="assets/images/users/avatar-10.jpg" alt="" class="avatar-xs rounded-circle">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6>Alexis Clarke <small class="text-muted">22 Dec 2023 - 02:32PM</small></h6>
+                                    <p class="text-muted">Please be sure to check your Spam mailbox to see if your email
+                                        filters have identified the email from Dell as spam.</p>
+                                    <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-4">
+                        <div class="flex-shrink-0">
+                            <img src="assets/images/users/avatar-6.jpg" alt="" class="avatar-xs rounded-circle">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6>Donald Palmer <small class="text-muted">24 Dec 2023 - 05:20PM</small></h6>
+                            <p class="text-muted">If you have further questions, please contact Customer Support from
+                                the “Action Menu” on your <a href="javascript:void(0);" class="text-decoration-underline">Online Order Support</a>.</p>
+                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="flex-shrink-0">
+                            <img src="assets/images/users/avatar-10.jpg" alt="" class="avatar-xs rounded-circle">
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6>Alexis Clarke <small class="text-muted">26 min ago</small></h6>
+                            <p class="text-muted">Your <a href="javascript:void(0)" class="text-decoration-underline">Online Order Support</a> provides you with the
+                                most current status of your order. To help manage your order refer to the “Action Menu”
+                                to initiate return, contact Customer Support and more.</p>
+                            <div class="row g-2 mb-3">
+                                <div class="col-lg-1 col-sm-2 col-6">
+                                    <img src="assets/images/small/img-4.jpg" alt="" class="img-fluid rounded">
+                                </div>
+                                <div class="col-lg-1 col-sm-2 col-6">
+                                    <img src="assets/images/small/img-5.jpg" alt="" class="img-fluid rounded">
+                                </div>
+                            </div>
+                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
+                            <div class="d-flex mt-4">
+                                <div class="flex-shrink-0">
+                                    <img src="assets/images/users/avatar-6.jpg" alt="" class="avatar-xs rounded-circle">
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6>Donald Palmer <small class="text-muted">8 sec ago</small></h6>
+                                    <p class="text-muted">Other shipping methods are available at checkout if you want
+                                        your purchase delivered faster.</p>
+                                    <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ngx-simplebar> -->
+                <!-- <form action="javascript:void(0);" class="mt-3">
+                    <div class="row g-3">
+                        <div class="col-lg-12">
+                            <label for="exampleFormControlTextarea1" class="form-label">Leave a Comments</label>
+                            <textarea class="form-control bg-light border-light" id="exampleFormControlTextarea1" rows="3" placeholder="Enter comments"></textarea>
+                        </div>
+                        <div class="col-lg-12 text-end">
+                            <a href="javascript:void(0);" class="btn btn-success">Post Comments</a>
+                        </div>
+                    </div>
+                </form> -->
+            </div>
+        </div><!--end col-->
+        <div class="col-xl-3 col-lg-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Task Details</h6>
+            </div>
+            <div class="card-body mt-2">
+                <div class="table-responsive table-card">
+                    <table class="table table-borderless align-middle mb-0">
+                        <tbody>
+                            <tr>
+                                <th>Task No</th>
+                                <td>{{taskDetail?.task_id}} </td>
+                            </tr>
+                           
+                            <tr>
+                                <th>Assigned To:</th>
+                                <td>
+                                    <div class="avatar-group">
+                                        @for (profile of taskDetail?.employeeDetails; track $index) {
+                                            <a class="avatar-group-item" tooltip="{{ profile.name }}">
+                                              <img
+                                                [src]="
+                                                  profile.image
+                                                    ? profile.image
+                                                    : 'assets/images/users/avatar-1.jpg'
+                                                "
+                                                alt=""
+                                                class="avatar-xxs rounded-circle"
+                                              />
+                                            </a>
+                                            }
+
+                                      
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Status:</th>
+                                <td>
+                                    <span
+                                    class="badge"
+                                    [ngClass]="{
+                                      'bg-primary-subtle text-primary': taskDetail?.status === 'To-Do',
+                                      'bg-info-subtle text-info': taskDetail?.status === 'In-Progress',
+                                      'bg-warning-subtle text-warning':taskDetail?.status === 'Pending-Review',
+                                      'bg-success-subtle text-success':taskDetail?.status === 'Completed',
+                                      'bg-secondary-subtle text-dark':taskDetail?.status === 'On-Hold',
+                                      'bg-danger-subtle text-danger': taskDetail?.status === 'Cancelled'
+                                    }"
+                                    >{{ taskDetail?.status }}</span
+                                  >
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Priority</th>
+                                <td>
+                                    <span
+                                    class="badge"
+                                    [ngClass]="{
+                                      'bg-danger': taskDetail?.priority === 'High',
+                                      'bg-info': taskDetail?.priority === 'Medium',
+                                      'bg-success': taskDetail?.priority === 'Low'
+                                    }"
+                                    >{{ taskDetail?.priority }}</span
+                                  >
+                                   
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td id="c-date">{{ taskDetail?.start_date | date : "dd MMM, YYYY" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Due Date</th>
+                                <td id="d-date">{{ taskDetail?.end_date | date : "dd MMM, YYYY" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Create Date</th>
+                                <td id="d-date">{{ taskDetail?.created_at | date : "dd MMM, YYYY" }}</td>
+                            </tr>
+                          
+                        </tbody>
+                    </table>
+                </div>
+            </div><!--end card-body-->
+            <!-- <div class="card-body border-top mt-2">
+                <a href="javascript:void(0);" class="float-end link-effect">View More <i class="bi bi-arrow-right align-baseline ms-1"></i></a>
+                <h6 class="card-title mb-0">Support Team</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-2 align-items-center mb-3">
+                    <div class="flex-shrink-0">
+                        <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-sm rounded">
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="fs-md">Morton Satterfield</h6>
+                        <p class="text-muted mb-0">Admin & Founder</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary w-100" id="agent-chat"><i class="bi bi-chat-text align-baseline me-1"></i> Get In Touch</button>
+            </div> -->
+        </div>
+    </div><!--end row-->
+</div>

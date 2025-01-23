@@ -148,6 +148,7 @@ export class TopbarComponent {
               type: "notification",
               avatar: message.image || "",
               text: message.body,
+              link:message.link,
               timestamp: message.timestamp,
               checkboxId: `notification-${index + 1}`,
               state: false,

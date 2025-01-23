@@ -48,7 +48,7 @@ export class TaskListComponent {
 
   filterCounts = {
     termCount: 0,
-    // designationCount: 0,
+    // selectedFrequency: 0,
     // departmentCount: 0,
     statusCount: 0,
     frequencyCount: 0,
@@ -65,7 +65,12 @@ export class TaskListComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.bsConfig = {
+      showWeekNumbers: false,
+      dateInputFormat: "DD/MM/YYYY",
+    };
+  }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -100,6 +105,14 @@ export class TaskListComponent {
       }
     );
 
+    if (this.id) {
+      this.formGroup.get("status")?.setValidators([Validators.required]);
+    } else {
+      this.formGroup.get("status")?.clearValidators(); 
+    }
+    
+    this.formGroup.updateValueAndValidity();
+
     this.route.queryParams.subscribe((params) => {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
@@ -111,6 +124,7 @@ export class TaskListComponent {
       this.selectedEmp = params["selectedEmp"]
         ? params["selectedEmp"].split(",")
         : [];
+     
 
       if (params["date"]) {
         this.selectedDate = new Date(params["date"]);
@@ -174,7 +188,7 @@ export class TaskListComponent {
 
   getAssignedTask() {
     this.toggleSpinner(true);
-    const url = `assignTask?company_id=${this.company_id}`;
+    const url = `assignTask`;
     this.api.getwithoutid(url).subscribe(
       (res: any) => {
         if (res && res.status) {
@@ -221,7 +235,7 @@ export class TaskListComponent {
       end_date: this.f["end_date"].value,
       priority: this.f["priority"].value,
       frequency: this.f["frequency"].value,
-      status: this.f["status"].value,
+      status: this.id? this.f["status"].value: "To-Do",
     };
     return formData;
   }
@@ -310,8 +324,8 @@ export class TaskListComponent {
       task_title: data.task_title,
       emp_id: empIdArray,
       task_description: data.task_description,
-      start_date: data.start_date,
-      end_date: data.end_date,
+      start_date: data.start_date ? new Date(data.start_date) : null,
+  end_date: data.end_date ? new Date(data.end_date) : null,
       priority: data.priority,
       frequency: data.frequency,
       status: data.status,
@@ -339,6 +353,7 @@ export class TaskListComponent {
     this.filterCounts.empCount = 0;
     this.filterCounts.selectedstartDateCount = 0;
     this.filterCounts.selectedendDateCount = 0;
+
 
     // Filter by term
     if (this.term) {
@@ -471,6 +486,7 @@ export class TaskListComponent {
         selectedFrequency: this.selectedFrequency,
         selectedPriority: this.selectedPriority,
         selectedEmp: this.selectedEmp.join(","),
+        selectedStatus:this.selectedStatus,
         date: this.selectedDate
           ? this.formatDateWithoutTime(this.selectedDate)
           : "",
@@ -579,8 +595,6 @@ export class TaskListComponent {
   get totalFilterCount(): number {
     return (
       this.filterCounts.termCount +
-      // this.filterCounts.designationCount +
-      // this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
       this.filterCounts.frequencyCount +
       this.filterCounts.priorityCount +

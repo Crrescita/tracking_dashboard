@@ -612,9 +612,10 @@
                       </div>
                       }
                       <div class="flex-grow-1">
-                        <a href="javascript:void(0);" class="stretched-link">
+                        <a routerLink={{item.link}} class="stretched-link">
+                        
                           @if (item.name) {
-                          <a href="javascript:void(0);" class="stretched-link">
+                          <a routerLink={{item.link}} class="stretched-link">
                             <h6 class="mt-0 mb-1 fs-md fw-semibold">
                               {{ item.name }}
                             </h6>
@@ -632,6 +633,7 @@
                         <p
                           class="mb-0 fs-11 fw-medium text-uppercase text-muted"
                         >
+                        {{item.link}}
                           <span
                             ><i class="mdi mdi-clock-outline"></i>
                             {{

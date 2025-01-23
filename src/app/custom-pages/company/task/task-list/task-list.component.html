@@ -159,7 +159,7 @@
                   ticketsortable="end_date"
                   (click)="onSort('end_date')"
                 >
-                  End Date
+                  Due Date
                 </th>
                 <th
                   scope="col"
@@ -222,7 +222,21 @@
                   {{ data.start_date | date : "dd MMM, YYYY" }}
                 </td>
                 <td class="due_date">
+
+                @if(data.isOverdue){
+                  <a   class="tooltip-danger text-danger" data-bs-toggle="tooltip" placement="top"
+                  [tooltip]="'Task is overdue!'">
+                  <i class="ri-alert-line label-icon me-1"></i>{{ data.end_date | date : "dd MMM, YYYY" }}
+                  </a>  
+
+  
+              
+                }@else {
                   {{ data.end_date | date : "dd MMM, YYYY" }}
+                }
+                   
+                  
+                
                 </td>
                 <td class="priority">
                   <span
@@ -239,11 +253,12 @@
                   <span
                     class="badge"
                     [ngClass]="{
-                      'bg-primary-subtle text-primary': data.status === 'Open',
-                      'bg-warning-subtle text-warning':
-                        data.status === 'Pending',
-                      'bg-info-subtle text-info': data.status === 'New',
-                      'bg-danger-subtle text-danger': data.status === 'Close'
+                      'bg-primary-subtle text-primary': data.status === 'To-Do',
+                      'bg-info-subtle text-info': data.status === 'In-Progress',
+                      'bg-warning-subtle text-warning':data.status === 'Pending-Review',
+                      'bg-success-subtle text-success':data.status === 'Completed',
+                      'bg-secondary-subtle text-dark':data.status === 'On-Hold',
+                      'bg-danger-subtle text-danger': data.status === 'Cancelled'
                     }"
                     >{{ data.status }}</span
                   >
@@ -252,7 +267,7 @@
                   <ul class="d-flex gap-2 list-unstyled mb-0">
                     <li>
                       <a
-                        routerLink="/tickets/overview"
+                        routerLink="/task-deatil/{{data.id}}"
                         class="btn btn-subtle-primary btn-icon btn-sm"
                         ><i class="ph-eye"></i
                       ></a>
@@ -413,14 +428,22 @@
                 <label for="ticket-title-input" class="form-label"
                   >Task description<span class="text-danger">*</span></label
                 >
-                <input
+                <textarea   type="text"
+                id="ticket-title-input"
+                formControlName="task_description"
+                class="form-control"
+                placeholder="Task description"
+                required>
+
+                </textarea>
+                <!-- <input
                   type="text"
                   id="ticket-title-input"
                   formControlName="task_description"
                   class="form-control"
                   placeholder="Task description"
                   required
-                />
+                /> -->
                 @if (f['task_description'] &&
                 f['task_description'].hasError('required') &&
                 f['task_description'].touched) {
@@ -434,19 +457,28 @@
                 <label for="create-date-input" class="form-label"
                   >Start Date<span class="text-danger">*</span></label
                 >
-                <input
-                  type="text"
-                  class="form-control"
-                  mwlFlatpickr
-                  [altInput]="true"
-                  [convertModelValue]="true"
-                  dateFormat="d M,Y"
-                  altFormat="d M,Y"
-                  formControlName="start_date"
-                  id="create-date-input"
-                  placeholder="Create date"
-                  required
-                />
+
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepickerstartdate"
+                    class="form-control"
+                 
+                    formControlName="start_date"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+              
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepickerstartdate"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+
                 @if (f['start_date'] && f['start_date'].hasError('required') &&
                 f['start_date'].touched) {
                 <div class="invalid-text">Start date is required.</div>
@@ -465,19 +497,26 @@
                 <label for="due-date-input" class="form-label"
                   >Due Date<span class="text-danger">*</span></label
                 >
-                <input
-                  type="text"
-                  class="form-control"
-                  mwlFlatpickr
-                  [altInput]="true"
-                  [convertModelValue]="true"
-                  dateFormat="d M,Y"
-                  altFormat="d M,Y"
-                  formControlName="end_date"
-                  id="due-date-input"
-                  placeholder="Due date"
-                  required
-                />
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepickerenddate"
+                    class="form-control"
+                    formControlName="end_date"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+              
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepickerenddate"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+               
                 @if (f['end_date'] && f['end_date'].hasError('required') &&
                 f['end_date'].touched) {
                 <div class="invalid-text">End date is required.</div>
@@ -534,31 +573,37 @@
               </div>
             </div>
             <!--end col-->
-            <div class="col-lg-12">
-              <div class="mb-3">
-                <label for="status-input" class="form-label"
-                  >Status<span class="text-danger">*</span></label
-                >
-
-                <select
-                  class="form-select"
-                  id="status-input"
-                  formControlName="status"
-                  data-choices
-                  data-choices-search-false
-                >
-                  <option value="">Select Status</option>
-                  <option value="Open">Open</option>
-                  <option value="New">New</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Close">Close</option>
-                </select>
-                @if (f['status'] && f['status'].hasError('required') &&
-                f['status'].touched) {
-                <div class="invalid-text">Status is required.</div>
-                }
+            @if(this.id){
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label for="status-input" class="form-label"
+                    >Status<span class="text-danger">*</span></label
+                  >
+  
+                  <select
+                    class="form-select"
+                    id="status-input"
+                    formControlName="status"
+                    data-choices
+                    data-choices-search-false
+                  >
+                    <option value="">Select Status</option>
+                    <option value="To-Do">To Do</option>
+                    <option value="In-Progress">In Progress</option>
+                    <option value="Pending-Review">Pending Review</option>
+                    <option value="Completed">Completed</option>
+                    <option value="On-Hold">On Hold</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <!-- <option value="Overdue">Overdue</option> -->
+                  </select>
+                  @if (f['status'] && f['status'].hasError('required') &&
+                  f['status'].touched) {
+                  <div class="invalid-text">Status is required.</div>
+                  }
+                </div>
               </div>
-            </div>
+            }
+          
             <!--end col-->
           </div>
           <!--end row-->
@@ -715,11 +760,12 @@
             [ngModelOptions]="{ standalone: true }"
           >
             <option value="">All</option>
-
-            <option value="Open">Open</option>
-            <option value="New">New</option>
-            <option value="Pending">Pending</option>
-            <option value="Close">Close</option>
+            <option value="To-Do">To Do</option>
+            <option value="In-Progress">In Progress</option>
+            <option value="Pending-Review">Pending Review</option>
+            <option value="Completed">Completed</option>
+            <option value="On-Hold">On Hold</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
         </div>
       </div>

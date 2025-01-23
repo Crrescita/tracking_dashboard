@@ -432,20 +432,21 @@
                                   id="salary_id"
                                   placeholder=""
                                 />
-                                @if (f['salary'] &&
-                                f['salary'].hasError('required') &&
-                                f['salary'].touched) {
-                                <div class="invalid-text">
-                                  Salary is required.
-                                </div>
-                                } @if(f['salary'] &&
-                                f['salary'].hasError('minlength') &&
-                                f['salary'].touched){
-                                <div class="invalid-text">
-                                  Salary must be at least 0.
-                                </div>
-                                }
+                               
                               </div>
+                              @if (f['salary'] &&
+                              f['salary'].hasError('required') &&
+                              f['salary'].touched) {
+                              <div class="invalid-text">
+                                Salary is required.
+                              </div>
+                              } @if(f['salary'] &&
+                              f['salary'].hasError('minlength') &&
+                              f['salary'].touched){
+                              <div class="invalid-text">
+                                Salary must be at least 0.
+                              </div>
+                              }
                             </th>
                           </tr>
                         </tbody>
@@ -946,19 +947,18 @@
                                         'default'
                                     "
                                   />
-
-                                  <div
-                                    *ngIf="
-                                      data.get('amount')?.invalid &&
-                                      data.get('amount')?.touched
-                                    "
-                                  >
-                                    <small class="invalid-text"
-                                      >Amount is required and must be
-                                      positive.</small
-                                    >
-                                  </div>
                                 </div>
+                                <div
+                                *ngIf="
+                                  data.get('amount')?.invalid &&
+                                  data.get('amount')?.touched
+                                "
+                              >
+                                <small class="invalid-text"
+                                  >Amount is required and must be
+                                  positive.</small
+                                >
+                              </div>
                               </td>
                               <td class="product-removal">
                                 @if($index != 0){

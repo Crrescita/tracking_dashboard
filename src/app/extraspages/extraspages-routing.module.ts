@@ -6,6 +6,7 @@ import { MaintenanceComponent } from "./maintenance/maintenance.component";
 import { ComingSoonComponent } from "./coming-soon/coming-soon.component";
 import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.component";
 import { SupportComponent } from './support/support.component';
+import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
     path: "support",
     component: SupportComponent,
   },
+  {
+    path:"task/:emp_id/:task_id",
+    component: AssignedTaskComponent
+  }
 ];
 
 @NgModule({

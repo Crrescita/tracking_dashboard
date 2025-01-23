@@ -39,7 +39,8 @@ export class SalarySettingComponent {
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
   deleteId: any;
-
+  availableVariables: { name: string }[] = [{ name: 'Net_Salary' }]; 
+  formula: string = "";
   constructor(
     private api: ApiService,
     public toastService: ToastrService,
@@ -67,7 +68,7 @@ export class SalarySettingComponent {
 
     this.formGroup = this.formBuilder.group({
       name: ["", [Validators.maxLength(45), Validators.required]],
-      formula:["",[Validators.required]],
+      formula:[""],
       status: ["", [Validators.required]],
     });
   }
@@ -87,11 +88,11 @@ export class SalarySettingComponent {
     const url = `salarySettings`;
     this.api.getwithoutid(url).subscribe(
       (res: any) => {
+        this.toggleSpinner(false);
         if (res && res.status) {
-          this.toggleSpinner(false);
-          // this.salarySettingData = res.data || [];
           this.salarySettingDataList = res.data || [];
           this.filterdata();
+          this.updateAvailableVariables();
         } else {
           this.salarySettingData = [];
           this.salarySettingDataList = [];
@@ -100,12 +101,28 @@ export class SalarySettingComponent {
       },
       (error) => {
         this.toggleSpinner(false);
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
+        this.handleError(error.message || "An error occurred while fetching data");
       }
     );
   }
+
+  updateAvailableVariables() {
+    // Ensure Net_Salary is always present and filter out null/undefined values
+    this.availableVariables = [{ name: 'Net_Salary' }];
+  
+    // Append only valid (non-null) unique variables from salarySettingDataList
+    this.salarySettingDataList.forEach((item: any) => {
+      if (item?.name && typeof item.name === 'string' && item.name.trim() !== '' &&
+          !this.availableVariables.some(v => v.name === item.name)) {
+        this.availableVariables.push({ name: item.name });
+      }
+    });
+  
+    console.log("Updated Variables: ", this.availableVariables); // Debugging log
+  }
+  
+  
+  
 
   setStatus(data: any, event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -124,6 +141,7 @@ export class SalarySettingComponent {
   }
 
   onSubmit() {
+    console.log(this.formGroup.valid)
     if (this.formGroup.valid) {
       this.toggleSpinner(true);
       const formData = this.createFormData();
@@ -137,10 +155,20 @@ export class SalarySettingComponent {
     }
   }
 
+  convertToFormat(name: string): string {
+    return name
+      .trim()                       // Remove leading/trailing spaces
+      .replace(/\s+/g, '_')          // Replace all spaces with underscores
+      .replace(/(^|\_)([a-z])/g, (match) => match.toUpperCase());  // Capitalize the first letter of each word
+  }
+  
+  
   createFormData() {
     const formData = {
-      name: this.f["name"].value,
+      name: this.convertToFormat(this.f["name"].value),
+      formula: this.f["formula"].value,
       status: this.f["status"].value,
+      type:"allowance"
     };
     return formData;
   }
@@ -388,5 +416,35 @@ export class SalarySettingComponent {
       },
       queryParamsHandling: "merge",
     });
+  }
+
+  addVariable() {
+    const name = this.formGroup.value.name.trim();
+    if (name && !this.availableVariables.some(v => v.name === name)) {
+      this.availableVariables.push({ name });
+    }
+  }
+
+  // Insert variable into formula
+  insertVariable(variable: string) {
+    const formulaControl = this.formGroup.get('formula');
+    formulaControl?.setValue((formulaControl.value ?? '') + ` ${variable} `);
+  }
+  
+  appendNumber(num: number) {
+    const formulaControl = this.formGroup.get('formula');
+    formulaControl?.setValue((formulaControl.value ?? '') + num.toString());
+  }
+  
+  insertOperation(op: string) {
+    const formulaControl = this.formGroup.get('formula');
+    formulaControl?.setValue((formulaControl.value ?? '') + ` ${op} `);
+  }
+  
+  
+
+  // Clear Formula
+  clearFormula() {
+    this.formula = '';
   }
 }

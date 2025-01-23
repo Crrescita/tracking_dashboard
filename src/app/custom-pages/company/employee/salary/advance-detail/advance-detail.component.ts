@@ -271,7 +271,6 @@ export class AdvanceDetailComponent {
     modalbtn.innerHTML = "Update";
 
     this.adjustment_id = data.id;
-console.log(data.id , this.adjustment_id)
     this.adjuestedformGroup.patchValue({
       adjustment_amount: data.adjustment_amount,
       notes: data.notes,
@@ -334,9 +333,5 @@ console.log(data.id , this.adjustment_id)
   handleError(error: any) {
     this.toggleSpinner(false);
   }
-
-
-
-
  
 }

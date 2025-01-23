@@ -101,6 +101,9 @@
                   <th class="sort cursor-pointer" (click)="onSort('name')">
                     Branch Name
                   </th>
+                  <th class="sort cursor-pointer" (click)="onSort('formula')">
+                    Formula
+                  </th>
                   <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
                   </th>
@@ -137,6 +140,9 @@
                   </td>
                   <td class="products">
                     {{ data.name }}
+                  </td>
+                  <td class="products">
+                    {{ data.formula }}
                   </td>
                   <td class="discount">
                     <div class="form-switch form-switch-md mb-3">
@@ -297,42 +303,13 @@
         ></button>
       </div>
 
-      <form
-        (ngSubmit)="onSubmit()"
-        [formGroup]="formGroup"
-        class="tablelist-form"
-        novalidate
-        autocomplete="off"
-      >
-        <div class="modal-body p-4">
-          <div
-            id="alert-error-msg"
-            class="d-none alert alert-danger py-2"
-          ></div>
-
-          <div class="mb-3">
-            <label for="product-title-input" class="form-label"
-              >Branch Name <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="product-title-input"
-              formControlName="name"
-              class="form-control"
-              placeholder="Enter Branch Name"
-            />
-            @if (f['name'] && f['name'].hasError('required') &&
-            f['name'].touched) {
-            <div class="invalid-text">Branch name is required.</div>
-            } @if(f['name'] && f['name'].hasError('maxlength') &&
-            f['name'].touched){
-            <div class="invalid-text">
-              Branch name must be at most 45 characters
-            </div>
-            }
-          </div>
-
-          <div class="mb-3">
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label">Variable Name</label>
+          <input type="text" class="form-control" formControlName="name" placeholder="Enter variable name" />
+        
+        </div>
+        <div class="mb-3">
             <label for="statuss" class="form-label"
               >Status <span class="text-danger">*</span></label
             >
@@ -358,22 +335,180 @@
             <div class="invalid-text">Status is required.</div>
             }
           </div>
-        </div>
-        <div class="modal-footer">
-          <div class="hstack gap-2 justify-content-end">
-            <button
-              type="button"
-              class="btn btn-ghost-danger"
-              (click)="showModal.hide()"
-            >
-              <i class="bi bi-x-lg align-baseline me-1"></i> Close
-            </button>
-            <button type="submit" class="btn btn-primary" id="add-btn">
-              Add
-            </button>
+      
+        <div class="formula-calculator">
+            <!-- Formula Display -->
+            <div class="formula-display mb-3">
+             
+              <input
+  type="text"
+  class="form-control"
+  formControlName="formula"
+  [placeholder]="'Enter formula'"
+/>
+
+              <!-- [readonly]="true" -->
+            </div>
+            <small class="text-muted">
+              Use valid expressions for calculation.
+            </small>
+            <!-- Variables Section -->
+            <div class="variables-section mb-3">
+              <label class="d-block mb-2">Variables</label>
+              <div class="variables-grid">
+                <a
+                  *ngFor="let variable of availableVariables"
+                  class="btn btn-outline-primary calc-btn"
+                  (click)="insertVariable(variable.name)"
+                >
+                  {{ variable.name }}
+                </a>
+              </div>
+            </div>
+
+            <!-- Calculator Grid -->
+            <div class="calculator-grid">
+              <!-- Numbers and Operations -->
+              <div class="calc-buttons">
+                <div class="row g-1">
+                  <div
+                    class="col-3"
+                    *ngFor="let num of [7, 8, 9]"
+                  >
+                    <a
+                      class="btn btn-light calc-btn w-100"
+                    (click)="appendNumber(num)"
+                      >{{ num }}</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-warning calc-btn w-100"
+                      (click)="
+                        insertOperation('/')
+                      "
+                      >/</a
+                    >
+                  </div>
+                </div>
+                <div class="row g-1 mt-1">
+                  <div
+                    class="col-3"
+                    *ngFor="let num of [4, 5, 6]"
+                  >
+                    <a
+                      class="btn btn-light calc-btn w-100"
+                    (click)="appendNumber(num)"
+                      >{{ num }}</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-warning calc-btn w-100"
+                      (click)="
+                        insertOperation('*')
+                      "
+                      >×</a
+                    >
+                  </div>
+                </div>
+                <div class="row g-1 mt-1">
+                  <div
+                    class="col-3"
+                    *ngFor="let num of [1, 2, 3]"
+                  >
+                    <a
+                      class="btn btn-light calc-btn w-100"
+                    (click)="appendNumber(num)"
+                      >{{ num }}</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-warning calc-btn w-100"
+                      (click)="
+                        insertOperation('-')
+                      "
+                      >-</a
+                    >
+                  </div>
+                </div>
+                <div class="row g-1 mt-1">
+                  <div class="col-3">
+                    <a
+                      class="btn btn-light calc-btn w-100"
+                      (click)="appendNumber(0)"
+                      >0</a
+                    >
+                  </div>
+                  <!-- <div class="col-3">
+                    <a
+                      class="btn btn-light calc-btn w-100"
+                      (click)="appendDecimal($index, true)"
+                      >.</a
+                    >
+                  </div> -->
+                  <div class="col-3">
+                    <a
+                      class="btn btn-danger calc-btn w-100"
+                      (click)="clearFormula()"
+                      >C</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-warning calc-btn w-100"
+                      (click)="
+                        insertOperation('+')
+                      "
+                      >+</a
+                    >
+                  </div>
+                </div>
+                <div class="row g-1 mt-1">
+                  <div class="col-3">
+                    <a
+                      class="btn btn-secondary calc-btn w-100"
+                      (click)="
+                        insertOperation('(')
+                      "
+                      >(</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-secondary calc-btn w-100"
+                      (click)="insertOperation(')')"
+                      >)</a
+                    >
+                  </div>
+                  <div class="col-3">
+                    <a
+                      class="btn btn-secondary calc-btn w-100"
+                      (click)="insertOperation('%')"
+                      >%</a
+                    >
+                  </div>
+                  <!-- <div class="col-3">
+                    <a
+                      class="btn btn-success calc-btn w-100"
+                      (click)="
+                        evaluateDeductionFormula($index);template.hide()
+                      "
+                      >=</a
+                    >
+                  </div> -->
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+          
+        <!-- Formula Display -->
+      
+      
+        <button type="submit" class="btn btn-success mt-3">Save Formula</button>
       </form>
+      
     </div>
   </div>
 </div>
