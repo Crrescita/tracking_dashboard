@@ -83,47 +83,24 @@ export class TaskDetailComponent {
   }
 
 
-  // sendReminder() {
-  //   if (this.selectedEmpIds.length > 0) {
-  //     console.log("Selected Employee IDs:", this.selectedEmpIds);
-      
-  //     // API Call to send reminder
-  //     const payload = { emp_ids: this.selectedEmpIds , task_id:this.id};
-  //     this.api.post('sendReminder', payload).subscribe(
-  //       (res: any) => {
-  //         if (res.status) {
-  //           alert("Reminder sent successfully!");
-  //         } else {
-  //           alert("Failed to send reminder.");
-  //         }
-  //       },
-  //       (error) => {
-  //         console.error("Error sending reminder:", error);
-  //       }
-  //     );
-  //   }
-  // }
-
   sendReminder() {
     if (this.selectedEmpIds.length > 0) {
-  
       this.toggleSpinner(true);
       const payload = { emp_ids: this.selectedEmpIds, task_id: this.id };
   
       this.api.post('sendReminder', payload).subscribe(
         (res: any) => {
-          if (res.status) {
-
-            this.toggleSpinner(false);
-            if (res["status"] === true) {
-              this.toastService.success(res["message"]);
-
-              this.selectedEmpIds = [];
-            } else {
-              this.toastService.error(res["message"]);
-            }
+          this.toggleSpinner(false);
+          if (res.status === true) {
+            this.toastService.success(res.message);
+            this.selectedEmpIds = [];
+  
+            // Force change detection (only if needed)
+            setTimeout(() => {
+              this.selectedEmpIds = [...this.selectedEmpIds]; 
+            }, 0);
           } else {
-            this.toastService.error("Failed to send reminder.");
+            this.toastService.error(res.message);
           }
         },
         (error) => {
@@ -134,6 +111,7 @@ export class TaskDetailComponent {
       alert("Please select at least one employee.");
     }
   }
+  
   
 
   goBack(): void {

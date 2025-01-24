@@ -45,6 +45,7 @@ export class TaskListComponent {
   selectedPriority: string = "All";
   selectedDate: any;
   selectedEndDate: any;
+  selectedDateRange: any = null;
 
   filterCounts = {
     termCount: 0,
@@ -126,12 +127,32 @@ export class TaskListComponent {
         : [];
      
 
-      if (params["date"]) {
-        this.selectedDate = new Date(params["date"]);
-      }
+      // if (params["date"]) {
+      //   this.selectedDate = new Date(params["date"]);
+      // }
 
-      if (params["enddate"]) {
-        this.selectedEndDate = new Date(params["enddate"]);
+      // if (params["enddate"]) {
+      //   this.selectedEndDate = new Date(params["enddate"]);
+      // }
+
+      if (params["date"] && params["enddate"]) {
+        // Convert the string dates to Date objects
+        const startDate = new Date(params["date"]);
+        const endDate = new Date(params["enddate"]);
+    
+        // Check if the dates are valid
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+          this.selectedDate = startDate;
+          this.selectedEndDate = endDate;
+          
+          // Set the selected date range in the format you require: { "from": <start_date>, "to": <end_date> }
+          this.selectedDateRange = {
+            from: this.selectedDate.toISOString(),
+            to: this.selectedEndDate.toISOString(),
+          };
+        }
+      } else {
+        this.selectedDateRange = {};  // If no date range is provided, keep it empty
       }
 
       this.filterdata();
@@ -332,6 +353,28 @@ export class TaskListComponent {
     });
   }
 
+
+  onDateRangeChange(selectedRange: any) {
+ 
+    this.selectedDateRange = {
+      from: selectedRange.from.toISOString(),
+      to: selectedRange.to.toISOString(),
+    };
+    
+    if (selectedRange && selectedRange.from && selectedRange.to) {
+      this.selectedDate = new Date(selectedRange.from); 
+      this.selectedEndDate = new Date(selectedRange.to);
+    } else {
+      this.selectedDate = selectedRange.from;
+      this.selectedEndDate = null;
+    }
+    this.filterdata(); 
+  }
+
+
+  
+  
+
   filterdata() {
     let filteredData = this.taskDataList;
 
@@ -397,29 +440,99 @@ export class TaskListComponent {
       );
     }
 
-    if (this.selectedDate) {
-      let selectedDateStr = this.formatDateWithoutTime(
-        new Date(this.selectedDate)
-      );
-
+    // if (this.selectedDate && this.selectedEndDate) {
+    //   // If both start and end dates are selected
+    //   console.log(this.selectedDate ,this.selectedEndDate)
+    //   filteredData = filteredData.filter((el: any) => {
+    //     let taskStartDate = new Date(el.start_date);
+    //     let taskEndDate = new Date(el.end_date);
+    //     console.log(taskStartDate,taskEndDate)
+    //     // Include tasks that start on or after selectedDate and end on or before selectedEndDate
+    //     return taskStartDate >= this.selectedDate && taskEndDate <= this.selectedEndDate;
+    //   });
+    //   this.filterCounts.selectedstartDateCount = 1;
+    //   // this.filterCounts.selectedendDateCount = 1;
+    // } 
+    if (this.selectedDate && this.selectedEndDate) {
+      // Normalize start and end dates (set time to 00:00:00 for start, 23:59:59 for end)
+      let normalizedStartDate = new Date(this.selectedDate);
+      normalizedStartDate.setHours(0, 0, 0, 0); // Start of the day
+      
+      let normalizedEndDate = new Date(this.selectedEndDate);
+      normalizedEndDate.setHours(23, 59, 59, 999); // End of the day
+  
+      // Apply the filter to include both start and end dates
       filteredData = filteredData.filter((el: any) => {
-        let taskDateStr = this.formatDateWithoutTime(new Date(el.start_date));
-        return taskDateStr === selectedDateStr;
+        let taskStartDate = new Date(el.start_date);
+        let taskEndDate = new Date(el.end_date);
+  
+        return (
+          taskStartDate >= normalizedStartDate && taskEndDate <= normalizedEndDate
+        );
+      });
+  
+      this.filterCounts.selectedstartDateCount = 1;
+      // this.filterCounts.selectedendDateCount = 1;
+    }
+    
+    else if (this.selectedDate) {
+      // If only the start date is selected
+      filteredData = filteredData.filter((el: any) => {
+        let taskStartDate = new Date(el.start_date);
+        return taskStartDate >= this.selectedDate;
       });
       this.filterCounts.selectedstartDateCount = 1;
-    }
-
-    if (this.selectedEndDate) {
-      let selectedDateStr = this.formatDateWithoutTime(
-        new Date(this.selectedEndDate)
-      );
-
+    } else if (this.selectedEndDate) {
+      // If only the end date is selected
       filteredData = filteredData.filter((el: any) => {
-        let taskDateStr = this.formatDateWithoutTime(new Date(el.end_date));
-        return taskDateStr === selectedDateStr;
+        let taskEndDate = new Date(el.end_date);
+        return taskEndDate <= this.selectedEndDate;
       });
-      this.filterCounts.selectedendDateCount = 1;
+      // this.filterCounts.selectedendDateCount = 1;
     }
+
+// console.log(this.selectedDate)
+//     if (this.selectedDate) {
+//       filteredData = filteredData.filter((el: any) => {
+//         let taskStartDate = new Date(el.start_date);
+//         return taskStartDate >= this.selectedDate!;
+//       });
+//       this.filterCounts.selectedstartDateCount = 1;
+//     }
+//     console.log(this.selectedEndDate)
+//     // Filter by end date range
+//     if (this.selectedEndDate) {
+//       filteredData = filteredData.filter((el: any) => {
+//         let taskEndDate = new Date(el.end_date);
+//         return taskEndDate <= this.selectedEndDate!;
+//       });
+//       // this.filterCounts.selectedendDateCount = 1;
+//     }
+
+
+    // if (this.selectedDate) {
+    //   let selectedDateStr = this.formatDateWithoutTime(
+    //     new Date(this.selectedDate)
+    //   );
+
+    //   filteredData = filteredData.filter((el: any) => {
+    //     let taskDateStr = this.formatDateWithoutTime(new Date(el.start_date));
+    //     return taskDateStr === selectedDateStr;
+    //   });
+    //   this.filterCounts.selectedstartDateCount = 1;
+    // }
+
+    // if (this.selectedEndDate) {
+    //   let selectedDateStr = this.formatDateWithoutTime(
+    //     new Date(this.selectedEndDate)
+    //   );
+
+    //   filteredData = filteredData.filter((el: any) => {
+    //     let taskDateStr = this.formatDateWithoutTime(new Date(el.end_date));
+    //     return taskDateStr === selectedDateStr;
+    //   });
+    //   this.filterCounts.selectedendDateCount = 1;
+    // }
 
     // Update filtered data
     this.filteredTaskData = filteredData;

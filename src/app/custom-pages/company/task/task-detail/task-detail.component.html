@@ -191,6 +191,7 @@
                                         class="form-check-input"
                                         type="checkbox"
                                         [value]="data.id"
+                                        [checked]="selectedEmpIds.includes(data.id)" 
                                         (change)="toggleSelection(data.id, $event)"
           
                                       />
