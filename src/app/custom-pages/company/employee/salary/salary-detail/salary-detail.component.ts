@@ -283,13 +283,30 @@ export class SalaryDetailComponent {
               return;
             }
 
-            // Patch earnings and deductions if data is valid
-            this.patchEarnings(data.earning);
-            this.patchDeductions(data.deduction);
+            try {
+              const earnings = typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning;
+              const deductions = typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction;
+              const employeer_ctc = typeof data.employeer_ctc === "string" ? JSON.parse(data.employeer_ctc) : data.employeer_ctc;
+               
+              this.patchEarnings(earnings);
+              this.patchDeductions(deductions);
+  
+              this.employeerPfAmount = employeer_ctc?.employeerPfAmount || 0;
+              this.employeerEsiAmount = employeer_ctc?.employeerEsiAmount || 0;
+              this.totalctc = employeer_ctc?.totalctc || 0;
+            } catch (error) {
+              console.error("Error parsing JSON data:", error);
+              this.toastService.error("Invalid JSON data received.");
+              // return;
+            }
 
-            this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
-            this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
-            this.totalctc = data.employeer_ctc.totalctc || 0;
+            // Patch earnings and deductions if data is valid
+            // this.patchEarnings(data.earning);
+            // this.patchDeductions(data.deduction);
+
+            // this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+            // this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+            // this.totalctc = data.employeer_ctc.totalctc || 0;
 
             this.calculateTotalAmount();
           }
@@ -426,22 +443,39 @@ export class SalaryDetailComponent {
     return this.formGroup.controls;
   }
 
+  // createFormData() {
+  //   const formData = {
+  //     emp_id: this.urlId,
+  //     salary: this.f["salary"].value,
+  //     // earning: this.f["breakup"].value,
+  //     earning: (this.formGroup.get("breakup") as FormArray).getRawValue(),
+  //     deduction: (this.formGroup.get("deductions") as FormArray).getRawValue(),
+  //     employeer_ctc:{
+  //      totalEarning: this.earningTotal,
+  //      employeerPfAmount:this.employeerPfAmount,
+  //      employeerEsiAmount: this.employeerEsiAmount,
+  //      totalctc: this.totalctc
+  //     }
+  //   };
+  //   return formData;
+  // }
+
   createFormData() {
     const formData = {
       emp_id: this.urlId,
       salary: this.f["salary"].value,
-      // earning: this.f["breakup"].value,
-      earning: (this.formGroup.get("breakup") as FormArray).getRawValue(),
-      deduction: (this.formGroup.get("deductions") as FormArray).getRawValue(),
-      employeer_ctc:{
-       totalEarning: this.earningTotal,
-       employeerPfAmount:this.employeerPfAmount,
-       employeerEsiAmount: this.employeerEsiAmount,
-       totalctc: this.totalctc
-      }
+      earning: JSON.stringify((this.formGroup.get("breakup") as FormArray).getRawValue()), // Convert to string
+      deduction: JSON.stringify((this.formGroup.get("deductions") as FormArray).getRawValue()), // Convert to string
+      employeer_ctc: JSON.stringify({  // Convert to string
+        totalEarning: this.earningTotal,
+        employeerPfAmount: this.employeerPfAmount,
+        employeerEsiAmount: this.employeerEsiAmount,
+        totalctc: this.totalctc
+      })
     };
     return formData;
   }
+  
 
   add(formData: any) {
     this.api.post("salaryDetail", formData).subscribe(

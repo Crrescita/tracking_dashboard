@@ -157,7 +157,7 @@ export class SalarySettingComponent {
 
   convertToFormat(name: string): string {
     return name
-      .trim()                       // Remove leading/trailing spaces
+      .trim()
       .replace(/\s+/g, '_')          // Replace all spaces with underscores
       .replace(/(^|\_)([a-z])/g, (match) => match.toUpperCase());  // Capitalize the first letter of each word
   }

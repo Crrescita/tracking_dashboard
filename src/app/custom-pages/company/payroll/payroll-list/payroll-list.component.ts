@@ -1,5 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  FormGroup,
+  FormArray,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+} from "@angular/forms";
 import { PageChangedEvent } from "ngx-bootstrap/pagination";
 import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { Subject } from "rxjs";
@@ -10,6 +16,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 // import * as XLSX from "xlsx-js-style";
 import * as ExcelJS from "exceljs";
 import { ApiService } from '../../../../core/services/api.service';
+import { SalaryInvoiceComponent } from '../../employee/salary/salary-invoice/salary-invoice.component';
 
 @Component({
   selector: 'app-payroll-list',
@@ -18,6 +25,7 @@ import { ApiService } from '../../../../core/services/api.service';
 })
 export class PayrollListComponent {
   bsConfig?: Partial<BsDatepickerConfig>;
+  @ViewChild(SalaryInvoiceComponent) salaryInvoiceComponent!: SalaryInvoiceComponent;  
   private dateChangeSubject = new Subject<Date>();
   breadCrumbItems!: Array<{}>;
   company_id: any;
@@ -63,6 +71,9 @@ export class PayrollListComponent {
   };
 
   company_logo: any;
+  emp_id: any;
+  isModalOpen: boolean = false;
+  selectedEmployees: any[] = []; 
 
   constructor(
     private api: ApiService,
@@ -250,6 +261,120 @@ export class PayrollListComponent {
     this.spinnerStatus = isLoading;
   }
 
+  // getAttendance() {
+  //   this.toggleSpinner(true);
+  //   const url = `payroll?month=${this.formattedDate}`;
+  //   this.api.getwithoutid(url).subscribe(
+  //     (res: any) => {
+  //       this.toggleSpinner(false);
+  //       if (res && res.status) {
+  //         if(res.payroll_finalized == 1){
+ 
+  //     if (Array.isArray(res.data)) {
+  //       this.payrollDataList = res.data.map((item:any) => {
+  //         return {
+  //           ...item,
+  //           earning: typeof item.earning === "string" ? JSON.parse(item.earning) : item.earning,
+  //           deduction: typeof item.deduction === "string" ? JSON.parse(item.deduction) : item.deduction,
+  //           employeer_ctc: typeof item.employeer_ctc === "string" ? JSON.parse(item.employeer_ctc) : item.employeer_ctc
+  //         };
+  //       });
+  //     } else {
+  //       this.payrollDataList = [];
+  //       console.error("Unexpected data format: res.data is not an array");
+  //     }
+
+  //         // this.payslipData = data; 
+  //         // this.payrollDataList = res.data || [];
+  //         // this.attendanceCount = res.attendanceCount || [];
+  //         this.filterdata();
+  //         // this.payrollData = cloneDeep(this.payrollDataList.slice(0, 10));
+  //         }
+  //         else{
+  //           console.log(res.data)
+  //           // setTimeout(() => {
+            
+         
+  //           //   if (pendingPayroll) {
+  //           //     this.openSalaryInvoice(pendingPayroll);
+  //           //   }
+  //           // }, 1000); // Simulating API delay
+  //         }
+          
+    
+       
+  //       } else {
+  //         this.payrollData = [];
+  //         this.payrollDataList = [];
+  //         this.attendanceCount = [];
+  //         this.toggleSpinner(false);
+  //       }
+  //     },
+  //     (error) => {
+  //       this.handleError(
+  //         error.message || "An error occurred while fetching data"
+  //       );
+  //     }
+  //   );
+  // }
+
+
+  // getAttendance() {
+  //   this.toggleSpinner(true);
+  //   const url = `payroll?month=${this.formattedDate}`;
+  //   this.api.getwithoutid(url).subscribe(
+  //     (res: any) => {
+  //       this.toggleSpinner(false);
+  //       if (res && res.status) {
+  //         if (res.payroll_finalized == 1) {
+  //           if (Array.isArray(res.data)) {
+  //             this.payrollDataList = res.data.map((item: any) => {
+  //               return {
+  //                 ...item,
+  //                 earning: typeof item.earning === "string" ? JSON.parse(item.earning) : item.earning,
+  //                 deduction: typeof item.deduction === "string" ? JSON.parse(item.deduction) : item.deduction,
+  //                 employeer_ctc: typeof item.employeer_ctc === "string" ? JSON.parse(item.employeer_ctc) : item.employeer_ctc
+  //               };
+  //             });
+  //           } else {
+  //             this.payrollDataList = [];
+  //             console.error("Unexpected data format: res.data is not an array");
+  //           }
+  //           this.filterdata();
+  //         } else {
+  //           console.log("Payroll not finalized employees:", res.data);
+  
+          
+  //           this.payrollDataList = res.data.map((item: any) => {
+  //             return {
+  //               ...item,
+  //               earning: typeof item.earning === "string" ? JSON.parse(item.earning) : item.earning,
+  //               deduction: typeof item.deduction === "string" ? JSON.parse(item.deduction) : item.deduction,
+  //               employeer_ctc: typeof item.employeer_ctc === "string" ? JSON.parse(item.employeer_ctc) : item.employeer_ctc
+  //             };
+  //           });
+  
+           
+  //           this.payrollDataList.forEach((emp:any) => {
+  //             if (emp.payroll_finalized === 0) {
+  //               this.openSalaryInvoice(emp);
+  //             }
+  //           });
+  //         }
+  //       } else {
+  //         this.payrollData = [];
+  //         this.payrollDataList = [];
+  //         this.attendanceCount = [];
+  //         this.toggleSpinner(false);
+  //       }
+  //     },
+  //     (error) => {
+  //       this.handleError(error.message || "An error occurred while fetching data");
+  //     }
+  //   );
+  // }
+
+
   getAttendance() {
     this.toggleSpinner(true);
     const url = `payroll?month=${this.formattedDate}`;
@@ -257,25 +382,59 @@ export class PayrollListComponent {
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {
-          // this.payrollData = res.data || [];
-          this.payrollDataList = res.data || [];
-          // this.attendanceCount = res.attendanceCount || [];
-          this.filterdata();
-          // this.payrollData = cloneDeep(this.payrollDataList.slice(0, 10));
+          const processPayrollData = (data: any) => {
+            const empEarnings = JSON.parse(data.emp_earning || "[]");
+            const empDeductions = JSON.parse(data.emp_deduction || "[]");
+            const empEmployerCTC = JSON.parse(data.emp_employeer_ctc || "{}");
+  
+            const earningTotal = empEarnings.reduce((sum: number, e: any) => sum + e.amount, 0);
+            const deductionsTotal = empDeductions.reduce((sum: number, e: any) => sum + e.amount, 0);
+            const totalAmount = Math.round(earningTotal - deductionsTotal);
+  
+            const empSalaryData = {
+              earn: earningTotal,
+              deductionsTotal,
+              totalAmount,
+              netSalary: data.emp_salary,
+            };
+  
+            return {
+              ...data,
+              earning: typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning,
+              deduction: typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction,
+              employeer_ctc: typeof data.employeer_ctc === "string" ? JSON.parse(data.employeer_ctc) : data.employeer_ctc,
+              empSalaryData, // Add empSalaryData here
+            };
+          };
+  
+          if (Array.isArray(res.data)) {
+            this.payrollDataList = res.data.map(processPayrollData);
+            this.filterdata();
+          } else {
+            this.payrollDataList = [];
+            console.error("Unexpected data format: res.data is not an array");
+          }
+  
+          if (res.payroll_finalized === 0) {
+            this.payrollDataList.forEach((emp: any) => {
+              if (emp.payroll_finalized === 0) {
+                this.openSalaryInvoice(emp);
+              }
+            });
+          }
         } else {
           this.payrollData = [];
           this.payrollDataList = [];
           this.attendanceCount = [];
-          this.toggleSpinner(false);
         }
       },
       (error) => {
-        this.handleError(
-          error.message || "An error occurred while fetching data"
-        );
+        this.handleError(error.message || "An error occurred while fetching data");
       }
     );
   }
+  
+  
 
   handleError(error: any) {
     this.toggleSpinner(false);
@@ -284,19 +443,33 @@ export class PayrollListComponent {
   payslipData:any
   //
   updatePaySlipData(data: any) {
+    data.earning = typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning;
+    data.deduction = typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction;
+    data.employeer_ctc = typeof data.employeer_ctc === "string" ? JSON.parse(data.employeer_ctc) : data.employeer_ctc;
     this.payslipData = data
+    console.log( this.payslipData)
   }
 
   // getMaxLength(earnings: any[], deductions: any[]): number[] {
   //   const maxLength = Math.max(earnings?.length || 0, deductions?.length || 0);
   //   return Array.from({ length: maxLength }, (_, i) => i);
   // }
+  getParsedArray(data: string | any[]): any[] {
+    try {
+      return typeof data === 'string' ? JSON.parse(data) : Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error parsing JSON data:", error);
+      return [];
+    }
+  }
 
   getMaxLength(earnings: any[], deductions: any[]): number[] {
     // Ensure that both earnings and deductions are not null or undefined
     const safeEarnings = earnings || [];
     const safeDeductions = deductions || [];
-    
+    // const safeEarnings = this.getParsedArray(earnings);
+    // const safeDeductions = this.getParsedArray(deductions);
+
     const maxLength = Math.max(safeEarnings.length, safeDeductions.length);
     
     // Pad shorter array with nulls if necessary
@@ -871,5 +1044,277 @@ export class PayrollListComponent {
     return words.charAt(0).toUpperCase() + words.slice(1);
   }
   
+  // openSalaryInvoice(data: any) {
+
+  //   console.log(data)
+
+  //   this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
+
+  //   this.emp_id = data.emp_id;
+  //   // this.showsalaryInvoice.show();
+
+  //   const data = {
+  //     earn: this.earningTotal,
+  //     deductionsTotal: this.deductionsTotal,
+  //     totalAmount: this.totalAmount,
+  //     netSalary: data.emp_salary,
+  //   };
+  //   this.empSalaryData = data
+
+  //   // this.salaryDataFetched.emit(data);
+  // }
+
+  empSalaryData:any
+  totalAmount:any
+  deductionsTotal:any
+  earningTotal:any
+  openSalaryInvoice(data: any) {
+    this.isModalOpen = true;
+    this.emp_id = data.emp_id
   
+    const empEarnings = JSON.parse(data.emp_earning || "[]");
+    const empDeductions = JSON.parse(data.emp_deduction || "[]");
+    const empEmployerCTC = JSON.parse(data.emp_employeer_ctc || "{}");
+  
+    this.earningTotal = empEarnings.reduce((sum: number, item: any) => sum + item.amount, 0);
+    
+
+    this.deductionsTotal = empDeductions.reduce((sum: number, item: any) => sum + item.amount, 0);
+  
+
+    this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
+  
+    this.empSalaryData = {
+      earn: this.earningTotal,
+      deductionsTotal: this.deductionsTotal,
+      totalAmount: this.totalAmount,
+      netSalary: data.emp_salary,
+    };
+  }
+  updatePayrollData(eventData: any): void {
+
+    this.payrollData = this.payrollData.map((emp:any) => {
+      if (emp.emp_id === eventData.emp_id) {
+        // console.log(eventData)
+        return { ...emp, salaryInvoiceData: eventData };
+      }
+      return emp;
+    });
+  
+    // console.log("Updated Payroll Data:", this.payrollData);
+  }
+
+
+  toggleSelection(employee: any, event: any) {
+    if (event.target.checked) {
+      this.selectedEmployees.push(employee);
+    } else {
+      this.selectedEmployees = this.selectedEmployees.filter(emp => emp !== employee);
+    }
+  }
+  
+  onSubmitAll() {
+    if (this.selectedEmployees.length === 0) {
+      // this.toastService.error("Please select at least one employee.");
+      return;
+    }
+    console.log(this.selectedEmployees)
+    this.selectedEmployees.forEach(employee => {
+      this.submitForEmployee(employee);
+    });
+  }
+
+
+
+  // emp_id: this.urlId,
+  // paid_days:this.presentDays,
+  // net_pay :this.totalAmount,
+  // payslip_for_month:this.formattedDate,
+  // salary: this.f["salary"].value,
+  // // earning: this.f["breakup"].value,
+  // earning:  JSON.stringify((this.formGroup.get("breakup") as FormArray).getRawValue()),
+  // deduction:  JSON.stringify((this.formGroup.get("deductions") as FormArray).getRawValue()),
+  // earning_amount:this.earningTotal.toFixed(2),
+  // deduction_amount:this.deductionsTotal.toFixed(2),
+  // employeer_ctc: JSON.stringify({
+  //   totalEarning: this.earningTotal,
+  //   employeerPfAmount:this.employeerPfAmount,
+  //   employeerEsiAmount: this.employeerEsiAmount,
+  //   totalctc: this.totalctc
+  //  })
+  
+
+//   deduction
+// : 
+// "[{\"name\":\"PF\",\"calculationType\":\"percentage\",\"formula\":\"(Basic * 12) / 100\",\"amount\":693,\"nameReadonly\":true},{\"name\":\"ESI\",\"calculationType\":\"none\",\"formula\":\"\",\"amount\":0,\"nameReadonly\":true},{\"name\":\"TDS\",\"calculationType\":\"none\",\"formula\":\"\",\"amount\":0,\"nameReadonly\":true}]"
+// deduction_amount
+// : 
+// "693.00"
+// earning
+// : 
+// "[{\"name\":\"Basic\",\"calculationType\":\"custom\",\"formula\":\"29830\",\"amount\":5774,\"nameReadonly\":true},{\"name\":\"HRA\",\"calculationType\":\"default\",\"formula\":\"Basic / 2\",\"amount\":2887,\"nameReadonly\":true},{\"name\":\"Travel Allowance\",\"calculationType\":\"custom\",\"formula\":\"3200\",\"amount\":3200,\"nameReadonly\":true},{\"name\":\"Special Allowance\",\"calculationType\":\"default\",\"formula\":\"Net_Salary -  Basic - HRA - Travel_Allowance\",\"amount\":0,\"nameReadonly\":true}]"
+// earning_amount
+// : 
+// "11861.00"
+// emp_id
+// : 
+// 38
+// employeer_ctc
+// : 
+// "{\"totalEarning\":11861,\"employeerPfAmount\":693,\"employeerEsiAmount\":0,\"totalctc\":12554}"
+// net_pay
+// : 
+// 11168
+// paid_days
+// : 
+// 6
+// payslip_for_month
+// : 
+// "2025-01"
+// salary
+// : 
+// 9629
+submitForEmployee(employee: any) {
+  console.log("Submitting for Employee:", employee);
+
+  if (this.salaryInvoiceComponent) {
+    // Ensure employee data exists before using it
+    if (!employee.salaryInvoiceData) {
+      console.warn("No salaryInvoiceData found for employee:", employee);
+      return;
+    }
+console.log(employee.salaryInvoiceData)
+console.log(employee.salaryInvoiceData.totalamount, employee.salaryInvoiceData.paidDays)
+    // Assign values
+    this.salaryInvoiceComponent.urlId = employee.emp_id;
+    this.salaryInvoiceComponent.presentDays = employee.salaryInvoiceData.paidDays || 0;
+    this.salaryInvoiceComponent.totalAmount = employee.salaryInvoiceData.totalamount || 0;
+    this.salaryInvoiceComponent.formattedDate = employee.salaryInvoiceData.invoiceOfMonth || new Date();
+console.log(JSON.stringify(employee.salaryInvoiceData.deductions.value))
+    // Ensure form fields are updated
+    // this.salaryInvoiceComponent.formGroup.patchValue({
+    //   // net_pay: employee.emp_salary || 0,
+    //   salary: employee.salaryInvoiceData.salary || "", // Fix missing salary
+    //   breakup:  JSON.stringify(employee.salaryInvoiceData.breakup.value) || [],
+    //   deductions: JSON.stringify(employee.salaryInvoiceData.deductions.value) || []
+    // });
+      // Ensure form fields are updated except FormArray
+      // this.salaryInvoiceComponent.formGroup.patchValue({
+      //   net_pay: employee.emp_salary || 0,
+      //   salary: employee.salaryInvoiceData.salary || "", // Fix missing salary
+      // });
+
+      this.salaryInvoiceComponent.formGroup.patchValue({
+        salary: employee.salaryInvoiceData.salary || "",
+      });
+  
+      // Get FormArray references
+      const breakupArray = this.salaryInvoiceComponent.formGroup.get("breakup") as FormArray;
+      const deductionsArray = this.salaryInvoiceComponent.formGroup.get("deductions") as FormArray;
+  
+      // Clear previous data before adding new ones
+      breakupArray.clear();
+      deductionsArray.clear();
+  
+      // Populate `breakup`
+      if (Array.isArray(employee.salaryInvoiceData.breakup.value) && employee.salaryInvoiceData.breakup.value.length > 0) {
+        employee.salaryInvoiceData.breakup.value.forEach((earning: any) => {
+          breakupArray.push(this.salaryInvoiceComponent.formBuilder.group({
+            name: earning.name || '',
+            amount: earning.amount || 0,
+            calculationType: earning.calculationType || '',
+            formula: earning.formula || '',
+          }));
+        });
+      }
+  
+      // Populate `deductions`
+      if (Array.isArray(employee.salaryInvoiceData.deductions.value) && employee.salaryInvoiceData.deductions.value.length > 0) {
+        employee.salaryInvoiceData.deductions.value.forEach((deduction: any) => {
+          deductionsArray.push(this.salaryInvoiceComponent.formBuilder.group({
+            name: deduction.name || '',
+            amount: deduction.amount || 0,
+            calculationType: deduction.calculationType || '',
+            formula: deduction.formula || '',
+          }));
+        });
+      }
+
+    // **Ensure calculation is done before submission**
+    this.salaryInvoiceComponent.calculateTotalAmount();
+
+    // Log final data before submission
+    console.log("Final Form Data for Employee:", this.salaryInvoiceComponent.createFormData());
+
+    // Call child's submit method
+    this.salaryInvoiceComponent.onSubmit();
+  }
+}
+
+
+
+  
+
+//   submitForEmployee(employee: any) {
+//   if (this.salaryInvoiceComponent) {
+//     // Set employee data in the child component
+//     this.salaryInvoiceComponent.urlId = employee.emp_id;
+//     this.salaryInvoiceComponent.presentDays = employee.paid_days || 0;
+//     this.salaryInvoiceComponent.totalAmount = employee.net_pay || 0;
+//     this.salaryInvoiceComponent.formattedDate = employee.payslip_for_month || new Date();
+    
+//     // Populate form fields
+//     this.salaryInvoiceComponent.formGroup.patchValue({
+//       salary: employee.emp_salary || 0,
+//       breakup: employee.earning_breakup || [],
+//       deductions: employee.deduction_breakup || []
+//     });
+
+//     // Ensure FormArrays are properly set
+//     const breakupArray = this.salaryInvoiceComponent.formGroup.get("breakup") as FormArray;
+//     const deductionsArray = this.salaryInvoiceComponent.formGroup.get("deductions") as FormArray;
+
+//     breakupArray.clear();
+//     deductionsArray.clear();
+
+//     // Add earnings to the form and stringify it for the final submission
+//     if (employee.earning_breakup) {
+//       employee.earning_breakup.forEach((earning: any) => {
+//         breakupArray.push(this.salaryInvoiceComponent.formBuilder.group(earning));
+//       });
+//     }
+
+//     // Add deductions to the form and stringify it for the final submission
+//     if (employee.deduction_breakup) {
+//       employee.deduction_breakup.forEach((deduction: any) => {
+//         deductionsArray.push(this.salaryInvoiceComponent.formBuilder.group(deduction));
+//       });
+//     }
+
+//     // Prepare the final data to emit, stringify the earning and deduction arrays
+//     const dataToEmit = {
+//       emp_id: this.salaryInvoiceComponent.urlId,
+//       invoiceOfMonth: this.salaryInvoiceComponent.formattedDate,
+//       totalAdv: this.salaryInvoiceComponent.totalAdvBal,
+//       paidDays: this.salaryInvoiceComponent.presentDays,
+//       totalamount: this.salaryInvoiceComponent.totalAmount,
+//       earnTotal: this.salaryInvoiceComponent.earningTotal,
+//       deductionsTotal: this.salaryInvoiceComponent.deductionsTotal,
+//       totalctc: this.salaryInvoiceComponent.totalctc,
+//       // Stringify the earning and deduction arrays before emitting
+//       earning: JSON.stringify(this.salaryInvoiceComponent.formGroup.get('breakup')?.getRawValue()),
+//       deduction: JSON.stringify(this.salaryInvoiceComponent.formGroup.get('deductions')?.getRawValue())
+//     };
+
+//     // Log final data before submission for debugging
+//     console.log("Final Form Data for Employee:", dataToEmit);
+
+//     // Emit the data
+//     this.salaryInvoiceComponent.salaryInvoiceData.emit(dataToEmit);
+
+//     // Now call the child's onSubmit() to submit the data
+//     this.salaryInvoiceComponent.onSubmit();
+//   }
+// }
+
 }

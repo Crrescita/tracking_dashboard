@@ -8,7 +8,8 @@
               <ngx-simplebar class="chat-message-list chat-bookmark-list">
                 <ul class="list-unstyled chat-list">
                   <li>
-                    <div class="d-flex align-items-center">
+                    {{isModalOpen}}
+                    <div *ngIf="!isModalOpen" class="d-flex align-items-center">
                       <div class="flex-grow-1 overflow-hidden">
                         <h5 class="mb-1">
                           <a
@@ -126,7 +127,7 @@
                 </ul>
               </ngx-simplebar>
             </div>
-            <div class="col-4 ">
+            <div class="col-6 ">
                 <div class="p-3 bg-light rounded courses-calendar-dashboard">
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <!-- <div class="flex-shrink-0">
@@ -1845,7 +1846,7 @@
                             "
                           >
                             <tr>
-                              <!-- @if(payslipData?.earning[i]?.name){ -->
+                           
                               <td class="text-start">
                                 <span class="fw-medium">{{
                                   payslipData?.earning[i]?.name || ""
@@ -1861,8 +1862,7 @@
                                     Nil 
                                 }
                               </td>
-                              <!-- }  -->
-                              <!-- @if(payslipData?.deduction[i]?.name){ -->
+                           
                               <td class="text-start">
                                 <span class="fw-medium">{{
                                   payslipData?.deduction[i]?.name || ""
@@ -1877,7 +1877,7 @@
                                 }
                                  @else { Nil }
                               </td>
-                              <!-- } -->
+                            
                             </tr>
                           </ng-container>
                         </tbody>

@@ -274,6 +274,8 @@
                 
                 <div class="hstack flex-wrap gap-2">
                   <div>
+                    <button class="btn btn-primary" (click)="onSubmitAll()">Submit</button>
+
                     <button
                       (click)="exportTableToExcel()"
                       type="button"
@@ -322,8 +324,8 @@
                         class="form-check-input"
                         type="checkbox"
                         value="option"
-                        [(ngModel)]="masterSelected"
-                        (change)="checkUncheckAll($event)"
+                      [checked]="selectedEmployees.includes(data)"
+      (change)="toggleSelection(data, $event)"
                         id="checkAll"
                       /> -->
                       <label class="form-check-label" for="checkAll"></label>
@@ -359,26 +361,22 @@
                   <th class="sort cursor-pointer" (click)="onSort('net_pay')">
                     Employer's (CTC)
                   </th>
-                 
-                  <!-- <th
-                    class="sort cursor-pointer"
-                    (click)="onSort('checkin_statusv2')"
-                  >
-                    Check-in Status
-                  </th> -->
-                  <!-- <th
-                    class="sort cursor-pointer"
-                    (click)="onSort('timeDifferencev2')"
-                  >
-                    Time Difference
-                  </th> -->
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody class="list form-check-all">
                 @for ( data of payrollData; track $index) {
                 <tr id="p_{{ data._id }}">
-                  <td></td>
+                  <td>
+                    <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="option"
+                  [checked]="selectedEmployees.includes(data)"
+  (change)="toggleSelection(data, $event)"
+                    id="checkAll"
+                  />
+                  </td>
                   <td class="id" style="display: none">
                     <a href="javascript:void(0);" class="fw-medium link-primary"
                       >#TB01</a
@@ -415,17 +413,44 @@
                   </td>
                   <td class="discount">{{ data.mobile }}</td>
                   <td class="category"><i class="bx bx-rupee"></i>{{data.emp_salary? (data.emp_salary | number:'1.0-2'):0}}</td>
-                  <td class="category">{{data.paid_days? data.paid_days:0 }}</td>
-                  <td class="stock"><i class="bx bx-rupee"></i>{{ data.earning_amount ? (data.earning_amount | number:'1.0-2'):0}}</td>
-                  <td class="price">
-                    <i class="bx bx-rupee"></i> {{data.deduction_amount ? (data.deduction_amount | number:'1.0-2'):0}}
-                  </td>
-                  <td class="orders">
-                    <i class="bx bx-rupee"></i> {{data.net_pay? (data.net_pay | number:'1.0-2'):0}}
-                  </td>
-                  <td class="orders">
-                    <i class="bx bx-rupee"></i>{{ data.employeer_ctc?.totalctc ? (data.employeer_ctc.totalctc | number:'1.0-2') : 0 }}
+                  <td class="category">@if(data.payroll_finalized === 1){
+                    {{data.paid_days? data.paid_days:0 }} }
+                    @else {
+                        {{data.salaryInvoiceData?.paidDays ? data.salaryInvoiceData?.paidDays : 0}}
+                    }  </td>
+                  <td class="stock"><i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{ data.earning_amount ? (data.earning_amount | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.earnTotal ? (data.salaryInvoiceData?.earnTotal | number:'1.0-2') : 0}}
+                    }
 
+                    </td>
+                  <td class="price">
+                    <i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{data.deduction_amount ? (data.deduction_amount | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.deductionsTotal ? (data.salaryInvoiceData?.deductionsTotal | number:'1.0-2') : 0}}
+                    }
+                    
+                  </td>
+                  <td class="orders">
+                    <i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{data.net_pay? (data.net_pay | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.totalamount ? (data.salaryInvoiceData?.totalamount | number:'1.0-2') : 0}}
+                    }
+                   
+                  </td>
+                  <td class="orders">
+                    <i class="bx bx-rupee"></i> 
+                    @if(data.payroll_finalized === 1){
+                        {{ data.employeer_ctc?.totalctc ? (data.employeer_ctc.totalctc | number:'1.0-2') : 0 }}
+                    }@else{
+                        {{data.salaryInvoiceData?.totalctc ? (data.salaryInvoiceData?.totalctc | number:'1.0-2') : 0}}
+                    } 
                   </td>
                   <td>
                     <ul class="d-flex gap-2 list-unstyled mb-0">
@@ -434,7 +459,7 @@
                           data-bs-toggle="tooltip"
                           placement="top"
                           tooltip="View"
-                          routerLink="/edit-employee/{{ data.id }}"
+                          routerLink="/edit-employee/{{ data.emp_id }}"
                           [queryParams]="{
                             tab: 'salary-invoice',
                          
@@ -453,6 +478,23 @@
                               class="btn btn-subtle-info btn-icon btn-sm remove-item-btn"
                               ><i class="ri-article-fill"></i
                             ></a>
+                          </li>
+                      }@else {
+                        <li>
+                            <a
+                              data-bs-toggle="tooltip"
+                              placement="top"
+                              tooltip="Pay Slip"
+                              (click)="openSalaryInvoice(data);showsalaryInvoice.show()" 
+                             
+                              class="btn btn-subtle-info btn-icon btn-sm remove-item-btn"
+                              ><i class="ri-article-fill"></i
+                            ></a>
+<div class="d-none">
+    <app-salary-invoice (salaryInvoiceData)="updatePayrollData($event)"    [salaryDetailData]="data.empSalaryData"  [urlId]="data.emp_id"></app-salary-invoice>
+
+</div>
+
                           </li>
                       }
                      
@@ -910,6 +952,41 @@
                   </div>
              
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div
+  bsModal
+  #showsalaryInvoice="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showsalaryInvoice.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-xxl-12">
+          
+            <div class=" overflow-hidden " >
+                @if(this.empSalaryData){
+                    <app-salary-invoice (salaryInvoiceData)="updatePayrollData($event)"   [salaryDetailData]="this.empSalaryData"  [urlId]="this.emp_id"></app-salary-invoice>
+                }
             </div>
           </div>
         </div>

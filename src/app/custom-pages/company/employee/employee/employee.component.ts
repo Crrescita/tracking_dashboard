@@ -73,6 +73,7 @@ export class EmployeeComponent implements OnInit {
   onSalaryDataFecthed(isFetched: any) {
     if (isFetched) {
       this.empSalaryData = isFetched;
+      console.log(this.empSalaryData)
     }
   }
 

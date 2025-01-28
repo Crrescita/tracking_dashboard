@@ -63,6 +63,7 @@ export class SalaryInvoiceComponent {
   earningTotal:any= 0;
   deductionsTotal:any= 0;
   totalctc:any = 0;
+  isModalOpen: boolean = false;
 
   allowances = [
     { id: 1, name: "HRA", formula: "Basic / 2" },
@@ -92,7 +93,7 @@ export class SalaryInvoiceComponent {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
+    public formBuilder: FormBuilder,
     public toastService: ToastrService,
     private api: ApiService
   ) {
@@ -142,6 +143,7 @@ export class SalaryInvoiceComponent {
   }
 
   ngOnInit(): void {
+
     this.selectedDate = new Date();
 
     this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
@@ -536,7 +538,12 @@ export class SalaryInvoiceComponent {
         
           const data = res.data[0];
           if (data) {
-            this.payslipData = data
+            data.earning = typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning;
+            data.deduction = typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction;
+            data.employeer_ctc = typeof data.employeer_ctc === "string" ? JSON.parse(data.employeer_ctc) : data.employeer_ctc;
+        
+            this.payslipData = data; 
+            // this.payslipData = data
             this.gernated = true
             const netSalary = Number(data.salary);
             if (!isNaN(netSalary)) {
@@ -546,15 +553,36 @@ export class SalaryInvoiceComponent {
                 // Patch the calculated salary
                 this.formGroup.patchValue({ salary: netSalary });
                 this.updateVariable("Net Salary", netSalary);
+
+                try {
+                  const earnings = typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning;
+                  const deductions = typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction;
+                  const employeer_ctc = typeof data.employeer_ctc === "string" ? JSON.parse(data.employeer_ctc) : data.employeer_ctc;
+
+                  this.patchEarnings(earnings);
+                  this.patchDeductions(deductions);
+      
+                  if(data.employeer_ctc){
+                    this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+                    this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+                    this.totalctc = data.employeer_ctc.totalctc || 0;
+                  }
+                } catch (error) {
+                  console.error("Error parsing JSON data:", error);
+                  this.toastService.error("Invalid JSON data received.");
+                  // return;
+                }
+
+
   
                 // Recalculate earnings and deductions
-                this.patchEarnings(data.earning);
-                this.patchDeductions(data.deduction);
-                if(data.employeer_ctc){
-                  this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
-                  this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
-                  this.totalctc = data.employeer_ctc.totalctc || 0;
-                }
+                // this.patchEarnings(data.earning);
+                // this.patchDeductions(data.deduction);
+                // if(data.employeer_ctc){
+                //   this.employeerPfAmount = data.employeer_ctc.employeerPfAmount || 0;
+                //   this.employeerEsiAmount = data.employeer_ctc.employeerEsiAmount || 0;
+                //   this.totalctc = data.employeer_ctc.totalctc || 0;
+                // }
               
                 this.calculateTotalAmount();
               
@@ -600,10 +628,25 @@ export class SalaryInvoiceComponent {
                 // Patch the calculated salary
                 this.formGroup.patchValue({ salary: salaryForPresentDays });
                 this.updateVariable("Net Salary", salaryForPresentDays);
+
+
+                try {
+                  const earnings = typeof data.earning === "string" ? JSON.parse(data.earning) : data.earning;
+                  const deductions = typeof data.deduction === "string" ? JSON.parse(data.deduction) : data.deduction;
+               
+
+                  this.patchEarnings(earnings);
+                  this.patchDeductions(deductions);
+      
+                } catch (error) {
+                  console.error("Error parsing JSON data:", error);
+                  this.toastService.error("Invalid JSON data received.");
+                  // return;
+                }
   
                 // Recalculate earnings and deductions
-                this.patchEarnings(data.earning);
-                this.patchDeductions(data.deduction);
+                // this.patchEarnings(data.earning);
+                // this.patchDeductions(data.deduction);
                 this.calculateTotalAmount();
                
               } else {
@@ -730,25 +773,33 @@ export class SalaryInvoiceComponent {
     this.submitted = isLoading;
   }
 
+ 
   onSubmit() {
+    console.log("Submitting Payroll Data");
+    
     if (!this.urlId) {
       this.toastService.error("Please add Personal Details First");
     } else {
       if (this.formGroup.valid) {
         this.toggleSpinner(true);
-       
         const formData = this.createFormData();
-  
+        
+        // Emit formData to parent
+        this.salaryInvoiceData.emit(formData);
+        console.log("Emitting Salary Data:", formData);
+        
         if (this.urlId) {
           this.update(formData);
         } else {
           this.add(formData);
         }
       } else {
+        console.log("Form is invalid", this.formGroup);
         this.formGroup.markAllAsTouched();
       }
     }
   }
+  
 
   get f() {
     return this.formGroup.controls;
@@ -762,16 +813,16 @@ export class SalaryInvoiceComponent {
       payslip_for_month:this.formattedDate,
       salary: this.f["salary"].value,
       // earning: this.f["breakup"].value,
-      earning: (this.formGroup.get("breakup") as FormArray).getRawValue(),
-      deduction: (this.formGroup.get("deductions") as FormArray).getRawValue(),
+      earning:  JSON.stringify((this.formGroup.get("breakup") as FormArray).getRawValue()),
+      deduction:  JSON.stringify((this.formGroup.get("deductions") as FormArray).getRawValue()),
       earning_amount:this.earningTotal.toFixed(2),
       deduction_amount:this.deductionsTotal.toFixed(2),
-      employeer_ctc:{
+      employeer_ctc: JSON.stringify({
         totalEarning: this.earningTotal,
         employeerPfAmount:this.employeerPfAmount,
         employeerEsiAmount: this.employeerEsiAmount,
         totalctc: this.totalctc
-       }
+       })
       // deductions: this.formGroup.get("deductions")!.value.map((deduction: any) => ({
       //   name: deduction.name,
       //   calculationType: deduction.calculationType,
@@ -1620,12 +1671,17 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
     this.totalAmount = Math.round( this.earningTotal - this.deductionsTotal);
 
     const dataToEmit = {
+      emp_id: this.urlId,
       invoiceOfMonth:this.formattedDate,
-      totalAdv: this.totalAdvBal.toFixed(2),
+      totalAdv: this.totalAdvBal,
       paidDays:this.presentDays,
-      totalamount :this.totalAmount.toFixed(2),
-      earnTotal:this.earningTotal.toFixed(2),
-      deductionsTotal:this.deductionsTotal.toFixed(2)
+      totalamount :this.totalAmount,
+      earnTotal:this.earningTotal,
+      deductionsTotal:this.deductionsTotal,
+      totalctc :this.totalctc ,
+      breakup:breakup,
+      deductions:deductions,
+      salary:this.f["salary"].value
     }
 
     this.salaryInvoiceData.emit(dataToEmit)
@@ -1692,10 +1748,22 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
   payslipData:any
   
 
+  getParsedArray(data: string | any[]): any[] {
+    try {
+      return typeof data === 'string' ? JSON.parse(data) : Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.error("Error parsing JSON data:", error);
+      return [];
+    }
+  }
+
   getMaxLength(earnings: any[], deductions: any[]): number[] {
     // Ensure that both earnings and deductions are not null or undefined
     const safeEarnings = earnings || [];
     const safeDeductions = deductions || [];
+
+    // const safeEarnings = this.getParsedArray(earnings);
+    // const safeDeductions = this.getParsedArray(deductions);
     
     const maxLength = Math.max(safeEarnings.length, safeDeductions.length);
     
