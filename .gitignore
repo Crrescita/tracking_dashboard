@@ -50,4 +50,4 @@ Thumbs.db
 *.wmv
 
 # Ignore package.json
-package.json
+# package.json

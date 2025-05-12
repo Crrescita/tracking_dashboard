@@ -1118,7 +1118,7 @@ export class PayrollListComponent {
       // this.toastService.error("Please select at least one employee.");
       return;
     }
-    console.log(this.selectedEmployees)
+    // console.log(this.selectedEmployees)
     this.selectedEmployees.forEach(employee => {
       this.submitForEmployee(employee);
     });
@@ -1126,56 +1126,8 @@ export class PayrollListComponent {
 
 
 
-  // emp_id: this.urlId,
-  // paid_days:this.presentDays,
-  // net_pay :this.totalAmount,
-  // payslip_for_month:this.formattedDate,
-  // salary: this.f["salary"].value,
-  // // earning: this.f["breakup"].value,
-  // earning:  JSON.stringify((this.formGroup.get("breakup") as FormArray).getRawValue()),
-  // deduction:  JSON.stringify((this.formGroup.get("deductions") as FormArray).getRawValue()),
-  // earning_amount:this.earningTotal.toFixed(2),
-  // deduction_amount:this.deductionsTotal.toFixed(2),
-  // employeer_ctc: JSON.stringify({
-  //   totalEarning: this.earningTotal,
-  //   employeerPfAmount:this.employeerPfAmount,
-  //   employeerEsiAmount: this.employeerEsiAmount,
-  //   totalctc: this.totalctc
-  //  })
-  
-
-//   deduction
-// : 
-// "[{\"name\":\"PF\",\"calculationType\":\"percentage\",\"formula\":\"(Basic * 12) / 100\",\"amount\":693,\"nameReadonly\":true},{\"name\":\"ESI\",\"calculationType\":\"none\",\"formula\":\"\",\"amount\":0,\"nameReadonly\":true},{\"name\":\"TDS\",\"calculationType\":\"none\",\"formula\":\"\",\"amount\":0,\"nameReadonly\":true}]"
-// deduction_amount
-// : 
-// "693.00"
-// earning
-// : 
-// "[{\"name\":\"Basic\",\"calculationType\":\"custom\",\"formula\":\"29830\",\"amount\":5774,\"nameReadonly\":true},{\"name\":\"HRA\",\"calculationType\":\"default\",\"formula\":\"Basic / 2\",\"amount\":2887,\"nameReadonly\":true},{\"name\":\"Travel Allowance\",\"calculationType\":\"custom\",\"formula\":\"3200\",\"amount\":3200,\"nameReadonly\":true},{\"name\":\"Special Allowance\",\"calculationType\":\"default\",\"formula\":\"Net_Salary -  Basic - HRA - Travel_Allowance\",\"amount\":0,\"nameReadonly\":true}]"
-// earning_amount
-// : 
-// "11861.00"
-// emp_id
-// : 
-// 38
-// employeer_ctc
-// : 
-// "{\"totalEarning\":11861,\"employeerPfAmount\":693,\"employeerEsiAmount\":0,\"totalctc\":12554}"
-// net_pay
-// : 
-// 11168
-// paid_days
-// : 
-// 6
-// payslip_for_month
-// : 
-// "2025-01"
-// salary
-// : 
-// 9629
 submitForEmployee(employee: any) {
-  console.log("Submitting for Employee:", employee);
+  // console.log("Submitting for Employee:", employee);
 
   if (this.salaryInvoiceComponent) {
     // Ensure employee data exists before using it
@@ -1183,26 +1135,14 @@ submitForEmployee(employee: any) {
       console.warn("No salaryInvoiceData found for employee:", employee);
       return;
     }
-console.log(employee.salaryInvoiceData)
-console.log(employee.salaryInvoiceData.totalamount, employee.salaryInvoiceData.paidDays)
+// console.log(employee.salaryInvoiceData)
+// console.log(employee.salaryInvoiceData.totalamount, employee.salaryInvoiceData.paidDays)
     // Assign values
     this.salaryInvoiceComponent.urlId = employee.emp_id;
     this.salaryInvoiceComponent.presentDays = employee.salaryInvoiceData.paidDays || 0;
     this.salaryInvoiceComponent.totalAmount = employee.salaryInvoiceData.totalamount || 0;
     this.salaryInvoiceComponent.formattedDate = employee.salaryInvoiceData.invoiceOfMonth || new Date();
-console.log(JSON.stringify(employee.salaryInvoiceData.deductions.value))
-    // Ensure form fields are updated
-    // this.salaryInvoiceComponent.formGroup.patchValue({
-    //   // net_pay: employee.emp_salary || 0,
-    //   salary: employee.salaryInvoiceData.salary || "", // Fix missing salary
-    //   breakup:  JSON.stringify(employee.salaryInvoiceData.breakup.value) || [],
-    //   deductions: JSON.stringify(employee.salaryInvoiceData.deductions.value) || []
-    // });
-      // Ensure form fields are updated except FormArray
-      // this.salaryInvoiceComponent.formGroup.patchValue({
-      //   net_pay: employee.emp_salary || 0,
-      //   salary: employee.salaryInvoiceData.salary || "", // Fix missing salary
-      // });
+
 
       this.salaryInvoiceComponent.formGroup.patchValue({
         salary: employee.salaryInvoiceData.salary || "",
@@ -1244,7 +1184,7 @@ console.log(JSON.stringify(employee.salaryInvoiceData.deductions.value))
     this.salaryInvoiceComponent.calculateTotalAmount();
 
     // Log final data before submission
-    console.log("Final Form Data for Employee:", this.salaryInvoiceComponent.createFormData());
+    // console.log("Final Form Data for Employee:", this.salaryInvoiceComponent.createFormData());
 
     // Call child's submit method
     this.salaryInvoiceComponent.onSubmit();

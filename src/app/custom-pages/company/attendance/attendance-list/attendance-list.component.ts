@@ -673,26 +673,132 @@ export class AttendanceListComponent implements OnInit {
   //   XLSX.writeFile(workbook, filename);
   // }
 
-  exportTableToExcel(): void {
-    const workbook = new ExcelJS.Workbook(); // Create a new workbook
-    const worksheet = workbook.addWorksheet("Attendance Report"); // Add a worksheet
+  // exportTableToExcel(): void {
+  //   const workbook = new ExcelJS.Workbook(); // Create a new workbook
+  //   const worksheet = workbook.addWorksheet("Attendance Report"); // Add a worksheet
 
+  //   // Format the selected date
+  //   const date = new Date(this.selectedDate);
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   const month = date.toLocaleString("default", { month: "long" });
+  //   const year = date.getFullYear();
+  //   const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
+  //     2,
+  //     "0"
+  //   )}-${day}`;
+  //   const filename = `Attendance_${formattedDate}.xlsx`;
+
+  //   // Header row
+  //   const header = [
+  //     "Name",
+  //     "Mobile",
+  //     "Date",
+  //     "Check-In Address",
+  //     "Check-In Time",
+  //     "Check-Out Time",
+  //     "Arrival Status",
+  //     "Time Difference",
+  //     "Attendance Status",
+  //   ];
+  //   const headerRow = worksheet.addRow(header);
+
+  //   // Make the header row bold
+  //   headerRow.eachCell((cell) => {
+  //     cell.font = { bold: true };
+  //   });
+
+  //   // Add employee data rows
+  //   this.filteredAttendanceData.forEach((employee: any) => {
+  //     const row = worksheet.addRow([
+  //       employee.name,
+  //       employee.mobile,
+  //       employee.date,
+  //       employee.latestCheckInTime || "",
+  //       employee.latestCheckOutTime || "",
+  //       employee.checkin_status,
+  //       employee.timeDifference,
+  //       employee.attendance_status,
+  //     ]);
+
+  //     // Make the "Name" column (first column) bold
+  //     row.getCell(1).font = { bold: true };
+
+  //     // Apply background color and white font for "Absent" and "Present"
+  //     const statusCell = row.getCell(8); // Attendance Status column
+  //     if (statusCell.value === "Absent") {
+  //       statusCell.fill = {
+  //         type: "pattern",
+  //         pattern: "solid",
+  //         fgColor: { argb: "FFFF0000" }, // Red background
+  //       };
+  //       statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
+  //     } else if (statusCell.value === "Present") {
+  //       statusCell.fill = {
+  //         type: "pattern",
+  //         pattern: "solid",
+  //         fgColor: { argb: "FF38b738" }, // Green background
+  //       };
+  //       statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
+  //     }
+  //   });
+
+  //   // Set column widths
+  //   worksheet.columns = [
+  //     { width: 20 }, // Name
+  //     { width: 15 }, // Mobile
+  //     { width: 15 }, // Date
+  //     { width: 20 }, // Check-In Time
+  //     { width: 20 }, // Check-Out Time
+  //     { width: 20 }, // Arrival Status
+  //     { width: 20 }, // Time Difference
+  //     { width: 20 }, // Attendance Status
+  //   ];
+
+  //   // Add borders to all cells
+  //   worksheet.eachRow((row) => {
+  //     row.eachCell((cell) => {
+  //       cell.border = {
+  //         top: { style: "thin" },
+  //         left: { style: "thin" },
+  //         bottom: { style: "thin" },
+  //         right: { style: "thin" },
+  //       };
+  //     });
+  //   });
+
+  //   // Export the workbook to an Excel file
+  //   workbook.xlsx.writeBuffer().then((data) => {
+  //     const blob = new Blob([data], {
+  //       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //     });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const anchor = document.createElement("a");
+  //     anchor.href = url;
+  //     anchor.download = filename;
+  //     anchor.click();
+  //     window.URL.revokeObjectURL(url);
+  //   });
+  // }
+
+
+  async exportTableToExcel(): Promise<void> {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Attendance Report");
+  
     // Format the selected date
     const date = new Date(this.selectedDate);
     const day = String(date.getDate()).padStart(2, "0");
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
-    const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-${day}`;
+    const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(2, "0")}-${day}`;
     const filename = `Attendance_${formattedDate}.xlsx`;
-
+  
     // Header row
     const header = [
       "Name",
       "Mobile",
       "Date",
+      "Check-In Address",
       "Check-In Time",
       "Check-Out Time",
       "Arrival Status",
@@ -700,60 +806,70 @@ export class AttendanceListComponent implements OnInit {
       "Attendance Status",
     ];
     const headerRow = worksheet.addRow(header);
-
-    // Make the header row bold
-    headerRow.eachCell((cell) => {
-      cell.font = { bold: true };
+    headerRow.eachCell((cell) => (cell.font = { bold: true }));
+  
+    // Fetch check-in addresses for all employees in parallel
+    const attendancePromises = this.filteredAttendanceData.map(async (employee: any) => {
+      let checkInAddress = "N/A"; // Default value
+  
+      if (employee.checkInlogitude && employee.checkInlatitude) {
+        checkInAddress = await this.geocodeCoordinates(
+          employee.checkInlatitude,
+          employee.checkInlogitude
+         
+        );
+        console.log(checkInAddress)
+      }
+  
+      return {
+        ...employee,
+        checkInAddress, // Add resolved check-in address
+      };
     });
-
-    // Add employee data rows
-    this.filteredAttendanceData.forEach((employee: any) => {
+  
+    // Wait for all addresses to be fetched
+    const attendanceDataWithAddresses = await Promise.all(attendancePromises);
+  
+    // Add employee data rows with resolved check-in addresses
+    attendanceDataWithAddresses.forEach((employee) => {
       const row = worksheet.addRow([
         employee.name,
         employee.mobile,
         employee.date,
+        employee.checkInAddress, // Insert resolved address here
         employee.latestCheckInTime || "",
         employee.latestCheckOutTime || "",
         employee.checkin_status,
         employee.timeDifference,
         employee.attendance_status,
       ]);
-
-      // Make the "Name" column (first column) bold
+  
+      // Apply formatting
       row.getCell(1).font = { bold: true };
-
-      // Apply background color and white font for "Absent" and "Present"
-      const statusCell = row.getCell(8); // Attendance Status column
+      const statusCell = row.getCell(9);
       if (statusCell.value === "Absent") {
-        statusCell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FFFF0000" }, // Red background
-        };
-        statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
+        statusCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFF0000" } };
+        statusCell.font = { color: { argb: "FFFFFFFF" } };
       } else if (statusCell.value === "Present") {
-        statusCell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FF38b738" }, // Green background
-        };
-        statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
+        statusCell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF38b738" } };
+        statusCell.font = { color: { argb: "FFFFFFFF" } };
       }
     });
-
+  
     // Set column widths
     worksheet.columns = [
       { width: 20 }, // Name
       { width: 15 }, // Mobile
       { width: 15 }, // Date
+      { width: 30 }, // Check-In Address
       { width: 20 }, // Check-In Time
       { width: 20 }, // Check-Out Time
       { width: 20 }, // Arrival Status
       { width: 20 }, // Time Difference
       { width: 20 }, // Attendance Status
     ];
-
-    // Add borders to all cells
+  
+    // Apply borders
     worksheet.eachRow((row) => {
       row.eachCell((cell) => {
         cell.border = {
@@ -764,18 +880,45 @@ export class AttendanceListComponent implements OnInit {
         };
       });
     });
-
-    // Export the workbook to an Excel file
-    workbook.xlsx.writeBuffer().then((data) => {
-      const blob = new Blob([data], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const url = window.URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = filename;
-      anchor.click();
-      window.URL.revokeObjectURL(url);
+  
+    // Export the workbook
+    const data = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+  }
+  
+
+
+  geocodeCoordinates(lng: number, lat: number): Promise<string> {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www`;
+
+    return fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Error fetching geocode data: ${response.statusText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.features && data.features.length > 0) {
+          return data.features[0].place_name;
+        } else {
+          console.warn("No valid address found for coordinates:", lng , lat);
+          return "";
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching address:", error);
+        return "";
+      });
   }
 }
