@@ -73,6 +73,9 @@ import { NgStepperModule } from "angular-ng-stepper";
 import lottie from "lottie-web";
 import { defineElement } from "@lordicon/element";
 
+// Emoji Picker
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
 import { CompanyListComponent } from "./administrator/company/company-list/company-list.component";
 import { AddCompanyComponent } from "./administrator/company/add-company/add-company.component";
 import { EmployeeListComponent } from "./company/employee/employee-list/employee-list.component";
@@ -107,6 +110,12 @@ import { SalaryDetailComponent } from "./company/employee/salary/salary-detail/s
 import { AllowanceComponent } from "./company/employee/salary/allowance/allowance.component";
 import { PayrollListComponent } from './company/payroll/payroll-list/payroll-list.component';
 
+const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
+  // Change this to your upload POST address:
+  url: 'https://httpbin.org/post',
+  maxFilesize: 50,
+  acceptedFiles: 'image/*'
+};
 
 @NgModule({
   declarations: [
@@ -185,7 +194,17 @@ import { PayrollListComponent } from './company/payroll/payroll-list/payroll-lis
     UiSwitchModule,
     PopoverModule,
     TabsModule.forRoot(),
+    PickerModule,
   ],
+
+    providers: [
+    DatePipe,
+    {
+      provide: DROPZONE_CONFIG,
+      useValue: DEFAULT_DROPZONE_CONFIG
+    }
+  ],
+
 })
 export class CustomPagesModule {
   constructor() {
