@@ -1,220 +1,614 @@
-<div class="card m-2">
-    <div class="row g-0 justify-content-center">
-       
-        <div class="col-xl-3 col-lg-4">
-            <div class="card-header" style="background-color: rgba(13, 36, 86, 1);">
-                <div class="d-flex gap-2 align-items-center pb-3">
-                    <div class="flex-shrink-0">
-                        <img  [src]="
-                        employeeDetail?.image
-                          ? employeeDetail?.image
+<div class="chat-wrapper p-2">
+  <div
+    class="card mt-2"
+    style="
+      max-width: 420px;
+      margin: 0 auto;
+      overflow-x: hidden;
+      background-color: #fff;
+      min-height: 100vh;
+    "
+  >
+   <div class="card-header" style="background-color: rgba(13, 36, 86, 1)">
+  <div class="d-flex gap-2 align-items-center pb-3">
+    <!-- Back Button -->
+    <div class="flex-shrink-0">
+      <button
+        class="btn btn-sm btn-light d-flex align-items-center"
+        (click)="goBack()"
+        style="padding:  0.5rem"
+      >
+        <i class="ri-arrow-left-line"></i> 
+      </button>
+    </div>
+
+    <!-- Employee Image -->
+    <div class="flex-shrink-0">
+      <img
+        [src]="
+          employeeDetail?.image
+            ? employeeDetail?.image
+            : 'assets/images/users/avatar-1.jpg'
+        "
+        alt=""
+        class="avatar-sm rounded"
+      />
+    </div>
+
+    <!-- Employee Info -->
+    <div class="flex-grow-1">
+      <h6 class="fs-md text-white">{{ employeeDetail?.name }}</h6>
+      <p class="text-white mb-0">{{ employeeDetail?.designation_name }}</p>
+    </div>
+  </div>
+</div>
+
+    <div class="card-body mt-1">
+      <h6 class="card-title mb-4">Task Details</h6>
+      <div class="table-responsive table-card">
+        <!-- Danger Alert -->
+        @if(taskData?.isOverdue){
+        <alert type="danger alert-label-icon rounded-label">
+          <i class="ri-alert-line label-icon"></i><strong>Warning</strong> -
+          Task is overdue!
+        </alert>
+        } @if(taskData?.status === 'Pending-Review'){
+        <!-- Secondary Alert -->
+        <alert type="warning alert-label-icon rounded-label">
+          <i class="ri-information-fill label-icon"></i
+          ><strong>Pending-Review</strong>
+        </alert>
+        }
+
+        <!-- Success Alert -->
+        @if(taskData?.status === 'Completed'){
+        <alert type="success alert-label-icon rounded-label" class="">
+          <i class="ri-user-smile-line label-icon"></i><strong>Success</strong>
+          - Task is Completed
+        </alert>
+        } @if(taskData?.status === 'On-Hold'){
+        <!-- Secondary Alert -->
+        <alert type="secondary alert-label-icon rounded-label">
+          <i class="bx bx-stop-circle label-icon"></i><strong>Hold</strong>
+          - Task is On-Hold
+        </alert>
+
+        } @if(taskData?.status === 'Cancelled'){
+        <alert type="danger alert-label-icon rounded-label">
+          <i class="ri-alert-line label-icon"></i><strong>Cancelled</strong> -
+          Task is Cancelled!
+        </alert>
+        }
+
+        <table class="table table-borderless align-middle mb-0">
+          <tbody>
+            <tr>
+              <th>Assigned To:</th>
+              <td>
+                <div class="avatar-group">
+                  @for (profile of taskData?.employeeDetails; track $index) {
+                  <a class="avatar-group-item" tooltip="{{ profile.name }}">
+                    <img
+                      [src]="
+                        profile.image
+                          ? profile.image
                           : 'assets/images/users/avatar-1.jpg'
-                      "  alt="" class="avatar-sm rounded">
-                    </div>
-                    <div class="flex-grow-1">
-                        <h6 class="fs-md text-white">{{employeeDetail?.name}}</h6>
-                        <p class="text-white mb-0">{{employeeDetail?.designation_name}}</p>
-                    </div>
+                      "
+                      alt=""
+                      class="avatar-xxs rounded-circle"
+                    />
+                  </a>
+                  }
                 </div>
-                <!-- <h6 class="card-title mb-0 mt-3 text-white">Task Details</h6> -->
-            </div>
-            <div class="card-body mt-1">
-                <h6 class="card-title mb-4">Task Details</h6>
-                <div class="table-responsive table-card ">
-                    <!-- Danger Alert -->
-                     @if(taskData?.isOverdue){
-                        <alert type="danger alert-label-icon rounded-label" >
-                            <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - Task is overdue!
-                            </alert>
-                     }
-                     @if(taskData?.status === 'Pending-Review'){
-                        <!-- Secondary Alert -->
-              <alert type="warning alert-label-icon rounded-label" >
-              <i class="ri-information-fill label-icon"></i><strong>Pending-Review</strong>
-              </alert>
-                        }
+              </td>
+            </tr>
+            <tr>
+              <th>Task Status</th>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-primary-subtle text-primary':
+                      taskData?.status === 'To-Do',
+                    'bg-info-subtle text-info':
+                      taskData?.status === 'In-Progress',
+                    'bg-warning-subtle text-warning':
+                      taskData?.status === 'Pending-Review',
+                    'bg-success-subtle text-success':
+                      taskData?.status === 'Completed',
+                    'bg-secondary-subtle text-dark':
+                      taskData?.status === 'On-Hold',
+                    'bg-danger-subtle text-danger':
+                      taskData?.status === 'Cancelled'
+                  }"
+                  >{{ taskData?.status }}</span
+                >
+              </td>
+            </tr>
 
-                     <!-- Success Alert -->
-                      @if(taskData?.status === 'Completed'){
-                        <alert type="success alert-label-icon rounded-label" class="">
-                            <i class="ri-user-smile-line label-icon "></i><strong>Success</strong>
-                            - Task is Completed
-                            </alert>
-                      }
-
-                      @if(taskData?.status === 'On-Hold'){
-                      <!-- Secondary Alert -->
-<alert type="secondary alert-label-icon rounded-label" >
-    <i class="bx bx-stop-circle label-icon"></i><strong>Hold</strong>
-    - Task is On-Hold
-    </alert>
-    
-                      }
-
-                      @if(taskData?.status === 'Cancelled'){
-                        <alert type="danger alert-label-icon rounded-label" >
-                            <i class="ri-alert-line label-icon"></i><strong>Cancelled</strong> - Task is Cancelled!
-                            </alert>
-                     }
-
-                    <table class="table table-borderless align-middle mb-0">
-                        <tbody>
-                            <!-- <tr>
-                                <th>Task ID</th>
-                                <td>#{{taskData?.task_id}}</td>
-                            </tr> -->
-                            <!-- <tr>
-                                <th>Title</th>
-                                <td id="t-client">{{taskData?.task_title}}</td>
-                            </tr>
-                            <tr>
-                                <th>Description</th>
-                                <td>{{taskData?.task_description}}</td>
-                            </tr> -->
-                            <tr>
-                                <th>Assigned To:</th>
-                                <td>
-                                    <div class="avatar-group">
-                                        @for (profile of taskData?.employeeDetails; track $index) {
-                                            <a class="avatar-group-item" tooltip="{{ profile.name }}">
-                                              <img
-                                                [src]="
-                                                  profile.image
-                                                    ? profile.image
-                                                    : 'assets/images/users/avatar-1.jpg'
-                                                "
-                                                alt=""
-                                                class="avatar-xxs rounded-circle"
-                                              />
-                                            </a>
-                                            }
-
-                                      
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Task Status</th>
-                                <td>
-                                    <span
-                    class="badge"
-                    [ngClass]="{
-                      'bg-primary-subtle text-primary': taskData?.status === 'To-Do',
-                      'bg-info-subtle text-info': taskData?.status === 'In-Progress',
-                      'bg-warning-subtle text-warning':taskData?.status === 'Pending-Review',
-                      'bg-success-subtle text-success':taskData?.status === 'Completed',
-                      'bg-secondary-subtle text-dark':taskData?.status === 'On-Hold',
-                      'bg-danger-subtle text-danger': taskData?.status === 'Cancelled'
-                    }"
-                    >{{ taskData?.status }}</span
-                  >
-                                </td>
-                            </tr>
-                           
-                            <tr>
-                                <th>Priority</th>
-                                <td>
-                                    <span
-                                    class="badge"
-                                    [ngClass]="{
-                                      'bg-danger': taskData?.priority === 'High',
-                                      'bg-info': taskData?.priority === 'Medium',
-                                      'bg-success': taskData?.priority === 'Low'
-                                    }"
-                                    >{{ taskData?.priority }}</span
-                                  >
-                                  
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Start Date</th>
-                                <td id="c-date"> {{ taskData?.start_date | date : "dd MMM, YYYY" }}</td>
-                            </tr>
-                            <tr>
-                                <th>Due Date</th>
-                                <td id="d-date"> {{ taskData?.end_date | date : "dd MMM, YYYY" }}</td>
-                            </tr>
-                            <tr>
-                                <th>Assigned On</th>
-                                <td>{{ taskData?.created_at | date : "dd MMM, YYYY" }}</td>
-                            </tr>
-                            <!-- <tr>
-                                <th>Status:</th>
-                                <td>
-                                    <form [formGroup]="formGroup">
-                                        <select class="form-select" formControlName="status"  id="t-status" data-choices data-choices-search-false aria-label="Default select example">
-                                      
-                                            <option value="" selected>Not Started</option>
-                                            <option value="In-Progress">Started</option>
-                                            <option value="Completed">Completed</option>
-                                        </select>
-                                        @if (f['status'] && f['status'].hasError('required') &&
-                                        f['status'].touched) {
-                                        <div class="invalid-text">Status is required.</div>
-                                        }
-
-                                    </form>
-                                   
-                                </td>
-                            </tr> -->
-                           
-                        </tbody>
-                    </table>
-                    <div class="card-body">
-                        <div class=" gap-2 align-items-center">
-                            
-                                <h6 class="fs-md">{{taskData?.task_title}}</h6>
-                                <p class="text-muted mb-0">{{taskData?.task_description}}</p>
-                       
-                        </div>
-                       
-                    </div>
-                </div>
-            </div>
-            
-            <!--end card-body-->
-            <!-- <div class="card-body  mt-2">
-                <a href="javascript:void(0);" class="float-end link-effect">View More <i class="bi bi-arrow-right align-baseline ms-1"></i></a>
-                <h6 class="card-title mb-0">Support Team</h6>
-            </div> -->
-          
-                <!-- <div class="d-flex gap-2 align-items-center mb-3">
-                    <div class="flex-shrink-0">
-                        <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-sm rounded">
-                    </div>
-                    <div class="flex-grow-1">
-                        <h6 class="fs-md">Morton Satterfield</h6>
-                        <p class="text-muted mb-0">Admin & Founder</p>
-                    </div>
-                </div> -->
-               
-                @if(this.empTask?.status !== 'In-Progress' && this.empTask?.status !== 'Completed' && this.empTask?.status !== 'On-Hold' && this.empTask?.status !== 'Cancelled'){
-                    <div class="card-body border-top">
-                   <button (click)="onSubmit()" class="btn btn-primary w-100" id="agent-chat"><i class="bi bi-flag-fill
-                    align-baseline me-1"></i> Start Task</button>
-                </div>
-                }@else if (this.empTask?.status == 'In-Progress') {
-                    <div class="card-body border-top">
-                    <div  class="row g-0 align-items-center">
-                    
-                        <div  class="col">
-                            <textarea [(ngModel)]="commentText" placeholder="Type your message..." class="form-control chat-input bg-light border-light"></textarea>
-                        </div>
-                        <div  class="col-auto">
-                            <div  class="chat-input-links ms-2">
-                                <div  class="links-list-item">
-                                    <button (click)="submitComment()" class="btn btn-dark chat-send waves-effect waves-light">
-                                        <i class="ph-paper-plane-right align-middle"></i>
-                                      </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                   <button (click)="confirm()" class="btn btn-success w-100 mt-5" id="agent-chat"><i class="bi bi-check-square-fill align-baseline me-1"></i>Mark As Completed</button>
-                </div>
-                }
-            
+            <tr>
+              <th>Priority</th>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-danger': taskData?.priority === 'High',
+                    'bg-info': taskData?.priority === 'Medium',
+                    'bg-success': taskData?.priority === 'Low'
+                  }"
+                  >{{ taskData?.priority }}</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <th>Start Date</th>
+              <td id="c-date">
+                {{ taskData?.start_date | date : "dd MMM, YYYY" }}
+              </td>
+            </tr>
+            <tr>
+              <th>Due Date</th>
+              <td id="d-date">
+                {{ taskData?.end_date | date : "dd MMM, YYYY" }}
+              </td>
+            </tr>
+            <tr>
+              <th>Assigned On</th>
+              <td>{{ taskData?.created_at | date : "dd MMM, YYYY" }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="card-body">
+          <div class="gap-2 align-items-center">
+            <h6 class="fs-md">{{ taskData?.task_title }}</h6>
+            <p class="text-muted mb-0">{{ taskData?.task_description }}</p>
+          </div>
         </div>
-    </div><!--end row-->
+      </div>
+    </div>
+
+    @if(this.empTask?.status !== 'In-Progress' && this.empTask?.status !==
+    'Completed' && this.empTask?.status !== 'On-Hold' && this.empTask?.status
+    !== 'Cancelled'){
+    <div class="card-body border-top">
+      <button
+        (click)="onSubmit()"
+        class="btn btn-primary w-100"
+        id="agent-chat"
+      >
+        <i class="bi bi-flag-fill align-baseline me-1"></i> Start Task
+      </button>
+    </div>
+    }@else if (this.empTask?.status == 'In-Progress') {
+    <div class="card-body border-top">
+      <button
+        (click)="confirm()"
+        class="btn btn-success w-100 mt-5"
+        id="agent-chat"
+      >
+        <i class="bi bi-check-square-fill align-baseline me-1"></i>Mark As
+        Completed
+      </button>
+    </div>
+    }
+    <ngx-simplebar class="chat-room-list">
+      <div class="chat-message-list">
+        <ul class="list-unstyled chat-list chat-user-list" id="userList">
+          <li
+            (click)="selectEmployee(taskData?.employeeDetails)"
+            class="chat-list-item"
+          >
+            <a href="javascript:void(0);" class="text-decoration-none">
+              <div class="d-flex align-items-center">
+             
+                <div
+                  class="flex-shrink-0 chat-user-img align-self-center me-2 ms-0"
+                >
+                  <div
+                    class="avatar-xxs rounded-circle overflow-hidden bg-primary text-white d-flex justify-content-center align-items-center"
+                    style="width: 40px; height: 40px; font-size: 14px"
+                  >
+                  
+                    <ng-container
+                      *ngIf="taskData?.group?.lastMessage; else defaultAvatar"
+                    >
+                      {{ getInitials(taskData.group.lastMessage.sender.name) }}
+                    </ng-container>
+                    <ng-template #defaultAvatar>
+                      <img
+                        src="assets/images/users/avatar-1.jpg"
+                        alt="User Avatar"
+                        class="img-fluid userprofile"
+                        style="width: 40px; height: 40px; object-fit: cover"
+                      />
+                    </ng-template>
+                  </div>
+                </div>
+
+             
+                <div class="flex-grow-1 overflow-hidden">
+                  <p class="text-truncate mb-0 fw-semibold">
+                   
+                    {{
+                      taskData?.group?.lastMessage?.sender?.name ||
+                        taskData?.employeeDetails?.name ||
+                        "Unknown User"
+                    }}
+                  </p>
+                  <p
+                    *ngIf="
+                      taskData?.group?.lastMessage?.message;
+                      else noLastMessage
+                    "
+                    class="text-truncate mb-0 text-muted small"
+                  >
+                    {{ taskData.group.lastMessage.message }}
+                  </p>
+
+                  <div class="conversation-name" >
+                    <small class="text-muted time" *ngIf="taskData?.group?.lastMessage">
+                      {{
+                        taskData?.group?.lastMessage.sent_at
+                          | date : "dd MMM, yyyy - hh:mm a"
+                      }}
+                    </small>
+                    <span class="text-success check-message-icon">
+                      <i class="ri-check-double-line align-bottom"></i>
+                    </span>
+                  </div>
+                  <ng-template #noLastMessage>
+                    <p class="text-truncate mb-0 text-muted small fst-italic">
+                      No messages yet
+                    </p>
+                  </ng-template>
+                </div>
+
+                <!-- Message Count -->
+                <div
+                  class="ms-auto"
+                  *ngIf="
+                    taskData?.employeeDetails?.messagecount &&
+                    taskData.employeeDetails.messagecount > 0
+                  "
+                >
+                  <span class="badge bg-dark-subtle text-dark rounded p-1">
+                    {{ taskData.employeeDetails.messagecount }}
+                  </span>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </ngx-simplebar>
+
+    <div class="user-chat w-100 overflow-hidden">
+      <div class="chat-content d-lg-flex">
+        <div class="w-100 overflow-hidden position-relative">
+          <div class="position-relative">
+            <div class="position-relative" id="users-chat">
+              <div class="p-3 user-chat-topbar border-bottom border-2">
+                <div class="row align-items-center flex-nowrap">
+                  <div class="col-sm-4 col">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-shrink-0 me-2">
+                        <a
+                          href="javascript: void(0);"
+                          (click)="hideChat()"
+                          class="user-chat-remove fs-lg p-1"
+                          ><i class="ri-arrow-left-s-line align-bottom"></i
+                        ></a>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <div
+                          class="d-flex align-items-center"
+                          (click)="openEnd()"
+                        >
+                          <div
+                            class="flex-shrink-0 chat-user-img user-own-img align-self-center  ms-0"
+                            [ngClass]="{
+                              away: isStatus == 'away',
+                              online: isStatus == 'online'
+                            }"
+                          >
+                            <!-- <img src="{{isProfile}}" class="rounded-circle avatar-xs" alt=""> -->
+                            <span class="user-status"></span>
+                          </div>
+                          <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="text-truncate mb-1 fs-md">
+                              <a
+                                class="text-reset username text-capitalize"
+                                data-bs-toggle="offcanvas"
+                                href="javascript:void(0);"
+                                aria-controls="userProfileCanvasExample"
+                              >
+                                {{ taskData?.task_title }}</a
+                              >
+                            </h5>
+                            <!-- <p
+                                    class="text-truncate text-muted fs-md mb-0 userStatus"
+                                  >
+                                    <small>{{ isStatus | titlecase }}</small>
+                                    <small>{{
+                                      selectedEmployee?.status || ""
+                                    }}</small>
+                                  </p> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-8 col-auto">
+                    <ul class="list-inline user-chat-nav text-end mb-0">
+                      <li class="list-inline-item d-none d-lg-inline-block m-0">
+                        <button
+                          type="button"
+                          class="btn btn-ghost-secondary fs-lg btn-icon"
+                          data-bs-toggle="offcanvas"
+                          data-bs-target="#userProfileCanvasExample"
+                          aria-controls="userProfileCanvasExample"
+                          (click)="openEnd()"
+                        >
+                          <i class="bi bi-telephone"></i>
+                        </button>
+                      </li>
+
+                      <!-- <li class="list-inline-item m-0">
+                        <div dropdown class="dropdown">
+                          <button
+                            dropdownToggle
+                            class="btn btn-ghost-secondary fs-lg btn-icon"
+                            type="button"
+                          >
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          <div
+                            *bsDropdownMenu
+                            class="dropdown-menu dropdown-menu-end"
+                          >
+                            <a
+                              class="dropdown-item d-block d-lg-none user-profile-show"
+                              href="javascript:void(0);"
+                              ><i
+                                class="ri-user-2-fill align-bottom text-muted me-2"
+                              ></i>
+                              View Profile</a
+                            >
+                            <a class="dropdown-item" href="javascript:void(0);"
+                              ><i
+                                class="ri-inbox-archive-line align-bottom text-muted me-2"
+                              ></i>
+                              Archive</a
+                            >
+                            <a class="dropdown-item" href="javascript:void(0);"
+                              ><i
+                                class="ri-mic-off-line align-bottom text-muted me-2"
+                              ></i>
+                              Muted</a
+                            >
+                            <a
+                              class="dropdown-item"
+                              href="javascript:void(0);"
+                              (click)="deleteAllMessage($event)"
+                              ><i
+                                class="ri-delete-bin-5-line align-bottom text-muted me-2"
+                              ></i>
+                              Delete</a
+                            >
+                          </div>
+                        </div>
+                      </li> -->
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <ngx-simplebar class="chat-conversation p-3 p-lg-4"  data-simplebar="init"
+      
+        style="max-height: calc(100vh)" #scrollRef>
+                <ul
+                  class="list-unstyled chat-conversation-list"
+                  id="users-conversation"
+                >
+                  @for (msg of taskData?.group?.messages || []; track $index) {
+                  <li
+                    class="chat-list"
+                    [ngClass]="msg.sender.id === this.emp_id ? 'right' : 'left'"
+                  >
+                    <div class="conversation-list">
+                      <div
+                        class="chat-avatar"
+                        *ngIf="msg.sender.id !== company_id"
+                      >
+                        <img
+                          [src]="
+                            msg.sender.image ||
+                            'assets/images/users/avatar-1.jpg'
+                          "
+                          alt="user"
+                        />
+                      </div>
+
+                      <div class="user-chat-content">
+                        <div class="ctext-wrap">
+                          <div class="ctext-wrap-content">
+                            @if (msg.repmessage) {
+                            <div
+                              class="replymessage-block mb-2 d-flex align-items-start"
+                            >
+                              <div class="flex-grow-1">
+                                <h5 class="conversation-name">
+                                  {{ msg.receiver.name }}
+                                </h5>
+                                <p class="mb-0">{{ msg.repmessage }}</p>
+                              </div>
+                            </div>
+                            }
+
+                            <p class="mb-0 ctext-content">
+                              {{ msg.message }}
+                            </p>
+                          </div>
+                          <div
+                            class="dropdown align-self-start message-box-drop"
+                            dropdown
+                          >
+                            <a
+                              class="dropdown-toggle"
+                              href="javascript:void(0);"
+                              role="button"
+                              data-bs-toggle="dropdown"
+                              aria-haspopup="true"
+                              aria-expanded="false"
+                              dropdownToggle
+                            >
+                              <i class="ri-more-2-fill"></i>
+                            </a>
+                            <div class="dropdown-menu" *bsDropdownMenu>
+                              <a
+                                class="dropdown-item reply-message"
+                                href="javascript:void(0);"
+                                (click)="
+                                  replyMessage($event, msg.id, msg.sender.id)
+                                "
+                                ><i
+                                  class="ri-reply-line me-2 text-muted align-bottom float-start"
+                                ></i
+                                >Reply</a
+                              >
+
+                              <a
+                                class="dropdown-item copy-message"
+                                href="javascript:void(0);"
+                                (click)="copyMessage($event)"
+                                ><i
+                                  class="ri-file-copy-line me-2 text-muted align-bottom float-start"
+                                ></i
+                                >Copy</a
+                              >
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="conversation-name">
+                          <small class="text-muted time">
+                            {{ msg.sent_at | date : "dd MMM, yyyy - hh:mm a" }}
+                          </small>
+                          <span class="text-success check-message-icon">
+                            <i class="ri-check-double-line align-bottom"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  }
+                </ul>
+              </ngx-simplebar>
+
+              <div
+                class="alert alert-warning alert-dismissible copyclipboard-alert px-4 fade show"
+                id="copyClipBoard"
+                role="alert"
+              >
+                Message copied
+              </div>
+            </div>
+
+            <div class="chat-input-section p-3 p-lg-4 border-top border-2">
+              <form
+                (ngSubmit)="messageSave()"
+                [formGroup]="formData"
+                id="chatinput-form"
+                enctype="multipart/form-data"
+              >
+                <div class="row g-0 align-items-center">
+                  <div class="col-auto">
+                    <div class="chat-input-links me-2">
+                      <div class="links-list-item">
+                        <!--  -->
+                        <button
+                          type="button"
+                          class="btn btn-link text-decoration-none emoji-btn"
+                          (click)="toggleEmojiPicker()"
+                          id="emoji-btn"
+                        >
+                          <i class="bx bx-smile align-middle"></i>
+                        </button>
+                        @if (showEmojiPicker) {
+                        <emoji-mart
+                          class="emoji-mart"
+                          (emojiSelect)="addEmoji($event)"
+                          title="Pick your emoji…"
+                        ></emoji-mart>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col">
+                    @if (submitted && form['message'].errors) {
+                    <div class="chat-input-feedback">
+                      @if (form['message'].errors['required']) {
+                      <span>Please Enter a Message</span>
+                      }
+                    </div>
+                    }
+                    <input
+                      type="text"
+                      class="form-control chat-input bg-light border-light"
+                      formControlName="message"
+                      [ngClass]="{
+                        'is-invalid': submitted && form['message'].errors
+                      }"
+                      [(ngModel)]="emoji"
+                      (blur)="onBlur()"
+                      (focus)="onFocus()"
+                      id="chat-input"
+                      placeholder="Type your message..."
+                      autocomplete="off"
+                    />
+                  </div>
+                  <div class="col-auto">
+                    <div class="chat-input-links ms-2">
+                      <div class="links-list-item">
+                        <button
+                          type="submit"
+                          class="btn btn-dark chat-send waves-effect waves-light"
+                        >
+                          <i class="ph-paper-plane-right align-middle"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- <div class="replyCard">
+              <div class="card mb-0">
+                <div class="card-body">
+                  <div class="replymessage-block mb-0 d-flex align-items-start">
+                    <div class="flex-grow-1">
+                      <h5 class="conversation-name"></h5>
+                      <p class="mb-0"></p>
+                    </div>
+                    <div class="flex-shrink-0">
+                      <button
+                        type="button"
+                        id="close_toggle"
+                        (click)="closeReplay()"
+                        class="btn btn-sm btn-link mt-n2 me-n3 fs-lg"
+                      >
+                        <i class="bx bx-x align-middle"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

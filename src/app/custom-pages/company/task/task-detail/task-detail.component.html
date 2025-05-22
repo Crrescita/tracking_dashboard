@@ -256,7 +256,7 @@
                     <li><i class="bi bi-check-lg text-success"></i> Not following the ReactJS folder structure</li>
                     <li><i class="bi bi-check-lg text-success"></i> Webstorm does not recognize tags</li>
                 </ul> -->
-        <h6 class="fw-semibold text-uppercase mb-4">
+        <!-- <h6 class="fw-semibold text-uppercase mb-4">
           Team Status and Comments
         </h6>
         @for (employee of taskDetail?.employeeDetails; track $index) {
@@ -276,7 +276,7 @@
             <h6>
               {{ employee.name }}
 
-              <!-- <small class="text-muted">({{ employee.status }})</small> -->
+            
             </h6>
             <p class="text-truncate text-muted fs-md mb-0 userStatus">
               <span
@@ -304,13 +304,10 @@
             item.timestamp | date : "dd MMM, YYYY - HH:mm a"
           }}</small>
           <p class="text-muted">{{ item.text }}</p>
-          <!-- <p class="text-muted">{{ employee.comment || 'No comment available' }}</p>
-                                <a href="javascript:void(0);" class="badge text-muted bg-light">
-                                  <i class="mdi mdi-reply"></i> Reply
-                                </a> -->
+     
           }
         </ngx-simplebar>
-        }
+        } -->
         <div class="chat-wrapper d-lg-flex gap-1 p-1 mb-3">
           <div class="chat-leftsidebar">
             <div class="tab-content">
@@ -400,54 +397,13 @@
                     </ul>
                   </div>
 
-                  <!-- 
-                  <div class="d-flex align-items-center px-4 mt-4 pt-4 mb-2">
-                        <div class="flex-grow-1">
-                            <h4 class="mb-0 fs-xs text-muted text-uppercase">Channels</h4>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div placement="bottom" tooltip="Create group" container="body">
-                              
-                                <button type="button" class="btn btn-subtle-success btn-sm">
-                                    <i class="ri-add-line align-bottom"></i>
-                                </button>
-                            </div>
-                        </div>
-                  </div> 
-                  -->
-
-                  <!-- <div class="chat-message-list">
-                        <ul class="list-unstyled chat-list chat-user-list mb-0" id="channelList">
-                            @for (data of channeldata; track $index) {
-                            <li id="contact-id-10" data-name="channel">
-                                <a href="javascript: void(0);" class="unread-msg-user">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0 chat-user-img align-self-center me-2 ms-0">
-                                            <div class="avatar-xxs">
-                                                <div class="avatar-title bg-light rounded-circle text-body">#</div>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 overflow-hidden">
-                                            <p class="text-truncate mb-0">{{data.name}}</p>
-                                        </div>
-                                        @if (data.messageCount) {
-                                        <div>
-                                            <div class="flex-shrink-0 ms-2"><span class="badge bg-dark-subtle text-dark rounded p-1">{{data.messageCount}}</span>
-                                            </div>
-                                        </div>
-                                        }
-                                    </div>
-                                </a>
-                            </li>
-                            }
-                        </ul>
-                    </div> -->
-                  <!-- End chat-message-list -->
+  
                 </ngx-simplebar>
               </div>
             </div>
           </div>
 
+          
           <div class="user-chat w-100 overflow-hidden">
             <div class="chat-content d-lg-flex">
             
@@ -492,20 +448,17 @@
                                       href="javascript:void(0);"
                                       aria-controls="userProfileCanvasExample"
                                     >
-                                      {{
-                                        selectedEmployee?.name ||
-                                          "Select a user"
-                                      }}</a
+                                    {{ taskDetail?.task_title }}</a
                                     >
                                   </h5>
-                                  <p
+                                  <!-- <p
                                     class="text-truncate text-muted fs-md mb-0 userStatus"
                                   >
                                     <small>{{ isStatus | titlecase }}</small>
                                     <small>{{
                                       selectedEmployee?.status || ""
                                     }}</small>
-                                  </p>
+                                  </p> -->
                                 </div>
                               </div>
                             </div>
@@ -548,13 +501,8 @@
                               </div>
                             </li>
 
-                            <!-- <li class="list-inline-item d-none d-lg-inline-block m-0">
-                                            <button type="button" class="btn btn-ghost-secondary fs-lg btn-icon video-icon" (click)="startVideocall()">
-                                                <i class="bi bi-camera-video"></i>
-                                            </button>
-                                        </li> -->
 
-                            <li
+                            <!-- <li
                               class="list-inline-item d-none d-lg-inline-block m-0"
                             >
                               <button
@@ -617,7 +565,7 @@
                                   >
                                 </div>
                               </div>
-                            </li>
+                            </li> -->
                           </ul>
                         </div>
                       </div>
@@ -631,49 +579,50 @@
                         class="list-unstyled chat-conversation-list"
                         id="users-conversation"
                       >
-                        @for (msg of selectedEmployee?.comment || []; track
+                        @for (msg of taskDetail?.group?.messages || []; track
                         $index) {
                         <li
                           class="chat-list"
-                          [ngClass]="msg.isSender ? 'right' : 'left'"
+                          [ngClass]="
+                            msg.sender.id === company_id ? 'right' : 'left'
+                          "
                         >
                           <div class="conversation-list">
-                            @if (!msg.isSender) {
-                            <div class="chat-avatar">
+                            <div
+                              class="chat-avatar"
+                              *ngIf="msg.sender.id !== company_id"
+                            >
                               <img
                                 [src]="
-                                  selectedEmployee?.image ||
+                                  msg.sender.image ||
                                   'assets/images/users/avatar-1.jpg'
                                 "
-                                alt=""
+                                alt="user"
                               />
                             </div>
-                            }
+
                             <div class="user-chat-content">
                               <div class="ctext-wrap">
                                 <div class="ctext-wrap-content">
-                                  @if (msg.replayName) {
-                                                    <div class="replymessage-block mb-0 d-flex align-items-start">
-                                                        <div class="flex-grow-1">
-                                                            <h5 class="conversation-name">{{msg.replayName}}</h5>
-                                                            <p class="mb-0">{{msg.replaymsg}}</p>
-                                                        </div>
-                                                        <div class="flex-shrink-0">
-                                                            <button type="button" class="btn btn-sm btn-link mt-n2 me-n3 font-size-18">
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    }
+                                  @if (msg.repmessage) {
+                                  <div
+                                    class="replymessage-block mb-2 d-flex align-items-start"
+                                  >
+                                    <div class="flex-grow-1">
+                                      <h5 class="conversation-name">
+                                        {{ msg.receiver.name }}
+                                      </h5>
+                                      <p class="mb-0">{{ msg.repmessage }}</p>
+                                    </div>
+                                  </div>
+                                  }
+
                                   <p class="mb-0 ctext-content">
-                                    {{ msg.text }}
+                                    {{ msg.message }}
                                   </p>
                                 </div>
                                 <div
-                                  [dropup]="
-                                    $index == messageData.length - 1
-                                      ? true
-                                      : false
-                                  "
+                                  
                                   class="dropdown align-self-start message-box-drop"
                                   dropdown
                                 >
@@ -693,21 +642,14 @@
                                       class="dropdown-item reply-message"
                                       href="javascript:void(0);"
                                       (click)="
-                                        replyMessage($event, msg.isSender)
+                                        replyMessage($event, msg.id , msg.sender.id)
                                       "
                                       ><i
                                         class="ri-reply-line me-2 text-muted align-bottom float-start"
                                       ></i
                                       >Reply</a
                                     >
-                                    <!-- <a
-                                      class="dropdown-item"
-                                      href="javascript:void(0);"
-                                      ><i
-                                        class="ri-share-line me-2 text-muted align-bottom float-start"
-                                      ></i
-                                      >Forward</a
-                                    > -->
+
                                     <a
                                       class="dropdown-item copy-message"
                                       href="javascript:void(0);"
@@ -717,108 +659,31 @@
                                       ></i
                                       >Copy</a
                                     >
-                                    <!-- <a class="dropdown-item" href="javascript:void(0);"><i class="ri-bookmark-line me-2 text-muted align-bottom float-start"></i>Bookmark</a> -->
-                                    <!-- <a class="dropdown-item delete-item" href="javascript:void(0);" (click)="deleteMessage($event)"><i class="ri-delete-bin-5-line me-2 text-muted align-bottom float-start"></i>Delete</a> -->
                                   </div>
                                 </div>
+
                               </div>
+
                               <div class="conversation-name">
-                                <small class="text-muted time">{{
-                                  msg.timestamp
-                                    | date : "dd MMM, YYYY - hh:mm a"
-                                }}</small>
-                                <span class="text-success check-message-icon"
-                                  ><i
+                                <small class="text-muted time">
+                                  {{
+                                    msg.sent_at
+                                      | date : "dd MMM, yyyy - hh:mm a"
+                                  }}
+                                </small>
+                                <span class="text-success check-message-icon">
+                                  <i
                                     class="ri-check-double-line align-bottom"
-                                  ></i
-                                ></span>
+                                  ></i>
+                                </span>
                               </div>
                             </div>
                           </div>
                         </li>
                         }
+
+                       
                       </ul>
-
-                      <!-- <ul class="list-unstyled chat-conversation-list" id="users-conversation">
-                                @for (data of messageData; track $index) {
-                                <li class="chat-list left" [ngClass]="data.isSender == true?'right':'left'">
-                                    <div class="conversation-list">
-                                        @if (data.isSender == false) {
-                                        <div class="chat-avatar">
-                                            <img src="{{isProfile}}" alt="">
-                                        </div>
-                                        }
-                                        <div class="user-chat-content">
-                                            <div class="ctext-wrap">
-                                                @if (data.image) {
-                                                <div class="message-img mb-0">
-                                                    @for(images of data.image;track $index){
-                                                        <div class="message-img-list">
-                                                            <div> <a class="popup-img d-inline-block" href="javascript:void(0);"> <img src="{{images}}" alt="" class="rounded border"> </a> </div>
-                                                            <div class="message-img-link">
-                                                                <ul class="list-inline mb-0">
-                                                                    <li dropdown [dropup]="true" class="list-inline-item dropdown">
-                                                                        <a dropdownToggle class="dropdown-toggle" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="bi bi-three-dots"></i> </a>
-                                                                        <div *bsDropdownMenu class="dropdown-menu">
-                                                                            <a class="dropdown-item" href="javascript:void(0);" download="">
-                                                                                <i class="ri-download-2-line me-2 text-muted align-bottom"></i>Download
-                                                                            </a>
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <i class="bi bi-reply me-2 text-muted align-bottom"></i>Reply
-                                                                            </a>
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <i class="bi bi-share me-2 text-muted align-bottom"></i>Forward
-                                                                            </a>
-                                                                            <a class="dropdown-item" href="javascript:void(0);">
-                                                                                <i class="bi bi-bookmarks me-2 text-muted align-bottom"></i>Bookmark
-                                                                            </a>
-                                                                            <a class="dropdown-item delete-image" href="javascript:void(0);">
-                                                                                <i class="bi bi-trash3 me-2 text-muted align-bottom"></i>Delete
-                                                                            </a>
-                                                                        </div>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                }@else{
-                                                <div class="ctext-wrap-content">
-                                                    @if (data.replayName) {
-                                                    <div class="replymessage-block mb-0 d-flex align-items-start">
-                                                        <div class="flex-grow-1">
-                                                            <h5 class="conversation-name">{{data.replayName}}</h5>
-                                                            <p class="mb-0">{{data.replaymsg}}</p>
-                                                        </div>
-                                                        <div class="flex-shrink-0">
-                                                            <button type="button" class="btn btn-sm btn-link mt-n2 me-n3 font-size-18">
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    }
-                                                    <p class="mb-0 ctext-content">{{data.message}}</p>
-
-                                                </div>
-                                                <div [dropup]="$index == messageData.length - 1?true:false" class="dropdown align-self-start message-box-drop" dropdown>
-                                                    <a class="dropdown-toggle" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dropdownToggle>
-                                                        <i class="ri-more-2-fill"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu" *bsDropdownMenu>
-                                                        <a class="dropdown-item reply-message" href="javascript:void(0);" (click)="replyMessage($event,data.isSender)"><i class="ri-reply-line me-2 text-muted align-bottom float-start"></i>Reply</a>
-                                                        <a class="dropdown-item" href="javascript:void(0);"><i class="ri-share-line me-2 text-muted align-bottom float-start"></i>Forward</a>
-                                                        <a class="dropdown-item copy-message" href="javascript:void(0);" (click)="copyMessage($event)"><i class="ri-file-copy-line me-2 text-muted align-bottom float-start"></i>Copy</a>
-                                                        <a class="dropdown-item" href="javascript:void(0);"><i class="ri-bookmark-line me-2 text-muted align-bottom float-start"></i>Bookmark</a>
-                                                        <a class="dropdown-item delete-item" href="javascript:void(0);" (click)="deleteMessage($event)"><i class="ri-delete-bin-5-line me-2 text-muted align-bottom float-start"></i>Delete</a>
-                                                    </div>
-                                                </div>
-                                                }
-                                            </div>
-                                            <div class="conversation-name"><small class="text-muted time">{{data.createdAt}}</small> <span class="text-success check-message-icon"><i class="ri-check-double-line align-bottom"></i></span></div>
-                                        </div>
-                                    </div>
-                                </li>
-                                }   
-                            </ul> -->
                     </ngx-simplebar>
 
                     <div
@@ -933,83 +798,10 @@
             </div>
           </div>
         </div>
-        <!-- <ngx-simplebar style="height: 300px;" class="px-3 mx-n3">
-                    <div class="d-flex mb-4">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/users/avatar-8.jpg" alt="" class="avatar-xs rounded-circle">
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6>Joseph Parker <small class="text-muted">20 Dec 2023 - 05:47AM</small></h6>
-                            <p class="text-muted">I am getting message from customers that when they place order always
-                                get error message .</p>
-                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
-                            <div class="d-flex mt-4">
-                                <div class="flex-shrink-0">
-                                    <img src="assets/images/users/avatar-10.jpg" alt="" class="avatar-xs rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Alexis Clarke <small class="text-muted">22 Dec 2023 - 02:32PM</small></h6>
-                                    <p class="text-muted">Please be sure to check your Spam mailbox to see if your email
-                                        filters have identified the email from Dell as spam.</p>
-                                    <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex mb-4">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/users/avatar-6.jpg" alt="" class="avatar-xs rounded-circle">
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6>Donald Palmer <small class="text-muted">24 Dec 2023 - 05:20PM</small></h6>
-                            <p class="text-muted">If you have further questions, please contact Customer Support from
-                                the “Action Menu” on your <a href="javascript:void(0);" class="text-decoration-underline">Online Order Support</a>.</p>
-                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div class="flex-shrink-0">
-                            <img src="assets/images/users/avatar-10.jpg" alt="" class="avatar-xs rounded-circle">
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6>Alexis Clarke <small class="text-muted">26 min ago</small></h6>
-                            <p class="text-muted">Your <a href="javascript:void(0)" class="text-decoration-underline">Online Order Support</a> provides you with the
-                                most current status of your order. To help manage your order refer to the “Action Menu”
-                                to initiate return, contact Customer Support and more.</p>
-                            <div class="row g-2 mb-3">
-                                <div class="col-lg-1 col-sm-2 col-6">
-                                    <img src="assets/images/small/img-4.jpg" alt="" class="img-fluid rounded">
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-6">
-                                    <img src="assets/images/small/img-5.jpg" alt="" class="img-fluid rounded">
-                                </div>
-                            </div>
-                            <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
-                            <div class="d-flex mt-4">
-                                <div class="flex-shrink-0">
-                                    <img src="assets/images/users/avatar-6.jpg" alt="" class="avatar-xs rounded-circle">
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6>Donald Palmer <small class="text-muted">8 sec ago</small></h6>
-                                    <p class="text-muted">Other shipping methods are available at checkout if you want
-                                        your purchase delivered faster.</p>
-                                    <a href="javascript: void(0);" class="badge text-muted bg-light"><i class="mdi mdi-reply"></i> Reply</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ngx-simplebar> -->
-        <!-- <form action="javascript:void(0);" class="mt-3">
-                    <div class="row g-3">
-                        <div class="col-lg-12">
-                            <label for="exampleFormControlTextarea1" class="form-label">Leave a Comments</label>
-                            <textarea class="form-control bg-light border-light" id="exampleFormControlTextarea1" rows="3" placeholder="Enter comments"></textarea>
-                        </div>
-                        <div class="col-lg-12 text-end">
-                            <a href="javascript:void(0);" class="btn btn-success">Post Comments</a>
-                        </div>
-                    </div>
-                </form> -->
+
+
+       
+     
       </div>
     </div>
     <!--end col-->

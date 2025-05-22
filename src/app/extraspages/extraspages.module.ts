@@ -13,14 +13,19 @@ import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.componen
 import { SupportComponent } from './support/support.component';
 import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 
+import { SimplebarAngularModule } from "simplebar-angular";
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { TaskListComponent } from './task-list/task-list.component';
+
 @NgModule({
   declarations: [
     MaintenanceComponent,
     ComingSoonComponent,
     PrivacyPolicyComponent,
     SupportComponent,
-    AssignedTaskComponent
+    AssignedTaskComponent,
+    TaskListComponent
   ],
-  imports: [CommonModule, AlertModule.forRoot(), TooltipModule.forRoot(), ExtrapagesRoutingModule, ModalModule.forRoot(),FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, AlertModule.forRoot(), TooltipModule.forRoot(), ExtrapagesRoutingModule, ModalModule.forRoot(),FormsModule, ReactiveFormsModule, SimplebarAngularModule, PickerModule],
 })
 export class ExtraspagesModule {}

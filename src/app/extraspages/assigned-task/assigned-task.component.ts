@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, UntypedFormGroup } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-assigned-task',
   templateUrl: './assigned-task.component.html',
@@ -20,7 +21,16 @@ export class AssignedTaskComponent {
   employeeDetail:any;
   empTask:any;
   commentText: string = ""; 
-  constructor(private formBuilder: FormBuilder, private api: ApiService, public toastService: ToastrService,    private route: ActivatedRoute){
+
+   isStatus = 'online';
+  selectedEmployee: any = null;
+
+  isreplyMessage = false;
+  formData!: UntypedFormGroup;
+  company_id: any;
+
+  currentTab = 'chats';
+  constructor(private formBuilder: FormBuilder, private api: ApiService, public toastService: ToastrService,    private route: ActivatedRoute , private location: Location , private router: Router){
 
   }
 
@@ -40,6 +50,10 @@ export class AssignedTaskComponent {
     if (this.emp_id) {
       this.getemployeeData();
     }
+
+      this.formData = this.formBuilder.group({
+            message: ['', [Validators.required]],
+        });
 
    
   }
@@ -218,4 +232,209 @@ this.commentText = ""
       }
     });
   }
+
+   changeTab(tab: string) {
+        this.currentTab = tab;
+          const userChatShow = document.querySelector('.user-chat');
+        if (userChatShow != null) {
+            userChatShow.classList.add('user-chat-show');
+        }
+
+    }
+
+
+
+    // chat
+
+     hideChat() {
+        const userChatShow = document.querySelector('.user-chat');
+        if (userChatShow != null) {
+            userChatShow.classList.remove('user-chat-show');
+        }
+    }
+
+       openEnd() {
+        document.querySelector('.chat-detail')?.classList.add('show')
+        document.querySelector('.backdrop1')?.classList.add('show')
+    }
+
+
+     MessageSearch() {
+        var input: any, filter: any, ul: any, li: any, a: any | undefined, i: any, txtValue: any;
+        input = document.getElementById("searchMessage") as HTMLAreaElement;
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("users-conversation");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+            a = li[i].getElementsByTagName("p")[0];
+            txtValue = a?.innerText;
+            if (txtValue?.toUpperCase().indexOf(filter) > -1) {
+                li[i].style.display = "";
+            } else {
+                li[i].style.display = "none";
+            }
+        }
+    }
+
+        deleteAllMessage(event: any) {
+        var allMsgDelete: any = document.getElementById('users-conversation')?.querySelectorAll('.chat-list');
+        allMsgDelete.forEach((item: any) => {
+            item.remove();
+        })
+    }
+
+    
+    closeReplay() {
+        document.querySelector('.replyCard')?.classList.remove('show');
+    }
+messageData:any;
+receiverId:any;
+    selectEmployee(employee: any) {
+  this.selectedEmployee = employee;
+  this.receiverId = employee.id
+  this.messageData = employee.comment || [];
+
+   const userChatShow = document.querySelector('.user-chat');
+        if (userChatShow != null) {
+            userChatShow.classList.add('user-chat-show');
+        }
+}
+
+newMessage: string = '';
+
+sendMessage() {
+  if (!this.newMessage.trim() || !this.selectedEmployee) return;
+  this.selectedEmployee.comment.push({
+    text: this.newMessage,
+    timestamp: new Date(),
+    isSender: true
+  });
+  this.newMessage = '';
+}
+messageId:any
+    replyMessage(event: any, messageId: any, recevierIdemp :any) {
+this.messageId = messageId;
+this.receiverId = recevierIdemp;
+        this.isreplyMessage = true;
+        document.querySelector('.replyCard')?.classList.add('show');
+        var copyText = event.target.closest('.chat-list').querySelector('.ctext-content').innerHTML;
+        (document.querySelector(".replyCard .replymessage-block .flex-grow-1 .mb-0") as HTMLAreaElement).innerHTML = copyText;
+        var msgOwnerName: any = event.target.closest(".chat-list").classList.contains("right") == true ? 'You' : document.querySelector('.username')?.innerHTML;
+        (document.querySelector(".replyCard .replymessage-block .flex-grow-1 .conversation-name") as HTMLAreaElement).innerHTML = msgOwnerName;
+    }
+
+      copyMessage(event: any) {
+        navigator.clipboard.writeText(event.target.closest('.chat-list').querySelector('.ctext-content').innerHTML);
+        (document.getElementById("copyClipBoard") as HTMLElement).style.display = "block";
+        setTimeout(() => {
+            (document.getElementById("copyClipBoard") as HTMLElement).style.display = "none";
+        }, 1000);
+    }
+
+      showEmojiPicker = false;
+      emoji = '';
+        addEmoji(event: any) {
+        const { emoji } = this;
+        const text = `${emoji}${event.emoji.native}`;
+        this.emoji = text;
+        this.showEmojiPicker = false;
+    }
+
+      get form() {
+        return this.formData.controls;
+    }
+
+     onFocus() {
+        this.showEmojiPicker = false;
+    }
+    onBlur() {
+    }
+
+     toggleEmojiPicker() {
+        this.showEmojiPicker = !this.showEmojiPicker;
+    }
+
+
+     messageSave() {
+  const message = this.formData.get('message')?.value?.trim();
+  if (!message) return;
+
+  const isGroup = !!this.taskData?.group; // You can adjust based on actual group flag
+  const replyBlock = document.querySelector('.replyCard');
+
+  // let reply_to_id = null;
+  let replayName = '';
+  let replaymsg = '';
+
+  if (this.isreplyMessage && replyBlock?.classList.contains('show')) {
+    replayName = (document.querySelector(".replyCard .replymessage-block .flex-grow-1 .conversation-name") as HTMLElement)?.innerText || '';
+    replaymsg = (document.querySelector(".replyCard .replymessage-block .flex-grow-1 .mb-0") as HTMLElement)?.innerText || '';
+    // reply_to_id = this.replyMessageId || null; // Set this when reply is triggered
+  }
+
+  const payload = {
+    task_id: this.taskData?.id,
+    chat_id:this.taskData?.group.chatId,
+    sender_type: 'employee',
+    sender_id: this.emp_id,
+    receiver_type: this.receiverId ?'admin'  :null ,
+    receiver_id: this.receiverId  ?this.receiverId : null ,
+    is_group: isGroup,
+    message: message,
+    message_type: 'text',
+    reply_to_id: this.messageId
+  };
+
+
+    this.api.post('sendTaskmessage', payload).subscribe({
+    next: (res) => {
+
+      this.getAssignedTask()
+    
+
+      this.scrollToBottom();
+      this.resetForm();
+    },
+    error: (err) => {
+      console.error('Message send failed', err);
+    }
+  });
+}
+
+resetForm() {
+  this.formData.reset();
+  this.isreplyMessage = false;
+  this.emoji = '';
+  this.receiverId = '';
+  this.messageId = null;
+  // this.replyMessageId = null;
+
+  const replyCard = document.querySelector('.replyCard');
+  if (replyCard) {
+    replyCard.classList.remove('show');
+    (replyCard.querySelector('.conversation-name') as HTMLElement).innerText = '';
+    (replyCard.querySelector('.mb-0') as HTMLElement).innerText = '';
+  }
+}
+
+scrollToBottom() {
+  setTimeout(() => {
+    const chatList = document.getElementById("users-conversation");
+    if (chatList) {
+      chatList.scrollTop = chatList.scrollHeight;
+    }
+  }, 100);
+}
+
+getInitials(name: string | undefined): string {
+  if (!name) return '';
+  const names = name.trim().split(' ');
+  if (names.length === 1) return names[0].charAt(0).toUpperCase();
+  return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+}
+
+goBack(): void {
+  this.router.navigate([`/pages/task-list/${this.emp_id}`]);
+}
+
 }

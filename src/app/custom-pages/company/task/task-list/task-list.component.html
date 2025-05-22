@@ -324,16 +324,17 @@
         <div class="row align-items-center mt-4 pt-3" id="pagination-element">
           <div class="col-sm">
             <div class="text-muted text-center text-sm-start">
-              Showing <span class="fw-semibold">{{ taskData?.length }}</span> of
+              Showing  <span class="fw-semibold">{{ taskData?.length }}</span> of
               <span class="fw-semibold">{{ taskDataList?.length }}</span>
-              Results
+              Results  
             </div>
           </div>
           <!--end col-->
           <div class="col-sm-auto mt-3 mt-sm-0">
+         
             <pagination
               class="pagination-wrap hstack justify-content-center gap-2"
-              [totalItems]="taskDataList?.legnth"
+              [totalItems]="taskDataList?.length"
               [itemsPerPage]="10"
               (pageChanged)="pageChanged($event)"
             ></pagination>

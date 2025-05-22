@@ -7,6 +7,7 @@ import { ComingSoonComponent } from "./coming-soon/coming-soon.component";
 import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.component";
 import { SupportComponent } from './support/support.component';
 import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
+import { TaskListComponent } from './task-list/task-list.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path:"task/:emp_id/:task_id",
     component: AssignedTaskComponent
+  },
+  {
+    path:"task-list/:emp_id",
+    component: TaskListComponent
   }
 ];
 
