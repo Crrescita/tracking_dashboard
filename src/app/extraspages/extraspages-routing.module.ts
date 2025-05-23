@@ -27,7 +27,7 @@ const routes: Routes = [
     component: SupportComponent,
   },
   {
-    path:"task/:emp_id/:task_id",
+    path:"task/:emp_id/:task_id/:task_no",
     component: AssignedTaskComponent
   },
   {

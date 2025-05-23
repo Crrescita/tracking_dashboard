@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+   SOCKET_ENDPOINT: 'https://trackingapi.crrescita.com',
   apiUrl: "https://trackingapi.crrescita.com/admin/",
   apifrontendUrl: "https://trackingapi.crrescita.com/frontend/",
   // apiUrl: "https://telapi.crrescita.com/admin/",

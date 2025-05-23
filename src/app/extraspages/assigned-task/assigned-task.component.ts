@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Location } from '@angular/common';
+import { SocketService } from '../../core/services/socket.service';
 @Component({
   selector: 'app-assigned-task',
   templateUrl: './assigned-task.component.html',
@@ -28,9 +29,12 @@ export class AssignedTaskComponent {
   isreplyMessage = false;
   formData!: UntypedFormGroup;
   company_id: any;
+  messages: any[] = []; 
+
+  task_no:any;
 
   currentTab = 'chats';
-  constructor(private formBuilder: FormBuilder, private api: ApiService, public toastService: ToastrService,    private route: ActivatedRoute , private location: Location , private router: Router){
+  constructor(private formBuilder: FormBuilder, private api: ApiService, public toastService: ToastrService,    private route: ActivatedRoute , private location: Location , private router: Router, private socketService: SocketService){
 
   }
 
@@ -41,10 +45,32 @@ export class AssignedTaskComponent {
     this.route.params.subscribe((params) => {
       this.task_id = params["task_id"] ? params["task_id"] : null;
       this.emp_id = params["emp_id"] ? Number(params["emp_id"]) : null;
+      this.task_no = params["task_no"] ? params["task_no"] : null;
     });
   
     if (this.task_id) {
       this.getAssignedTask();
+
+        this.socketService.joinTaskRoom(this.task_no);
+// console.log(this.id)
+   this.socketService.onNewTaskMessage().subscribe((message) => {
+  console.log('📨 Received new message:', message);
+  this.messages.push(message);
+  try {
+    this.getAssignedTask();
+  } catch (err) {
+    console.error('❌ Error calling getTaskDetail:', err);
+  }
+});
+    //      this.socketService.joinTaskRoom(this.task_no);
+    //      console.log(this.task_no)
+    //   this.socketService.onNewTaskMessage().subscribe((message) => {
+    //     // console.log('📨 Received new message:', message);
+    //     this.messages.push(message);
+    //     this.getAssignedTask()
+
+    //     // console.log(this.messages)
+    // });
     }
     
     if (this.emp_id) {
@@ -54,6 +80,7 @@ export class AssignedTaskComponent {
       this.formData = this.formBuilder.group({
             message: ['', [Validators.required]],
         });
+
 
    
   }
@@ -83,7 +110,7 @@ export class AssignedTaskComponent {
   getAssignedTask() {
     this.toggleSpinner(true);
     const url = `empAssignTask?task_id=${this.task_id}`;
-    this.api.getwithoutid(url).subscribe(
+    this.api.getwithoutcache(url).subscribe(
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);

@@ -5,6 +5,7 @@ import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { DatePipe } from '@angular/common';
+import { SocketService } from '../../../../core/services/socket.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -17,7 +18,7 @@ export class TaskDetailComponent {
   taskDetail:any;
   spinnerStatus: boolean = false;
   selectedEmpIds: number[] = [];
-
+  task_no:any;
 
 
   formattedTime = '00:00:00';
@@ -27,13 +28,14 @@ export class TaskDetailComponent {
   isreplyMessage = false;
   formData!: UntypedFormGroup;
   company_id: any;
+  messages: any[] = []; 
 
   @ViewChild('scrollRef') scrollRef: any;
 
   constructor(  private api: ApiService,
     public toastService: ToastrService,
     private formBuilder: FormBuilder,
-    private router: Router,private route:ActivatedRoute,private location: Location, private datePipe: DatePipe){}
+    private router: Router,private route:ActivatedRoute,private location: Location, private datePipe: DatePipe, private socketService: SocketService){}
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: "Assign Task" },
@@ -41,6 +43,9 @@ export class TaskDetailComponent {
     ];
     this.route.params.subscribe((params) => {
       this.id = params["id"] ? Number(params["id"]) : null;
+
+      this.task_no = params["task_id"] ? params["task_id"] : null; 
+      console.log(this.task_no)
     });
 
        this.formData = this.formBuilder.group({
@@ -55,8 +60,28 @@ export class TaskDetailComponent {
   
     if (this.id) {
       this.getTaskDetail();
+
+      // if(this.task_no){
+              this.socketService.joinTaskRoom(this.id);
+// console.log(this.id)
+   this.socketService.onNewTaskMessage().subscribe((message) => {
+  console.log('📨 Received new message:', message);
+  this.messages.push(message);
+  try {
+    this.getTaskDetail();
+  } catch (err) {
+    console.error('❌ Error calling getTaskDetail:', err);
+  }
+});
+
+      // }
+
     } 
       this.onListScroll();
+  }
+
+  ngOnDestroy() {
+    this.socketService.disconnect();
   }
 
     ngAfterViewInit() {
@@ -81,7 +106,7 @@ export class TaskDetailComponent {
   getTaskDetail() {
     this.toggleSpinner(true);
     const url = `assignTask?id=${this.id}`;
-    this.api.getwithoutid(url).subscribe(
+    this.api.getwithoutcache(url).subscribe(
       (res: any) => {
         if (res && res.status) {
           this.toggleSpinner(false);

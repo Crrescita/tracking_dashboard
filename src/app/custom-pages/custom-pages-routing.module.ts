@@ -85,7 +85,7 @@ const routes: Routes = [
   { path: "gernal-report", component: GernalReportsComponent },
   {path:"payroll" , component: PayrollListComponent},
   {path:"salary-setting" , component: SalarySettingComponent},
-  {path:"task-deatil/:id" , component:TaskDetailComponent}
+  {path:"task-deatil/:id/:task_id" , component:TaskDetailComponent}
 ];
 
 @NgModule({

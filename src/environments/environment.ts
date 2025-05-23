@@ -48,6 +48,8 @@ export const environment = {
     accessToken:
       "pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseW1sazg0cjAyOTEya3M3emFka24xbWUifQ.zNaqdcWcDsvtQz6g5xkdHg",
   },
+
+   SOCKET_ENDPOINT: 'http://localhost:3000' 
 };
 
 /*
