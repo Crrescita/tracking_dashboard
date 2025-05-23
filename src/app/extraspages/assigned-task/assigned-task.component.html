@@ -43,7 +43,7 @@
   </div>
 </div>
 
-    <div class="card-body mt-1">
+    <div class="p-2 mt-1">
       <h6 class="card-title mb-4">Task Details</h6>
       <div class="table-responsive table-card">
         <!-- Danger Alert -->
@@ -170,7 +170,7 @@
     @if(this.empTask?.status !== 'In-Progress' && this.empTask?.status !==
     'Completed' && this.empTask?.status !== 'On-Hold' && this.empTask?.status
     !== 'Cancelled'){
-    <div class="card-body border-top">
+    <div class="p-2 border-top">
       <button
         (click)="onSubmit()"
         class="btn btn-primary w-100"
@@ -180,10 +180,10 @@
       </button>
     </div>
     }@else if (this.empTask?.status == 'In-Progress') {
-    <div class="card-body border-top">
+    <div class="p-2 border-top">
       <button
         (click)="confirm()"
-        class="btn btn-success w-100 mt-5"
+        class="btn btn-success w-100 mt-2"
         id="agent-chat"
       >
         <i class="bi bi-check-square-fill align-baseline me-1"></i>Mark As
@@ -191,96 +191,103 @@
       </button>
     </div>
     }
-    <ngx-simplebar class="chat-room-list">
-      <div class="chat-message-list">
-        <ul class="list-unstyled chat-list chat-user-list" id="userList">
-          <li
-            (click)="selectEmployee(taskData?.employeeDetails)"
-            class="chat-list-item"
-          >
-            <a href="javascript:void(0);" class="text-decoration-none">
-              <div class="d-flex align-items-center">
-             
-                <div
-                  class="flex-shrink-0 chat-user-img align-self-center me-2 ms-0"
-                >
-                  <div
-                    class="avatar-xxs rounded-circle overflow-hidden bg-primary text-white d-flex justify-content-center align-items-center"
-                    style="width: 40px; height: 40px; font-size: 14px"
-                  >
-                  
-                    <ng-container
-                      *ngIf="taskData?.group?.lastMessage; else defaultAvatar"
-                    >
-                      {{ getInitials(taskData.group.lastMessage.sender.name) }}
-                    </ng-container>
-                    <ng-template #defaultAvatar>
-                      <img
-                        src="assets/images/users/avatar-1.jpg"
-                        alt="User Avatar"
-                        class="img-fluid userprofile"
-                        style="width: 40px; height: 40px; object-fit: cover"
-                      />
-                    </ng-template>
-                  </div>
-                </div>
 
-             
-                <div class="flex-grow-1 overflow-hidden">
-                  <p class="text-truncate mb-0 fw-semibold">
-                   
-                    {{
-                      taskData?.group?.lastMessage?.sender?.name ||
-                        taskData?.employeeDetails?.name ||
-                        "Unknown User"
-                    }}
-                  </p>
-                  <p
-                    *ngIf="
-                      taskData?.group?.lastMessage?.message;
-                      else noLastMessage
-                    "
-                    class="text-truncate mb-0 text-muted small"
-                  >
-                    {{ taskData.group.lastMessage.message }}
-                  </p>
 
-                  <div class="conversation-name" >
-                    <small class="text-muted time" *ngIf="taskData?.group?.lastMessage">
-                      {{
-                        taskData?.group?.lastMessage.sent_at
-                          | date : "dd MMM, yyyy - hh:mm a"
-                      }}
-                    </small>
-                    <span class="text-success check-message-icon">
-                      <i class="ri-check-double-line align-bottom"></i>
-                    </span>
-                  </div>
-                  <ng-template #noLastMessage>
-                    <p class="text-truncate mb-0 text-muted small fst-italic">
-                      No messages yet
-                    </p>
-                  </ng-template>
-                </div>
 
-                <!-- Message Count -->
-                <div
-                  class="ms-auto"
-                  *ngIf="
-                    taskData?.employeeDetails?.messagecount &&
-                    taskData.employeeDetails.messagecount > 0
-                  "
-                >
-                  <span class="badge bg-dark-subtle text-dark rounded p-1">
-                    {{ taskData.employeeDetails.messagecount }}
-                  </span>
-                </div>
+    <ngx-simplebar class="chat-room-list"  data-simplebar="init"
+        data-simplebar-auto-hide="false"
+        data-simplebar-track="primary"
+        class="h-100"
+        style="max-height: calc(100vh)">
+  <div class="chat-message-list">
+    <ul class="list-unstyled chat-list chat-user-list" id="userList">
+      <li
+        (click)="selectEmployee(taskData?.employeeDetails)"
+        class="chat-list-item position-relative p-2 rounded hover-bg"
+      >
+        <a href="javascript:void(0);" class="text-decoration-none">
+          <div class="d-flex align-items-center">
+            <!-- Avatar -->
+            <div class="flex-shrink-0 chat-user-img align-self-center me-2 ms-0">
+              <div
+                class="avatar-xxs rounded-circle overflow-hidden bg-primary text-white d-flex justify-content-center align-items-center"
+                style="width: 40px; height: 40px; font-size: 14px"
+              >
+                <ng-container *ngIf="taskData?.group?.lastMessage; else defaultAvatar">
+                  {{ getInitials(taskData.group.lastMessage.sender.name) }}
+                </ng-container>
+                <ng-template #defaultAvatar>
+                  <img
+                    src="assets/images/users/avatar-1.jpg"
+                    alt="User Avatar"
+                    class="img-fluid userprofile"
+                    style="width: 40px; height: 40px; object-fit: cover"
+                  />
+                </ng-template>
               </div>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </ngx-simplebar>
+            </div>
+
+            <!-- Message Info -->
+            <div class="flex-grow-1 overflow-hidden">
+              <p class="text-truncate mb-0 fw-semibold">
+                {{
+                  taskData?.group?.lastMessage?.sender?.name ||
+                    taskData?.employeeDetails?.name ||
+                    "Unknown User"
+                }}
+              </p>
+              <p
+                *ngIf="taskData?.group?.lastMessage?.message; else noLastMessage"
+                class="text-truncate mb-0 text-muted small"
+              >
+                {{ taskData.group.lastMessage.message }}
+              </p>
+
+              <div class="conversation-name">
+                <small class="text-muted time" *ngIf="taskData?.group?.lastMessage">
+                  {{
+                    taskData?.group?.lastMessage.sent_at
+                      | date: 'dd MMM, yyyy - hh:mm a'
+                  }}
+                </small>
+                <span class="text-success check-message-icon">
+                  <i class="ri-check-double-line align-bottom"></i>
+                </span>
+              </div>
+              <ng-template #noLastMessage>
+                <p class="text-truncate mb-0 text-muted small fst-italic">
+                  No messages yet
+                </p>
+              </ng-template>
+            </div>
+
+            <!-- Message Count -->
+            <div
+              class="ms-2"
+              *ngIf="taskData?.employeeDetails?.messagecount > 0"
+            >
+              <span class="badge bg-dark-subtle text-dark rounded p-1">
+                {{ taskData.employeeDetails.messagecount }}
+              </span>
+            </div>
+
+            <!-- Chat Button -->
+            <div class="ms-2">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary d-flex align-items-center"
+                (click)="selectEmployee(taskData)"
+                (click)="$event.stopPropagation()"
+              >
+                <i class="ri-chat-1-line me-1"></i> Chat
+              </button>
+            </div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </div>
+</ngx-simplebar>
 
     <div class="user-chat w-100 overflow-hidden">
       <div class="chat-content d-lg-flex">
@@ -490,14 +497,18 @@
                           </div>
                         </div>
 
-                        <div class="conversation-name">
-                          <small class="text-muted time">
-                            {{ msg.sent_at | date : "dd MMM, yyyy - hh:mm a" }}
-                          </small>
-                          <span class="text-success check-message-icon">
-                            <i class="ri-check-double-line align-bottom"></i>
-                          </span>
-                        </div>
+                     <div class="conversation-name">
+  <strong class="text-dark d-block">
+    {{ msg.sender.id === emp_id ? 'You' : msg.sender.name }}
+  </strong>
+  <small class="text-muted time">
+    {{ msg.sent_at | date : "dd MMM, yyyy - hh:mm a" }}
+  </small>
+  <span class="text-success check-message-icon">
+    <i class="ri-check-double-line align-bottom"></i>
+  </span>
+</div>
+
                       </div>
                     </div>
                   </li>
@@ -583,29 +594,6 @@
                 </div>
               </form>
             </div>
-
-            <!-- <div class="replyCard">
-              <div class="card mb-0">
-                <div class="card-body">
-                  <div class="replymessage-block mb-0 d-flex align-items-start">
-                    <div class="flex-grow-1">
-                      <h5 class="conversation-name"></h5>
-                      <p class="mb-0"></p>
-                    </div>
-                    <div class="flex-shrink-0">
-                      <button
-                        type="button"
-                        id="close_toggle"
-                        (click)="closeReplay()"
-                        class="btn btn-sm btn-link mt-n2 me-n3 fs-lg"
-                      >
-                        <i class="bx bx-x align-middle"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>

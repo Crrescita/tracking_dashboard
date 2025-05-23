@@ -27,3 +27,13 @@
         z-index: 99;
         // padding-top: 70px;
     }
+
+    .chat-list-item:hover {
+  background-color: #f3f6fa;
+  cursor: pointer;
+}
+
+.chat-list-item.active,
+.chat-list-item:focus {
+  background-color: #e7f1ff;
+}
