@@ -548,14 +548,56 @@
                 }
               </div>
             </div>
-
+ 
             <div class="col-lg-12">
               <div class="mb-3">
                 <label for="frequency" class="form-label"
                   >Frequency<span class="text-danger">*</span></label
                 >
 
-                <select
+                 <div class="row mb-3">
+  <div class="col-6">
+    <label for="frequencyNumber" class="form-label">Frequency Value</label>
+    <input
+      id="frequencyNumber"
+      class="form-control"
+      type="number"
+      min="1"
+      formControlName="frequency_value"
+      placeholder="Enter frequency value"
+    />
+  </div>
+  <div class="col-6">
+    <label for="frequencyUnit" class="form-label">Frequency Unit</label>
+    <select
+      id="frequencyUnit"
+      class="form-control"
+      formControlName="frequency_unit"
+    >
+      <option value="">Select unit</option>
+      <option value="hour">Hour(s)</option>
+      <option value="day">Day(s)</option>
+      <option value="month">Month(s)</option>
+    </select>
+  </div>
+</div>
+
+ @if (f['frequency_value'] && f['frequency_value'].hasError('required') &&
+                f['frequency_value'].touched) {
+                <div class="invalid-text">Please enter a valid frequency number.</div>
+                } 
+<!-- @if (f['frequency_unit']?.invalid && f['frequency_unit']?.touched) {
+  <div class="invalid-text">Please select a frequency unit.</div>
+} -->
+
+ @if (f['frequency_unit'] && f['frequency_unit'].hasError('required') &&
+                f['frequency_unit'].touched) {
+                <div class="invalid-text">Please select a frequency unit.</div>
+                } 
+
+
+                
+                <!-- <select
                   class="form-select"
                   id="frequency"
                   formControlName="frequency"
@@ -570,9 +612,24 @@
                 @if (f['frequency'] && f['frequency'].hasError('required') &&
                 f['frequency'].touched) {
                 <div class="invalid-text">Frequency is required.</div>
-                }
+                } -->
               </div>
             </div>
+
+                  <div class="col-lg-12">
+        <label for="notifyStartTime" class="form-label">Notify Start Time</label>
+        <input
+          id="notifyStartTime"
+          class="form-control"
+          type="datetime-local"
+          formControlName="notify_start_time"
+        />
+        @if (f['notify_start_time'] && f['notify_start_time'].hasError('required') &&
+                f['notify_start_time'].touched) {
+                <div class="invalid-text">Please select a start time.</div>
+                }
+    
+      </div>
             <!--end col-->
             @if(this.id){
               <div class="col-lg-12">

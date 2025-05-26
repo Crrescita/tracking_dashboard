@@ -381,6 +381,25 @@
                               <p class="text-truncate mb-0">
                                 {{ employee.name }}
                               </p>
+
+                               <p class="text-truncate text-muted fs-md mb-0 userStatus">
+              <span
+                class="badge"
+                [ngClass]="{
+                  'bg-primary-subtle text-primary': employee.status === 'To-Do',
+                  'bg-info-subtle text-info': employee.status === 'In-Progress',
+                  'bg-warning-subtle text-warning':
+                    employee.status === 'Pending-Review',
+                  'bg-success-subtle text-success':
+                    employee.status === 'Completed',
+                  'bg-secondary-subtle text-dark':
+                    employee.status === 'On-Hold',
+                  'bg-danger-subtle text-danger':
+                    employee.status === 'Cancelled'
+                }"
+                >{{ employee.status }}</span
+              >
+            </p>
                             </div>
                             @if (employee.messagecount) {
                             <div class="ms-auto">

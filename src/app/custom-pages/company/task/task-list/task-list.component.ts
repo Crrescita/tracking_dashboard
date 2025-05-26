@@ -98,7 +98,10 @@ export class TaskListComponent {
         start_date: ["", [Validators.required]],
         end_date: ["", [Validators.required]],
         priority: ["", [Validators.required]],
-        frequency: ["", [Validators.required]],
+        // frequency: ["", [Validators.required]],
+        frequency_value: [null, [Validators.required, Validators.min(1)]],
+        frequency_unit: ['', Validators.required],
+        notify_start_time: [null, Validators.required],
         status: ["", [Validators.required]],
       },
       {
@@ -247,6 +250,10 @@ export class TaskListComponent {
   }
 
   createFormData() {
+    const frequencyNumber = this.f["frequency_value"].value;
+  const frequencyUnit = this.f["frequency_unit"].value;
+  const frequency = `${frequencyNumber} ${frequencyUnit}`;
+
     const formData = {
       company_id: this.company_id,
       emp_id: this.f["emp_id"].value.join(","),
@@ -255,7 +262,9 @@ export class TaskListComponent {
       start_date: this.f["start_date"].value,
       end_date: this.f["end_date"].value,
       priority: this.f["priority"].value,
-      frequency: this.f["frequency"].value,
+      // frequency: this.f["frequency"].value,
+     frequency: frequency,
+     notify_start_time : this.f["notify_start_time"].value,
       status: this.id? this.f["status"].value: "To-Do",
     };
     return formData;
@@ -341,6 +350,29 @@ export class TaskListComponent {
     const empIdArray = data.emp_id
       .split(",")
       .map((id: string) => parseInt(id.trim()));
+
+
+    let frequencyValue = null;
+let frequencyUnit = '';
+
+if (data.frequency) {
+  const match = data.frequency.trim().match(/^(\d+)\s*(\w+)/);
+  if (match) {
+    frequencyValue = parseInt(match[1], 10);
+    frequencyUnit = match[2].toLowerCase();
+  }
+}
+
+  let notifyStartTimeFormatted = null;
+  if (data.notify_start_time) {
+    const date = new Date(data.notify_start_time);
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(date.getTime() - tzOffset)
+      .toISOString()
+      .slice(0, 16); // Format: 'YYYY-MM-DDTHH:mm'
+    notifyStartTimeFormatted = localISOTime;
+  }
+
     this.formGroup.patchValue({
       task_title: data.task_title,
       emp_id: empIdArray,
@@ -348,7 +380,11 @@ export class TaskListComponent {
       start_date: data.start_date ? new Date(data.start_date) : null,
   end_date: data.end_date ? new Date(data.end_date) : null,
       priority: data.priority,
-      frequency: data.frequency,
+      // frequency: data.frequency,
+       frequency_value: frequencyValue,
+  frequency_unit: frequencyUnit,
+  // notify_start_time:data.notify_start_time,
+    notify_start_time: notifyStartTimeFormatted,
       status: data.status,
     });
   }
