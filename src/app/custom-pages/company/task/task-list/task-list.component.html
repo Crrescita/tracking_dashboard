@@ -200,11 +200,11 @@
                   <!-- {{ data.task_id }} -->
                   <a class="fw-medium link-primary"># {{$index +1}}</a>
                 </td>
-                <td class="assign">
+                <!-- <td class="assign">
                   <div class="avatar-group flex-nowrap">
                     @for (profile of data.employeeDetails; track $index) {
                       {{profile.name}}
-                    <!-- <a class="avatar-group-item" tooltip="{{ profile.name }}">
+                    <a class="avatar-group-item" tooltip="{{ profile.name }}">
                       <img
                         [src]="
                           profile.image
@@ -214,10 +214,18 @@
                         alt=""
                         class="avatar-xxs rounded-circle"
                       />
-                    </a> -->
+                    </a>
                     }
                   </div>
-                </td>
+                </td> -->
+
+                <td class="assign">
+  <div class="avatar-group flex-nowrap">
+    @for (profile of data.employeeDetails; track $index) {
+      <span class="badge bg-primary me-1">{{ profile.name }}</span>
+    }
+  </div>
+</td>
                 <td class="ticket_title">{{ data.task_title }}</td>
 
                 <td class="create_date">
