@@ -47,10 +47,18 @@ export class TaskListComponent {
   selectedEndDate: any;
   selectedDateRange: any = null;
 
+  branch: any[] = [];
+  selectedBranch: any[] = [];
+  departments: any[] = [];
+  selectedDepartments: any[] = [];
+  selectedDesignations: any[] = [];
+  designations: any[] = [];
+
   filterCounts = {
     termCount: 0,
-    // selectedFrequency: 0,
-    // departmentCount: 0,
+    branchCount: 0,
+    designationCount: 0,
+    departmentCount: 0,
     statusCount: 0,
     frequencyCount: 0,
     priorityCount: 0,
@@ -88,6 +96,9 @@ export class TaskListComponent {
     if (this.company_id) {
       this.getAssignedTask();
       this.getemployeeData();
+       this.getDepartment();
+      this.getDesignation();
+      this.getBranch();
     }
 
     this.formGroup = this.formBuilder.group(
@@ -128,6 +139,16 @@ export class TaskListComponent {
       this.selectedEmp = params["selectedEmp"]
         ? params["selectedEmp"].split(",")
         : [];
+
+       this.selectedBranch = params["selectedBranch"]
+        ? params["selectedBranch"].split(",")
+        : [];
+      this.selectedDepartments = params["selectedDepartments"]
+        ? params["selectedDepartments"].split(",")
+        : [];
+      this.selectedDesignations = params["selectedDesignations"]
+        ? params["selectedDesignations"].split(",")
+        : [];
      
 
       // if (params["date"]) {
@@ -161,6 +182,72 @@ export class TaskListComponent {
       this.filterdata();
       this.updatePaginatedData();
     });
+  }
+
+  getBranch() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`branch?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.branch = res.data;
+          } else {
+            this.branch = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+
+   getDepartment() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`department?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.departments = res.data;
+          } else {
+            this.departments = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
+  }
+
+  getDesignation() {
+    this.toggleSpinner(true);
+    this.api
+      .getwithoutid(`designation?status=active&company_id=${this.company_id}`)
+      .subscribe(
+        (res: any) => {
+          this.toggleSpinner(false);
+          if (res && res.status) {
+            this.designations = res.data;
+          } else {
+            this.designations = [];
+          }
+        },
+        (error) => {
+          this.toggleSpinner(false);
+          this.handleError(
+            error.message || "An error occurred while fetching data"
+          );
+        }
+      );
   }
 
   dateRangeValidator(): ValidatorFn {
@@ -433,16 +520,73 @@ if (data.frequency) {
     this.filterCounts.selectedstartDateCount = 0;
     this.filterCounts.selectedendDateCount = 0;
 
+     this.filterCounts.branchCount = 0;
+    this.filterCounts.designationCount = 0;
+    this.filterCounts.departmentCount = 0;
+
+
+   
+  if (this.selectedBranch && this.selectedBranch.length > 0) {
+  filteredData = filteredData.filter((el: any) =>
+    el.employeeDetails?.some((emp: any) =>
+      emp.branch &&
+      this.selectedBranch
+        .map((d) => d.toLowerCase())
+        .includes(emp.branch.toLowerCase())
+    )
+  );
+  this.filterCounts.branchCount = 1;
+}
+
+    // Filter by selected departments
+    // if (this.selectedDepartments.length > 0) {
+    //   filteredData = filteredData.filter((el: any) =>
+    //     this.selectedDepartments
+    //       .map((d) => d.toLowerCase())
+    //       .includes(el.department.toLowerCase())
+    //   );
+    //   this.filterCounts.departmentCount = 1;
+    // }
+
+     if (this.selectedDepartments && this.selectedDepartments.length > 0) {
+  filteredData = filteredData.filter((el: any) =>
+    el.employeeDetails?.some((emp: any) =>
+      emp.department &&
+      this.selectedDepartments
+        .map((d) => d.toLowerCase())
+        .includes(emp.department.toLowerCase())
+    )
+  );
+  this.filterCounts.departmentCount = 1;
+}
+
+
+  if (this.selectedDesignations && this.selectedDesignations.length > 0) {
+  filteredData = filteredData.filter((el: any) =>
+    el.employeeDetails?.some((emp: any) =>
+      emp.designation &&
+      this.selectedDesignations
+        .map((d) => d.toLowerCase())
+        .includes(emp.designation.toLowerCase())
+    )
+  );
+  this.filterCounts.designationCount = 1;
+}
+
 
     // Filter by term
     if (this.term) {
       filteredData = filteredData.filter(
         (el: any) =>
+          // console.log(el)
           el.task_id.toLowerCase().includes(this.term.toLowerCase()) ||
           el.task_title.toLowerCase().includes(this.term.toLowerCase()) ||
           el.priority.toLowerCase().includes(this.term.toLowerCase()) ||
           el.frequency.toLowerCase().includes(this.term.toLowerCase()) ||
-          el.status.toLowerCase().includes(this.term.toLowerCase())
+          el.status.toLowerCase().includes(this.term.toLowerCase()) ||
+          (el.employeeDetails && el.employeeDetails.some((emp: any) =>
+      emp.name.toLowerCase().includes(this.term.toLowerCase())
+    ))
       );
       this.filterCounts.termCount = 1;
     }
@@ -476,19 +620,6 @@ if (data.frequency) {
       );
     }
 
-    // if (this.selectedDate && this.selectedEndDate) {
-    //   // If both start and end dates are selected
-    //   console.log(this.selectedDate ,this.selectedEndDate)
-    //   filteredData = filteredData.filter((el: any) => {
-    //     let taskStartDate = new Date(el.start_date);
-    //     let taskEndDate = new Date(el.end_date);
-    //     console.log(taskStartDate,taskEndDate)
-    //     // Include tasks that start on or after selectedDate and end on or before selectedEndDate
-    //     return taskStartDate >= this.selectedDate && taskEndDate <= this.selectedEndDate;
-    //   });
-    //   this.filterCounts.selectedstartDateCount = 1;
-    //   // this.filterCounts.selectedendDateCount = 1;
-    // } 
     if (this.selectedDate && this.selectedEndDate) {
       // Normalize start and end dates (set time to 00:00:00 for start, 23:59:59 for end)
       let normalizedStartDate = new Date(this.selectedDate);
@@ -527,49 +658,6 @@ if (data.frequency) {
       // this.filterCounts.selectedendDateCount = 1;
     }
 
-// console.log(this.selectedDate)
-//     if (this.selectedDate) {
-//       filteredData = filteredData.filter((el: any) => {
-//         let taskStartDate = new Date(el.start_date);
-//         return taskStartDate >= this.selectedDate!;
-//       });
-//       this.filterCounts.selectedstartDateCount = 1;
-//     }
-//     console.log(this.selectedEndDate)
-//     // Filter by end date range
-//     if (this.selectedEndDate) {
-//       filteredData = filteredData.filter((el: any) => {
-//         let taskEndDate = new Date(el.end_date);
-//         return taskEndDate <= this.selectedEndDate!;
-//       });
-//       // this.filterCounts.selectedendDateCount = 1;
-//     }
-
-
-    // if (this.selectedDate) {
-    //   let selectedDateStr = this.formatDateWithoutTime(
-    //     new Date(this.selectedDate)
-    //   );
-
-    //   filteredData = filteredData.filter((el: any) => {
-    //     let taskDateStr = this.formatDateWithoutTime(new Date(el.start_date));
-    //     return taskDateStr === selectedDateStr;
-    //   });
-    //   this.filterCounts.selectedstartDateCount = 1;
-    // }
-
-    // if (this.selectedEndDate) {
-    //   let selectedDateStr = this.formatDateWithoutTime(
-    //     new Date(this.selectedEndDate)
-    //   );
-
-    //   filteredData = filteredData.filter((el: any) => {
-    //     let taskDateStr = this.formatDateWithoutTime(new Date(el.end_date));
-    //     return taskDateStr === selectedDateStr;
-    //   });
-    //   this.filterCounts.selectedendDateCount = 1;
-    // }
-
     // Update filtered data
     this.filteredTaskData = filteredData;
 
@@ -581,7 +669,10 @@ if (data.frequency) {
       this.selectedEmp.length ||
       this.selectedStatus ||
       this.selectedDate ||
-      this.selectedEndDate
+      this.selectedEndDate ||
+      this.selectedBranch.length ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length
     ) {
       if (this.filteredTaskData.length === 0) {
         this.currentPage = 1; // Reset to page 1 if no results after search
@@ -610,7 +701,10 @@ if (data.frequency) {
       this.selectedEmp.length ||
       this.selectedStatus ||
       this.selectedDate ||
-      this.selectedEndDate
+      this.selectedEndDate ||
+      this.selectedBranch.length ||
+      this.selectedDepartments.length ||
+      this.selectedDesignations.length 
     ) {
       if (startItem >= this.filteredTaskData.length) {
         this.currentPage = 1;
@@ -642,6 +736,9 @@ if (data.frequency) {
         enddate: this.selectedEndDate
           ? this.formatDateWithoutTime(this.selectedEndDate)
           : "",
+           selectedBranch: this.selectedBranch.join(","),
+        selectedDepartments: this.selectedDepartments.join(","),
+        selectedDesignations: this.selectedDesignations.join(","),
       },
       queryParamsHandling: "merge",
     });
@@ -749,15 +846,19 @@ if (data.frequency) {
       this.filterCounts.priorityCount +
       this.filterCounts.empCount +
       this.filterCounts.selectedstartDateCount +
-      this.filterCounts.selectedendDateCount
+      this.filterCounts.selectedendDateCount +
+      this.filterCounts.branchCount +
+      this.filterCounts.designationCount +
+      this.filterCounts.departmentCount 
     );
   }
 
   reset() {
     // Clear filters
     this.term = "";
-    // this.selectedDepartments = [];
-    // this.selectedDesignations = [];
+     this.selectedBranch = [];
+    this.selectedDepartments = [];
+    this.selectedDesignations = [];
     this.selectedStatus = "";
     this.selectedFrequency = "";
     this.selectedPriority = "";
@@ -775,8 +876,9 @@ if (data.frequency) {
       relativeTo: this.route,
       queryParams: {
         term: null,
-        // selectedDepartments: null,
-        // selectedDesignations: null,
+          selectedBranch: null,
+        selectedDepartments: null,
+        selectedDesignations: null,
         selectedStatus: null,
         selectedFrequency: null,
         selectedPriority: null,

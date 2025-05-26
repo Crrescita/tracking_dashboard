@@ -144,11 +144,17 @@ export class TaskDetailComponent {
     }
   }
 
-
+customMessage:any;
   sendReminder() {
     if (this.selectedEmpIds.length > 0) {
       this.toggleSpinner(true);
-      const payload = { emp_ids: this.selectedEmpIds, task_id: this.id };
+      // const payload = { emp_ids: this.selectedEmpIds, task_id: this.id };
+
+        const payload = {
+      emp_ids: this.selectedEmpIds,
+      task_id: this.id,
+      message: this.customMessage?.trim() || null // pass null if blank
+    };
   
       this.api.post('sendReminder', payload).subscribe(
         (res: any) => {
@@ -156,7 +162,7 @@ export class TaskDetailComponent {
           if (res.status === true) {
             this.toastService.success(res.message);
             this.selectedEmpIds = [];
-  
+     this.customMessage = '';
             // Force change detection (only if needed)
             setTimeout(() => {
               this.selectedEmpIds = [...this.selectedEmpIds]; 
