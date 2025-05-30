@@ -596,190 +596,7 @@ export class AttendanceListComponent implements OnInit {
     document.querySelector(".backdrop3")?.classList.remove("show");
   }
 
-  // exportTableToExcel(): void {
-  //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
-
-  //   const date = new Date(this.selectedDate);
-  //   const day = String(date.getDate()).padStart(2, "0");
-  //   const month = date.toLocaleString("default", { month: "long" });
-  //   const year = date.getFullYear();
-  //   const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
-  //     2,
-  //     "0"
-  //   )}-${day}`;
-  //   const filename = `Attendance_${formattedDate}.xlsx`;
-
-  //   const uniqueDates = Array.from(
-  //     new Set(this.filteredAttendanceData.map((employee: any) => employee.date))
-  //   ).sort();
-
-  //   const worksheetData: any[][] = [
-  //     [
-  //       "Name",
-  //       "Mobile",
-  //       "Date",
-  //       "Check-In Time",
-  //       "Check-Out Time",
-  //       "Arrival Status",
-  //       "Time Difference",
-  //       "Attendance Status",
-  //     ],
-  //   ];
-
-  //   // Add each employee's data to worksheet rows
-  //   this.filteredAttendanceData.forEach((employee: any) => {
-  //     // For each date, add a row with the desired fields
-  //     uniqueDates.forEach((date) => {
-  //       if (employee.date === date) {
-  //         worksheetData.push([
-  //           employee.name,
-  //           employee.mobile,
-  //           employee.date,
-  //           employee.latestCheckInTime || "",
-  //           employee.latestCheckOutTime || "",
-  //           employee.checkin_status,
-  //           employee.timeDifference,
-  //           employee.attendance_status,
-  //         ]);
-  //       }
-  //     });
-  //   });
-
-  //   const worksheet: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-  //   // Apply conditional formatting for "Absent" attendance status
-  //   worksheetData.forEach((row, rowIndex) => {
-  //     if (rowIndex === 0) return; // Skip header row
-  //     const attendanceStatus = row[7]; // Index 7 is "Attendance Status" column
-
-  //     if (attendanceStatus === "Absent") {
-  //       const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 7 }); // Column 8 (Attendance Status)
-  //       worksheet[cellAddress] = {
-  //         ...worksheet[cellAddress],
-  //         s: {
-  //           fill: {
-  //             fgColor: { rgb: "FF0000" }, // Red background for "Absent"
-  //           },
-  //         },
-  //       };
-  //     }
-  //   });
-
-  //   // Add the worksheet to the workbook and export it
-  //   workbook.SheetNames.push("Attendance Report");
-  //   workbook.Sheets["Attendance Report"] = worksheet;
-
-  //   // Export the workbook to an Excel file
-  //   XLSX.writeFile(workbook, filename);
-  // }
-
-  // exportTableToExcel(): void {
-  //   const workbook = new ExcelJS.Workbook(); // Create a new workbook
-  //   const worksheet = workbook.addWorksheet("Attendance Report"); // Add a worksheet
-
-  //   // Format the selected date
-  //   const date = new Date(this.selectedDate);
-  //   const day = String(date.getDate()).padStart(2, "0");
-  //   const month = date.toLocaleString("default", { month: "long" });
-  //   const year = date.getFullYear();
-  //   const formattedDate = `${year}-${String(date.getMonth() + 1).padStart(
-  //     2,
-  //     "0"
-  //   )}-${day}`;
-  //   const filename = `Attendance_${formattedDate}.xlsx`;
-
-  //   // Header row
-  //   const header = [
-  //     "Name",
-  //     "Mobile",
-  //     "Date",
-  //     "Check-In Address",
-  //     "Check-In Time",
-  //     "Check-Out Time",
-  //     "Arrival Status",
-  //     "Time Difference",
-  //     "Attendance Status",
-  //   ];
-  //   const headerRow = worksheet.addRow(header);
-
-  //   // Make the header row bold
-  //   headerRow.eachCell((cell) => {
-  //     cell.font = { bold: true };
-  //   });
-
-  //   // Add employee data rows
-  //   this.filteredAttendanceData.forEach((employee: any) => {
-  //     const row = worksheet.addRow([
-  //       employee.name,
-  //       employee.mobile,
-  //       employee.date,
-  //       employee.latestCheckInTime || "",
-  //       employee.latestCheckOutTime || "",
-  //       employee.checkin_status,
-  //       employee.timeDifference,
-  //       employee.attendance_status,
-  //     ]);
-
-  //     // Make the "Name" column (first column) bold
-  //     row.getCell(1).font = { bold: true };
-
-  //     // Apply background color and white font for "Absent" and "Present"
-  //     const statusCell = row.getCell(8); // Attendance Status column
-  //     if (statusCell.value === "Absent") {
-  //       statusCell.fill = {
-  //         type: "pattern",
-  //         pattern: "solid",
-  //         fgColor: { argb: "FFFF0000" }, // Red background
-  //       };
-  //       statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
-  //     } else if (statusCell.value === "Present") {
-  //       statusCell.fill = {
-  //         type: "pattern",
-  //         pattern: "solid",
-  //         fgColor: { argb: "FF38b738" }, // Green background
-  //       };
-  //       statusCell.font = { color: { argb: "FFFFFFFF" } }; // White text
-  //     }
-  //   });
-
-  //   // Set column widths
-  //   worksheet.columns = [
-  //     { width: 20 }, // Name
-  //     { width: 15 }, // Mobile
-  //     { width: 15 }, // Date
-  //     { width: 20 }, // Check-In Time
-  //     { width: 20 }, // Check-Out Time
-  //     { width: 20 }, // Arrival Status
-  //     { width: 20 }, // Time Difference
-  //     { width: 20 }, // Attendance Status
-  //   ];
-
-  //   // Add borders to all cells
-  //   worksheet.eachRow((row) => {
-  //     row.eachCell((cell) => {
-  //       cell.border = {
-  //         top: { style: "thin" },
-  //         left: { style: "thin" },
-  //         bottom: { style: "thin" },
-  //         right: { style: "thin" },
-  //       };
-  //     });
-  //   });
-
-  //   // Export the workbook to an Excel file
-  //   workbook.xlsx.writeBuffer().then((data) => {
-  //     const blob = new Blob([data], {
-  //       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //     });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const anchor = document.createElement("a");
-  //     anchor.href = url;
-  //     anchor.download = filename;
-  //     anchor.click();
-  //     window.URL.revokeObjectURL(url);
-  //   });
-  // }
-
+ 
 
   async exportTableToExcel(): Promise<void> {
     const workbook = new ExcelJS.Workbook();
@@ -818,7 +635,7 @@ export class AttendanceListComponent implements OnInit {
           employee.checkInlogitude
          
         );
-        console.log(checkInAddress)
+        // console.log(checkInAddress)
       }
   
       return {
@@ -921,4 +738,53 @@ export class AttendanceListComponent implements OnInit {
         return "";
       });
   }
+//  sendWhatsAppToAll() {
+   
+
+//     this.http.post('/api/send-whatsapp-bulk', { users }).subscribe(
+//       (res) => {
+//         console.log('Success:', res);
+//         alert('WhatsApp messages sent successfully.');
+//       },
+//       (err) => {
+//         console.error('Error:', err);
+//         alert('Failed to send some messages.');
+//       }
+//     );
+//   }
+
+ sendWhatsAppToAll(): void {
+  this.toggleSpinner(true); // Show loading spinner
+
+  const users = this.filteredAttendanceData.map((user: any) => ({
+    name: user.name,
+    mobile: user.mobile,
+    email: user.email,
+  }));
+
+  this.api.post("send-whatsapp-bulk", { users }).subscribe({
+    next: (res: any) => this.handleResponse(res),
+    error: (error) => this.handleError(error),
+  });
+}
+
+handleResponse(res: any): void {
+  this.toggleSpinner(false); // Hide spinner
+
+  if (res.message === 'All messages sent successfully!') {
+    // Optional: Show success toast
+    // this.toastService.success("WhatsApp messages sent successfully!");
+  } else if (res.failedUsers && res.failedUsers.length > 0) {
+    // Optional: Show warning with failed user count
+    // this.toastService.warning(`${res.failedUsers.length} users failed. Check console for details.`);
+    console.warn("Failed users:", res.failedUsers);
+  } else {
+    // this.toastService.error("Some unknown issue occurred.");
+    console.error("Unexpected response:", res);
+  }
+}
+
+
+
+  
 }
