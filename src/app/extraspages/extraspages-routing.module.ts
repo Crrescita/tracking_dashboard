@@ -8,6 +8,7 @@ import { PrivacyPolicyComponent } from "./privacy-policy/privacy-policy.componen
 import { SupportComponent } from './support/support.component';
 import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 import { TaskListComponent } from './task-list/task-list.component';
+import { AddEmployeeComponent } from './add-employee/add-employee.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path:"task-list/:emp_id",
     component: TaskListComponent
+  },
+   {
+    path:"add-employee",
+    component: AddEmployeeComponent
   }
 ];
 

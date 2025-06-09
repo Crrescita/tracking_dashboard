@@ -16,6 +16,8 @@ import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 import { SimplebarAngularModule } from "simplebar-angular";
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { TaskListComponent } from './task-list/task-list.component';
+import { AddEmployeeComponent } from './add-employee/add-employee.component';
+import { EmpDocsComponent } from './emp-docs/emp-docs.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { TaskListComponent } from './task-list/task-list.component';
     PrivacyPolicyComponent,
     SupportComponent,
     AssignedTaskComponent,
-    TaskListComponent
+    TaskListComponent,
+    AddEmployeeComponent,
+    EmpDocsComponent
   ],
   imports: [CommonModule, AlertModule.forRoot(), TooltipModule.forRoot(), ExtrapagesRoutingModule, ModalModule.forRoot(),FormsModule, ReactiveFormsModule, SimplebarAngularModule, PickerModule],
 })

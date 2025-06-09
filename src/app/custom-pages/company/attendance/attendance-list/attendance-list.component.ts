@@ -754,8 +754,7 @@ export class AttendanceListComponent implements OnInit {
 //   }
 
  sendWhatsAppToAll(): void {
-  this.toggleSpinner(true); // Show loading spinner
-
+  this.toggleSpinner(true); 
   const users = this.filteredAttendanceData.map((user: any) => ({
     name: user.name,
     mobile: user.mobile,
@@ -768,21 +767,32 @@ export class AttendanceListComponent implements OnInit {
   });
 }
 
-handleResponse(res: any): void {
-  this.toggleSpinner(false); // Hide spinner
+// handleResponse(res: any): void {
+//   this.toggleSpinner(false); // Hide spinner
 
-  if (res.message === 'All messages sent successfully!') {
-    // Optional: Show success toast
-    // this.toastService.success("WhatsApp messages sent successfully!");
-  } else if (res.failedUsers && res.failedUsers.length > 0) {
-    // Optional: Show warning with failed user count
-    // this.toastService.warning(`${res.failedUsers.length} users failed. Check console for details.`);
-    console.warn("Failed users:", res.failedUsers);
-  } else {
-    // this.toastService.error("Some unknown issue occurred.");
-    console.error("Unexpected response:", res);
+//   if (res.message === 'All messages sent successfully!') {
+//     // Optional: Show success toast
+//     // this.toastService.success("WhatsApp messages sent successfully!");
+//   } else if (res.failedUsers && res.failedUsers.length > 0) {
+//     // Optional: Show warning with failed user count
+//     // this.toastService.warning(`${res.failedUsers.length} users failed. Check console for details.`);
+//     console.warn("Failed users:", res.failedUsers);
+//   } else {
+//     // this.toastService.error("Some unknown issue occurred.");
+//     console.error("Unexpected response:", res);
+//   }
+// }
+
+  handleResponse(res: any) {
+    this.toggleSpinner(false);
+    if (res.status === true) {
+      // this.resetForm();
+      // this.toastService.success("Data Saved Successfully!!");
+      // this.router.navigate(["employee"]);
+    } else {
+      // this.toastService.error(res["message"]);
+    }
   }
-}
 
 
 
