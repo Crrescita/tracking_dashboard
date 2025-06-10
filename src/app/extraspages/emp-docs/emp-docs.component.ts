@@ -85,7 +85,7 @@ noteMessage:any = '';
   ) {
       // console.log(this.urlId)
     // if (this.urlId) {
-console.log("dsfdf")
+
       //  if (this.urlId) {
       this.noteMessage = '⚠️ Please do not refresh the page while uploading documents.';
 
@@ -282,7 +282,7 @@ console.log("dsfdf")
       if (this.formGroup.valid) {
         const formData = new FormData();
         formData.append("emp_id", this.urlId.toString());
-
+        formData.append("company_id", this.company_id.toString());
         formData.append("documentType", this.selectedDocument);
         formData.append("documentNo", this.f["documentNo"].value);
         formData.append("documentFile", this.selectedImage);
