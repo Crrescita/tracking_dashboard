@@ -225,7 +225,7 @@ export class BackgroundVerificationComponent implements OnInit {
         return {
           number: [
             Validators.required,
-            Validators.pattern(/^[A-Z]{5}\d{4}[A-Z]{1}$/),
+            Validators.pattern(/^[A-Z]{5}\d{4}[A-Z]{1}$/i),  
           ],
           file: [Validators.required],
         };
@@ -236,7 +236,7 @@ export class BackgroundVerificationComponent implements OnInit {
         };
       case "Voter":
         return {
-          number: [Validators.required, Validators.pattern(/^[A-Z]{3}\d{7}$/)],
+          number: [Validators.required, Validators.pattern(/^[A-Z]{3}\d{7}$/i)],
           file: [Validators.required],
         };
       case "UAN":
