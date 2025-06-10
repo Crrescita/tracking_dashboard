@@ -93,6 +93,13 @@ export class BackgroundVerificationComponent implements OnInit {
       documentNo: ["", [Validators.required, Validators.maxLength(100)]],
       documentFile: [""],
     });
+    
+    const data = localStorage.getItem("currentUser");
+    if (data) {
+      const user = JSON.parse(data);
+      this.company_id = user.id;
+    }
+
     if (this.urlId) {
       this.getbackgroundDetail();
     }
