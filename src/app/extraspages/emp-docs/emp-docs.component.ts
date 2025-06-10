@@ -136,7 +136,7 @@ console.log("dsfdf")
 
   getbackgroundDetail() {
     this.toggleSpinner(true);
-    const url = `backgroundVerification?emp_id=${this.urlId}`;
+    const url = `backgroundVerificationEmp?emp_id=${this.urlId}`;
     this.api.getwithoutid(url).subscribe(
       (res: any) => {
         if (res && res.status) {
@@ -287,7 +287,7 @@ console.log("dsfdf")
         formData.append("documentNo", this.f["documentNo"].value);
         formData.append("documentFile", this.selectedImage);
 
-        this.api.post("backgroundVerification", formData).subscribe(
+        this.api.post("backgroundVerificationEmp", formData).subscribe(
           (res: any) => this.handleResponse(res),
           (error) => this.handleError(error)
         );
