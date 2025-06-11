@@ -49,9 +49,11 @@ export class EmployeeListComponent implements OnInit {
     statusCount: 0,
     empCount: 0,
     dateCount: 0,
+    selectedDateRangeCount: 0,
   };
 
   formGroup!: FormGroup;
+    selectedDateRange: any;
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
@@ -105,6 +107,16 @@ export class EmployeeListComponent implements OnInit {
         ? params["selectedEmp"].split(",")
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
+
+       if (params["selectedDateRange"]) {
+        const dateRange = params["selectedDateRange"].split(",");
+        if (dateRange.length > 0) {
+          this.selectedDateRange = {
+            from: new Date(dateRange[0]),
+            to: dateRange[1] ? new Date(dateRange[1]) : null,
+          };
+        }
+      }
 
       // After initializing, you might want to call filterData and updatePaginatedData
       this.filterdata();
@@ -372,6 +384,8 @@ export class EmployeeListComponent implements OnInit {
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
     this.filterCounts.empCount = 0;
+    this.filterCounts.selectedDateRangeCount = 0;
+    
 
     // Filter by term
     if (this.term) {
@@ -432,6 +446,41 @@ export class EmployeeListComponent implements OnInit {
       this.filterCounts.statusCount = 1;
     }
 
+      if (this.selectedDateRange) {
+      let fromDateStr = "";
+      let toDateStr = "";
+
+      if (this.selectedDateRange.from) {
+        fromDateStr = this.formatDateWithoutTime(
+          new Date(this.selectedDateRange.from)
+        );
+      }
+
+      if (this.selectedDateRange.to) {
+        toDateStr = this.formatDateWithoutTime(
+          new Date(this.selectedDateRange.to)
+        );
+      }
+
+      filteredData = filteredData.filter((el: any) => {
+        const fromDate = this.formatDateWithoutTime(new Date(el.created_at));
+        const toDate = this.formatDateWithoutTime(new Date(el.created_at));
+
+        if (fromDateStr && !toDateStr) {
+          return fromDate == fromDateStr;
+        } else if (fromDateStr && toDateStr) {
+          return (
+            (fromDate >= fromDateStr && fromDate <= toDateStr) ||
+            (toDate >= fromDateStr && toDate <= toDateStr) ||
+            (fromDate <= fromDateStr && toDate >= toDateStr)
+          );
+        }
+
+        return true;
+      });
+      this.filterCounts.selectedDateRangeCount = 1;
+    }
+
     // Update filtered data
     this.filteredemployeeData = filteredData;
 
@@ -456,6 +505,12 @@ export class EmployeeListComponent implements OnInit {
     this.currentPage = event.page;
     this.updatePaginatedData();
   }
+    formatDateWithoutTime(date: Date): string {
+    const localDate = new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000
+    ); // Adjust for time zone
+    return localDate.toISOString().split("T")[0]; // YYYY-MM-DD
+  }
 
   updatePaginatedData(): void {
     // Calculate start and end indices based on current page
@@ -469,7 +524,8 @@ export class EmployeeListComponent implements OnInit {
       this.selectedDepartments.length ||
       this.selectedDesignations.length ||
       this.selectedEmp.length ||
-      this.selectedStatus
+      this.selectedStatus ||
+      this.selectedDateRange
     ) {
       if (startItem >= this.filteredemployeeData.length) {
         this.currentPage = 1; // Reset to page 1
@@ -483,6 +539,17 @@ export class EmployeeListComponent implements OnInit {
     this.employeeData = cloneDeep(
       this.filteredemployeeData.slice(newStartItem, newEndItem)
     );
+
+    let formattedDateRange = "";
+    if (this.selectedDateRange) {
+      const fromDate = this.formatDateWithoutTime(
+        new Date(this.selectedDateRange.from)
+      );
+      const toDate = this.selectedDateRange.to
+        ? this.formatDateWithoutTime(new Date(this.selectedDateRange.to))
+        : "";
+      formattedDateRange = `${fromDate},${toDate}`; // Comma-separated range
+    }
 
     // Update no result display
     this.updateNoResultDisplay();
@@ -499,6 +566,7 @@ export class EmployeeListComponent implements OnInit {
         selectedDesignations: this.selectedDesignations.join(","),
         selectedEmp: this.selectedEmp.join(","),
         selectedStatus: this.selectedStatus,
+        selectedDateRange: formattedDateRange,
       },
       queryParamsHandling: "merge", // Merge with existing query params
     });
@@ -522,6 +590,7 @@ export class EmployeeListComponent implements OnInit {
     this.selectedEmp = [];
     this.selectedStatus = ""; // Clear selected status
     this.employeeData = this.employeeDataList; // Reset data to the original list
+     (this.selectedDateRange = ""),
 
     // Update filtered data and pagination
     this.filterdata(); // Reapply filters with reset values
@@ -536,6 +605,7 @@ export class EmployeeListComponent implements OnInit {
         selectedDesignations: null,
         selectedEmp: null,
         selectedStatus: null,
+         selectedDateRange: null,
         page: 1, // Reset to first page
         itemsPerPage: this.currentItemsPerPage, // Keep items per page intact
       },
@@ -550,7 +620,8 @@ export class EmployeeListComponent implements OnInit {
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
-      this.filterCounts.empCount
+      this.filterCounts.empCount +
+      this.filterCounts.selectedDateRangeCount
     );
   }
 
