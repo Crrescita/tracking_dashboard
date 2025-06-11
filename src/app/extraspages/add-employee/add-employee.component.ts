@@ -258,6 +258,12 @@ export class AddEmployeeComponent {
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
         joining_date: [""],
+        emergency_contact_name: ["", [Validators.maxLength(45)]],
+        emergency_contact_number: ["",  [
+            Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
+          ]],
+        pf_no: [""],
+        esi_no: [""],
         timer: [30, [Validators.required, Validators.min(0)]],
         unit: ["seconds", Validators.required], // Default unit
         password: [
@@ -556,6 +562,10 @@ this.empId = res.data[0].id;
         status: data.status,
         mobile: data.mobile,
         joining_date: data.joining_date,
+        emergency_contact_name: data.emergency_contact_name,
+        emergency_contact_number:  data.emergency_contact_number,
+        pf_no: data.pf_no,
+        esi_no:  data.esi_no,
         gender: data.gender,
         designation: data.designation,
         branch: data.branch,
@@ -617,6 +627,10 @@ this.empId = res.data[0].id;
     // this.f["status"].value
     formData.append("status", 'active');
     formData.append("joining_date", this.f["joining_date"].value);
+    formData.append("emergency_contact_name", this.f["emergency_contact_name"].value);
+    formData.append("emergency_contact_number", this.f["emergency_contact_number"].value);
+    formData.append("pf_no", this.f["pf_no"].value);
+    formData.append("esi_no", this.f["esi_no"].value);
     formData.append("gender", this.f["gender"].value);
     formData.append("branch", this.f["branch"].value);
     formData.append("designation", this.f["designation"].value);

@@ -242,7 +242,7 @@ noteMessage:any = '';
       case "Aadhaar":
         return {
           number: [Validators.required, Validators.pattern(/^\d{9,18}$/)],
-          file: [Validators.required],
+          file: [],
         };
       case "PAN":
         return {
@@ -250,27 +250,27 @@ noteMessage:any = '';
             Validators.required,
             Validators.pattern(/^[A-Z]{5}\d{4}[A-Z]{1}$/i),
           ],
-          file: [Validators.required],
+          file: [],
         };
       case "Driving License":
         return {
           number: [Validators.required, Validators.pattern(/^[A-Z0-9]{15}$/i)],
-          file: [Validators.required],
+          file: [],
         };
       case "Voter":
         return {
           number: [Validators.required, Validators.pattern(/^[A-Z]{3}\d{7}$/i)],
-          file: [Validators.required],
+          file: [],
         };
       case "UAN":
         return {
           number: [Validators.required, Validators.pattern(/^\d{12}$/)],
-          file: [Validators.required],
+          file: [],
         };
       default:
         return {
           number: [Validators.required],
-          file: [Validators.required],
+          file: [],
         };
     }
   }

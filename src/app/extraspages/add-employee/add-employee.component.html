@@ -136,9 +136,16 @@
             <!-- <form [formGroup]="formGroup" (ngSubmit)="onSubmit()"> -->
             <div class="row">
               <div class="col-lg-12 mb-3">
+                <div>
+<label  class="form-label"
+                    >Upload Passport Size Photo <span class="text-danger">(JPG/PNG, Max 2MB)</span></label
+                  >
+                </div>
+                
                 <div
                   class="profile-user position-relative d-inline-block mx-auto"
                 >
+                 
                   @if (employeeselectedImage) { @if
                   (employeeselectedImagePreview) {
                   <img
@@ -205,7 +212,7 @@
               <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="name" class="form-label"
-                    >Empolyee Name <span class="text-danger">*</span></label
+                    >Full Name <span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
@@ -229,6 +236,133 @@
                   f['name'].touched){
                   <div class="invalid-text">
                     Empolyee name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+               <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emergency_contact_name" class="form-label"
+                    >Emergency Contact Name </label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="emergency_contact_name"
+                    formControlName="emergency_contact_name"
+                    placeholder="Enter Emergency Contact Name"
+                    value="emergency_contact_name"
+                    [ngClass]="
+                      f['emergency_contact_name'] &&
+                      f['emergency_contact_name'].hasError('required') &&
+                      f['emergency_contact_name'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['emergency_contact_name'] && f['emergency_contact_name'].hasError('required') &&
+                  f['emergency_contact_name'].touched) {
+                  <div class="invalid-text"> emergency_contact_name is required.</div>
+                  } @if(f['emergency_contact_name'] && f['emergency_contact_name'].hasError('maxlength') &&
+                  f['emergency_contact_name'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+               <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emergency_contact_number" class="form-label"
+                    >Emergency Contact Number </label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="emergency_contact_number"
+                    formControlName="emergency_contact_number"
+                    placeholder="Enter Emergency Contact Number"
+                    value="emergency_contact_number"
+                    [ngClass]="
+                      f['emergency_contact_number'] &&
+                      f['emergency_contact_number'].hasError('required') &&
+                      f['emergency_contact_number'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['emergency_contact_number'] && f['emergency_contact_number'].hasError('required') &&
+                  f['emergency_contact_number'].touched) {
+                  <div class="invalid-text">Mobile is required.</div>
+                  } @if(f['emergency_contact_number'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Please, Enter 10 digit Mobile Number.
+                  </div>
+                  }
+                </div>
+              </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="pf_no" class="form-label"
+                    >PF Number </label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="pf_no"
+                    formControlName="pf_no"
+                    placeholder="Enter PF Number"
+                    value="pf_no"
+                    [ngClass]="
+                      f['pf_no'] &&
+                      f['pf_no'].hasError('required') &&
+                      f['pf_no'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['pf_no'] && f['pf_no'].hasError('required') &&
+                  f['pf_no'].touched) {
+                  <div class="invalid-text"> pf_no is required.</div>
+                  } @if(f['pf_no'] && f['pf_no'].hasError('maxlength') &&
+                  f['pf_no'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="esi_no" class="form-label"
+                    >ESI Number</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="esi_no"
+                    formControlName="esi_no"
+                    placeholder="Enter ESI Number"
+               
+                    [ngClass]="
+                      f['esi_no'] &&
+                      f['esi_no'].hasError('required') &&
+                      f['esi_no'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['esi_no'] && f['esi_no'].hasError('required') &&
+                  f['esi_no'].touched) {
+                  <div class="invalid-text"> esi_no is required.</div>
+                  } @if(f['esi_no'] && f['esi_no'].hasError('maxlength') &&
+                  f['esi_no'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
                   </div>
                   }
                 </div>
@@ -527,7 +661,7 @@
 
               <div class="col-lg-12">
                 <div class="mb-3">
-                  <label for="address" class="form-label"> Address </label>
+                  <label for="address" class="form-label"> Current Residential Address </label>
 
                   <textarea
                     class="form-control"
@@ -644,6 +778,8 @@
                 </div>
               </div>
 
+              
+
               <!-- <div class="col-lg-6">
                 <div class="row mb-3">
                   <div class="col-6">
@@ -683,7 +819,7 @@
                 </div>
               </div> -->
 
-              <div class="col-lg-6">
+              <!-- <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="statuss" class="form-label"
                     >Status <span class="text-danger">*</span></label
@@ -710,7 +846,7 @@
                   <div class="invalid-text">Status is required.</div>
                   }
                 </div>
-              </div>
+              </div> -->
 
               <div class="col-lg-6 d-flex align-items-center">
                 <li class="d-flex">
