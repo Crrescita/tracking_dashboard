@@ -507,7 +507,7 @@
                   <div class="d-flex">
                     <div class="flex-grow-1">
                       <label for="branch" class="form-label"
-                        >Branch <span class="text-danger">*</span></label
+                        >Location <span class="text-danger">*</span></label
                       >
                     </div>
                     <!-- <div class="flex-shrink-0">
@@ -524,7 +524,7 @@
                     formControlName="branch"
                     placeholder="Enter Branch"
                   >
-                    <option selected>Select Branch</option>
+                    <option selected>Select Location</option>
                     @for (item of branch; track $index) {
                     <option value="{{ item.id }}">
                       {{ item.name }}
@@ -534,7 +534,7 @@
 
                   @if (f['branch'] && f['branch'].hasError('required') &&
                   f['branch'].touched) {
-                  <div class="invalid-text">Branch is required.</div>
+                  <div class="invalid-text">Location is required.</div>
                   }
                 </div>
               </div>
