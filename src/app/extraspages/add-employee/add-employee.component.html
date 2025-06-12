@@ -129,7 +129,7 @@
     <div class="col-xl-12">
       <div class="card">
         <div class="card-header">
-          <h6 class="card-title mb-0">Personal Details</h6>
+          <h6 class="card-title mb-0">Employee Master Data</h6>
         </div>
         <div class="card-body">
           <div class="col-xxl-12">
@@ -240,6 +240,101 @@
                   }
                 </div>
               </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emp_id" class="form-label"
+                    >Employee Id <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="emp_id"
+                    formControlName="emp_id"
+                    placeholder="Enter Employee Id"
+                    value="emp_id"
+                    [ngClass]="
+                      f['emp_id'] &&
+                      f['emp_id'].hasError('required') &&
+                      f['emp_id'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['emp_id'] && f['emp_id'].hasError('required') &&
+                  f['emp_id'].touched) {
+                  <div class="invalid-text">Employee Id is required.</div>
+                  }
+                </div>
+              </div>
+
+                            <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="email" class="form-label"
+                    >Email <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="email"
+                    formControlName="email"
+                    placeholder="Enter email"
+                    value="email"
+                    [ngClass]="
+                      f['email'] &&
+                      f['email'].hasError('required') &&
+                      f['email'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['email'] && f['email'].hasError('required') &&
+                  f['email'].touched) {
+                  <div class="invalid-text">Email is required.</div>
+                  } @if(f['email'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Email must be a valid email address
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="contact" class="form-label"
+                    >Contact Number <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="contact"
+                    formControlName="mobile"
+                    placeholder="Enter mobile"
+                    value="mobile"
+
+  (blur)="fetchEmployeeByMobile()"
+                    [ngClass]="
+                      f['mobile'] &&
+                      f['mobile'].hasError('required') &&
+                      f['mobile'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+
+                  @if (f['mobile'] && f['mobile'].hasError('required') &&
+                  f['mobile'].touched) {
+                  <div class="invalid-text">Mobile is required.</div>
+                  } @if(f['mobile'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Please, Enter 10 digit Mobile Number.
+                  </div>
+                  }
+                </div>
+              </div>
+
 
                <div class="col-lg-6">
                 <div class="mb-3">
@@ -368,101 +463,38 @@
                 </div>
               </div>
 
-              <div class="col-lg-6">
+            
+
+
+            <div class="col-lg-6">
                 <div class="mb-3">
-                  <label for="emp_id" class="form-label"
-                    >Employee Id <span class="text-danger">*</span></label
+                  <label for="gender" class="form-label"
+                    >Gender <span class="text-danger">*</span></label
                   >
-                  <input
-                    type="text"
+                  <select
                     class="form-control"
-                    id="emp_id"
-                    formControlName="emp_id"
-                    placeholder="Enter Employee Id"
-                    value="emp_id"
+                    formControlName="gender"
+                    data-choices
+                    id="gender"
                     [ngClass]="
-                      f['emp_id'] &&
-                      f['emp_id'].hasError('required') &&
-                      f['emp_id'].touched
+                      f['gender'] &&
+                      f['gender'].hasError('required') &&
+                      f['gender'].touched
                         ? 'is-invalid'
                         : ''
                     "
-                  />
-
-                  @if (f['emp_id'] && f['emp_id'].hasError('required') &&
-                  f['emp_id'].touched) {
-                  <div class="invalid-text">Employee Id is required.</div>
-                  }
-                </div>
-              </div>
-
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label for="email" class="form-label"
-                    >Email <span class="text-danger">*</span></label
                   >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    formControlName="email"
-                    placeholder="Enter email"
-                    value="email"
-                    [ngClass]="
-                      f['email'] &&
-                      f['email'].hasError('required') &&
-                      f['email'].touched
-                        ? 'is-invalid'
-                        : ''
-                    "
-                  />
-
-                  @if (f['email'] && f['email'].hasError('required') &&
-                  f['email'].touched) {
-                  <div class="invalid-text">Email is required.</div>
-                  } @if(f['email'].hasError('pattern')){
-                  <div class="invalid-text">
-                    Email must be a valid email address
-                  </div>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  @if (f['gender'] && f['gender'].hasError('required') &&
+                  f['gender'].touched) {
+                  <div class="invalid-text">Gender is required.</div>
                   }
                 </div>
               </div>
-
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label for="contact" class="form-label"
-                    >Contact Number <span class="text-danger">*</span></label
-                  >
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="contact"
-                    formControlName="mobile"
-                    placeholder="Enter mobile"
-                    value="mobile"
-
-  (blur)="fetchEmployeeByMobile()"
-                    [ngClass]="
-                      f['mobile'] &&
-                      f['mobile'].hasError('required') &&
-                      f['mobile'].touched
-                        ? 'is-invalid'
-                        : ''
-                    "
-                  />
-
-                  @if (f['mobile'] && f['mobile'].hasError('required') &&
-                  f['mobile'].touched) {
-                  <div class="invalid-text">Mobile is required.</div>
-                  } @if(f['mobile'].hasError('pattern')){
-                  <div class="invalid-text">
-                    Please, Enter 10 digit Mobile Number.
-                  </div>
-                  }
-                </div>
-              </div>
-
-          
               <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="dob" class="form-label">Date of Birth </label>
@@ -629,35 +661,7 @@
                 </div>
               </div>
 
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label for="gender" class="form-label"
-                    >Gender <span class="text-danger">*</span></label
-                  >
-                  <select
-                    class="form-control"
-                    formControlName="gender"
-                    data-choices
-                    id="gender"
-                    [ngClass]="
-                      f['gender'] &&
-                      f['gender'].hasError('required') &&
-                      f['gender'].touched
-                        ? 'is-invalid'
-                        : ''
-                    "
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  @if (f['gender'] && f['gender'].hasError('required') &&
-                  f['gender'].touched) {
-                  <div class="invalid-text">Gender is required.</div>
-                  }
-                </div>
-              </div>
+            
 
               <div class="col-lg-12">
                 <div class="mb-3">
