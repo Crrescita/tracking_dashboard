@@ -9,6 +9,7 @@ import { SupportComponent } from './support/support.component';
 import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
+import { EmployeeThankyouComponent } from "./employee-thankyou/employee-thankyou.component";
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
    {
     path:"add-employee",
     component: AddEmployeeComponent
+  },
+  {
+    path:"employee-thankyou",
+    component: EmployeeThankyouComponent
   }
 ];
 

@@ -1,0 +1,398 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Leave Record List"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="leave-record">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-lg-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Leave Record
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                leaveRecordData?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="leaveRecordDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </h5>
+          </div>
+
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              <div class="col-xxl">
+                <div class="search-box">
+                  <input
+                    type="text"
+                    class="form-control search"
+                    [(ngModel)]="term"
+                    (keyup)="filterdata()"
+                    placeholder="Search name"
+                  />
+                  <i class="ri-search-line search-icon"></i>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-info me-1"
+                (click)="openEnd()"
+              >
+                <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                @if(totalFilterCount >0){
+                <span
+                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                  >{{ totalFilterCount }}
+                </span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-centered align-middle table-nowrap mb-0">
+              <thead class="table-active">
+                <tr>
+                  <th class="sort cursor-pointer" (click)="onSort('name')">
+                    Name
+                  </th>
+
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('recent_leaveDate')"
+                  >
+                    Last Leave
+                  </th>
+
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('upcoming_leaveDate')"
+                  >
+                    Upcoming Leave
+                  </th>
+
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('total_leave_taken')"
+                  >
+                    Total Allotted Leave
+                  </th>
+
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list form-check-all">
+                @for ( data of leaveRecordData; track $index) {
+                <tr id="p_{{ data._id }}">
+                  <td class="id" style="display: none">
+                    <a href="javascript:void(0);" class="fw-medium link-primary"
+                      >#TB01</a
+                    >
+                  </td>
+                  <td class="products">
+                    <!-- <div class="d-flex align-items-center">
+                      @if(data.image){
+
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="{{ data.image }}"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+
+                      }@else {
+                      <div class="avatar-sm bg-light rounded p-1 me-2">
+                        <img
+                          src="assets/images/users/avatar-1.jpg"
+                          alt=""
+                          class="img-fluid d-block"
+                        />
+                      </div>
+
+                      }
+                      <div>
+                        <h6 class="mb-0">
+                          <a class="text-reset products">{{ data.name }}</a>
+                        </h6>
+                        <p class="text-muted mb-0">{{ data.designation }}</p>
+                      </div>
+                    </div> -->
+
+                    <div class="d-flex align-items-center">
+                      <div class="flex-shrink-0 position-relative">
+                        <img
+                          [src]="
+                            data.image
+                              ? data.image
+                              : 'assets/images/users/avatar-1.jpg'
+                          "
+                          alt=""
+                          class="avatar-sm rounded"
+                        />
+                        <!-- <span
+                          [ngClass]="
+                            data.checkin_status == 'Check-in'
+                              ? 'bg-success'
+                              : 'bg-danger'
+                          "
+                          class="position-absolute top-0 start-100 translate-middle badge border border-2 border-white rounded-circle p-1"
+                          ><span class="visually-hidden"
+                            >unread messages</span
+                          ></span
+                        > -->
+                      </div>
+                      <div class="flex-grow-1 ms-2">
+                        <h5 class="fs-md">
+                          <a
+                            [routerLink]="['/employee-detail', data.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ data.name }}</a
+                          >
+                        </h5>
+                        <p class="text-muted mb-0">
+                          {{ data.designation }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="products">
+                    @if(data.recent_leaveDate){
+                    {{ data.recent_leaveDate | date : "dd MMM, YYYY" }}
+                    <span class="fw-bold">({{ data.recent_leave }}) </span>
+                    }@else { - }
+                  </td>
+                  <td class="products">
+                    @if(data.upcoming_leaveDate){
+                    {{ data.upcoming_leaveDate | date : "dd MMM, YYYY" }}
+                    <span class="fw-bold">({{ data.upcoming_leave }}) </span>
+                    }@else { - }
+                  </td>
+                  <td class="products">
+                    {{ data.total_leave_taken }}
+                  </td>
+                  <td>
+                    <ul class="d-flex gap-2 list-unstyled mb-0">
+                      <li>
+                        <a
+                          routerLink="/employe-leave-record/{{ data.id }}"
+                          class="btn btn-subtle-primary btn-icon btn-sm"
+                          ><i class="ph-eye"></i
+                        ></a>
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+                }
+              </tbody>
+              @if (spinnerStatus) {
+              <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              }
+            </table>
+          </div>
+          <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched
+                {{ this.leaveRecordDataList.length }} Leave Record We did not
+                find any Leave Record for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+          <div class="row mt-3 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{ leaveRecordData?.length }}</span>
+                of
+                <span class="fw-semibold">{{
+                  filteredLeaveRecordData?.length
+                }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0 d-md-flex">
+              @if(filteredLeaveRecordData?.length){
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
+                [totalItems]="filteredLeaveRecordData?.length"
+                [itemsPerPage]="currentItemsPerPage"
+                (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
+              ></pagination>
+              }
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="leaveRecordDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>

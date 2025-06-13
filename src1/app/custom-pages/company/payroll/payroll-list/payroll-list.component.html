@@ -1,0 +1,1311 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Payroll"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div id="productList">
+  <!-- <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row g-4 parent">
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-primary-subtle rounded-circle text-primary"
+                  >
+                    <i class="ri-user-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Total Employee</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="payrollDataList?.length"
+                  >{{ payrollDataList?.length }}</span
+                >
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-user-follow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Present</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalPresent"
+                  >{{ this.attendanceCount?.totalPresent }}</span
+                >
+              
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="ri-user-unfollow-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Absent</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalAbsent"
+                  >{{ this.attendanceCount?.totalAbsent }}</span
+                >
+               
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-warning-subtle rounded-circle text-warning"
+                  >
+                    <i class="mdi mdi-account-alert-outline"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Leave</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span
+                  class="counter-value"
+                  [countUp]="this.attendanceCount?.totalLeave"
+                  >{{ this.attendanceCount?.totalLeave }}</span
+                >
+              
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-success-subtle rounded-circle text-success"
+                  >
+                    <i class="ri-timer-line"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">On Time</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalOnTime
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA border-end-sm h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-secondary-subtle rounded-circle text-secondary"
+                  >
+                    <i class="bi bi-clock-history"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Early</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalEarly
+                }}</span>
+              </h3>
+            </div>
+            <div class="child childA h-100">
+              <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="avatar-xs flex-shrink-0">
+                  <div
+                    class="avatar-title bg-body-secondary border border-danger-subtle rounded-circle text-danger"
+                  >
+                    <i class="bx bx-timer"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="text-muted mb-0">Late</p>
+                </div>
+              </div>
+              <h3 class="mb-0">
+                <span class="counter-value">{{
+                  this.attendanceCount?.totalLate
+                }}</span>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div> -->
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header d-lg-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Payroll
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                payrollData?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="payrollDataList?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </h5>
+
+            <p class="text-muted mb-0 mt-2">
+              Showing Result of Date:
+              <span class="fw-bold">
+                {{ this.formattedDate | date : "MMM , yyyy" }}</span
+              >
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <div class="d-flex flex-wrap align-items-start gap-2">
+              
+                <div class="" >
+                    <ui-switch 
+                    class="text-white"
+                    [(ngModel)]="showFinalizedPayroll" 
+                    uncheckedLabel="Pending" 
+                    checkedLabel="Finalized" 
+                    (change)="togglebtn($event)">
+                </ui-switch>
+
+                
+                </div>
+            
+              <div class="col-xxl">
+              
+                
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepicker"
+                    class="form-control"
+                    showWeekNumbers="false"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+                    [(ngModel)]="selectedDate"
+                    (bsValueChange)="onDateChange($event)"
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepicker"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+              </div>
+           
+                     
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="form-control search"
+                  [(ngModel)]="term"
+                  (keyup)="filterdata()"
+                  placeholder="Search name, mobile etc..."
+                />
+
+                <i class="ri-search-line search-icon"></i>
+              </div>
+              <!-- <button type="button"  [ngClass]="showFinalizedPayroll ? 'btn-success btn-subtle-success' : 'btn-danger btn-subtle-danger'" class="btn custom-toggle active" data-bs-toggle="button"
+              (click)="togglebtn($event)">
+              <span class="icon-on"><i class=" ri-close-circle-fill align-bottom me-1"> </i>Pending Payroll</span>
+              <span class="icon-off"><i class=" ri-checkbox-circle-fill align-bottom me-1"></i>Finalized Payroll</span>
+          </button> -->
+
+          <!-- Custom Switch size -->
+        
+              <div class="col-lg-auto">
+                
+                <div class="hstack flex-wrap gap-2">
+                  <div>
+                    <button class="btn btn-primary" (click)="onSubmitAll()">Submit</button>
+
+                    <button
+                      (click)="exportTableToExcel()"
+                      type="button"
+                      id="download-button"
+                      class="btn btn-primary me-2"
+                    >
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Download
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-info me-1"
+                      (click)="openEnd()"
+                    >
+                      <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                      @if(totalFilterCount >0){
+                      <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                        >{{ totalFilterCount }}
+                      </span>
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!--end col-->
+
+              <!-- <button class="btn btn-subtle-danger d-none" id="remove-actions">
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <button type="button" class="btn btn-primary add-btn">
+                <i class="bi bi-plus-circle align-baseline me-1"></i> Add
+                Product
+              </button> -->
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-centered align-middle table-nowrap mb-0">
+              <thead class="table-active">
+                <tr>
+                  <th>
+                    <div class="form-check">
+                      <!-- <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="option"
+                      [checked]="selectedEmployees.includes(data)"
+      (change)="toggleSelection(data, $event)"
+                        id="checkAll"
+                      /> -->
+                      <label class="form-check-label" for="checkAll"></label>
+                    </div>
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('name')">
+                    Name
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('mobile')">
+                    Mobile
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('emp_salary')">
+                    Monthly Salary
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('paid_days')">
+                    Paid Days
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('earning_amount')"
+                  >
+                    Earning Amount
+                  </th>
+                  <th
+                    class="sort cursor-pointer"
+                    (click)="onSort('deduction_amount')"
+                  >
+                    Deduction Amount
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('net_pay')">
+                    Net Pay
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('net_pay')">
+                    Employer's (CTC)
+                  </th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list form-check-all">
+                @for ( data of payrollData; track $index) {
+                <tr id="p_{{ data._id }}">
+                  <td>
+                    <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="option"
+                  [checked]="selectedEmployees.includes(data)"
+  (change)="toggleSelection(data, $event)"
+                    id="checkAll"
+                  />
+                  </td>
+                  <td class="id" style="display: none">
+                    <a href="javascript:void(0);" class="fw-medium link-primary"
+                      >#TB01</a
+                    >
+                  </td>
+                  <td class="products">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-shrink-0 position-relative">
+                        <img
+                          [src]="
+                            data.image
+                              ? data.image
+                              : 'assets/images/users/avatar-1.jpg'
+                          "
+                          alt=""
+                          class="avatar-sm rounded"
+                        />
+                      </div>
+                      <!-- </div> -->
+                      <div class="flex-grow-1 ms-2">
+                        <h5 class="fs-md">
+                          <a
+                            [routerLink]="['/employee-detail', data.id]"
+                            [queryParams]="{ tab: 'personalDetails' }"
+                            class="text-dark"
+                            >{{ data.name }}</a
+                          >
+                        </h5>
+                        <p class="text-muted mb-0">
+                          {{ data.designation }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="discount">{{ data.mobile }}</td>
+                  <td class="category"><i class="bx bx-rupee"></i>{{data.emp_salary? (data.emp_salary | number:'1.0-2'):0}}</td>
+                  <td class="category">@if(data.payroll_finalized === 1){
+                    {{data.paid_days? data.paid_days:0 }} }
+                    @else {
+                        {{data.salaryInvoiceData?.paidDays ? data.salaryInvoiceData?.paidDays : 0}}
+                    }  </td>
+                  <td class="stock"><i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{ data.earning_amount ? (data.earning_amount | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.earnTotal ? (data.salaryInvoiceData?.earnTotal | number:'1.0-2') : 0}}
+                    }
+
+                    </td>
+                  <td class="price">
+                    <i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{data.deduction_amount ? (data.deduction_amount | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.deductionsTotal ? (data.salaryInvoiceData?.deductionsTotal | number:'1.0-2') : 0}}
+                    }
+                    
+                  </td>
+                  <td class="orders">
+                    <i class="bx bx-rupee"></i>
+                    @if(data.payroll_finalized === 1){
+                        {{data.net_pay? (data.net_pay | number:'1.0-2'):0}}
+                    }@else {
+                        {{data.salaryInvoiceData?.totalamount ? (data.salaryInvoiceData?.totalamount | number:'1.0-2') : 0}}
+                    }
+                   
+                  </td>
+                  <td class="orders">
+                    <i class="bx bx-rupee"></i> 
+                    @if(data.payroll_finalized === 1){
+                        {{ data.employeer_ctc?.totalctc ? (data.employeer_ctc.totalctc | number:'1.0-2') : 0 }}
+                    }@else{
+                        {{data.salaryInvoiceData?.totalctc ? (data.salaryInvoiceData?.totalctc | number:'1.0-2') : 0}}
+                    } 
+                  </td>
+                  <td>
+                    <ul class="d-flex gap-2 list-unstyled mb-0">
+                      <li>
+                        <a
+                          data-bs-toggle="tooltip"
+                          placement="top"
+                          tooltip="View"
+                          routerLink="/edit-employee/{{ data.emp_id }}"
+                          [queryParams]="{
+                            tab: 'salary-invoice',
+                         
+                          }"
+                          class="btn btn-subtle-primary btn-icon btn-sm edit-item-btn"
+                          ><i class="ph-eye align-middle"></i
+                        ></a>
+                      </li>
+                      @if(data.payroll_finalized === 1){
+                        <li>
+                            <a
+                              data-bs-toggle="tooltip"
+                              placement="top"
+                              tooltip="Pay Slip"
+                              (click)="tooltipmodal.show(); updatePaySlipData(data)"
+                              class="btn btn-subtle-info btn-icon btn-sm remove-item-btn"
+                              ><i class="ri-article-fill"></i
+                            ></a>
+                          </li>
+                      }@else {
+                        <li>
+                            <a
+                              data-bs-toggle="tooltip"
+                              placement="top"
+                              tooltip="Pay Slip"
+                              (click)="openSalaryInvoice(data);showsalaryInvoice.show()" 
+                             
+                              class="btn btn-subtle-info btn-icon btn-sm remove-item-btn"
+                              ><i class="ri-article-fill"></i
+                            ></a>
+<div class="d-none">
+    <app-salary-invoice (salaryInvoiceData)="updatePayrollData($event)"    [salaryDetailData]="data.empSalaryData"  [urlId]="data.emp_id"></app-salary-invoice>
+
+</div>
+
+                          </li>
+                      }
+                     
+                    </ul>
+
+                
+                  </td>
+                </tr>
+                }
+              </tbody>
+              @if (spinnerStatus) {
+              <div id="elmLoader">
+                <div
+                  class="spinner-border text-primary avatar-sm"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              }
+            </table>
+          </div>
+          <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched {{ payrollDataList?.length }} Employee Data. We
+                did not find any Employee for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+          <div class="row mt-3 align-items-center" id="pagination-element">
+            <div class="col-sm">
+              <div class="text-muted text-center text-sm-start">
+                Showing
+                <span class="fw-semibold">{{ payrollData?.length }}</span> of
+                <span class="fw-semibold">{{
+                  filteredAttendanceData?.length
+                }}</span>
+                Results
+              </div>
+            </div>
+
+            <div class="col-sm-auto mt-3 mt-sm-0">
+              @if(filteredAttendanceData?.length){
+              <pagination
+                class="pagination-wrap hstack gap-2 justify-content-center"
+                [(ngModel)]="currentPage"
+                [totalItems]="filteredAttendanceData?.length"
+                [itemsPerPage]="currentItemsPerPage"
+                (pageChanged)="pageChanged($event)"
+                [maxSize]="5"
+              ></pagination>
+              }
+            </div>
+          </div>
+          <!-- end pagination-element -->
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>
+
+<div
+  bsModal
+  #tooltipmodal="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="tooltipmodal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-xxl-12">
+            <div class="hstack gap-2 justify-content-end d-print-none mb-4">
+              <a href="javascript:window.print()" class="btn btn-success"
+                ><i class="ri-printer-line align-bottom me-1"></i> Print</a
+              >
+            </div>
+            <div class=" overflow-hidden myDivToPrint" id="invoice">
+              <div class=" z-1 position-relative">
+                <div class="d-flex">
+                  <div class="flex-grow-1">
+                    <img
+                      src="/assets/payslip-header.png"
+                      class="card-logo img-fluid"
+                      alt="logo light"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-12 bg-light text-center py-3">
+                  <h6 class="fw-bold">A B Pal Electricals (P) Limited</h6>
+                  <h6 class="fw-normal">
+                    1826, Bhagirath Palace, Chandni Chowk, Delhi-110006, India
+                  </h6>
+                  <h6 class="fw-normal">
+                    Phone: +91 98914 98555, +9111 43 111 333
+                  </h6>
+                  <h6 class="fw-normal">Email Id: contact&#64;abpal.com</h6>
+                  <h6 class="fw-normal mb-0">Website: www.abpal.com</h6>
+                </div>
+
+                <div class="col-12 ">
+                    <div class="mt-2">
+                        <div class=" bg-light text-center p-2">
+                       <strong>Pay Slip for
+                        {{ payslipData?.payslip_for_month | date : "MMMM, YYYY" }}</strong>   
+                        </div>
+                      </div>
+                     
+                </div>
+                <div class="row mt-3">
+                   
+                      <div class="col-6">
+                        <h6>
+                          Employee Name :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.name }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Employee Code :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.employee_id }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Work Location :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.branch }}</span
+                          >
+                        </h6>
+                        <h6>
+                          Designation :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.designation
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Department :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.department
+                          }}</span>
+                        </h6>
+                      </div>
+  
+                      <div class="col-6">
+                        <h6>
+                          Date of Joining :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.joining_date  | date : "dd MMM, YYYY"}}</span
+                          >
+                        </h6>
+                        <h6>
+                          Aadhar No. :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.aadhaar
+                          }}</span>
+                        </h6>
+                        <h6>
+                          PAN No. :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.pan
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank Name :&nbsp;<span class="text-muted fw-normal">{{
+                            payslipData?.bank_name
+                          }}</span>
+                        </h6>
+                        <h6>
+                          Bank A/c No. :&nbsp;<span
+                            class="text-muted fw-normal"
+                            >{{ payslipData?.acc_number }}</span
+                          >
+                        </h6>
+                      </div>
+                   
+                  </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive mt-2">
+                      <table
+                        class="table table-bordered text-center table-nowrap align-middle mb-0"
+                      >
+                        <thead>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">
+                              Salary Monthly
+                            </th>
+                            <th scope="col" class="text-end">
+                              <i class="bx bx-rupee"></i>
+                              {{ payslipData?.emp_salary | number:'1.0-2'}}
+                            </th>
+                            <th scope="col" class="text-start">
+                              Total Paid Days
+                            </th>
+                            <th scope="col" class="text-end">
+                              {{ payslipData?.paid_days }}
+                            </th>
+                          </tr>
+                          <tr class="table-light">
+                            <th scope="col" class="text-start">Earnings</th>
+                            <th scope="col" class="text-end">Amount</th>
+                            <th scope="col" class="text-start">Deductions</th>
+                            <th scope="col" class="text-end">Amount</th>
+                          </tr>
+                        </thead>
+                        <tbody id="products-list">
+                          <ng-container
+                            *ngFor="
+                              let i of getMaxLength(
+                                payslipData?.earning,
+                                payslipData?.deduction
+                              )
+                            "
+                          >
+                            <tr>
+                              <!-- @if(payslipData?.earning[i]?.name){ -->
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.earning[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.earning[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.earning[i]?.amount | number:'1.0-2' }}
+                                }@else if (!payslipData?.earning[i]?.name) {
+                                    
+                                }@else {
+                                    Nil 
+                                }
+                              </td>
+                              <!-- }  -->
+                              <!-- @if(payslipData?.deduction[i]?.name){ -->
+                              <td class="text-start">
+                                <span class="fw-medium">{{
+                                  payslipData?.deduction[i]?.name || ""
+                                }}</span>
+                              </td>
+                              <td class="text-end">
+                                @if( payslipData?.deduction[i]?.amount){
+                                <i class="bx bx-rupee"></i>
+                                {{ payslipData?.deduction[i]?.amount | number:'1.0-2' }}
+                                }@else if (!payslipData?.deduction[i]?.name) {
+
+                                }
+                                 @else { Nil }
+                              </td>
+                              <!-- } -->
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                        <tfoot>
+                          <tr class="table-light">
+                            <td class="text-start">
+                              <strong>Total Earnings</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.earning_amount | number:'1.0-2'}}
+                            </td>
+                            <td class="text-start">
+                              <strong>Total Deductions</strong>
+                            </td>
+                            <td class="text-end">
+                               <i class="bx bx-rupee"></i> {{ payslipData?.deduction_amount | number:'1.0-2'}}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="border-top border-top-dashed mt-1"
+                  id="products-list-total"
+                >
+                  <table
+                    class="table table-bordered table-nowrap align-middle mb-0"
+                  >
+                    <tbody>
+                      <tr class="border-top border-top-dashed fs-base">
+                        <th scope="row">Net Pay</th>
+                        <th class="text-end">
+                          <i class="bx bx-rupee"></i>{{ payslipData?.net_pay | number:'1.0-2'}}
+                        </th>
+                      </tr>
+                      <tr>
+                        <th scope="row">In Words:</th>
+                        <th class="text-end">
+                            <i class="bx bx-rupee"></i>  {{ convertNumberToWords(payslipData?.net_pay || 0) }}
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                      <thead>
+                        <tr class="table-light">
+                          <th scope="col" colspan="3">
+                            Employer's Contribution (CTC)
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="border-top border-top-dashed fs-base">
+                          <td scope="row">Earning Gross:</td>
+                          <td></td>
+                          <td class="text-end">
+                            <i class="bx bx-rupee"></i
+                            >{{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's Provident Fund</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Pension Fund
+                          </td>
+                          <td class="text-end">Nil</td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <td colspan="1" class="ps-4 text-start">
+                            &gt; Provident Fund
+                          </td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerPfAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{ payslipData?.employeer_ctc?.employeerPfAmount | number:'1.0-2'}}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                          <td class="text-end"></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Employer's State Insurance</th>
+                          <td></td>
+                          <td class="text-end">
+                            @if(payslipData?.employeer_ctc?.employeerEsiAmount){
+                                <i class="bx bx-rupee"></i
+                                    >{{
+                                      payslipData?.employeer_ctc?.employeerEsiAmount| number:'1.0-2'
+                                    }}
+                            }@else {
+                                Nil
+                            }
+                            
+                          </td>
+                        </tr>
+
+                        <tr class="table-light">
+                          <th scope="row">Total CTC</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalctc | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class=" mt-2">
+                    <table
+                      class="table table-bordered table-nowrap align-middle mb-0 ml-5"
+                     
+                    >
+                     
+                      <tbody>
+                      
+                        <tr class="table-light">
+                          <th scope="row">Gross Salary</th>
+
+                          <td class="text-end" colspan="2">
+                         <strong><i class="bx bx-rupee"></i
+                            > {{ payslipData?.employeer_ctc?.totalEarning | number:'1.0-2'}}</strong>   
+                          </td>
+                        </tr>
+                        <!-- <tr class="table-light">
+                          <th scope="row">In Words</th>
+
+                          <td class="text-end" colspan="2">
+                            <i class="bx bx-rupee"></i>
+                           <strong>{{
+                            convertNumberToWords(
+                              payslipData?.employeer_ctc?.totalctc || 0
+                            )
+                          }}</strong> 
+                          </td>
+                        </tr> -->
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!--end table-->
+                </div>
+
+        
+                  <div class="mb-0 mt-3 bg-light text-center py-2 ">
+                    
+                    <span id="note">
+                        This is a computer-generated document and does not require a signature.
+                    </span>
+                  </div>
+             
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div
+  bsModal
+  #showsalaryInvoice="bs-modal"
+  class="modal fade"
+  id="exampleModalPopovers"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Payslip</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="showsalaryInvoice.hide()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-xxl-12">
+          
+            <div class=" overflow-hidden " >
+                @if(this.empSalaryData){
+                    <app-salary-invoice (salaryInvoiceData)="updatePayrollData($event)"   [salaryDetailData]="this.empSalaryData"  [urlId]="this.emp_id"></app-salary-invoice>
+                }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Date</p>
+          <div class="input-group">
+            <input
+              type="text"
+              id="datepickers"
+              class="form-control"
+              showWeekNumbers="false"
+              bsDatepicker
+              [bsConfig]="bsConfig"
+              [(ngModel)]="selectedDate"
+              (bsValueChange)="onDateChange($event)"
+            />
+            <div class="input-group-append">
+              <label for="datepickers" class="input-group-text cursor-pointer">
+                <i class="ri-calendar-fill"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search name, Employee id etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="Search name, Employee id etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="col-lg-12">
+            <button
+              type="button"
+              class="btn btn-secondary custom-toggle active"
+              data-bs-toggle="button"
+              (click)="togglebtn($event)"
+            >
+              <span class="icon-on"><i class="ri-check-fill align-bottom me-1"></i> Show Finalized Payroll</span>
+              <span class="icon-off"><i class="ri-user-add-line align-bottom me-1"></i> Show All</span>
+            </button>
+          </div>
+          
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
+          <ng-select
+            [items]="payrollDataList"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedEmp"
+            name="Employee name"
+            placeholder="Select Employee name"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Attendance Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Leave">Leave</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Check-in Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedCheckInStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Check-in">Check-In</option>
+            <option value="Check-out">Check-Out</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Arrival Status</p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedCheckStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="On-Time">On Time</option>
+            <option value="Early">Early</option>
+            <option value="Late">Late</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <!-- <div class="col-lg-12">
+          <div class="mb-3">
+            <label
+              class="select-category-filter form-label fs-md mb-3 text-decoration-underline"
+              >Ratings</label
+            >
+            <div class="vstack gap-2">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-all"
+                />
+                <label class="form-check-label" for="rating-all">
+                  Select All
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter1"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter1"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter2"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter2"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">4 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter3"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter3"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">3 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter4"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter4"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">2 & Up</span>
+                </label>
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="rating-filter5"
+                />
+                <label
+                  class="form-check-label text-warning"
+                  for="rating-filter5"
+                >
+                  <i class="bi bi-star-fill"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <i class="bi bi-star-fill text-muted"></i>
+                  <span class="ms-1 text-muted">1 & Up</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div> -->
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+      <i class="bi bi-funnel align-baseline me-1"></i> Filters
+    </button> -->
+  </div>
+</div>
+
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>

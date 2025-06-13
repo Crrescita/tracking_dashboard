@@ -1,0 +1,593 @@
+<app-breadcrumbs
+  [title]="urlId ? 'Edit Employee Detail' : 'Add Employee Detail'"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<div class="row">
+  <!-- <div class="text-end">
+    <button class="btn btn-secondary mb-2" (click)="goBack()">
+      <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+      Back
+    </button>
+  </div> -->
+
+  <div class="col-xl-12">
+    <div class="p-3 user-chat-topbar border-bottom border-2">
+      <div class="row align-items-center justify-content-between flex-nowrap">
+        <div class="col-sm-4 col">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 d-block d-lg-none me-3">
+              <a href="javascript: void(0);" class="user-chat-remove fs-lg p-1"
+                ><i class="ri-arrow-left-s-line align-bottom"></i
+              ></a>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <div class="d-flex align-items-center">
+                <div
+                  class="flex-shrink-0 chat-user-img online user-own-img align-self-center me-3 ms-0"
+                >
+                <img
+                [src]="
+                  this.empData?.image
+                    ? this.empData?.image
+                    : 'assets/images/users/avatar-1.jpg'
+                "
+                alt=""
+                class="rounded-circle avatar-xs"
+              />
+                 
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <h5 class="text-truncate mb-1 fs-lg">
+                    <a
+                      class="text-reset username"
+                      data-bs-toggle="offcanvas"
+                      href="javascript:void(0);"
+                      aria-controls="userProfileCanvasExample"
+                      >{{this.empData?.name}}</a
+                    >
+                  </h5>
+                  <p class="text-truncate text-muted fs-md mb-0 userStatus">
+                    <small>{{this.empData?.designation_name}}</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-auto">
+          <div class="text-end">
+            <button class="btn btn-secondary mb-2" (click)="goBack()">
+              <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+              Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-wrapper d-lg-flex gap-1 p-1 mb-3">
+      <div class="chat-wrapper-menu p-3 d-flex flex-column rounded">
+        <!-- <div class="mb-3 position-relative d-none d-lg-block">
+              <a href="javascript:void(0);"><img src="assets/images/users/48/avatar-1.jpg" alt="" class="avatar-sm rounded"></a>
+              <span class="position-absolute top-0 start-100 translate-middle badge border border-light rounded-circle bg-success p-1"><span class="visually-hidden">unread messages</span></span>
+          </div> -->
+        <ul
+          class="chat-menu list-unstyled text-center nav nav-pills justify-content-center"
+        >
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Personal Details"
+            [class.active]="currentTab === 'personal-detail'"
+            (click)="changeTab('personal-detail')"
+            placement="right"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link active"
+              [ngClass]="{ active: currentTab === 'personal-detail' }"
+              ><i class="ri-user-2-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Bank account Details"
+            [class.active]="currentTab === 'bank'"
+            (click)="changeTab('bank')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'bank' }"
+              ><i class="ri-bank-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Background Verification"
+            [class.active]="currentTab === 'background-verification'"
+            (click)="changeTab('background-verification')"
+            placement="right"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'background-verification' }"
+              ><i class="bi bi-file-earmark-richtext"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Salary Details"
+            [class.active]="currentTab === 'salary-detail'"
+            (click)="changeTab('salary-detail')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'salary-detail' }"
+              ><i class="ri-article-fill"></i
+            ></a>
+          </li>
+          <li
+            class="nav-item"
+            placement="right"
+            tooltip="Salary Invoice"
+            [class.active]="currentTab === 'salary-invoice'"
+            (click)="changeTab('salary-invoice')"
+          >
+            <a
+              href="javascript:void(0);"
+              class="nav-link"
+              [ngClass]="{ active: currentTab === 'salary-invoice' }"
+              ><i class="ri-file-list-3-line"></i
+            ></a>
+          </li>
+
+          <li
+          class="nav-item"
+          placement="right"
+          tooltip="Advance"
+          [class.active]="currentTab === 'advance'"
+          (click)="changeTab('advance')"
+        >
+          <a
+            href="javascript:void(0);"
+            class="nav-link"
+            [ngClass]="{ active: currentTab === 'advance' }"
+            ><i class="ri-hand-coin-fill"></i
+          ></a>
+        </li>
+
+          
+        </ul>
+
+        <!-- <div class="mt-auto text-center d-none d-lg-block">
+          <div dropdown [dropup]="true" container="body" class="dropdown">
+            <button
+              dropdownToggle
+              class="btn btn-secondary btn-icon"
+              type="button"
+            >
+              <i class="bi bi-gear"></i>
+            </button>
+            <ul *bsDropdownMenu class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);">Action</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  >Another action</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  >Something else here</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div> -->
+      </div>
+      <!-- <div class="chat-leftsidebar">
+        <div class="tab-content">
+          <div
+            [hidden]="currentTab !== 'personal-detail'"
+            class="tab-pane show active"
+            id="pills-chats"
+          >
+            <div class="p-4">
+              <div class="d-flex align-items-start">
+                <div class="flex-grow-1">
+                  <h5 class="mb-4">Personal Details</h5>
+                </div>
+                <div class="flex-shrink-0">
+                  <div placement="bottom" tooltip="Add Contact">
+                 
+                    <button type="button" class="btn btn-subtle-primary btn-sm">
+                      <i class="ri-add-line align-bottom"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            
+            </div>
+          
+
+           
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'bank'"
+            class="tab-pane fade show active"
+            id="pills-bank"
+          >
+            <div>
+              <div class="p-4">
+                <div class="d-flex align-items-start">
+                  <div class="flex-grow-1">
+                    <h5 class="mb-4">Bank account details</h5>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div placement="bottom" tooltip="Add Contact">
+                     
+                      <button
+                        type="button"
+                        class="btn btn-subtle-primary btn-sm"
+                      >
+                        <i class="ri-add-line align-bottom"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="search-box">
+                  <input
+                    type="text"
+                    class="form-control bg-light border-light"
+                    placeholder="Search here..."
+                  />
+                  <i class="ri-search-2-line search-icon"></i>
+                </div>
+              </div>
+   
+              <div>
+                <ngx-simplebar class="chat-room-list"> </ngx-simplebar>
+              </div>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'background-verification'"
+            class="tab-pane show fade active"
+            id="pills-calls"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Background Verification</h5>
+              </div>
+              <ngx-simplebar
+                data-simplebar-track="light"
+                class="chat-message-list chat-call-list"
+              >
+                <ul class="list-unstyled chat-list"></ul>
+              </ngx-simplebar>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'salary-detail'"
+            class="tab-pane show fade active"
+            id="pills-bookmark"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Salary details</h5>
+              </div>
+              
+              <ngx-simplebar class="chat-message-list chat-bookmark-list">
+                <ul class="list-unstyled chat-list">
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Salary</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.netSalary}}</p>   
+                        </div>
+                    </div>
+                </li>
+                   
+                    <li>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Earning</a></h5>
+                            </div>
+
+                            <div class="flex-shrink-0 ms-3">
+                              <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.earn}}</p>   
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                      <div class="d-flex align-items-center">
+                          <div class="flex-grow-1 overflow-hidden">
+                              <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Deduction</a></h5>
+                          </div>
+
+                          <div class="flex-shrink-0 ms-3">
+                            <p class="text-muted text-truncate fs-xs mb-0">{{empSalaryData?.deductionsTotal}}</p>   
+                          </div>
+                      </div>
+                  </li>
+
+                 
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Net Pay</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <h5 class=" text-truncate fs-xs mb-0">{{empSalaryData?.totalAmount}}</h5>   
+                    </div>
+                </div>
+            </li>
+                    
+                </ul>
+            </ngx-simplebar>
+            </div>
+          </div>
+
+          <div
+            [hidden]="currentTab !== 'salary-invoice'"
+            class="tab-pane show fade active"
+            id="pills-salary-invoice"
+          >
+            <div>
+              <div class="px-4 pt-4">
+                <h5 class="mb-4">Salary Invoice</h5>
+              </div>
+              <ngx-simplebar class="chat-message-list chat-bookmark-list">
+                <ul class="list-unstyled chat-list">
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Invoice of Month</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.invoiceOfMonth | date : " MMMM"}}</p>   
+                        </div>
+                    </div>
+                </li>
+                   
+                    <li>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Paid Days</a></h5>
+                            </div>
+
+                            <div class="flex-shrink-0 ms-3">
+                              <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.paidDays}}</p>   
+                            </div>
+                        </div>
+                    </li>
+
+                    <li>
+                      <div class="d-flex align-items-center">
+                          <div class="flex-grow-1 overflow-hidden">
+                              <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Balance Advance</a></h5>
+                          </div>
+
+                          <div class="flex-shrink-0 ms-3">
+                            <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.totalAdv}}</p>   
+                          </div>
+                      </div>
+                  </li>
+
+                  <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Earning</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.earnTotal}}</p>   
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                  <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                          <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Total Deduction</a></h5>
+                      </div>
+
+                      <div class="flex-shrink-0 ms-3">
+                        <p class="text-muted text-truncate fs-xs mb-0">{{salaryInvioceData?.deductionsTotal}}</p>   
+                      </div>
+                  </div>
+              </li>
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Net Pay</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <h5 class=" text-truncate fs-xs mb-0">{{salaryInvioceData?.totalamount}}</h5>   
+                    </div>
+                </div>
+            </li>
+                    
+                </ul>
+            </ngx-simplebar>
+             
+           
+            </div>
+          </div>
+
+         
+
+        <div
+        [hidden]="currentTab !== 'advance'"
+        class="tab-pane show fade active"
+        id="pills-advance"
+      >
+        <div>
+          <div class="px-4 pt-4">
+            <h5 class="mb-4">Advance</h5>
+          </div>
+
+          <ngx-simplebar class="chat-message-list chat-bookmark-list">
+            <ul class="list-unstyled chat-list">
+
+              <li>
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1 overflow-hidden">
+                        <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Advanced Paid</a></h5>
+                    </div>
+
+                    <div class="flex-shrink-0 ms-3">
+                      <p class="text-muted text-truncate fs-xs mb-0">{{advanceData?.totalAmount}}</p>   
+                    </div>
+                </div>
+            </li>
+               
+                <li>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Advanced Adjusted</a></h5>
+                        </div>
+
+                        <div class="flex-shrink-0 ms-3">
+                          <p class="text-muted text-truncate fs-xs mb-0">{{advanceData?.totalAdjustment}}</p>   
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                  <div class="d-flex align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                          <h5 class="mb-1"><a href="javascript:void(0);" class="text-truncate p-0">Balance Advance</a></h5>
+                      </div>
+
+                      <div class="flex-shrink-0 ms-3">
+                        <h5 class=" text-truncate fs-xs mb-0">{{advanceData?.totalBalance}}</h5>   
+                      </div>
+                  </div>
+              </li>    
+            </ul>
+        </ngx-simplebar>
+        </div>
+      </div>
+        
+        </div>
+      </div> -->
+
+      <div class=" w-100 overflow-hidden">
+        <div class="flex-column justify-content-between h-100 ">
+          <div
+            [hidden]="currentTab !== 'personal-detail'"
+            class="tab-pane show active"
+          >
+            <app-add-employee
+              (dataFetched)="onEmpDataFetched($event)"
+              [urlId]="this.urlId"
+            ></app-add-employee>
+          </div>
+
+          <div [hidden]="currentTab !== 'bank'" class="tab-pane show active">
+            <app-bank-detail
+              (bankDataFetched)="onEmpbankDataFetched($event)"
+              [urlId]="this.urlId"
+            ></app-bank-detail>
+          </div>
+          <div
+            [hidden]="currentTab !== 'background-verification'"
+            class="tab-pane show active"
+          >
+          <app-background-verification
+          (backGroundDetail)="onEmpbankBagbroundDataFetched($event)"
+          [urlId]="this.urlId"
+        ></app-background-verification>
+          </div>
+
+          <div
+          [hidden]="currentTab !== 'salary-detail'"
+          class="tab-pane show active"
+        >
+        <app-salary-detail
+                      (salaryDataFetched)="onSalaryDataFecthed($event)"
+                      [urlId]="this.urlId"
+                    ></app-salary-detail>
+        </div>
+
+        <div
+        [hidden]="currentTab !== 'salary-invoice'"
+        class="tab-pane show active"
+      >
+      @if(empSalaryData){
+        <app-salary-invoice
+        (salaryInvoiceData)="onSalaryInvoiceDataFected($event)"
+        [salaryDetailData]="this.empSalaryData"
+        [empData]="this.empData"
+        [empBankDetail]="this.empBankData"
+        [empBackGroundData]="this.empBackData"
+        [urlId]="this.urlId"
+        [isActive]="currentTab === 'salary-invoice'"
+      ></app-salary-invoice>
+      }@else {
+        <div class="noresult mt-5 pt-5" >
+          <div class="text-center py-4">
+            <div class="avatar-md mx-auto mb-4">
+              <div
+                class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+              >
+              <i class="ri-error-warning-fill text-danger display-5"></i>
+                <!-- <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon> -->
+
+              </div>
+            </div>
+            <h5 class="mt-2">Oops! Payroll Cannot Be Created</h5>
+            <p class="text-muted mb-0">
+              To generate payroll, you need to set up salary details first.
+            </p>
+            <a (click)="changeTab('salary-detail')" class="btn btn-primary mt-2">
+              <i class="bi bi-gear-fill me-2"></i> Create Salary Details
+            </a>
+          </div>
+        </div>
+      }
+      
+      </div>
+
+      <div
+      [hidden]="currentTab !== 'advance'"
+      class="tab-pane show active"
+    >
+    <app-advance-detail
+    (advanceData)="onAdvanceDatafected($event)"
+                      [urlId]="this.urlId"
+                      [isActive]="currentTab === 'advance'"
+                    ></app-advance-detail>
+    </div>
+        </div>
+      </div>
+      
+    </div>
+
+   
+    <!-- end -->
+  </div>
+  <!-- end col -->
+</div>

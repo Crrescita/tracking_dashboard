@@ -1,0 +1,1050 @@
+<div id="salary-invoice">
+  <div class="row">
+
+       
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+                <table class="table table-bordered  table-nowrap  mb-0 ms-auto ml-5" >
+                    <tbody>
+                         <tr>
+                    <th scope="row">  
+                       
+                        <table class="table table-bordered  table-nowrap align-middle mb-0 ms-auto ml-5" >
+                            <tbody>
+                                <tr class="border-top border-top-dashed fs-base">
+                                    <th scope="row">Net Salary  :</th>
+                                    <th class="text-start">
+                                        <div class="input-group w-50">
+                                            <span class="input-group-text"
+                                              ><i class="bx bx-rupee"></i
+                                            ></span>
+                                            <input
+                                            type="number"
+                                            formControlName="salary"
+                                            class="form-control text-end"
+                                           
+                                            id="salary_id"
+                                            (input)="onSalaryChange()"
+                                            placeholder=""
+                                          />
+                                        
+                                        </div>
+                                        @if (f['salary'] && f['salary'].hasError('required') &&
+                                        f['salary'].touched) {
+                                        <div class="invalid-text">Salary is required.</div>
+                                        } @if(f['salary'] && f['salary'].hasError('minlength') &&
+                                        f['salary'].touched){
+                                        <div class="invalid-text">Salary must be at least 0.</div>
+                                        }
+                                         </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- table-responsive -->
+                        <div class="mt-2">
+                          <table
+                            class="invoice-table table table-borderless table-nowrap mb-0"
+                          >
+                            <thead class="align-middle">
+                              <tr class="table-light">
+                                <th scope="col" >#</th>
+                                <th scope="col">Earning</th>
+        
+                                <th scope="col">Calculation</th>
+                                <th scope="col" class="text-end" >
+                                  Amount
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="text-end"
+                                 
+                                ></th>
+                              </tr>
+                            </thead>
+                            <tbody id="newlink" formArrayName="breakup">
+                              @for (data of breakup.controls; track $index) {
+                              <tr
+                                id="1"
+                                class="product-elem border-top border-top-dashed"
+                                [formGroupName]="$index"
+                              >
+                                <th scope="row" class="product-id">
+                                  <p class="mt-2">{{ $index + 1 }}</p>
+                                </th>
+                                <td class="text-start">
+                                  <div class="mb-2">
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      id="name-{{ $index + 1 }}"
+                                      formControlName="name"
+                                      [value]="data.get('name')?.value"
+                                      placeholder="Enter name"
+                                      [readonly]="
+                                        data.get('nameReadonly')?.value || $index === 0
+                                      "
+                                      [ngClass]="data.get('nameReadonly')?.value ? 'disable-bg':''"
+                                    />
+
+                                    <div
+                                      *ngIf="
+                                        data.get('name')?.invalid &&
+                                        data.get('name')?.touched
+                                      "
+                                    >
+                                      <small class="invalid-text">
+                                        Please enter a name.</small
+                                      >
+                                    </div>
+                                  </div>
+                                </td>
+        
+                                <td class="text-end">
+                                  <div>
+                                    <div class="d-flex align-items-center">
+                                        <select
+                                        class="form-select"
+                                        [formControlName]="'calculationType'"
+                                        (change)="
+                                          onCalculationTypeChange($event, $index, data)
+                                        "
+                                      >
+                                        <option
+                                          *ngIf="data.get('formula')?.value"
+                                          value="default"
+                                        >
+                                          Default
+                                        </option>
+                                        <option value="custom">Custom</option>
+                                        <option value="formula">Formula Builder</option>
+                                      </select>
+                                      <!-- Tooltips -->
+                                       @if(data.get('calculationType')?.value == 'default' || data.get('calculationType')?.value === 'formula'){
+                                          <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                          [tooltip]="data.get('formula')?.value">
+                                          <i class=" ri-information-fill"></i>
+                                          </a>                                  
+                                       }
+                                    </div>
+                                  
+                                    <!-- Formula Builder Input -->
+                                    <div
+                                      *ngIf="
+                                        data.get('calculationType')?.value === 'formula'
+                                      "
+                                    >
+                                    <!-- Default Modals -->
+                    <div class="mt-1 text-start">
+                        <a (click)="template.show()" class="icon-link icon-link-hover text-start link-effect fw-normal" style="--tb-icon-link-transform: translate3d(0, -.125rem, 0);"
+                       >
+                        <i class="bi bi-calculator"></i> Calculator
+                    </a>
+                </div>
+                     
+                      
+                        <div bsModal #template="bs-modal" id="myModal" class="modal fade" tabindex="-1"
+                            aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="myModalLabel">Formula Builder</h5>
+                                        <button type="button" class="btn-close" (click)="template.hide()"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="formula-calculator">
+                                            <!-- Formula Display -->
+                                            <div class="formula-display mb-3">
+                                              <input
+                                                type="text"
+                                                class="form-control"
+                                                [formControlName]="'formula'"
+                                                [placeholder]="'Enter formula'"
+                                              />
+                                              <!-- [readonly]="true" -->
+                                            </div>
+                                            <small class="text-muted">
+                                              Use valid expressions for calculation.
+                                            </small>
+                                            <!-- Variables Section -->
+                                            <div class="variables-section mb-3">
+                                              <label class="d-block mb-2">Variables</label>
+                                              <div class="variables-grid">
+                                                <a
+                                                  *ngFor="
+                                                    let variable of availableVariables
+                                                  "
+                                                  class="btn btn-outline-primary calc-btn"
+                                                  (click)="
+                                                    insertVariable(variable, $index, false)
+                                                  "
+                                                >
+                                                  {{ variable.name }}: {{ variable.value }}
+                                                </a>
+                                              </div>
+                                            </div>
+            
+                                            <!-- Calculator Grid -->
+                                            <div class="calculator-grid">
+                                              <!-- Numbers and Operations -->
+                                              <div class="calc-buttons">
+                                                <div class="row g-1">
+                                                  <div
+                                                    class="col-3"
+                                                    *ngFor="let num of [7, 8, 9]"
+                                                  >
+                                                    <a
+                                                      class="btn btn-light calc-btn w-100"
+                                                      (click)="
+                                                        appendNumber(num, $index, false)
+                                                      "
+                                                      >{{ num }}</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-warning calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('/', $index, false)
+                                                      "
+                                                      >/</a
+                                                    >
+                                                  </div>
+                                                </div>
+                                                <div class="row g-1 mt-1">
+                                                  <div
+                                                    class="col-3"
+                                                    *ngFor="let num of [4, 5, 6]"
+                                                  >
+                                                    <a
+                                                      class="btn btn-light calc-btn w-100"
+                                                      (click)="
+                                                        appendNumber(num, $index, false)
+                                                      "
+                                                      >{{ num }}</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-warning calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('*', $index, false)
+                                                      "
+                                                      >×</a
+                                                    >
+                                                  </div>
+                                                </div>
+                                                <div class="row g-1 mt-1">
+                                                  <div
+                                                    class="col-3"
+                                                    *ngFor="let num of [1, 2, 3]"
+                                                  >
+                                                    <a
+                                                      class="btn btn-light calc-btn w-100"
+                                                      (click)="
+                                                        appendNumber(num, $index, false)
+                                                      "
+                                                      >{{ num }}</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-warning calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('-', $index, false)
+                                                      "
+                                                      >-</a
+                                                    >
+                                                  </div>
+                                                </div>
+                                                <div class="row g-1 mt-1">
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-light calc-btn w-100"
+                                                      (click)="
+                                                        appendNumber(0, $index, false)
+                                                      "
+                                                      >0</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-light calc-btn w-100"
+                                                      (click)="appendDecimal($index, false)"
+                                                      >.</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-danger calc-btn w-100"
+                                                      (click)="clear($index, false)"
+                                                      >C</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-warning calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('+', $index, false)
+                                                      "
+                                                      >+</a
+                                                    >
+                                                  </div>
+                                                </div>
+                                                <div class="row g-1 mt-1">
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-secondary calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('(', $index, false)
+                                                      "
+                                                      >(</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-secondary calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation(')', $index, false)
+                                                      "
+                                                      >)</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-secondary calc-btn w-100"
+                                                      (click)="
+                                                        insertOperation('%', $index, false)
+                                                      "
+                                                      >%</a
+                                                    >
+                                                  </div>
+                                                  <div class="col-3">
+                                                    <a
+                                                      class="btn btn-success calc-btn w-100"
+                                                      (click)="evaluateFormula($index);template.hide()"
+                                                      >=</a
+                                                    >
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                    </div>
+                                    <!-- <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" (click)="template.hide()">Close</button>
+                                        <button type="button" class="btn btn-primary ">Save Changes</button>
+                                    </div> -->
+    
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div>
+                 
+                                      <!-- <input
+                                                  type="text"
+                                                  class="form-control"
+                                                  formControlName="formula"
+                                                  placeholder="Enter formula (e.g., netSalary + totalAmount)"
+                                                />
+                                                <small class="text-muted">
+                                                  Use valid expressions for calculation.
+                                                </small>
+                        
+                                             
+                                                <div class="mt-2">
+                                                  <label for="variables">Choose Variables:</label>
+                                                  <div>
+                                                    <a
+                                                      *ngFor="let variable of availableVariables"
+                                                      class="btn btn-outline-secondary btn-sm"
+                                             
+                                                      (click)="insertVariable(variable, $index, false)"
+                                                    >
+                                                      {{ variable.name }}: {{ variable.value }}
+                                                    </a>
+                                                  </div>
+                                                </div>
+                        
+                                             
+                                                <div class="mt-2">
+                                                  <label for="operations">Choose Operations:</label>
+                                                  <div>
+                                                    <a
+                                                      *ngFor="let operation of operations"
+                                                      class="btn btn-outline-secondary btn-sm"
+                                                      (click)="insertOperation(operation, $index, false)"
+                                                    >
+                                                      {{ operation }}
+                                                    </a>
+                                                  </div>
+                                                </div>
+                        
+                                                <button
+                                                  type="button"
+                                                  class="btn btn-outline-secondary btn-sm mt-2"
+                                                  (click)="evaluateFormula($index)"
+                                                >
+                                                  Evaluate
+                                                </button> -->
+        
+                                    
+                                    </div>
+        
+                                    <div
+                                      *ngIf="
+                                        data.get('formula')?.invalid &&
+                                        data.get('formula')?.touched &&
+                                        data.get('calculationType')?.value === 'formula'
+                                      "
+                                    >
+                                      <small class="invalid-text"
+                                        >Formula is required.</small
+                                      >
+                                    </div>
+                                  </div>
+                                </td>
+        
+                                <td class="text-end">
+                                  <div class="input-group">
+                                    <span class="input-group-text"
+                                      ><i class="bx bx-rupee"></i
+                                    ></span>
+                                    <input
+                                      class="form-control invoice-product-line-price text-end"
+                                      type="number"
+                                      id="amount-{{ $index }}"
+                                      formControlName="amount"
+                                      [value]="data.get('amount')?.value"
+                                      thousandSeparator=","
+                                      decimalMarker="."
+                                      placeholder="Enter amount"
+                                      (input)="
+                                        validateTotal(); onFormulaInput($event, $index)
+                                      "
+                                      [readonly]="
+                                        data.get('calculationType')?.value ===
+                                          'formula' ||
+                                        data.get('calculationType')?.value === 'default'
+                                      "
+                                    />
+                                  </div>
+                                  <div
+                                  *ngIf="
+                                    data.get('amount')?.invalid &&
+                                    data.get('amount')?.touched
+                                  "
+                                >
+                                  <small class="invalid-text"
+                                    >Amount is required and must be positive.</small
+                                  >
+                                </div>
+                                </td>
+                                <td class="product-removal">
+                                  @if($index != 0){
+                                  <a
+                                    href="javascript:void(0)"
+                                    class="btn btn-danger"
+                                    (click)="removeRow($index)"
+                                  >
+                                    <i class="ri-delete-bin-2-line"></i
+                                  ></a>
+                                  }
+                                </td>
+                              </tr>
+                              }
+                            </tbody>
+                            <tbody>
+                              <tr>
+                                <td colspan="5">
+                                  <a
+                                    href="javascript:void(0)"
+                                    id="add-item"
+                                    class="fw-medium"
+                                    (click)="openAllowance(allowanceSelect)"
+                                    ><i class="ri-add-fill me-1 align-bottom"></i> Add
+                                    Allowance</a
+                                  >
+                                  <div
+                                    class="col-3"
+                                    [ngClass]="
+                                      showAllowanceSelect ? 'd-block' : 'd-none'
+                                    "
+                                  >
+                                    <ng-container>
+                                      <ng-select
+                                        #allowanceSelect
+                                        [items]="allowances"
+                                        (change)="onSelectionChange($event)"
+                                        bindLabel="name"
+                                        placeholder="Select Allowance"
+                                      >
+                                        <ng-template ng-footer-tmp>
+                                          <a
+                                            class="btn btn-sm btn-primary w-100"
+                                            (click)="addRow(null)"
+                                          >
+                                            Add Custom
+                                          </a>
+                                        </ng-template>
+                                      </ng-select>
+                                    </ng-container>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <tfoot class="table-light">
+                              <tr>
+                                <td colspan="2"><strong>Total Earning</strong></td>
+                                <td colspan="2" class="text-end">
+                                  <i class="bx bx-rupee"></i
+                                    > {{ earningTotal | number:'1.0-2'}}
+                                </td>
+                                <td></td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        
+                        </div>
+                    
+                    </th>
+                    <th class=""> 
+                      
+                        <table class="table table-bordered  table-nowrap align-middle mb-0 ms-auto" >
+                            <tbody>
+                                <tr>
+                                    <th class="text-end">  
+                                        <div class="hstack gap-2 justify-content-end align-items-end">
+                                        @if (saveButtonActive) {
+                                        <button class="btn btn-primary">Save</button>
+                                        } @else {
+                                        <button class="btn btn-secondary" type="button" disabled>
+                                          <span
+                                            class="spinner-border spinner-border-sm"
+                                            role="status"
+                                            aria-hidden="true"
+                                          ></span>
+                                          Please wait
+                                        </button>
+                                        }
+                                      </div>
+                                    </th>
+                                   
+                                  </tr>
+                       
+                             
+                            </tbody>
+                        </table>
+                        <div class="table-responsive mt-2">
+        
+                           
+                          <table
+                            class="invoice-table table table-borderless table-nowrap mb-0"
+                          >
+                            <thead class="align-middle">
+                              <tr class="table-light">
+                                <th scope="col" >#</th>
+                                <th scope="col">Deductions</th>
+        
+                                <th scope="col">Calculation</th>
+                                <th scope="col" class="text-end">Amount</th>
+                                <th scope="col" class="text-end"></th>
+                              </tr>
+                            </thead>
+                            <tbody formArrayName="deductions">
+                              @for (data of deductions.controls; track $index) {
+                              <tr
+                                class="border-top border-top-dashed mt-2"
+                                [formGroupName]="$index"
+                              >
+                                <th scope="row" class="product-id">{{ $index + 1 }}</th>
+                                <td class="text-start">
+                                  <div class="mb-2">
+                                    <input
+                                      type="text"
+                                      class="form-control"
+                                      id="name-deduction-{{ $index + 1 }}"
+                                      formControlName="name"
+                                      placeholder="Enter name"
+                                      [readonly]="
+                                      data.get('nameReadonly')?.value
+                                    "
+                                      [ngClass]="data.get('nameReadonly')?.value ? 'disable-bg':''"
+                                    />
+                                  </div>
+                                </td>
+                                <td class="text-end">
+                                   <div class="d-flex align-items-center">
+                                    <select
+                                    class="form-select"
+                                    [formControlName]="'calculationType'"
+                                    (change)="calculateDeductions($index, true)"
+                                  >            
+                                    <option [ngValue]="'none'">None</option>
+                                    <ng-container
+                                    *ngIf="data.get('name')?.value === 'PF'"
+                                  >             
+                                    <option [ngValue]="'percentage'">12%</option>
+                                  </ng-container>
+      
+                                  <ng-container
+                                    *ngIf="data.get('name')?.value === 'ESI'"
+                                  >
+
+                                    <option [ngValue]="'percentage'">0.75%</option>
+                                  </ng-container>
+                                    <option [ngValue]="'custom'">Custom</option>
+                                    <option [ngValue]="'formula'">
+                                      Formula Builder
+                                    </option>
+                                  </select>
+
+                                  @if(data.get('calculationType')?.value == 'percentage' || data.get('calculationType')?.value === 'formula'){
+                                    <a   class="ms-2 fs-4 tooltip-primary" data-bs-toggle="tooltip" placement="top"
+                                    [tooltip]="data.get('formula')?.value">
+                                    <i class=" ri-information-fill"></i>
+                                    </a>                                  
+                                 }
+                                   </div>
+                                 
+                          
+                                  <!-- Formula Builder Input -->
+                                  <div
+                                    *ngIf="
+                                      data.get('calculationType')?.value === 'formula'
+                                    "
+                                  >
+                                  <div class="mt-1 text-start">
+                                    <a (click)="template.show()" class="icon-link icon-link-hover text-start link-effect fw-normal" style="--tb-icon-link-transform: translate3d(0, -.125rem, 0);"
+                                   >
+                                    <i class="bi bi-calculator"></i> Calculator
+                                </a>
+                            </div>
+                                 
+                                  
+                                    <div bsModal #template="bs-modal" id="myModal" class="modal fade" tabindex="-1"
+                                        aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">Formula Builder</h5>
+                                                    <button type="button" class="btn-close" (click)="template.hide()"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="formula-calculator">
+                                                        <!-- Formula Display -->
+                                                        <div class="formula-display mb-3">
+                                                          <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            [formControlName]="'formula'"
+                                                            [placeholder]="'Enter formula'"
+                                                          />
+                                                          <!-- [readonly]="true" -->
+                                                        </div>
+                                                        <small class="text-muted">
+                                                          Use valid expressions for calculation.
+                                                        </small>
+                                                        <!-- Variables Section -->
+                                                        <div class="variables-section mb-3">
+                                                          <label class="d-block mb-2">Variables</label>
+                                                          <div class="variables-grid">
+                                                            <a
+                                                              *ngFor="let variable of availableVariables"
+                                                              class="btn btn-outline-primary calc-btn"
+                                                              (click)="
+                                                                insertVariable(variable, $index, true)
+                                                              "
+                                                            >
+                                                              {{ variable.name }}: {{ variable.value }}
+                                                            </a>
+                                                          </div>
+                                                        </div>
+                          
+                                                        <!-- Calculator Grid -->
+                                                        <div class="calculator-grid">
+                                                          <!-- Numbers and Operations -->
+                                                          <div class="calc-buttons">
+                                                            <div class="row g-1">
+                                                              <div
+                                                                class="col-3"
+                                                                *ngFor="let num of [7, 8, 9]"
+                                                              >
+                                                                <a
+                                                                  class="btn btn-light calc-btn w-100"
+                                                                  (click)="
+                                                                    appendNumber(num, $index, true)
+                                                                  "
+                                                                  >{{ num }}</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-warning calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('/', $index, true)
+                                                                  "
+                                                                  >/</a
+                                                                >
+                                                              </div>
+                                                            </div>
+                                                            <div class="row g-1 mt-1">
+                                                              <div
+                                                                class="col-3"
+                                                                *ngFor="let num of [4, 5, 6]"
+                                                              >
+                                                                <a
+                                                                  class="btn btn-light calc-btn w-100"
+                                                                  (click)="
+                                                                    appendNumber(num, $index, true)
+                                                                  "
+                                                                  >{{ num }}</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-warning calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('*', $index, true)
+                                                                  "
+                                                                  >×</a
+                                                                >
+                                                              </div>
+                                                            </div>
+                                                            <div class="row g-1 mt-1">
+                                                              <div
+                                                                class="col-3"
+                                                                *ngFor="let num of [1, 2, 3]"
+                                                              >
+                                                                <a
+                                                                  class="btn btn-light calc-btn w-100"
+                                                                  (click)="
+                                                                    appendNumber(num, $index, true)
+                                                                  "
+                                                                  >{{ num }}</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-warning calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('-', $index, true)
+                                                                  "
+                                                                  >-</a
+                                                                >
+                                                              </div>
+                                                            </div>
+                                                            <div class="row g-1 mt-1">
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-light calc-btn w-100"
+                                                                  (click)="appendNumber(0, $index, true)"
+                                                                  >0</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-light calc-btn w-100"
+                                                                  (click)="appendDecimal($index, true)"
+                                                                  >.</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-danger calc-btn w-100"
+                                                                  (click)="clear($index, true)"
+                                                                  >C</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-warning calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('+', $index, true)
+                                                                  "
+                                                                  >+</a
+                                                                >
+                                                              </div>
+                                                            </div>
+                                                            <div class="row g-1 mt-1">
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-secondary calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('(', $index, true)
+                                                                  "
+                                                                  >(</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-secondary calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation(')', $index, true)
+                                                                  "
+                                                                  >)</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-secondary calc-btn w-100"
+                                                                  (click)="
+                                                                    insertOperation('%', $index, true)
+                                                                  "
+                                                                  >%</a
+                                                                >
+                                                              </div>
+                                                              <div class="col-3">
+                                                                <a
+                                                                  class="btn btn-success calc-btn w-100"
+                                                                  (click)="
+                                                                    evaluateDeductionFormula($index);template.hide()
+                                                                  "
+                                                                  >=</a
+                                                                >
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                </div>
+                                             
+                
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <!--                         
+                                              <input
+                                                type="text"
+                                                class="form-control"
+                                                formControlName="formula"
+                                                placeholder="Enter formula (e.g., netSalary + totalAmount)"
+                                              />
+                                              <small class="text-muted">
+                                                Use valid expressions for calculation.
+                                              </small>
+                                     
+                                              <div class="mt-2">
+                                                <label for="variables">Choose Variables:</label>
+                                                <div>
+                                                  <a
+                                                    *ngFor="let variable of availableVariables"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                    (click)="insertVariable(variable, $index, true)"
+                                                  >
+                                                    {{ variable.name }}: {{ variable.value }}
+                                                  </a>
+                                                </div>
+                                              </div>
+                        
+                                              <div class="mt-2">
+                                                <label for="operations">Choose Operations:</label>
+                                                <div>
+                                                  <a
+                                                    *ngFor="let operation of operations"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                    (click)="insertOperation(operation, $index, true)"
+                                                  >
+                                                    {{ operation }}
+                                                  </a>
+                                                </div>
+                                              </div>
+                                              <button
+                                                type="button"
+                                                class="btn btn-outline-secondary btn-sm mt-2"
+                                                (click)="evaluateDeductionFormula($index)"
+                                              >
+                                                Evaluate
+                                              </button> -->
+                                  </div>
+        
+                                  <div
+                                    *ngIf="
+                                      data.get('formula')?.invalid &&
+                                      data.get('formula')?.touched &&
+                                      data.get('calculationType')?.value === 'formula'
+                                    "
+                                  >
+                                    <small class="invalid-text"
+                                      >Formula is required.</small
+                                    >
+                                  </div>
+                                </td>
+                                <td class="text-end">
+                                    <div class="input-group">
+                                        <span class="input-group-text"
+                                          ><i class="bx bx-rupee"></i
+                                        ></span>
+                                        <input
+                                        type="number"
+                                        [value]="data.get('amount')?.value"
+                                        class="form-control text-end"
+                                        formControlName="amount"
+                                        (input)="calculateTotalAmount(); onFormulaInputDeduction($event, $index)"
+                                        [readonly]="
+                                          data.get('calculationType')?.value !== 'custom'
+                                        "
+                                      />
+                               
+                                    </div>
+                                </td>
+
+                                <td class="product-removal">
+                                    @if($index > 2){
+                                    <a
+                                     
+                                      class="btn btn-danger"
+                                      (click)="removeDeductionRow($index)"
+                                    >
+                                      <i class="ri-delete-bin-2-line"></i
+                                    ></a>
+                                    }
+                                  </td>
+                              
+                              </tr>
+                              }
+        
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                  <td colspan="5">
+                                    <a
+                                      id="add-item"
+                                      class="fw-medium"
+                                      (click)="addDeduction()"
+                                      ><i class="ri-add-fill me-1 align-bottom"></i> Add
+                                      Deduction</a
+                                    >
+                                  
+                                  </td>
+                                </tr>
+                              </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                  <td colspan="2"><strong>Total Deduction</strong></td>
+                                  <td colspan="2" class="text-end">
+                                    <i class="bx bx-rupee"></i
+                                        > {{ deductionsTotal | number:'1.0-2'}}
+                                  </td>
+                                  <td></td>
+                                </tr>
+                              </tfoot>
+                          </table>
+                          <!--end table-->
+                        </div>
+                
+                    </th>
+                    </tr>
+                </tbody>
+            </table>
+              <div class="" >
+                <table class="table table-bordered  table-nowrap align-middle mb-0 ms-auto ml-5"  >
+                    <tbody>
+                        <!-- <tr>
+                            <td>Total Earning</td>
+                            <td class="text-end">Rs.{{earningTotal}}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Deduction </td>
+                            <td class="text-end">Rs. {{deductionsTotal}}</td>
+                        </tr>
+                        -->
+                        <tr class="border-top border-top-dashed fs-base">
+                            <th scope="row">Net Pay  :</th>
+                            <th class="text-end"><i class="bx bx-rupee"></i
+                                >{{ this.totalAmount | number:'1.0-2'}}</th>
+                        </tr>
+               
+                        <tr>
+                            <th scope="row">In Words :</th>
+                            <th class="text-end"><i class="bx bx-rupee"></i>{{ convertNumberToWords(totalAmount || 0) }}</th>
+                           
+                          </tr>
+                    </tbody>
+                </table>
+                <!--end table-->
+            </div>
+
+
+            <div class=" mt-3" >
+                <table class="table table-bordered table-nowrap align-middle mb-0  ml-5" >
+                    <thead>
+                      <tr class="table-light">
+                        <th scope="col" colspan="3">Employer's Contribution (CTC)</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-top border-top-dashed fs-base">
+                        <td scope="row">Earning Gross:</td>
+                        <td></td>
+                        <td class="text-end">
+                            
+                          <i class="bx bx-rupee"></i>{{ earningTotal | number:'1.0-2'}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Employer's Provident Fund</th>
+                        <td></td>
+                        <td class="text-end">
+                          <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2'}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="1" class="ps-4 text-start">
+                          &gt; Pension Fund
+                        </td>
+                        <td> </td>
+                        <td class="text-end">
+                         
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="1" class="ps-4 text-start">
+                          &gt; Provident Fund
+                        </td>
+                        <td> <i class="bx bx-rupee"></i>{{ employeerPfAmount | number:'1.0-2'}}</td>
+                        <td class="text-end">
+                         
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Employer's State Insurance</th>
+                        <td></td>
+                        <td class="text-end">
+                          <i class="bx bx-rupee"></i>{{ employeerEsiAmount | number:'1.0-2' }}
+                        </td>
+                      </tr>
+            
+
+                      <tr class="table-light">
+                        <th scope="row">Total CTC</th>
+                       
+                        <td class="text-end" colspan="2">
+                       <strong><i class="bx bx-rupee"></i>{{ totalctc | number:'1.0-2' }}</strong>   
+                         
+                        </td>
+                      </tr>
+                      <tr class="table-light">
+                        <th scope="row">In Words</th>
+                       
+                        <td class="text-end" colspan="2">
+                        <strong><i class="bx bx-rupee"></i>
+                            {{ convertNumberToWords(totalctc || 0) }}</strong>  
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  
+                <!--end table-->
+            </div>
+      
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

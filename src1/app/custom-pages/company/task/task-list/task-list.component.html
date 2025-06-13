@@ -1,0 +1,920 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Task List"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div class="row" id="ticketsList">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="row align-items-center g-2">
+          <div class="col-lg-3 me-auto">
+            <h6 class="card-title mb-0">
+              Task List
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                taskData?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="taskDataList?.length">Show All</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </h6>
+          </div>
+          <!--end col-->
+          <div class="col-lg-2 col-sm-4">
+            <div class="search-box">
+              <input
+                type="text"
+                class="form-control search"
+                [(ngModel)]="term"
+                (keyup)="filterdata()"
+                placeholder="Search for Task ID, title, Priority, Status or something..."
+              />
+              <i class="ri-search-line search-icon"></i>
+            </div>
+          </div>
+          <!--end col-->
+          <div class="col-sm-auto">
+            <div class="hstack gap-2">
+              <button
+                class="btn btn-subtle-danger d-none"
+                id="remove-actions"
+                (click)="deleteRecordModal.show()"
+              >
+                <i class="ri-delete-bin-2-line"></i>
+              </button>
+              <a
+                href="javascript:void(0);"
+                (click)="onAdd()"
+                class="btn btn-secondary"
+                ><i class="bi bi-plus-circle align-baseline me-1"></i> Assign
+                Task</a
+              >
+            </div>
+          </div>
+
+          <div class="col-lg-auto">
+            <div class="hstack flex-wrap gap-2">
+              <div>
+                <button
+                  type="button"
+                  class="btn btn-info me-1"
+                  (click)="openEnd()"
+                >
+                  <i class="bi bi-funnel align-baseline me-1"></i> Filter
+                  @if(totalFilterCount >0){
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                    >{{ totalFilterCount }}
+                  </span>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </div>
+      <div class="card-body mt-3">
+        <div class="table-responsive table-card">
+          <table
+            class="table table-centered align-middle table-custom-effect table-nowrap mb-0"
+          >
+            <thead class="table-light">
+              <tr>
+                <th>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="checkAll"
+                      [(ngModel)]="masterSelected"
+                      (change)="checkUncheckAll($event)"
+                    />
+                    <label class="form-check-label" for="checkAll"></label>
+                  </div>
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="id"
+                  (click)="onSort('id')"
+                >
+                  S No.
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="assignedto"
+                  (click)="onSort('assignedto')"
+                >
+                  Assigned To
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="task_title"
+                  (click)="onSort('task_title')"
+                >
+                  Task Title
+                </th>
+
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="start_date"
+                  (click)="onSort('start_date')"
+                >
+                  Start Date
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="end_date"
+                  (click)="onSort('end_date')"
+                >
+                  Due Date
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="priority"
+                  (click)="onSort('priority')"
+                >
+                  Priority
+                </th>
+                <th
+                  scope="col"
+                  class="sort cursor-pointer"
+                  ticketsortable="status"
+                  (click)="onSort('status')"
+                >
+                  Status
+                </th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody class="list form-check-all">
+              @for (data of taskData; track $index) {
+              <tr id="l_{{ data.id }}">
+                <td>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="checkAll"
+                      value="{{ data.id }}"
+                      [(ngModel)]="data.states"
+                      (change)="onCheckboxChange($event)"
+                    />
+                    <label class="form-check-label"></label>
+                  </div>
+                </td>
+                <td class="tickets_id">
+                  <!-- {{ data.task_id }} -->
+                  <a class="fw-medium link-primary"># {{$index +1}}</a>
+                </td>
+                <!-- <td class="assign">
+                  <div class="avatar-group flex-nowrap">
+                    @for (profile of data.employeeDetails; track $index) {
+                      {{profile.name}}
+                    <a class="avatar-group-item" tooltip="{{ profile.name }}">
+                      <img
+                        [src]="
+                          profile.image
+                            ? profile.image
+                            : 'assets/images/users/avatar-1.jpg'
+                        "
+                        alt=""
+                        class="avatar-xxs rounded-circle"
+                      />
+                    </a>
+                    }
+                  </div>
+                </td> -->
+
+                <td class="assign">
+  <div class="avatar-group flex-nowrap">
+    @for (profile of data.employeeDetails; track $index) {
+      <span class="badge bg-primary me-1">{{ profile.name }}</span>
+    }
+  </div>
+</td>
+                <td class="ticket_title">{{ data.task_title }}</td>
+
+                <td class="create_date">
+                  {{ data.start_date | date : "dd MMM, YYYY" }}
+                </td>
+                <td class="due_date">
+
+                @if(data.isOverdue){
+                  <a   class="tooltip-danger text-danger" data-bs-toggle="tooltip" placement="top"
+                  [tooltip]="'Task is overdue!'">
+                  <i class="ri-alert-line label-icon me-1"></i>{{ data.end_date | date : "dd MMM, YYYY" }}
+                  </a>  
+
+  
+              
+                }@else {
+                  {{ data.end_date | date : "dd MMM, YYYY" }}
+                }
+                   
+                  
+                
+                </td>
+                <td class="priority">
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'bg-danger': data.priority === 'High',
+                      'bg-info': data.priority === 'Medium',
+                      'bg-success': data.priority === 'Low'
+                    }"
+                    >{{ data.priority }}</span
+                  >
+                </td>
+                <td class="status">
+                  <span
+                    class="badge"
+                    [ngClass]="{
+                      'bg-primary-subtle text-primary': data.status === 'To-Do',
+                      'bg-info-subtle text-info': data.status === 'In-Progress',
+                      'bg-warning-subtle text-warning':data.status === 'Pending-Review',
+                      'bg-success-subtle text-success':data.status === 'Completed',
+                      'bg-secondary-subtle text-dark':data.status === 'On-Hold',
+                      'bg-danger-subtle text-danger': data.status === 'Cancelled'
+                    }"
+                    >{{ data.status }}</span
+                  >
+                </td>
+                <td>
+                  <ul class="d-flex gap-2 list-unstyled mb-0">
+                    <li>
+                      <a
+                        routerLink="/task-deatil/{{data.id}}/{{data.task_id}}"
+                        class="btn btn-subtle-primary btn-icon btn-sm"
+                        ><i class="ph-eye"></i
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="javascript:void(0);"
+                        (click)="editList(data)"
+                        class="btn btn-subtle-secondary btn-icon btn-sm edit-item-btn"
+                        ><i class="ph-pencil"></i
+                      ></a>
+                    </li>
+                    <li>
+                      <a
+                        href="javascript:void(0);"
+                        (click)="removeItem(data.id)"
+                        class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                        ><i class="ph-trash"></i
+                      ></a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              }
+            </tbody>
+            <!-- end tbody -->
+          </table>
+          <!-- end table -->
+          @if (spinnerStatus) {
+          <div id="elmLoader">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          }
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched {{ taskDataList?.length }} Task Data. We did not
+                find any Task for you search.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="row align-items-center mt-4 pt-3" id="pagination-element">
+          <div class="col-sm">
+            <div class="text-muted text-center text-sm-start">
+              Showing  <span class="fw-semibold">{{ taskData?.length }}</span> of
+              <span class="fw-semibold">{{ taskDataList?.length }}</span>
+              Results  
+            </div>
+          </div>
+          <!--end col-->
+          <div class="col-sm-auto mt-3 mt-sm-0">
+         
+            <pagination
+              class="pagination-wrap hstack justify-content-center gap-2"
+              [totalItems]="taskDataList?.length"
+              [itemsPerPage]="10"
+              (pageChanged)="pageChanged($event)"
+            ></pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #addTickets="bs-modal" class="modal fade" id="addTickets">
+  <div class="modal-dialog">
+    <div class="modal-content border-0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTicketModalLabel">Assign Task</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="addTickets.hide()"
+        ></button>
+      </div>
+
+      <form
+        (ngSubmit)="onSubmit()"
+        [formGroup]="formGroup"
+        class="tablelist-form"
+        novalidate
+        autocomplete="off"
+      >
+        <div class="modal-body">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+          <input type="hidden" id="id-field" />
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="client-name-input" class="form-label"
+                  >Task Title<span class="text-danger">*</span></label
+                >
+                <input
+                  type="text"
+                  id="client-name-input"
+                  class="form-control"
+                  formControlName="task_title"
+                  placeholder="Enter Task Title "
+                  required
+                />
+                @if (f['task_title'] && f['task_title'].hasError('required') &&
+                f['task_title'].touched) {
+                <div class="invalid-text">Task Title is required.</div>
+                } @if(f['task_title'] && f['task_title'].hasError('maxlength')
+                && f['task_title'].touched){
+                <div class="invalid-text">
+                  Task Title must be at most 45 characters
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="client-name-input" class="form-label"
+                  >Assigned To<span class="text-danger">*</span></label
+                >
+
+                <ng-select
+                  [items]="employeeDataList"
+                  [multiple]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  groupBy="department_name"
+                  formControlName="emp_id"
+                  placeholder="Select Employee(s)"
+                >
+                  <ng-template ng-optgroup-tmp let-item="item">
+                    {{ item.department_name || "Unnamed group" }}
+                  </ng-template>
+                </ng-select>
+                @if (f['emp_id'] && f['emp_id'].hasError('required') &&
+                f['emp_id'].touched) {
+                <div class="invalid-text">
+                  At least one employee must be assigned.
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="ticket-title-input" class="form-label"
+                  >Task description<span class="text-danger">*</span></label
+                >
+                <textarea   type="text"
+                id="ticket-title-input"
+                formControlName="task_description"
+                class="form-control"
+                placeholder="Task description"
+                required>
+
+                </textarea>
+                <!-- <input
+                  type="text"
+                  id="ticket-title-input"
+                  formControlName="task_description"
+                  class="form-control"
+                  placeholder="Task description"
+                  required
+                /> -->
+                @if (f['task_description'] &&
+                f['task_description'].hasError('required') &&
+                f['task_description'].touched) {
+                <div class="invalid-text">Task description is required.</div>
+                }
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label for="create-date-input" class="form-label"
+                  >Start Date<span class="text-danger">*</span></label
+                >
+
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepickerstartdate"
+                    class="form-control"
+                 
+                    formControlName="start_date"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+              
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepickerstartdate"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+
+                @if (f['start_date'] && f['start_date'].hasError('required') &&
+                f['start_date'].touched) {
+                <div class="invalid-text">Start date is required.</div>
+                }
+
+                <div *ngIf="formGroup.hasError('dateRange')">
+                  <p class="invalid-text">
+                    Start date cannot be greater than end date.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label for="due-date-input" class="form-label"
+                  >Due Date<span class="text-danger">*</span></label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="datepickerenddate"
+                    class="form-control"
+                    formControlName="end_date"
+                    bsDatepicker
+                    [bsConfig]="bsConfig"
+              
+                  />
+                  <div class="input-group-append">
+                    <label
+                      for="datepickerenddate"
+                      class="input-group-text cursor-pointer"
+                    >
+                      <i class="ri-calendar-fill"></i>
+                    </label>
+                  </div>
+                </div>
+               
+                @if (f['end_date'] && f['end_date'].hasError('required') &&
+                f['end_date'].touched) {
+                <div class="invalid-text">End date is required.</div>
+                }
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="priority-input" class="form-label"
+                  >Priority<span class="text-danger">*</span></label
+                >
+
+                <select
+                  class="form-select"
+                  id="priority-input"
+                  formControlName="priority"
+                  data-choices
+                  data-choices-search-false
+                >
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+                @if (f['priority'] && f['priority'].hasError('required') &&
+                f['priority'].touched) {
+                <div class="invalid-text">Priority is required.</div>
+                }
+              </div>
+            </div>
+ 
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="frequency" class="form-label"
+                  >Frequency<span class="text-danger">*</span></label
+                >
+
+                 <div class="row mb-3">
+  <div class="col-6">
+    <label for="frequencyNumber" class="form-label">Frequency Value</label>
+    <input
+      id="frequencyNumber"
+      class="form-control"
+      type="number"
+      min="1"
+      formControlName="frequency_value"
+      placeholder="Enter frequency value"
+    />
+  </div>
+  <div class="col-6">
+    <label for="frequencyUnit" class="form-label">Frequency Unit</label>
+    <select
+      id="frequencyUnit"
+      class="form-control"
+      formControlName="frequency_unit"
+    >
+      <option value="">Select unit</option>
+      <option value="hour">Hour(s)</option>
+      <option value="day">Day(s)</option>
+      <option value="month">Month(s)</option>
+    </select>
+  </div>
+</div>
+
+ @if (f['frequency_value'] && f['frequency_value'].hasError('required') &&
+                f['frequency_value'].touched) {
+                <div class="invalid-text">Please enter a valid frequency number.</div>
+                } 
+<!-- @if (f['frequency_unit']?.invalid && f['frequency_unit']?.touched) {
+  <div class="invalid-text">Please select a frequency unit.</div>
+} -->
+
+ @if (f['frequency_unit'] && f['frequency_unit'].hasError('required') &&
+                f['frequency_unit'].touched) {
+                <div class="invalid-text">Please select a frequency unit.</div>
+                } 
+
+
+                
+                <!-- <select
+                  class="form-select"
+                  id="frequency"
+                  formControlName="frequency"
+                  data-choices
+                  data-choices-search-false
+                >
+                  <option value="">Select frequency</option>
+                  <option value="Daliy">Daliy</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                </select>
+                @if (f['frequency'] && f['frequency'].hasError('required') &&
+                f['frequency'].touched) {
+                <div class="invalid-text">Frequency is required.</div>
+                } -->
+              </div>
+            </div>
+
+                  <div class="col-lg-12">
+        <label for="notifyStartTime" class="form-label">Notify Start Time</label>
+        <input
+          id="notifyStartTime"
+          class="form-control"
+          type="datetime-local"
+          formControlName="notify_start_time"
+        />
+        @if (f['notify_start_time'] && f['notify_start_time'].hasError('required') &&
+                f['notify_start_time'].touched) {
+                <div class="invalid-text">Please select a start time.</div>
+                }
+    
+      </div>
+            <!--end col-->
+            @if(this.id){
+              <div class="col-lg-12">
+                <div class="mb-3">
+                  <label for="status-input" class="form-label"
+                    >Status<span class="text-danger">*</span></label
+                  >
+  
+                  <select
+                    class="form-select"
+                    id="status-input"
+                    formControlName="status"
+                    data-choices
+                    data-choices-search-false
+                  >
+                    <option value="">Select Status</option>
+                    <option value="To-Do">To Do</option>
+                    <option value="In-Progress">In Progress</option>
+                    <option value="Pending-Review">Pending Review</option>
+                    <option value="Completed">Completed</option>
+                    <option value="On-Hold">On Hold</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <!-- <option value="Overdue">Overdue</option> -->
+                  </select>
+                  @if (f['status'] && f['status'].hasError('required') &&
+                  f['status'].touched) {
+                  <div class="invalid-text">Status is required.</div>
+                  }
+                </div>
+              </div>
+            }
+          
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </div>
+
+        <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="button"
+              class="btn btn-ghost-danger"
+              (click)="addTickets.hide()"
+            >
+              <i class="bi bi-x-lg align-baseline me-1"></i> Close
+            </button>
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Add Ticket
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- modal-content -->
+  </div>
+</div>
+
+<!-- modal -->
+
+<!-- deleteRecordModal -->
+<div
+  id="deleteRecordModal"
+  class="modal fade zoomIn"
+  bsModal
+  #deleteRecordModal="bs-modal"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          id="deleteRecord-close"
+          (click)="deleteRecordModal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body p-md-5">
+        <div class="text-center">
+          <div class="text-danger">
+            <i class="bi bi-trash display-4"></i>
+          </div>
+          <div class="mt-4">
+            <h3 class="mb-2">Are you sure ?</h3>
+            <p class="text-muted fs-lg mx-3 mb-0">
+              Are you sure you want to remove this record ?
+            </p>
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+          <button
+            type="button"
+            class="btn w-sm btn-light btn-hover"
+            (click)="deleteRecordModal.hide()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn w-sm btn-danger btn-hover"
+            id="delete-record"
+            (click)="deleteData(deleteId)"
+          >
+            Yes, Delete It!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="custom-offcanvas" id="courseFilters">
+  <div class="offcanvas-header border-bottom p-3">
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Task Filters</h5>
+    <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
+  </div>
+  <div class="offcanvas-body">
+    <!-- <form action="#!"> -->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Search Task ID, title, Status, Priority etc...
+          </p>
+          <div class="search-box">
+            <input
+              type="text"
+              class="form-control search"
+              [(ngModel)]="term"
+              (keyup)="filterdata()"
+              placeholder="  Search Task title, Status, Priority etc..."
+            />
+
+            <i class="ri-search-line search-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+
+          <p class="text-muted fw-medium text-uppercase mb-3">Select Date Range</p>
+          <input
+          type="text"
+          class="form-control"
+          mwlFlatpickr
+          [altInput]="true"
+          [convertModelValue]="true"
+          mode="range"
+          altFormat="d M, Y"
+          dateFormat="d M, Y"
+          placeholder="Select Start Date - End Date"
+          [(ngModel)]="selectedDateRange"
+          (ngModelChange)="onDateRangeChange($event)"
+        />
+        </div>
+      </div>
+      
+   <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Branch</p>
+          <ng-select
+            [items]="branch"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedBranch"
+            name="branch"
+            placeholder="Select Branch"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Department</p>
+          <ng-select
+            [items]="departments"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDepartments"
+            name="departments"
+            placeholder="Select Departments"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Designation</p>
+          <ng-select
+            [items]="designations"
+            [multiple]="true"
+            bindLabel="name"
+            bindValue="name"
+            (change)="filterdata()"
+            [(ngModel)]="selectedDesignations"
+            name="designations"
+            placeholder="Select Designations"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Status</p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="To-Do">To Do</option>
+            <option value="In-Progress">In Progress</option>
+            <option value="Pending-Review">Pending Review</option>
+            <option value="Completed">Completed</option>
+            <option value="On-Hold">On Hold</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Frequency</p>
+
+          <select
+            class="form-control"
+            [(ngModel)]="selectedFrequency"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="Daliy">Daliy</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+          </select>
+        </div>
+      </div> -->
+
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">Priority</p>
+
+          <select
+            class="form-control"
+            [(ngModel)]="selectedPriority"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- </form> -->
+  </div>
+  <div class="offcanvas-header htsack gap-2 border-top p-3">
+    <button class="btn btn-subtle-danger w-100" (click)="reset()">
+      <i class="bi bi-x-lg align-baseline me-1"></i> Reset
+    </button>
+    <!-- <button class="btn btn-secondary w-100">
+        <i class="bi bi-funnel align-baseline me-1"></i> Filters
+      </button> -->
+  </div>
+</div>
+<div
+  class="offcanvas-backdrop fade backdrop3"
+  id="backdrop"
+  (click)="closeoffcanvas()"
+></div>

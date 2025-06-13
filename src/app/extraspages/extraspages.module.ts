@@ -18,6 +18,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { TaskListComponent } from './task-list/task-list.component';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
 import { EmpDocsComponent } from './emp-docs/emp-docs.component';
+import { EmployeeThankyouComponent } from "./employee-thankyou/employee-thankyou.component";
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { EmpDocsComponent } from './emp-docs/emp-docs.component';
     AssignedTaskComponent,
     TaskListComponent,
     AddEmployeeComponent,
+    EmployeeThankyouComponent,
     EmpDocsComponent
   ],
   imports: [CommonModule, AlertModule.forRoot(), TooltipModule.forRoot(), ExtrapagesRoutingModule, ModalModule.forRoot(),FormsModule, ReactiveFormsModule, SimplebarAngularModule, PickerModule],

@@ -1,0 +1,293 @@
+<!-- <app-breadcrumbs
+  title="Live Location"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs> -->
+
+<div class="row">
+  <div class="col-xxl-3">
+    <div class="card overflow-hidden">
+      <div>
+        <img
+          src="assets/images/small/img-7.jpg"
+          alt=""
+          id="cover-img"
+          class="card-img-top profile-wid-img object-fit-cover"
+          style="height: 200px"
+        />
+      </div>
+      <div class="card-body pt-0 mt-n5">
+        <div class="text-center">
+          <div class="profile-user position-relative d-inline-block mx-auto">
+            @if(employeeDetail?.image){
+            <img
+              src="{{ employeeDetail?.image }}"
+              alt=""
+              id="user-img"
+              class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+            />
+            }@else {
+            <img
+              src="assets/images/users/avatar-1.jpg"
+              alt=""
+              id="user-img"
+              class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+            />
+            }
+
+            <!-- <div
+              class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0"
+            >
+              <input
+                id="profile-img-file-input"
+                type="file"
+                class="profile-img-file-input d-none"
+                (change)="fileChange($event, '1')"
+              />
+              <label
+                for="profile-img-file-input"
+                class="profile-photo-edit avatar-xs"
+              >
+                <span class="avatar-title rounded-circle bg-light text-body">
+                  <i class="bi bi-camera"></i>
+                </span>
+              </label>
+            </div> -->
+          </div>
+          <div class="mt-3">
+            <h5>
+              {{ employeeDetail?.name }}
+            </h5>
+            <p class="text-muted">{{ employeeDetail?.designation_name }}</p>
+          </div>
+          <div class="d-flex justify-content-center gap-2 mt-2">
+            @if(employeeDetail?.mobile){
+            <a href="tel:{{ employeeDetail?.mobile }}" class="avatar-xs d-block"
+              ><span
+                class="avatar-title rounded-circle bg-primary-subtle text-primary"
+                ><i class="ri-phone-line"></i></span
+            ></a>
+            } @if(employeeDetail?.email){
+            <a
+              href="mailto:{{ employeeDetail?.email }}"
+              class="avatar-xs d-block"
+              ><span
+                class="avatar-title rounded-circle bg-danger-subtle text-danger"
+                ><i class="ri-mail-line"></i></span
+            ></a>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="card border-top">
+        <div class="card-header">
+          <h6 class="card-title mb-0">Location Detail</h6>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled vstack gap-2 mb-0">
+            <li>
+              <div class="flex-grow-1">
+                <i
+                  class="bi bi-geo-alt-fill align-middle me-1 text-primary-emphasis"
+                ></i>
+                Address
+              </div>
+              @if(address){
+              <div class="flex-shrink-0 text-muted">{{ address }}</div>
+              }@else {
+              <div class="flex-shrink-0 text-danger">No Info. available</div>
+              }
+            </li>
+
+            @if(this.liveCoordinates?.battery_status){
+            <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="bi bi-battery-full align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Battery Percentage
+                </div>
+
+                <div class="flex-shrink-0 text-muted">
+                  <button
+                    type="button"
+                    class="btn battery-status"
+                    [ngClass]="
+                      getBatteryClass(
+                        this.liveCoordinates?.battery_status.replace('%', '')
+                      )
+                    "
+                    data-bs-toggle="tooltip"
+                    placement="top"
+                    tooltip="Battery Percentage"
+                  >
+                    <span class="ri-battery-saver-line"></span>
+                    {{ this.liveCoordinates?.battery_status }}
+                  </button>
+                </div>
+              </div>
+            </li>
+            }
+
+            <!-- <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="ri-logout-box-line align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Checkout Time
+                </div>
+                @if(checkIndetails?.latestCheckOutTime){
+                <div
+                  class="flex-shrink-0 text-muted"
+                  [innerHTML]="formatTime(checkIndetails?.latestCheckOutTime)"
+                ></div>
+                }@else {
+                <div class="flex-shrink-0 text-danger">Not Checked Out Yet</div>
+                }
+              </div>
+            </li>
+
+            <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="ph ph-timer align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Total Time
+                </div>
+                @if(checkIndetails?.latestCheckInTime &&
+                checkIndetails?.latestCheckOutTime) {
+                <div class="flex-shrink-0 text-muted">
+                  {{ checkIndetails?.totalDuration }}
+                </div>
+                }@else {-}
+              </div>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-9">
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-4">
+      <ul
+        class="nav nav-pills arrow-navtabs nav-secondary gap-2 flex-grow-1 order-2 order-lg-1"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            routerLink="/employee-detail/{{ this.urlId }}"
+            [queryParams]="{ tab: 'timeline' }"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Timeline
+          </a>
+        </li>
+
+        <!-- <li class="nav-item" role="presentation">
+        <a
+          class="nav-link"
+          data-bs-toggle="tab"
+          href="javascript:void(0);"
+          [class.active]="currentTab === 'timelinev2'"
+          (click)="changeTab('timelinev2')"
+          role="tab"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Timeline v2
+        </a>
+      </li> -->
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            routerLink="/employee-detail/{{ this.urlId }}"
+            [queryParams]="{ tab: 'personalDetails' }"
+            role="tab"
+            aria-selected="true"
+          >
+            Personal Details
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            routerLink="/employee-detail/{{ this.urlId }}"
+            [queryParams]="{ tab: 'changePassword' }"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Changes Password
+          </a>
+        </li>
+
+        <li class="nav-item" role="presentation">
+          <!-- href="javascript:void(0);"
+        [class.active]="currentTab === 'liveLocation'"
+        (click)="changeTab('liveLocation')" -->
+          <a
+            class="nav-link active"
+            data-bs-toggle="tab"
+            routerLink="/live-location/{{ this.urlId }}"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Live Location
+          </a>
+        </li>
+      </ul>
+      <div class="flex-shrink-0 ms-auto order-1 order-lg-2">
+        <button class="btn btn-secondary ms-2" (click)="goBack()">
+          <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+          Back
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row mt-3 p-4">
+        <div class="col-2">
+          <select
+            [(ngModel)]="selectedEmployeeId"
+            class="form-control"
+            (change)="handleEmployeeChange($event)"
+          >
+            <option *ngFor="let item of employeeDataList" [value]="item.id">
+              {{ item.name }}
+            </option>
+          </select>
+        </div>
+        <div class="col-10 text-end">
+          <button
+            type="button"
+            (click)="refreshTimeline()"
+            [ngClass]="{ rotate: isRotatinglive }"
+            class="btn btn-ghost-secondary btn-icon btn-sm fs-xl ms-auto"
+          >
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 px-4">
+          <div id="mapId" class="map"></div>
+        </div>
+        <!-- [ngClass]="
+        liveCoordinates && liveCoordinates.length == 0 ? 'd-none' : 'd-block'
+      " -->
+        <!-- <div class="col-lg-12">
+          <div id="mapId" class="match-parent w-100 h-100"></div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

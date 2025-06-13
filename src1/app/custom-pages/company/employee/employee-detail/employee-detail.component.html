@@ -1,0 +1,396 @@
+<div class="row">
+  <!--end col-->
+  <div class="col-xxl-3">
+    <div class="card overflow-hidden">
+      <div>
+        <img
+          src="assets/images/small/img-7.jpg"
+          alt=""
+          id="cover-img"
+          class="card-img-top profile-wid-img object-fit-cover"
+          style="height: 200px"
+        />
+      </div>
+      <div class="card-body pt-0 mt-n5">
+        <div class="text-center">
+          <div class="profile-user position-relative d-inline-block mx-auto">
+            @if(employeeDetail?.image){
+            <img
+              src="{{ employeeDetail?.image }}"
+              alt=""
+              id="user-img"
+              class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+            />
+            }@else {
+            <img
+              src="assets/images/users/avatar-1.jpg"
+              alt=""
+              id="user-img"
+              class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+            />
+            }
+
+            <!-- <div
+              class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0"
+            >
+              <input
+                id="profile-img-file-input"
+                type="file"
+                class="profile-img-file-input d-none"
+                (change)="fileChange($event, '1')"
+              />
+              <label
+                for="profile-img-file-input"
+                class="profile-photo-edit avatar-xs"
+              >
+                <span class="avatar-title rounded-circle bg-light text-body">
+                  <i class="bi bi-camera"></i>
+                </span>
+              </label>
+            </div> -->
+          </div>
+          <div class="mt-3">
+            <h5>
+              {{ employeeDetail?.name }}
+            </h5>
+            <p class="text-muted">{{ employeeDetail?.designation_name }}</p>
+          </div>
+          <div class="d-flex justify-content-center gap-2 mt-2">
+            @if(employeeDetail?.mobile){
+            <a href="tel:{{ employeeDetail?.mobile }}" class="avatar-xs d-block"
+              ><span
+                class="avatar-title rounded-circle bg-primary-subtle text-primary"
+                ><i class="ri-phone-line"></i></span
+            ></a>
+            } @if(employeeDetail?.email){
+            <a
+              href="mailto:{{ employeeDetail?.email }}"
+              class="avatar-xs d-block"
+              ><span
+                class="avatar-title rounded-circle bg-danger-subtle text-danger"
+                ><i class="ri-mail-line"></i></span
+            ></a>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="card border-top">
+        <div class="card-header">
+          <h6 class="card-title mb-0">
+            Today Attendance ( {{ selectedDate | date : "dd MMM , yyyy" }})
+          </h6>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled vstack gap-2 mb-0">
+            <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="ri-login-box-line align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Checkin Time
+                </div>
+                @if(checkIndetails?.latestCheckInTime){
+                <div
+                  class="flex-shrink-0 text-muted"
+                  [innerHTML]="formatTime(checkIndetails?.latestCheckInTime)"
+                ></div>
+                }@else {
+                <div class="flex-shrink-0 text-danger">Not Checked In Yet</div>
+                }
+              </div>
+            </li>
+
+            <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="ri-logout-box-line align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Checkout Time
+                </div>
+                @if(checkIndetails?.latestCheckOutTime){
+                <div
+                  class="flex-shrink-0 text-muted"
+                  [innerHTML]="formatTime(checkIndetails?.latestCheckOutTime)"
+                ></div>
+                }@else {
+                <div class="flex-shrink-0 text-danger">Not Checked Out Yet</div>
+                }
+              </div>
+            </li>
+
+            <li>
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <i
+                    class="ph ph-timer align-middle me-1 text-primary-emphasis"
+                  ></i>
+                  Total Time
+                </div>
+                @if(checkIndetails?.latestCheckInTime &&
+                checkIndetails?.latestCheckOutTime) {
+                <div class="flex-shrink-0 text-muted">
+                  {{ checkIndetails?.totalDuration }}
+                </div>
+                }@else {-}
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xxl-9">
+    <div class="d-flex align-items-center flex-wrap gap-2 mb-4">
+      <ul
+        class="nav nav-pills arrow-navtabs nav-secondary gap-2 flex-grow-1 order-2 order-lg-1"
+        role="tablist"
+      >
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'timeline'"
+            (click)="changeTab('timeline')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Timeline
+          </a>
+        </li>
+
+        <!-- <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'timelinev2'"
+            (click)="changeTab('timelinev2')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Timeline v2
+          </a>
+        </li> -->
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link active"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'personalDetails'"
+            (click)="changeTab('personalDetails')"
+            role="tab"
+            aria-selected="true"
+          >
+            Personal Details
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            href="javascript:void(0);"
+            [class.active]="currentTab === 'changePassword'"
+            (click)="changeTab('changePassword')"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Changes Password
+          </a>
+        </li>
+
+        <li class="nav-item" role="presentation">
+          <!-- href="javascript:void(0);"
+          [class.active]="currentTab === 'liveLocation'"
+          (click)="changeTab('liveLocation')" -->
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            routerLink="/live-location/{{ this.urlId }}"
+            role="tab"
+            aria-selected="false"
+            tabindex="-1"
+          >
+            Live Location
+          </a>
+        </li>
+      </ul>
+      <div class="flex-shrink-0 ms-auto order-1 order-lg-2">
+        <a routerLink="/edit-employee/{{ this.urlId }}" class="btn btn-primary"
+          ><i class="bi bi-pencil-square align-baseline me-1"></i> Edit
+          Profile</a
+        >
+        <button class="btn btn-secondary ms-2" (click)="goBack()">
+          <i class="mdi mdi-keyboard-backspace align-baseline me-1"></i>
+          Back
+        </button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tab-content">
+        <div
+          [hidden]="currentTab !== 'personalDetails'"
+          class="tab-pane active"
+          id="personalDetails"
+          role="tabpanel"
+        >
+          <div class="card">
+            <div class="card-header">
+              <h6 class="card-title mb-0">Personal Details</h6>
+            </div>
+            <div class="card-body p-4">
+              <div class="">
+                <div class="table-responsive">
+                  <table
+                    class="table table-sm table-borderless align-middle description-table mb-0"
+                  >
+                    <tbody>
+                      <tr>
+                        <th>Name</th>
+                        <td>{{ employeeDetail?.name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Gender</th>
+                        <td>{{ employeeDetail?.gender }}</td>
+                      </tr>
+                      <tr>
+                        <th>Department</th>
+                        <td>{{ employeeDetail?.department_name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Designation</th>
+                        <td>{{ employeeDetail?.designation_name }}</td>
+                      </tr>
+                      <tr>
+                        <th>Employee id</th>
+                        <td>{{ employeeDetail?.employee_id }}</td>
+                      </tr>
+                      <tr>
+                        <th>Email</th>
+                        <td>{{ employeeDetail?.email }}</td>
+                      </tr>
+                      <tr>
+                        <th>Mobile</th>
+                        <td>{{ employeeDetail?.mobile }}</td>
+                      </tr>
+                      <tr>
+                        <th>Date of Birth</th>
+                        <td>
+                          {{ employeeDetail?.dob | date : "dd/MMM/yyyy" }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Joining date</th>
+                        <td>
+                          {{
+                            employeeDetail?.joining_date | date : "dd/MMM/yyyy"
+                          }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Address</th>
+                        <td>{{ employeeDetail?.address }}</td>
+                      </tr>
+                      <tr>
+                        <th>City</th>
+                        <td>{{ employeeDetail?.city }}</td>
+                      </tr>
+                      <tr>
+                        <th>State</th>
+                        <td>{{ employeeDetail?.state }}</td>
+                      </tr>
+                      <tr>
+                        <th>Zip code</th>
+                        <td>{{ employeeDetail?.zip_code }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          [hidden]="currentTab !== 'changePassword'"
+          class="tab-pane active"
+          id="changePassword"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Changes Password</h6>
+          </div>
+          <div class="card-body">
+            @if(employeeDetail){
+            <app-password-change
+              [companyId]="employeeDetail?.company_id"
+              [employeeChange]="urlId"
+            ></app-password-change>
+            }
+          </div>
+        </div>
+        <!--end tab-pane-->
+        <div
+          [hidden]="currentTab !== 'timeline'"
+          class="tab-pane active"
+          id="timeline"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Timeline</h6>
+          </div>
+          <div class="card-body">
+            @if(employeeDetail){
+            <app-timeline
+              [companyId]="employeeDetail?.company_id"
+              (employeeChange)="onEmployeeChange($event)"
+            ></app-timeline>
+            }
+          </div>
+        </div>
+
+        <!-- <div
+          [hidden]="currentTab !== 'timelinev2'"
+          class="tab-pane active"
+          id="timelinev2"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Timeline v2</h6>
+          </div>
+          <div class="card-body">
+            @if(employeeDetail){
+            <app-map [companyId]="employeeDetail?.company_id"></app-map>
+            }
+          </div>
+        </div> -->
+        <!--end tab-pane-->
+        <!-- <div
+          [hidden]="currentTab !== 'liveLocation'"
+          class="tab-pane active"
+          id="liveLocation"
+          role="tabpanel"
+        >
+          <div class="card-header">
+            <h6 class="card-title mb-0">Live Location</h6>
+          </div>
+          <div class="card-body">
+            @if(employeeDetail){
+            <app-live-location
+              [companyId]="employeeDetail?.company_id"
+              [emp_image]="employeeDetail?.image"
+              [employeeChange]="urlId"
+            ></app-live-location>
+            }
+          </div>
+        </div> -->
+        <!--end tab-pane-->
+      </div>
+    </div>
+  </div>
+  <!--end col-->
+</div>

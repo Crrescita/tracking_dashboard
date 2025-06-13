@@ -1,0 +1,177 @@
+<!-- <div class="task-card">
+  <h2 class="title">📋 My Tasks</h2>
+  <ng-container *ngIf="emptask.length; else noTasks">
+    <div
+      *ngFor="let item of emptask"
+      class="task-item"
+      [ngClass]="{ overdue: item.isOverdue }"
+    >
+      <div class="task-left">
+        <div class="task-title">{{ item.task_title }}</div>
+        <div class="task-desc">{{ item.task_description }}</div>
+        <div class="task-meta">
+          <span>Due: {{ item.end_date | date : "dd MMM yyyy" }}</span> ·
+          <span>Assigned by: {{ item.employeeDetails[0]?.name }}</span>
+        </div>
+      </div>
+
+      <div class="task-right">
+        <div class="priority" [ngClass]="item.priority.toLowerCase()">
+          {{ item.priority }}
+        </div>
+        <div class="status">
+          {{ item.status }}
+        </div>
+        <div class="avatars">
+          <img
+            *ngFor="let emp of item.employeeDetails"
+            [src]="emp.image"
+            [alt]="emp.name"
+            [title]="emp.name"
+          />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noTasks>
+    <div class="no-tasks">No tasks to display.</div>
+  </ng-template>
+</div> -->
+
+<div class="col-xl-4 col-lg-6">
+  <div class="card h-100 shadow-sm">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center p-3">
+      <h4 class="card-title mb-0">📋 My Tasks</h4>
+      <span class="badge bg-primary-subtle text-primary fw-medium">{{emptask? emptask.length : 0}} Tasks</span>
+
+  
+    </div>
+
+    <div class="card-body p-0">
+      <ngx-simplebar
+        data-simplebar="init"
+        data-simplebar-auto-hide="false"
+        data-simplebar-track="primary"
+        class="h-100"
+        style="max-height: calc(100vh)"
+      >
+        <div class="p-3">
+          <ng-container *ngIf="emptask?.length; else noTasks">
+   <div
+  *ngFor="let item of emptask; let index = index"
+  class="task-item d-flex align-items-start p-3 border-bottom fade-in mt-2"
+  [ngClass]="{ 'bg-light-danger': item.isOverdue }"
+>
+  <div class="flex-shrink-0 me-3">
+     {{index+1}}
+  </div>
+
+  <div class="flex-grow-1 pe-2">
+    <a
+      [routerLink]="'/pages/task/' + this.emp_id + '/' + item.task_id + '/' + item.id"
+      class="text-decoration-none text-dark"
+    >
+    <div class="d-flex justify-content-between">
+      <h6 class="mb-1 fs-lg">{{ item.task_title }}</h6>
+
+        <div class="avatar-xs position-relative">
+  
+  <span
+  class="avatar-title rounded-circle fs-sm priority-icon shadow-sm"
+  [ngClass]="getStatusBg(item)"
+>
+  <i [ngClass]="getStatusIcon(item)"></i>
+</span>
+
+
+
+
+    </div>
+    </div>
+      <p class=" text-muted mb-1 task-desc">{{ item.task_description }}</p>
+    </a>
+    <div class="d-flex flex-wrap justify-content-between text-muted fs-xs">
+      <span><i class="mdi mdi-clock-outline me-1"></i>Due: {{ item.end_date | date: 'dd MMM yyyy' }}</span>
+      <div>
+         <span
+      class="badge rounded-pill mb-1"
+      [ngClass]="{
+        'bg-danger-subtle text-danger': item.priority === 'High',
+        'bg-warning-subtle text-warning': item.priority === 'Medium',
+        'bg-success-subtle text-success': item.priority === 'Low'
+      }"
+    >
+      {{ item.priority }}
+    </span>
+ 
+    <span class="badge bg-light text-dark text-uppercase mt-1 ms-2" style="font-size: 10px">
+      {{ item.status }}
+    </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="ms-3 text-end">
+    <span
+      class="badge rounded-pill mb-1"
+      [ngClass]="{
+        'bg-danger-subtle text-danger': item.priority === 'High',
+        'bg-warning-subtle text-warning': item.priority === 'Medium',
+        'bg-success-subtle text-success': item.priority === 'Low'
+      }"
+    >
+      {{ item.priority }}
+    </span>
+    <br />
+    <span class="badge bg-light text-dark text-uppercase mt-1" style="font-size: 10px">
+      {{ item.status }}
+    </span>
+  </div> -->
+</div>
+
+
+
+            <!-- <div class="text-center py-3">
+              <a href="javascript:void(0);" class="text-success fw-medium">
+                <i class="mdi mdi-loading mdi-spin fs-lg align-middle me-2"></i>
+                Load more
+              </a>
+            </div> -->
+          </ng-container>
+
+          <ng-template #noTasks>
+            <div class="text-center text-muted py-5">
+              <i class="ri-inbox-archive-line fs-2xl mb-2 d-block"></i>
+              No tasks to display.
+            </div>
+          </ng-template>
+        </div>
+      </ngx-simplebar>
+    </div>
+
+ <div class="card-footer enhanced-footer">
+  <div class="status-badges d-flex flex-wrap justify-content-between w-100">
+    <div class="status-badge bg-success-subtle text-success border-success">
+      <i class="ri-check-line me-1"></i>
+      Completed: <strong>{{ getStatusCount('Completed') }}</strong>
+    </div>
+    <div class="status-badge bg-warning-subtle text-warning border-warning">
+      <i class="ri-timer-line me-1"></i>
+      In Progress: <strong>{{ getStatusCount('In-Progress') }}</strong>
+    </div>
+    <div class="status-badge bg-secondary-subtle text-secondary border-secondary">
+      <i class="ri-pause-circle-line me-1"></i>
+      On Hold: <strong>{{ getStatusCount('On-Hold') }}</strong>
+    </div>
+    <div class="status-badge bg-danger-subtle text-danger border-danger">
+      <i class="ri-error-warning-line me-1"></i>
+      Overdue: <strong>{{ getOverdueCount() }}</strong>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+</div>
+

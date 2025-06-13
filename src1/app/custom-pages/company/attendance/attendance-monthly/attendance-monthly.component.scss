@@ -1,0 +1,112 @@
+.scroll-timeline{
+    max-height: 400px;
+    overflow: scroll;
+}
+
+.punch-info {
+    margin: 20px 0 20px;
+}
+.punch-info .punch-hours {
+    background-color: #f9f9f9;
+    border: 5px solid #e2e4e6;
+    font-size: 18px;
+    height: 120px;
+    width: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+}
+
+.check-bg{
+    background-color: #f9f9f9;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+// table{ text-align: center; }
+.table-container{  overflow: scroll;}
+table th, table td {
+  white-space: nowrap;
+  padding: 10px 20px;
+  font-family: Arial;
+}
+@media screen and (min-width: 850px) {
+  table tr th:first-child, table td:first-child{
+    position: sticky;
+    width: 100px;
+    left: 0;
+    z-index: 10;
+    background: #fff;
+  }
+  
+  /* Make the first column (Name) sticky */
+  table tr th:first-child, 
+  table tr td:first-child {
+    position: sticky;
+    width: 100px;
+    left: 0;
+    z-index: 10;
+    background: #fff;
+  }
+  
+  /* Make T.L sticky (last column) */
+  table tr th:last-child,        
+  table tr td:last-child {
+    position: sticky;
+    right: 0; /* Sticky to the far right */
+    z-index: 10;
+    background: #fff !important;
+    
+  }
+  
+  /* Make T.A sticky (second last column) */
+  table tr th:nth-last-child(2),
+  table tr td:nth-last-child(2) {
+    position: sticky;
+    right: 65px; /* Adjust this value based on column width */
+    z-index: 10;
+    background: #fff;
+  }
+  
+  /* Make T.P sticky (third last column) */
+  table tr th:nth-last-child(3),
+  table tr td:nth-last-child(3) {
+    position: sticky;
+    right: 127px; /* Adjust this value based on column width */
+    z-index: 10;
+    background: #fff !important;
+  }
+  
+  table tr th:nth-last-child(4),
+  table tr td:nth-last-child(4) {
+    position: sticky;
+    right: 191px; /* Adjust this value based on column width */
+    z-index: 10;
+  //   border-left: 2px solid black;
+    background: #fff !important;
+  }
+  
+  /* Ensure the header row is sticky at the top */
+  table tr th {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    background: #fff ;
+  }
+  
+  /* Increase z-index for the first column */
+  table tr th:first-child {
+    z-index: 11;
+  }
+}
+

@@ -313,13 +313,13 @@ export class AddEmployeeComponent {
   }
 
   imageValidator() {
-    // return (control: AbstractControl) => {
-    //   if (!this.urlId) {
-    //     return Validators.required(control);
-    //   } else {
-    //     return null;
-    //   }
-    // };
+    return (control: AbstractControl) => {
+      if (!this.urlId) {
+        return Validators.required(control);
+      } else {
+        return null;
+      }
+    };
   }
 
   toggleFieldTextType1(): void {
@@ -607,6 +607,9 @@ this.empId = res.data[0].id;
         this.addemployee(formData);
       }
     } else {
+      if(!this.formGroup.get("image")?.value){
+        this.toastService.error("Please upload Passport Size Photo")
+      }
       this.formGroup.markAllAsTouched();
     }
   }

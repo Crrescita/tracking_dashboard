@@ -141,6 +141,10 @@
                     >Upload Passport Size Photo <span class="text-danger">(JPG/PNG, Max 2MB)</span></label
                   >
                 </div>
+                @if (f['image'] && f['image'].hasError('required') &&
+                  f['image'].touched) {
+                  <div class="invalid-text">Image is required.</div>
+                  }
                 
                 <div
                   class="profile-user position-relative d-inline-block mx-auto"
@@ -166,10 +170,11 @@
                     id="user-img"
                     class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
                   />
-                  } @if (f['image'] && f['image'].hasError('required') &&
+                  }
+                   <!-- @if (f['image'] && f['image'].hasError('required') &&
                   f['image'].touched) {
                   <div class="invalid-text">Image is required.</div>
-                  }
+                  } -->
 
                   <input
                     type="file"
@@ -1395,6 +1400,11 @@
 
           @if(this.empId){
 <app-emp-docs    [urlId]="this.empId"></app-emp-docs>
+<div class="d-flex justify-content-center align-items-center">
+  <!-- <button class="btn btn-primary"> -->
+    <a routerLink="/pages/employee-thankyou" class="text-white btn btn-primary">Submit</a>
+  <!-- </button> -->
+</div>
 
           }@else {
              <div class="noresult mt-5 pt-5" >

@@ -1,0 +1,497 @@
+<!-- Start Breadcrumbs -->
+<!-- <app-breadcrumbs title="Invoice Overview" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs> -->
+<!-- End Breadcrumbs -->
+
+<div class="row justify-content-center">
+  <div class="col-xxl-9">
+    <div class="hstack gap-2 justify-content-end d-print-none mb-4">
+      <a href="javascript:window.print()" class="btn btn-success"
+        ><i class="ri-printer-line align-bottom me-1"></i> Print</a
+      >
+      <button type="button" id="download-button" class="btn btn-primary">
+        <i class="ri-download-2-line align-bottom me-1"></i> Download
+      </button>
+    </div>
+    @for (item of attendanceMonthyDataList; track $index) {
+    <div class="card overflow-hidden" id="invoice">
+      <div class="invoice-effect-top position-absolute start-0">
+        <svg
+          version="1.2"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 764 182"
+          width="764"
+          height="182"
+        >
+          <title>&lt;Group&gt;</title>
+          <g id="&lt;Group&gt;">
+            <!-- <g id="&lt;Group&gt;">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-light)"
+                d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z"
+              />
+            </g> -->
+            <g id="&lt;Group&gt;">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-secondary)"
+                d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z"
+              />
+            </g>
+            <g id="&lt;Group&gt;" style="opacity: 0.5">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-primary)"
+                d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z"
+              />
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="card-body z-1 position-relative">
+        <div class="d-flex">
+          <div class="flex-grow-1">
+            <img
+          
+              src="https://trackingapi.crrescita.com/{{ this.company_logo }}"
+              class="card-logo"
+              alt="logo light"
+              height="68"
+            />
+          </div>
+          <div class="flex-shrink-0 pt-3 pt-lg-0 mt-lg-0 mt-5">
+            <h6>
+              <span class="text-muted fw-normal">Name:</span>
+              <span id="legal-register-no"> {{ item.name }}</span>
+            </h6>
+            <h6>
+              <span class="text-muted fw-normal">Employee ID:</span>
+              <span id="legal-register-no"> {{ item.employee_id }}</span>
+            </h6>
+            <h6>
+              <span class="text-muted fw-normal">Email:</span>
+              <span id="email"> {{ item.email }}</span>
+            </h6>
+            <!-- <h6>
+              <span class="text-muted fw-normal">Website:</span>
+              <a
+                href="https://themesbrand.com/"
+                class="link-primary"
+                target="_blank"
+                id="website"
+                >www.themesbrand.com</a
+              >
+            </h6> -->
+            <h6 class="mb-0">
+              <span class="text-muted fw-normal">Contact No: </span
+              ><span id="contact-no"> {{ item.mobile }}</span>
+            </h6>
+          </div>
+        </div>
+        <div class="mt-5 pt-lg-4">
+          <!-- <div class="row g-3">
+            <div class="col-lg col-3">
+              <p class="text-muted mb-2 text-uppercase">Total Present</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-no">{{ item.totals.totalPresent }}</span>
+              </h5>
+            </div>
+            <div class="col-lg col-3">
+              <p class="text-muted mb-2 text-uppercase">Total Present</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-no">{{ item.totals.totalAbsent }}</span>
+              </h5>
+            </div>
+          </div> -->
+          <div class="row g-3">
+            <!-- <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">Total Present</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-no">{{ item.totals.totalPresent }}</span>
+              </h5>
+            </div>
+            <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">Total Present</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-no">{{ item.totals.totalAbsent }}</span>
+              </h5>
+            </div> -->
+            <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">Avg. Check-In Time</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-no">{{
+                  item.totals.avgCheckInTime != "-"
+                    ? formatTime(item.totals.avgCheckInTime)
+                    : item.totals.avgCheckInTime
+                }}</span>
+              </h5>
+            </div>
+
+            <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">Avg. Check-Out Time</p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-date">{{
+                  item.totals.avgCheckOutTime != "-"
+                    ? formatTime(item.totals.avgCheckOutTime)
+                    : item.totals.avgCheckOutTime
+                }}</span>
+              </h5>
+            </div>
+            <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">
+                Most Frequent Check-in Address
+              </p>
+              <h5 class="fs-md mb-0">
+                <span id="invoice-due-date">{{
+                  item.totals.avgCheckInAddress
+                }}</span>
+              </h5>
+            </div>
+            <!--end col-->
+            <!-- <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">Payment Status</p>
+              <span
+                class="badge bg-success-subtle text-success fs-xxs"
+                id="payment-status"
+                >Paid</span
+              >
+            </div> -->
+            <!--end col-->
+            <div class="col-lg col-6">
+              <p class="text-muted mb-2 text-uppercase">
+                Most Frequent Check-out Address
+              </p>
+              <h5 class="fs-md mb-0">
+                <span id="total-amount">{{
+                  item.totals.avgCheckOutAddress
+                }}</span>
+              </h5>
+            </div>
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </div>
+        <div class="mt-3">
+          <div class="row g-3">
+            <div class="col-3">
+              <p class="text-muted text-uppercase">Total Present</p>
+              <h6 class="fs-md" id="billing-name">
+                {{ item.totals.totalPresent }}
+              </h6>
+              <!-- <p class="text-muted mb-1" id="billing-address-line-1">
+                6382 Cerromar Cir, Orangevale, California, US.
+              </p>
+              <p class="text-muted mb-1">
+                <span>Phone: +</span
+                ><span id="billing-phone-no">(909) 594 2812</span>
+              </p>
+              <p class="text-muted mb-0">
+                <span>Tax: </span><span id="billing-tax-no">12-3456789</span>
+              </p> -->
+            </div>
+
+            <!-- <div class="col-3">
+              <p class="text-muted text-uppercase">Total Absent</p>
+              <h6 class="fs-md" id="shipping-name">
+                {{ item.totals.totalAbsent }}
+              </h6>
+              <p class="text-muted mb-1" id="shipping-address-line-1">
+                505 W Cordova Rd, Santa Fe, New York, US
+              </p>
+              <p class="text-muted mb-1">
+                <span>Phone: +</span
+                ><span id="shipping-phone-no">(505) 989 1378</span>
+              </p>
+            </div> -->
+          </div>
+        </div>
+        @if(item.avgResult){
+        <div class="card alert border">
+          <h3 class="card-title mt-3 mb-0 text-center text-uppercase">
+            TEL App Activity Gaps Due to Force Stop or Shutdown
+          </h3>
+
+          <div class="col-12 mt-3">
+            <p class="text-muted mb-2 text-uppercase">Avg. App Inactive Time</p>
+            <h6 class="fs-md text-dark" id="avg-gps-off-time">
+              {{ convertToHoursAndMinutes(item.avgResult) }}
+            </h6>
+
+            <!-- If the app was never inactive (i.e., avgDuration = "00:00:00") -->
+            @if(item.avgResult === 0) {
+            <div class="alert alert-success mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                The app remained active throughout the day with no inactivity
+                detected.
+              </span>
+            </div>
+            }
+
+            <!-- If the app was inactive for more than 8 hours on average -->
+
+            @if(item.avgResult > 360) {
+            <div class="alert alert-danger mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                This user frequently disables the TEL app. The app was inactive
+                for extended periods, averaging over 6 to 8 hours per day.
+              </span>
+            </div>
+            }
+
+            <!-- If the app was inactive between 4 and 8 hours on average -->
+            @if(item.avgResult > 240 && item.avgResult <= 360) {
+            <div class="alert alert-info mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                The app was inactive for extended periods, averaging over 4 to 6
+                hours per day.
+              </span>
+            </div>
+            } @if(item.avgResult > 120 && item.avgResult <= 240) {
+            <div class="alert alert-warning mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                This user frequently disables the TEL app for more than 2 hours
+                to 4 hours on a daily basis.
+              </span>
+            </div>
+            }
+            <!-- If the app was inactive for less than 4 hours on average -->
+            @if(item.avgResult > 60 && item.avgResult <= 120) {
+            <div class="alert alert-secondary mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                This user disables the TEL app for more than 1 hours to 2 hours
+                on a daily basis.
+              </span>
+            </div>
+            }
+          </div>
+
+          <!-- <h3 class="text-center mt-3 fw-normal">Inactive Period Analysis</h3> -->
+          @if(item.mobiRecords.length > 0 ){
+          <div class="table-responsive my-4">
+            <table
+              class="table table table-striped text-center table-nowrap align-middle mb-0"
+            >
+              <thead>
+                <tr class="table-light">
+                  <th scope="col" style="width: 50px">#</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Total Duration</th>
+
+                  <!-- <th scope="col" class="text-end">Total Duration</th> -->
+                </tr>
+              </thead>
+              <tbody id="products-list">
+                @for (timeDiff of item.mobiRecords; track $index) {
+
+                <tr>
+                  <th scope="row">{{ $index + 1 }}</th>
+                  <td class="text-center">
+                    <span class="fw-medium">
+                      {{ timeDiff.date | date : "dd MMM, YYYY" }}</span
+                    >
+                  </td>
+                  <td>
+                    {{
+                      convertToHoursAndMinutes(timeDiff.time_diff_in_minutes)
+                    }}
+                  </td>
+                  <!-- <td>03</td>
+                                            <td class="text-end">$483.75</td> -->
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+        } @if(item.totals.totalPresent > 1){
+
+        <div class="card alert border">
+          <h3 class="card-title mt-3 mb-0 text-center text-uppercase">
+            GPS Disabled-Time Analysis
+          </h3>
+
+          <div class="col-12 mt-3">
+            <p class="text-muted mb-2 text-uppercase">Avg. GPS OFF Time</p>
+            <h6 class="fs-md text-dark" id="avg-gps-off-time">
+              {{
+                item.result.avgDurations === "00:00:00"
+                  ? ""
+                  : formatDuration(item.result.avgDurations)
+              }}
+            </h6>
+
+            @if(item.result.avgDurations === "00:00:00") {
+            <div class="alert alert-success mb-0">
+              <span class="fw-semibold">STATUS:</span>
+              <span id="note">
+                GPS remained consistently active throughout the day.
+              </span>
+            </div>
+            } @if(parseDuration(item.result.avgDurations) > 8){
+
+            <div class="alert alert-warning mb-0">
+              <span class="fw-semibold">NOTES:</span>
+              <span id="note">
+                GPS is OFF for a averaging over 8 hours per day.
+              </span>
+            </div>
+            } @if(parseDuration(item.result.avgDurations) > 4 &&
+            parseDuration(item.result.avgDurations) <= 8){
+            <div class="alert alert-info mb-0">
+              <span class="fw-semibold">NOTES:</span>
+              <span id="note">
+                GPS is OFF for a averaging between 4 and 8 hours daily.
+              </span>
+            </div>
+
+            } @if(parseDuration(item.result.avgDurations) > 0 &&
+            parseDuration(item.result.avgDurations) <= 4) {
+            <div class="alert alert-secondary mb-0">
+              <span class="fw-semibold">NOTES:</span>
+              <span id="note">
+                GPS is OFF for a averaging less than 4 hours daily.
+              </span>
+            </div>
+            }
+          </div>
+          @if(item.result.filteredData.length > 0 ){
+          <!-- <h3 class="text-center mt-3 fw-normal">GPS Off-Time Analysis</h3> -->
+          <div class="table-responsive my-4">
+            <table
+              class="table table-striped text-center table-nowrap align-middle mb-0"
+            >
+              <thead>
+                <tr class="table-light">
+                  <th scope="col" style="width: 50px">#</th>
+
+                  <th scope="col">GPS Status</th>
+                  <th scope="col">Start Time</th>
+                  <th scope="col">End Time</th>
+                  <th scope="col" class="text-end">Total Duration</th>
+                </tr>
+              </thead>
+              <tbody id="products-list">
+                @for (record of item.result.filteredData; track $index) {
+                <tr>
+                  <th scope="row">{{ $index + 1 }}</th>
+                  <td class="text-center" colspan="5">
+                    <span class="fw-medium fs-6"
+                      >Date :&nbsp;{{
+                        record.date | date : "dd MMM, YYYY"
+                      }}</span
+                    >
+                    <p class="text-muted mb-0">
+                      Total Duration:&nbsp;{{ record.totalDuration }}
+                    </p>
+                  </td>
+                  <!-- <td>$161.25</td>
+                                        <td>03</td>
+                                        <td class="text-end">$483.75</td> -->
+                </tr>
+                @for (subrecord of record.records; track $index) {
+                <tr>
+                  <td></td>
+
+                  <td class="">
+                    <span class="fw-medium">{{
+                      subrecord.gps_status === "0" ? "OFF" : "On"
+                    }}</span>
+                    <!-- <p class="text-muted mb-0">
+                              32.5mm (1.28 Inch) TFT Color Touch Display
+                            </p> -->
+                  </td>
+                  <td>{{ formatTimeStartEnd(subrecord.start_time) }}</td>
+                  <td>{{ formatTimeStartEnd(subrecord.end_time) }}</td>
+                  <td class="text-end">{{ subrecord.total_duration }}</td>
+                </tr>
+                } }
+
+                <!-- <tr>
+                          <th scope="row">02</th>
+                          <td class="text-start">
+                            <span class="fw-medium">Fossil gen 5E smart watch</span>
+                            <p class="text-muted mb-0">
+                              32.5mm (1.28 Inch) TFT Color Touch Display
+                            </p>
+                          </td>
+                          <td>$69.60</td>
+                          <td>02</td>
+                          <td class="text-end">$139.20</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">03</th>
+                          <td class="text-start">
+                            <span class="fw-medium">Blive Printed Men Round Neck</span>
+                            <p class="text-muted mb-0">Fashion</p>
+                          </td>
+                          <td>$250.00</td>
+                          <td>06</td>
+                          <td class="text-end">$1,500.00</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">04</th>
+                          <td class="text-start">
+                            <span class="fw-medium">Flip-Flops and House Slippers</span>
+                            <p class="text-muted mb-0">Footwear</p>
+                          </td>
+                          <td>$150.00</td>
+                          <td>01</td>
+                          <td class="text-end">$150.00</td>
+                        </tr> -->
+              </tbody>
+            </table>
+            <!--end table-->
+          </div>
+          }
+        </div>
+        }
+
+        <div class="new-page"></div>
+      </div>
+      <!-- <div
+        class="invoice-effect-top position-absolute end-0"
+        style="transform: rotate(180deg); bottom: -80px"
+      >
+        <svg
+          version="1.2"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 764 182"
+          width="764"
+          height="182"
+        >
+          <title>&lt;Group&gt;</title>
+          <g id="&lt;Group&gt;">
+            <g id="&lt;Group&gt;">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-light)"
+                d="m-6.6 177.4c17.5 0.1 35.1 0 52.8-0.4 286.8-6.6 537.6-77.8 700.3-184.6h-753.1z"
+              />
+            </g>
+            <g id="&lt;Group&gt;">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-secondary)"
+                d="m-6.6 132.8c43.5 2.1 87.9 2.7 132.9 1.7 246.9-5.6 467.1-59.2 627.4-142.1h-760.3z"
+              />
+            </g>
+            <g id="&lt;Group&gt;" style="opacity: 0.5">
+              <path
+                id="&lt;Path&gt;"
+                style="fill: var(--tb-primary)"
+                d="m-6.6 87.2c73.2 7.4 149.3 10.6 227.3 8.8 206.2-4.7 393.8-42.8 543.5-103.6h-770.8z"
+              />
+            </g>
+          </g>
+        </svg>
+      </div> -->
+    </div>
+    }
+  </div>
+</div>

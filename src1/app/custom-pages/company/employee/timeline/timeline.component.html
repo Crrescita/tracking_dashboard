@@ -1,0 +1,210 @@
+<div class="card py-3">
+  <div class="row">
+    <div class="col-lg-2 mt-2 mt-lg-0">
+      <!-- (change)="onEmployeeChange($event)" -->
+      <select
+        [(ngModel)]="selectedEmployeeId"
+        class="form-control"
+        (change)="handleEmployeeChange($event)"
+      >
+        <option *ngFor="let item of employeeDataList" [value]="item.id">
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-lg-2 mt-2 mt-lg-0">
+      <div class="input-group">
+        <input
+          type="text"
+          id="datepicker"
+          class="form-control"
+          showWeekNumbers="false"
+          bsDatepicker
+          [bsConfig]="bsConfig"
+          [(ngModel)]="selectedDate"
+          (bsValueChange)="onDateChange($event)"
+        />
+        <div class="input-group-append">
+          <label for="datepicker" class="input-group-text cursor-pointer">
+            <i class="ri-calendar-fill"></i>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-2 mt-2 mt-lg-0">
+      <select
+        class="form-control"
+        [(ngModel)]="selectedInterval"
+        (change)="onIntervalChange()"
+      >
+        <option value="1">1 Minutes</option>
+        <option value="3">3 Minutes</option>
+        <option value="10">10 Minutes</option>
+        <option value="15">15 Minutes</option>
+        <option value="30">30 Minutes</option>
+        <option value="60">1 Hour</option>
+      </select>
+    </div>
+
+    <div class="col-6 text-end">
+      <button
+        type="button"
+        (click)="refreshTimeline()"
+        [ngClass]="{ rotate: isRotating }"
+        class="btn btn-ghost-secondary btn-icon btn-sm fs-xl ms-auto"
+      >
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="p-3 border-bottom border-2">
+  <div class="row align-items-center flex-lg-nowrap">
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Date</p>
+      <h5 class="fs-md mb-0">
+        <span id="total-amount">{{
+          formattedDate | date : "dd/MMM/yyyy"
+        }}</span>
+      </h5>
+    </div>
+    @if(checkIndetails?.latestCheckInTime){
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Check-In At</p>
+      <h5
+        class="fs-md mb-0"
+        [innerHTML]="formatTime(checkIndetails?.latestCheckInTime)"
+      ></h5>
+    </div>
+    }@else {
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Attendence Status</p>
+      <h5 class="fs-md mb-0 text-danger">Absent</h5>
+    </div>
+    } @if(checkIndetails?.latestCheckOutTime){
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Check-out At</p>
+      <h5 class="fs-md mb-0">
+        <span
+          id="invoice-date"
+          [innerHTML]="formatTime(checkIndetails?.latestCheckOutTime)"
+        ></span>
+      </h5>
+    </div>
+    } @if(checkIndetails?.latestCheckInTime) {
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Total Time</p>
+      <h5 class="fs-md mb-0">
+        <span id="invoice-due-date">{{ checkIndetails?.totalDuration }}</span>
+      </h5>
+    </div>
+    } @if(totaldistanceToshow){
+    <div class="col-6 col-md-2">
+      <p class="text-muted mb-2 text-uppercase">Total Distance</p>
+      <h5 class="fs-md mb-0">
+        <span id="invoice-due-date">{{ totaldistanceToshow }} km</span>
+      </h5>
+      <!-- <span
+                id="payment-status"
+                class="badge bg-success-subtle text-success fs-xxs"
+                >Paid</span
+              > -->
+    </div>
+    }
+  </div>
+</div>
+
+<div class="row">
+  <!-- @if(employeeTimeline && employeeTimeline.length >0){ -->
+  <div
+    class="col-lg-4"
+    [ngClass]="
+      employeeTimeline && employeeTimeline.length > 0 ? 'd-block' : 'd-none'
+    "
+  >
+    <ul class="acitivity-timeline-2 list-unstyled mb-0 mt-3 overflow">
+      @for (item of intervalTimeCoordinates; track $index) {
+      <li
+        (click)="
+          updateMarkerAndPath(item.end.longitude, item.end.latitude, item)
+        "
+        class="activity-item pt-2"
+        [ngClass]="{ 'selected-item': selectedItem === item }"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <span
+            class="fs-md badge bg-body-secondary border border-secondary text-secondary"
+            >{{ item.end.formattedTime }}</span
+          >
+
+          <button
+            type="button"
+            class="btn battery-status"
+            [ngClass]="
+              getBatteryClass(item.end.battery_status.replace('%', ''))
+            "
+            data-bs-toggle="tooltip"
+            placement="top"
+            tooltip="Battery Percentage"
+          >
+            <span class="ri-battery-saver-line"></span>
+            {{ item.end.battery_status }}
+          </button>
+        </div>
+
+        <p class="mb-0 mt-2">{{ item.end.address }}</p>
+      </li>
+      } @empty {
+
+      <div class="mt-5 pt-5 text-center">
+        <div class="error-img text-center px-5 mt-5">
+          <!-- <img
+            src="assets/images/comingsoon.png"
+            alt=""
+            height="110"
+            class="move-animation"
+          /> -->
+        </div>
+        <button type="button" class="btn btn-info btn-load mt-5">
+          <span class="d-flex align-items-center">
+            <span class="flex-grow-1 me-2"> Loading... </span>
+            <span class="spinner-grow flex-shrink-0" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </span>
+          </span>
+        </button>
+      </div>
+      }
+    </ul>
+  </div>
+  <div
+    class="col-lg-8 mt-3 mt-lg-0"
+    [ngClass]="
+      employeeTimeline && employeeTimeline.length == 0 ? 'd-none' : 'd-block'
+    "
+  >
+    <div id="map" class="match-parent w-100 h-100"></div>
+  </div>
+  <div class="col-12">
+    <div
+      class="mt-2 text-center"
+      [ngClass]="
+        employeeTimeline && employeeTimeline.length === 0 ? 'd-block' : 'd-none'
+      "
+    >
+      <div class="error-img text-center px-5">
+        <img
+          src="assets/images/auth/offline-page.gif"
+          alt=""
+          class="img-fluid w-25"
+        />
+      </div>
+      <h3 class="mt-2 fw-semibold">Sorry! No Result Found</h3>
+    </div>
+  </div>
+</div>
+
+<div id="map" class="match-parent"></div>
