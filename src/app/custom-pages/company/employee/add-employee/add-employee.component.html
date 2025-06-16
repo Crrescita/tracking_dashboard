@@ -282,6 +282,162 @@
                 </div>
               </div>
 
+              <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emergency_contact_name" class="form-label"
+                    >Emergency Contact Name </label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="emergency_contact_name"
+                    formControlName="emergency_contact_name"
+                    placeholder="Enter Emergency Contact Name"
+                    value="emergency_contact_name"
+                    [ngClass]="
+                      f['emergency_contact_name'] &&
+                      f['emergency_contact_name'].hasError('required') &&
+                      f['emergency_contact_name'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['emergency_contact_name'] && f['emergency_contact_name'].hasError('required') &&
+                  f['emergency_contact_name'].touched) {
+                  <div class="invalid-text"> emergency_contact_name is required.</div>
+                  } @if(f['emergency_contact_name'] && f['emergency_contact_name'].hasError('maxlength') &&
+                  f['emergency_contact_name'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+               <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="emergency_contact_number" class="form-label"
+                    >Emergency Contact Number </label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="emergency_contact_number"
+                    formControlName="emergency_contact_number"
+                    placeholder="Enter Emergency Contact Number"
+                    value="emergency_contact_number"
+                    [ngClass]="
+                      f['emergency_contact_number'] &&
+                      f['emergency_contact_number'].hasError('required') &&
+                      f['emergency_contact_number'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['emergency_contact_number'] && f['emergency_contact_number'].hasError('required') &&
+                  f['emergency_contact_number'].touched) {
+                  <div class="invalid-text">Mobile is required.</div>
+                  } @if(f['emergency_contact_number'].hasError('pattern')){
+                  <div class="invalid-text">
+                    Please, Enter 10 digit Mobile Number.
+                  </div>
+                  }
+                </div>
+              </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="pf_no" class="form-label"
+                    >PF Number </label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="pf_no"
+                    formControlName="pf_no"
+                    placeholder="Enter PF Number"
+                    value="pf_no"
+                    [ngClass]="
+                      f['pf_no'] &&
+                      f['pf_no'].hasError('required') &&
+                      f['pf_no'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['pf_no'] && f['pf_no'].hasError('required') &&
+                  f['pf_no'].touched) {
+                  <div class="invalid-text"> pf_no is required.</div>
+                  } @if(f['pf_no'] && f['pf_no'].hasError('maxlength') &&
+                  f['pf_no'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="esi_no" class="form-label"
+                    >ESI Number</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="esi_no"
+                    formControlName="esi_no"
+                    placeholder="Enter ESI Number"
+               
+                    [ngClass]="
+                      f['esi_no'] &&
+                      f['esi_no'].hasError('required') &&
+                      f['esi_no'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  />
+                  @if (f['esi_no'] && f['esi_no'].hasError('required') &&
+                  f['esi_no'].touched) {
+                  <div class="invalid-text"> esi_no is required.</div>
+                  } @if(f['esi_no'] && f['esi_no'].hasError('maxlength') &&
+                  f['esi_no'].touched){
+                  <div class="invalid-text">
+                    name must be at most 45 characters
+                  </div>
+                  }
+                </div>
+              </div>
+
+                <div class="col-lg-6">
+                <div class="mb-3">
+                  <label for="gender" class="form-label"
+                    >Gender <span class="text-danger">*</span></label
+                  >
+                  <select
+                    class="form-control"
+                    formControlName="gender"
+                    data-choices
+                    id="gender"
+                    [ngClass]="
+                      f['gender'] &&
+                      f['gender'].hasError('required') &&
+                      f['gender'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  @if (f['gender'] && f['gender'].hasError('required') &&
+                  f['gender'].touched) {
+                  <div class="invalid-text">Gender is required.</div>
+                  }
+                </div>
+              </div>
           
               <div class="col-lg-6">
                 <div class="mb-3">
@@ -449,35 +605,7 @@
                 </div>
               </div>
 
-              <div class="col-lg-6">
-                <div class="mb-3">
-                  <label for="gender" class="form-label"
-                    >Gender <span class="text-danger">*</span></label
-                  >
-                  <select
-                    class="form-control"
-                    formControlName="gender"
-                    data-choices
-                    id="gender"
-                    [ngClass]="
-                      f['gender'] &&
-                      f['gender'].hasError('required') &&
-                      f['gender'].touched
-                        ? 'is-invalid'
-                        : ''
-                    "
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  @if (f['gender'] && f['gender'].hasError('required') &&
-                  f['gender'].touched) {
-                  <div class="invalid-text">Gender is required.</div>
-                  }
-                </div>
-              </div>
+            
 
               <div class="col-lg-12">
                 <div class="mb-3">

@@ -186,7 +186,6 @@ export class AddEmployeeComponent {
     // this.route.params.subscribe((params) => {
     //   this.urlId = params["id"] ? Number(params["id"]) : null;
     // });
-
     this.initializeForm();
 
     if (this.urlId) {
@@ -314,6 +313,7 @@ export class AddEmployeeComponent {
 
   imageValidator() {
     return (control: AbstractControl) => {
+      console.log(this.urlId)
       if (!this.urlId) {
         return Validators.required(control);
       } else {
@@ -524,6 +524,7 @@ this.empId = res.data[0].id;
        this.toggleSpinner(false);
           this.setemployeeDetails(res.data[0]);
           this.dataFetched.emit(res.data[0]);
+          this.imageValidator();
     } else {
       this.toastService.warning("No employee found with this mobile number");
     }
