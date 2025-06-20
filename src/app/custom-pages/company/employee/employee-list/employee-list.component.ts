@@ -9,6 +9,7 @@ import { cloneDeep } from "lodash";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExcelService } from "../../../../core/services/excel.service";
 import * as XLSX from "xlsx";
+import * as ExcelJS from "exceljs";
 
 @Component({
   selector: "app-employee-list",
@@ -764,4 +765,125 @@ export class EmployeeListComponent implements OnInit {
       ? document.getElementById("remove-actions")?.classList.remove("d-none")
       : document.getElementById("remove-actions")?.classList.add("d-none");
   }
+
+
+ async exportTableToExcel(): Promise<void> {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Employee List');
+
+  const filename = `Employee_List_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+  // Header row (based on UI)
+  const header = [
+    'Employee Name',
+    'Mobile',
+    'Email',
+    'Designation',
+    'Branch',
+    'Department',
+    'PF Number',
+    'ESI Number',
+    'Aadhaar',
+    'PAN',
+    'Driving License',
+    'Voter',
+    'UAN',
+    'Created At',
+    'Updated At',
+  ];
+  const headerRow = worksheet.addRow(header);
+  headerRow.eachCell((cell) => (cell.font = { bold: true }));
+
+  // Populate data rows
+  this.filteredemployeeData.forEach((data:any) => {
+    const row = worksheet.addRow([
+      data.name,
+      data.mobile,
+      data.email,
+      data.designation_name,
+      data.branch_name,
+      data.department_name,
+      data.pf_no,
+      data.esi_no,
+      data.aadhaar,
+      data.pan,
+      data.driving_license,
+      data.voter,
+      data.voter,
+      this.formatDate(data.created_at),
+      this.formatDate(data.updated_at || data.created_at),
+    ]);
+
+    // Bold employee name
+    row.getCell(1).font = { bold: true };
+
+    // Color status
+    // const statusCell = row.getCell(7);
+    // if (statusCell.value === 'active') {
+    //   statusCell.fill = {
+    //     type: 'pattern',
+    //     pattern: 'solid',
+    //     fgColor: { argb: 'FF38b738' },
+    //   };
+    //   statusCell.font = { color: { argb: 'FFFFFFFF' } };
+    // } else if (statusCell.value === 'inactive') {
+    //   statusCell.fill = {
+    //     type: 'pattern',
+    //     pattern: 'solid',
+    //     fgColor: { argb: 'FFFF0000' },
+    //   };
+    //   statusCell.font = { color: { argb: 'FFFFFFFF' } };
+    // }
+  });
+
+  // Column widths
+  worksheet.columns = [
+    { width: 25 }, // Name
+    { width: 15 }, // Mobile
+    { width: 25 }, // Email
+    { width: 20 }, // Designation
+    { width: 20 }, // Branch
+    { width: 20 }, // Department
+    { width: 15 }, // Status
+    { width: 20 }, // Created At
+    { width: 20 }, // Updated At
+    { width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },
+  ];
+
+  // Apply borders
+  worksheet.eachRow((row) => {
+    row.eachCell((cell) => {
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
+  });
+
+  // Download file
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  window.URL.revokeObjectURL(url);
+}
+
+// Helper method to format date
+private formatDate(date: string | Date): string {
+  return new Date(date).toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 }

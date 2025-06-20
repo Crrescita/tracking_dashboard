@@ -78,6 +78,16 @@
                 <i class="bi bi-plus-circle align-baseline me-1"></i> Add
                 Employee
               </button>
+
+               <button
+                      (click)="exportTableToExcel()"
+                      type="button"
+                      id="download-button"
+                      class="btn btn-primary me-2"
+                    >
+                      <i class="ri-file-excel-2-fill align-bottom me-1"></i>
+                      Download
+                    </button>
               <!--(click)="exportData()"  -->
               <!-- <button
                 type="button"

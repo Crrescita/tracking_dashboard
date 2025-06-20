@@ -22,6 +22,7 @@ export class BackgroundVerificationComponent implements OnInit {
   @Output() backGroundDetail = new EventEmitter<any>();
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
+  @ViewChild("showModalDoc", { static: false }) showModalDoc?: ModalDirective;
 
   documents = [
     {
@@ -214,6 +215,40 @@ export class BackgroundVerificationComponent implements OnInit {
     modalbtn.innerHTML = "Save"; // Indicate edit mode
   }
 
+
+  identiyNumber:any;
+  onView(documentName: any) {
+    this.selectedDocument = documentName.name;
+
+    this.uploadedImage = documentName.fileUrl;
+
+    this.identiyNumber = documentName.documentNo
+
+    // Update validators to not require the file for editing
+    // const documentValidators = this.getValidators(documentName.name);
+    // this.formGroup.setControl(
+    //   "documentNo",
+    //   this.formBuilder.control(
+    //     documentName.documentNo || "",
+    //     documentValidators.number
+    //   )
+    // );
+
+    // this.formGroup.setControl("documentFile", this.formBuilder.control(""));
+
+    this.showModalDoc?.show();
+
+    // Update modal title and button text
+    // const modaltitle = document.querySelector(
+    //   ".modal-title"
+    // ) as HTMLAreaElement;
+    // modaltitle.innerHTML = `Edit ${this.selectedDocument}`;
+    // const modalbtn = document.getElementById("add-btn") as HTMLAreaElement;
+    // modalbtn.innerHTML = "Save"; // Indicate edit mode
+  }
+
+
+
   getValidators(documentType: string) {
     switch (documentType) {
       case "Aadhaar":
@@ -294,10 +329,12 @@ export class BackgroundVerificationComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.showModal?.hide()
+    this.showModalDoc?.hide();
+    this.showModal?.hide();
     this.formGroup.reset();
     this.selectedImage = null;
     this.selectedImagePreview = null;
     this.uploadedImage = null;
+    this.identiyNumber = null;
   }
 }
