@@ -282,10 +282,9 @@
       alt="Uploaded Thumbnail"
     />
 
-    <!-- Download button positioned on top right of image -->
     <button
       class="btn btn-light position-absolute top-0 end-0 m-2 p-1 shadow"
-      (click)="downloadImage(uploadedImage, 'PANCARD.jpg')"
+      (click)="downloadImage(uploadedImage, selectedDocument)"
       title="Download"
     >
       <i class="bi bi-download fs-5 text-primary"></i>
