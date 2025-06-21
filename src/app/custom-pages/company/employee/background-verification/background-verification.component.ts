@@ -337,4 +337,28 @@ export class BackgroundVerificationComponent implements OnInit {
     this.uploadedImage = null;
     this.identiyNumber = null;
   }
+
+ downloadImage(url: string, filename: string) {
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl); // Clean up
+    })
+    .catch(error => {
+      console.error('Download failed:', error);
+    });
+}
+
 }

@@ -225,7 +225,7 @@
               {{ selectedDocument }} Number
               <span class="text-danger">*</span></label
             >
-            {{identiyNumber}}
+            <p class="fs-md text-muted">{{identiyNumber}}</p>
             <!-- <input
               type="text"
               id="documentNo"
@@ -247,8 +247,9 @@
 
           <div class="mb-3">
             <label for="formFile" class="form-label"
-              >Upload {{ selectedDocument }} File</label
+              > Uploaded Document</label
             >
+            <p class="fs-md text-muted">{{selectedDocument}}</p>
             <!-- <input
               class="form-control"
               type="file"
@@ -267,16 +268,43 @@
 
           @if (selectedImage) { @if (selectedImagePreview) {
           <img
-            class="avatar-lg border-0 img-thumbnail user-profile-image"
+            class="avatar-xxl border-0 img-thumbnail user-profile-image"
             [src]="selectedImagePreview"
             alt="Dropzone-Image"
           />
           } }@else if (uploadedImage) {
-          <img
-            class="avatar-lg border-0 img-thumbnail user-profile-image"
-            [src]="uploadedImage"
+            <!--  -->
+
+  <div class="position-relative">
+    <img
+      class="avatar-xxl border-0 img-thumbnail user-profile-image w-100 rounded"
+      [src]="uploadedImage"
+      alt="Uploaded Thumbnail"
+    />
+
+    <!-- Download button positioned on top right of image -->
+    <button
+      class="btn btn-light position-absolute top-0 end-0 m-2 p-1 shadow"
+      (click)="downloadImage(uploadedImage, 'PANCARD.jpg')"
+      title="Download"
+    >
+      <i class="bi bi-download fs-5 text-primary"></i>
+    </button>
+  </div>
+
+  <!-- <div class="text-center mt-2">
+    <strong class="d-block">Uploaded Document</strong>
+    <small class="text-muted">{{ selectedDocument }}</small>
+  </div> -->
+
+
+          <!-- <img
+            class="avatar-xxl border-0 img-thumbnail user-profile-image"
+            src="https://trackingapi.crrescita.com/images/backgroundVerificationEmp/documentFile2025-06-20T10-13-49.050Z-RUCHIPANCARD.jpg"
             alt="Uploaded Thumbnail"
           />
+<i (click)="downloadImage('https://trackingapi.crrescita.com/images/backgroundVerificationEmp/documentFile2025-06-20T10-13-49.050Z-RUCHIPANCARD.jpg', selectedDocument)" class="bi bi-download"></i> -->
+          <!-- <button >Download</button> -->
           }
         </div>
         <div class="modal-footer">
