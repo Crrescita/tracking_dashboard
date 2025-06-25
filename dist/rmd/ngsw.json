@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1750834277100,
+  "timestamp": 1750837442837,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -2165,7 +2165,7 @@
     "/assets/images/visa.png": "3770aa708a2618917f55d8ab12ba714964a0c975",
     "/assets/images/widget-img.png": "5bd37010d0b902812484592e6c10f8618a47e0bf",
     "/assets/payslip-header.png": "1b99b21ac20bf16affab58b35f5ec1995b6981f1",
-    "/assets/sample/Bank_Detail_Sheet_With_Dummy_Data.xlsx": "c2fba884acde7320be3e073b1b3cbc16d41b32a1",
+    "/assets/sample/Bank_Detail_Sheet_With_Dummy_Data.xlsx": "e2528f0531f3fb4c75a84a2784f3aa435f9bcd51",
     "/assets/scss/_variables-dark.scss": "1867ba203605e47c5f0cc8e0b54ba44c51f19edd",
     "/assets/scss/_variables.scss": "85a98eae3c17bd6fa79119db849b447ab2046ccf",
     "/assets/scss/app.scss": "7437db646105f5ff6669bafd2d5d1d35000803c9",
