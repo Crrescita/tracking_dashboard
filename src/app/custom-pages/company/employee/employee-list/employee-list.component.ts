@@ -60,6 +60,7 @@ export class EmployeeListComponent implements OnInit {
   selectedDateRangeUpdate:any;
 
   @ViewChild("showModal", { static: false }) showModal?: ModalDirective;
+    @ViewChild("showModalExport", { static: false }) showModalExport?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
   deleteId: any;
@@ -885,5 +886,47 @@ private formatDate(date: string | Date): string {
     minute: '2-digit',
   });
 }
+
+
+importonFileChange(event: any) {
+  this.toggleSpinner(true);
+
+  const fileInput = event.target;
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (e: any) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+    this.api.post('upload-bank-details', jsonData).subscribe(
+      (res) => {
+        if (res.status == true) {
+          this.toastService.success("Data Import Successfully!!");
+        } else {
+          this.toastService.error(res["message"]);
+        }
+
+        fileInput.value = '';
+
+        this.showModal?.hide();
+        this.toggleSpinner(false);
+      },
+      (err) => {
+        this.toastService.error("Import failed!");
+        fileInput.value = '';
+        this.toggleSpinner(false);
+      }
+    );
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+
+
+
 
 }

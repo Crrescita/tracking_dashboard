@@ -89,14 +89,14 @@
                       Download
                     </button>
               <!--(click)="exportData()"  -->
-              <!-- <button
+              <button
                 type="button"
                 class="btn btn-success add-btn"
                 (click)="showModal.show()"
               >
                 <i class="ri-download-2-line align-bottom me-1"></i>
                 Import Excel
-              </button> -->
+              </button>
 
               <div class="col-lg-auto">
                 <div class="hstack flex-wrap gap-2">
@@ -484,7 +484,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="myModalLabel">
-          Instructions for Filling Out the Excel Template
+          Instructions for Filling Out the Excel Template (Bank Details)
         </h5>
 
         <button
@@ -504,11 +504,13 @@
           </div>
           <div class="flex-grow-1 ms-2">
             <p class="text-muted mb-0">
-              Ensure that all
+
+              File must be in <strong>.xlsx</strong> or <strong>.xls</strong> format.
+              <!-- Ensure that all
               <span class="fw-bold"
                 >required fields (marked with an asterisk *)</span
               >
-              are filled out.
+              are filled out. -->
             </p>
           </div>
         </div>
@@ -518,13 +520,40 @@
           </div>
           <div class="flex-grow-1 ms-2">
             <p class="text-muted mb-0">
-              Do not modify the structure of the Excel sheet, such as
-              adding/removing columns or renaming them.
+            Ensure <strong>Mobile</strong> numbers are correct and match existing employees.
             </p>
           </div>
         </div>
 
-        <h6 class="fs-lg my-3">2. Department and Designation IDs:</h6>
+          <div class="d-flex mt-2">
+          <div class="flex-shrink-0">
+            <i class="ri-checkbox-circle-fill text-success"></i>
+          </div>
+          <div class="flex-grow-1 ms-2">
+            <p class="text-muted mb-0">
+         Required columns: <strong>Mobile</strong>, <strong>Acc Holder Name</strong>, <strong>Account Number</strong>, <strong>Bank Name</strong>, <strong>IFSC Code</strong>
+            </p>
+          </div>
+        </div>
+
+         <a class="btn btn-sm btn-outline-primary mb-3" href="assets/sample/Bank_Detail_Sheet_With_Dummy_Data.xlsx" download>
+          📥 Download Sample Excel
+        </a>
+
+        <div class="form-group">
+          <label for="bankExcel">Upload Excel File</label>
+          <input
+            type="file"
+            class="form-control"
+            id="bankExcel"
+            (change)="importonFileChange($event)"
+            accept=".xlsx, .xls"
+          />
+
+          <!-- <input type="file" (change)="importonFileChange($event)" accept=".xlsx, .xls" /> -->
+        </div>
+
+        <!-- <h6 class="fs-lg my-3">2. Department and Designation IDs:</h6>
         <div class="d-flex mt-2">
           <div class="flex-shrink-0">
             <i class="ri-checkbox-circle-fill text-success"></i>
@@ -584,14 +613,14 @@
               the format <span class="fw-bold"> YYYY-MM-DD.</span>
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="modal-footer">
         <button type="button" class="btn btn-light" (click)="showModal.hide()">
           Close
         </button>
-        <button type="button" class="btn btn-primary">Save Changes</button>
+        <!-- <button type="button" class="btn btn-primary">Save Changes</button> -->
       </div>
     </div>
   </div>
