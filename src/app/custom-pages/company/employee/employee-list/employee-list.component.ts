@@ -789,6 +789,10 @@ export class EmployeeListComponent implements OnInit {
     'Driving License',
     'Voter',
     'UAN',
+    'Acc Holder Name',
+    'Account Number',
+    'Bank Name',
+    'IFSC Code',
     'Created At',
     'Updated At',
   ];
@@ -810,7 +814,11 @@ export class EmployeeListComponent implements OnInit {
       data.pan,
       data.driving_license,
       data.voter,
-      data.voter,
+      data.uan,
+      data.acc_holder_name,
+      data.acc_number,
+      data.bank_name,
+      data.ifsc_code,
       this.formatDate(data.created_at),
       this.formatDate(data.updated_at || data.created_at),
     ]);
@@ -848,6 +856,10 @@ export class EmployeeListComponent implements OnInit {
     { width: 15 }, // Status
     { width: 20 }, // Created At
     { width: 20 }, // Updated At
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
+    { width: 20 },
     { width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },{ width: 20 },
   ];
 
