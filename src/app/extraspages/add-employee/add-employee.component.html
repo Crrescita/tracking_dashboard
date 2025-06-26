@@ -534,6 +534,10 @@
                   f['dob'].touched) {
                   <div class="invalid-text">Date of Birth is required.</div>
                   }
+
+                    @if (f['dob'].hasError('futureDate') && f['dob'].touched) {
+                  <div class="invalid-text"> Future dates are not allowed.</div>
+                }
                 </div>
               </div>
 
@@ -559,6 +563,11 @@
                   && f['joining_date'].touched) {
                   <div class="invalid-text">Joining date is required.</div>
                   }
+                  @if ( f['joining_date'].hasError('futureDate') && f['joining_date'].touched) {
+                  <div class="invalid-text"> Future dates are not allowed.</div>
+                }
+
+                  
                 </div>
               </div>
 

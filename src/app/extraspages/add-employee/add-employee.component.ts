@@ -231,7 +231,7 @@ export class AddEmployeeComponent {
       {
         name: ["", [Validators.maxLength(45), Validators.required]],
         address: ["", [Validators.required, Validators.maxLength(100)]],
-        dob: ["", [Validators.required]],
+        dob: ["", [Validators.required,  this.noFutureDateValidator]],
         image: ["", this.imageValidator()],
         emp_id: ["", [Validators.required]],
         email: [
@@ -258,7 +258,7 @@ export class AddEmployeeComponent {
         branch: ["", [Validators.required]],
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
-        joining_date: ["", [Validators.required]],
+        joining_date: ["", [Validators.required, this.noFutureDateValidator]],
         emergency_contact_name: ["", [Validators.required ,Validators.maxLength(45),  this.noNumbersValidator]],
         emergency_contact_number: ["",  [Validators.required,
             Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
@@ -296,6 +296,16 @@ export class AddEmployeeComponent {
     const regex = /^[A-Za-z\s]*$/;
     if (value && !regex.test(value)) {
       return { noNumbers: true };
+    }
+    return null;
+  }
+
+   noFutureDateValidator(control: AbstractControl): ValidationErrors | null {
+    const inputDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // strip time for clean comparison
+    if (control.value && inputDate > today) {
+      return { futureDate: true };
     }
     return null;
   }
