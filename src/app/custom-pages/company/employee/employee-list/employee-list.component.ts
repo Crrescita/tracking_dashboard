@@ -782,6 +782,8 @@ export class EmployeeListComponent implements OnInit {
     'Designation',
     'Branch',
     'Department',
+    'Emergency contact name',
+    'Emergency contact number',
     'PF Number',
     'ESI Number',
     'Aadhaar',
@@ -808,6 +810,8 @@ export class EmployeeListComponent implements OnInit {
       data.designation_name,
       data.branch_name,
       data.department_name,
+      data.emergency_contact_name,
+      data.emergency_contact_number,
       data.pf_no,
       data.esi_no,
       data.aadhaar,
@@ -853,6 +857,8 @@ export class EmployeeListComponent implements OnInit {
     { width: 20 }, // Designation
     { width: 20 }, // Branch
     { width: 20 }, // Department
+    { width: 20 },
+    { width: 20 },
     { width: 15 }, // Status
     { width: 20 }, // Created At
     { width: 20 }, // Updated At

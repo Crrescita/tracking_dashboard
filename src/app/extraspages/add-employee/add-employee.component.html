@@ -344,7 +344,7 @@
                <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="emergency_contact_name" class="form-label"
-                    >Emergency Contact Name </label
+                    >Emergency Contact Name <span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
@@ -363,7 +363,7 @@
                   />
                   @if (f['emergency_contact_name'] && f['emergency_contact_name'].hasError('required') &&
                   f['emergency_contact_name'].touched) {
-                  <div class="invalid-text"> emergency_contact_name is required.</div>
+                  <div class="invalid-text"> Emergency contact name is required.</div>
                   } @if(f['emergency_contact_name'] && f['emergency_contact_name'].hasError('maxlength') &&
                   f['emergency_contact_name'].touched){
                   <div class="invalid-text">
@@ -376,7 +376,7 @@
                <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="emergency_contact_number" class="form-label"
-                    >Emergency Contact Number </label
+                    >Emergency Contact Number <span class="text-danger">*</span></label
                   >
                   <input
                     type="number"
@@ -395,7 +395,7 @@
                   />
                   @if (f['emergency_contact_number'] && f['emergency_contact_number'].hasError('required') &&
                   f['emergency_contact_number'].touched) {
-                  <div class="invalid-text">Mobile is required.</div>
+                  <div class="invalid-text">Emergency Contact Number is required.</div>
                   } @if(f['emergency_contact_number'].hasError('pattern')){
                   <div class="invalid-text">
                     Please, Enter 10 digit Mobile Number.
@@ -502,7 +502,7 @@
               </div>
               <div class="col-lg-6">
                 <div class="mb-3">
-                  <label for="dob" class="form-label">Date of Birth </label>
+                  <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
                   <input
                     type="date"
                     class="form-control"
@@ -529,13 +529,17 @@
               <div class="col-lg-6">
                 <div class="mb-3">
                   <label for="JoiningdatInput" class="form-label"
-                    >Joining Date</label
+                    >Joining Date <span class="text-danger">*</span></label
                   >
                   <input
                     formControlName="joining_date"
                     type="date"
                     class="form-control"
                   />
+                    @if (f['joining_date'] && f['joining_date'].hasError('required')
+                  && f['joining_date'].touched) {
+                  <div class="invalid-text">Joining date is required.</div>
+                  }
                 </div>
               </div>
 
@@ -670,7 +674,7 @@
 
               <div class="col-lg-12">
                 <div class="mb-3">
-                  <label for="address" class="form-label"> Current Residential Address </label>
+                  <label for="address" class="form-label"> Current Residential Address <span class="text-danger">*</span></label>
 
                   <textarea
                     class="form-control"
@@ -699,7 +703,7 @@
 
               <div class="col-lg-4">
                 <div class="mb-3">
-                  <label for="city" class="form-label">City </label>
+                  <label for="city" class="form-label">City <span class="text-danger">*</span></label>
                   <input
                     type="text"
                     class="form-control"
@@ -725,7 +729,7 @@
 
               <div class="col-lg-4">
                 <div class="mb-3">
-                  <label for="zip_code" class="form-label">Zip code </label>
+                  <label for="zip_code" class="form-label">Zip code <span class="text-danger">*</span></label>
 
                   <input
                     type="number"
@@ -761,7 +765,7 @@
 
               <div class="col-lg-4">
                 <div class="mb-3">
-                  <label for="state" class="form-label">State </label>
+                  <label for="state" class="form-label">State <span class="text-danger">*</span></label>
                   <select
                     class="form-control"
                     formControlName="state"

@@ -227,8 +227,8 @@ export class AddEmployeeComponent {
     this.formGroup = this.formBuilder.group(
       {
         name: ["", [Validators.maxLength(45), Validators.required]],
-        address: ["", [Validators.maxLength(100)]],
-        dob: [""],
+        address: ["", [Validators.required, Validators.maxLength(100)]],
+        dob: ["", [Validators.required]],
         image: ["", this.imageValidator()],
         emp_id: ["", [Validators.required]],
 
@@ -250,15 +250,15 @@ export class AddEmployeeComponent {
         // , [Validators.required]
         status: [""],
         gender: ["", [Validators.required]],
-        state: [""],
-        city: [""],
-        zip_code: ["", [Validators.maxLength(6)]],
+        state: ["",[Validators.required]],
+        city: ["",[Validators.required]],
+        zip_code: ["", [Validators.required, Validators.maxLength(6)]],
         branch: ["", [Validators.required]],
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
-        joining_date: [""],
-        emergency_contact_name: ["", [Validators.maxLength(45)]],
-        emergency_contact_number: ["",  [
+        joining_date: ["", [Validators.required]],
+        emergency_contact_name: ["", [Validators.required ,Validators.maxLength(45)]],
+        emergency_contact_number: ["",  [Validators.required,
             Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
           ]],
         pf_no: [""],

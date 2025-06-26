@@ -242,7 +242,7 @@ noteMessage:any = '';
       case "Aadhaar":
         return {
           number: [Validators.required, Validators.pattern(/^\d{9,18}$/)],
-          file: [],
+          file: [Validators.required],
         };
       case "PAN":
         return {
@@ -250,7 +250,7 @@ noteMessage:any = '';
             Validators.required,
             Validators.pattern(/^[A-Z]{5}\d{4}[A-Z]{1}$/i),
           ],
-          file: [],
+          file: [Validators.required],
         };
       case "Driving License":
         return {
