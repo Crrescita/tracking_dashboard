@@ -353,6 +353,7 @@
                     formControlName="emergency_contact_name"
                     placeholder="Enter Emergency Contact Name"
                     value="emergency_contact_name"
+                     (keypress)="blockNumbers($event)"
                     [ngClass]="
                       f['emergency_contact_name'] &&
                       f['emergency_contact_name'].hasError('required') &&
@@ -370,6 +371,15 @@
                     name must be at most 45 characters
                   </div>
                   }
+                   <div
+        class="invalid-feedback"
+        *ngIf="
+          f['emergency_contact_name']?.hasError('noNumbers') &&
+          f['emergency_contact_name']?.touched
+        "
+      >
+        Only alphabets and spaces are allowed.
+      </div>
                 </div>
               </div>
 
@@ -507,6 +517,7 @@
                     type="date"
                     class="form-control"
                     id="dob"
+                     [max]="today"
                     formControlName="dob"
                     placeholder="Enter Date of Birth"
                     value="dob"
@@ -534,7 +545,15 @@
                   <input
                     formControlName="joining_date"
                     type="date"
+                     [max]="today"
                     class="form-control"
+                    [ngClass]="
+                      f['joining_date'] &&
+                      f['joining_date'].hasError('required') &&
+                      f['joining_date'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
                   />
                     @if (f['joining_date'] && f['joining_date'].hasError('required')
                   && f['joining_date'].touched) {
@@ -564,6 +583,13 @@
                     id="branch"
                     formControlName="branch"
                     placeholder="Enter Branch"
+                     [ngClass]="
+                      f['branch'] &&
+                      f['branch'].hasError('required') &&
+                      f['branch'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
                   >
                     <option selected>Select Location</option>
                     @for (item of branch; track $index) {
@@ -599,6 +625,13 @@
                   <select
                     class="form-select"
                     id="designation"
+                    [ngClass]="
+                      f['designation'] &&
+                      f['designation'].hasError('required') &&
+                      f['designation'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
                     formControlName="designation"
                     placeholder="Enter Designation"
                   >
@@ -638,6 +671,13 @@
                     id="departments"
                     formControlName="department"
                     placeholder="Enter Department"
+                     [ngClass]="
+                      f['department'] &&
+                      f['department'].hasError('required') &&
+                      f['department'].touched
+                        ? 'is-invalid'
+                        : ''
+                    "
                   >
                     <option selected>Select Department</option>
                     @for (item of departments; track $index) {

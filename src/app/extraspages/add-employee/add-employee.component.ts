@@ -19,6 +19,7 @@ import { BsDatepickerConfig } from "ngx-bootstrap/datepicker";
 import { ModalDirective } from "ngx-bootstrap/modal";
 import { Location } from "@angular/common";
 import { ApiService } from '../../core/services/api.service';
+import { ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-add-employee',
@@ -33,6 +34,8 @@ export class AddEmployeeComponent {
   showModalDepartment?: ModalDirective;
   @ViewChild("showModalBranch", { static: false })
   showModalBranch?: ModalDirective;
+  today: string = new Date().toISOString().split('T')[0];
+
 
   formGroup!: FormGroup;
   formGroupDesignation!: FormGroup;
@@ -231,7 +234,6 @@ export class AddEmployeeComponent {
         dob: ["", [Validators.required]],
         image: ["", this.imageValidator()],
         emp_id: ["", [Validators.required]],
-
         email: [
           "",
           [
@@ -257,7 +259,7 @@ export class AddEmployeeComponent {
         designation: ["", [Validators.required]],
         department: ["", [Validators.required]],
         joining_date: ["", [Validators.required]],
-        emergency_contact_name: ["", [Validators.required ,Validators.maxLength(45)]],
+        emergency_contact_name: ["", [Validators.required ,Validators.maxLength(45),  this.noNumbersValidator]],
         emergency_contact_number: ["",  [Validators.required,
             Validators.pattern("^((\\+91-?)|0)?[0-9]{10}$"),
           ]],
@@ -287,6 +289,22 @@ export class AddEmployeeComponent {
       },
       { validator: this.passwordMatchValidator }
     );
+  }
+
+   noNumbersValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const regex = /^[A-Za-z\s]*$/;
+    if (value && !regex.test(value)) {
+      return { noNumbers: true };
+    }
+    return null;
+  }
+
+   blockNumbers(event: KeyboardEvent) {
+    const charCode = event.key.charCodeAt(0);
+    if (charCode >= 48 && charCode <= 57) {
+      event.preventDefault();
+    }
   }
 
   convertTime(): void {
