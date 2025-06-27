@@ -343,9 +343,10 @@ export class AddEmployeeComponent {
     return (control: AbstractControl) => {
       console.log(this.urlId)
       if (!this.urlId) {
-        return Validators.required(control);
-      } else {
         return null;
+      } else {
+         return Validators.required(control);
+       
       }
     };
   }
@@ -537,25 +538,27 @@ export class AddEmployeeComponent {
   // const company_id = this.currentCompanyId; // or fetch from local/session storage
 
   this.api.getwithoutid(`employeesBy-mobile?mobile=${mobile}&company_id=${this.company_id}`).subscribe((res: any) => {
-    if (res.status) {
-      const emp = res.data[0];
-      console.log("Employee found:", emp);
-      this.toastService.success("Employee data fetched!");
-      // Optionally patch form:
-      // this.formGroup.patchValue({
-      //   name: emp.name,
-      //   email: emp.email,
-      //   // ...other fields
-      // });
-this.urlId = res.data[0].id;
-this.empId = res.data[0].id;
-       this.toggleSpinner(false);
-          this.setemployeeDetails(res.data[0]);
-          this.dataFetched.emit(res.data[0]);
-          this.imageValidator();
-    } else {
-      this.toastService.warning("No employee found with this mobile number");
-    }
+   if (res.status) {
+  const emp = res.data[0];
+  console.log("Employee found:", emp);
+
+  this.urlId = emp.id;
+  this.empId = emp.id;
+
+  // REMOVE required validator on image
+  this.formGroup.get('image')?.clearValidators();
+  this.formGroup.get('image')?.updateValueAndValidity();
+
+  this.toggleSpinner(false);
+  this.setemployeeDetails(emp);
+  this.dataFetched.emit(emp);
+  this.toastService.success("Employee data fetched!");
+}else {
+  this.formGroup.get('image')?.setValidators(Validators.required);
+  this.formGroup.get('image')?.updateValueAndValidity();
+  this.toastService.warning("No employee found with this mobile number");
+}
+
   });
 }
 
@@ -637,7 +640,8 @@ this.empId = res.data[0].id;
       }
     } else {
       if(!this.formGroup.get("image")?.value){
-        this.toastService.error("Please upload Passport Size Photo")
+        this.toastService.error("Please fill all required field")
+        // upload Passport Size Photo
       }
       this.formGroup.markAllAsTouched();
     }
