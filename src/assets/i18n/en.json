@@ -124,7 +124,13 @@
       "LEAVE-APPLICATION":"Leave Application",
       "ASSIGN-TASK":"Assign Task",
       "BRANCH":"Branch",
-      "PAYROLL":"Payroll"
+      "PAYROLL":"Payroll",
+      "REQUESTS":"Requests",
+      "QUATATION-REQUESTS":"Quatation Requests",
+      "INVOICE-REQUESTS":"Invoice Requests",
+      "STATEMENT-REQUESTS":"Statement Requests",
+      "CREDIT-NOTE-REQUESTS":"Credit Note Requests",
+      "STOCK-STATUS-REQUESTS":"Stock Status Requests"
       }
     },
     "COMPONENTS": {

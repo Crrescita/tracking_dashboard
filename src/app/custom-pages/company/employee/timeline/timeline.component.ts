@@ -878,8 +878,8 @@ export class TimelineComponent implements OnInit {
     const coordinatesString = coordinates
       .map((coord) => coord.join(","))
       .join(";");
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinatesString}?geometries=polyline6&overview=full&access_token=${mapboxgl.accessToken}`;
-    // const url = `https://api.mapbox.com/directions/v5/mapbox/driving/77.0797%2C28.479321%3B77.076151%2C28.477595%3B77.07613%2C28.477595%3B77.07615%2C28.477605%3B77.07615%2C28.477594%3B77.076129%2C28.477578?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www`;
+    // const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinatesString}?geometries=polyline6&overview=full&access_token=${mapboxgl.accessToken}`;
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/77.0797%2C28.479321%3B77.076151%2C28.477595%3B77.07613%2C28.477595%3B77.07615%2C28.477605%3B77.07615%2C28.477594%3B77.076129%2C28.477578?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiZ3VyamVldHYyIiwiYSI6ImNseWxiN3o5cDEzd3UyaXM0cmU3cm0zNnMifQ._-UTYeqo8cq1cH8vYy9Www`;
     return fetch(url)
       .then((response) => response.json())
       .then((data) => {

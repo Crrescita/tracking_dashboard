@@ -162,5 +162,50 @@ export const COMPANY_MENU: MenuItem[] = [
     parentId: 75,
   },
 
+   {
+    id: 8,
+    label: "MENUITEMS.COMPANY.LIST.REQUESTS",
+    icon: " ri-file-user-line",
+    subItems: [
+      {
+        id: 9,
+        label: "MENUITEMS.COMPANY.LIST.QUATATION-REQUESTS",
+        link: "/quatation-request",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
+      {
+        id: 9,
+        label: "MENUITEMS.COMPANY.LIST.INVOICE-REQUESTS",
+        link: "/invoice-request",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
+      {
+        id: 10,
+        label: "MENUITEMS.COMPANY.LIST.STATEMENT-REQUESTS",
+        link: "/statement-request",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
+      {
+        id: 10,
+        label: "MENUITEMS.COMPANY.LIST.CREDIT-NOTE-REQUESTS",
+        link: "/credit-note-request",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
+       {
+        id: 10,
+        label: "MENUITEMS.COMPANY.LIST.STOCK-STATUS-REQUESTS",
+        link: "/stock-status-request",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
+
+     
+    ],
+  },
+
   // More items...
 ];

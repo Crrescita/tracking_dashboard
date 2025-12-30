@@ -71,7 +71,7 @@ import { NgStepperModule } from "angular-ng-stepper";
 
 // lord-icon
 import lottie from "lottie-web";
-import { defineElement } from "@lordicon/element";
+import { defineElement, In } from "@lordicon/element";
 
 // Emoji Picker
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
@@ -109,6 +109,11 @@ import { BackgroundVerificationComponent } from "./company/employee/background-v
 import { SalaryDetailComponent } from "./company/employee/salary/salary-detail/salary-detail.component";
 import { AllowanceComponent } from "./company/employee/salary/allowance/allowance.component";
 import { PayrollListComponent } from './company/payroll/payroll-list/payroll-list.component';
+import { QuotationsComponent } from './company/employee/request/quotations/quotations.component';
+import { InvoiceComponent } from './company/employee/request/invoice/invoice.component';
+import { StatementComponent } from './company/employee/request/statement/statement.component';
+import { CreditNoteComponent } from './company/employee/request/credit-note/credit-note.component';
+import { StockStatusComponent } from './company/employee/request/stock-status/stock-status.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -159,7 +164,12 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     AdvanceDetailComponent,
     PayrollListComponent,
     SalarySettingComponent,
-    TaskDetailComponent
+    TaskDetailComponent,
+    QuotationsComponent,
+    InvoiceComponent,
+    StatementComponent,
+    CreditNoteComponent,
+    StockStatusComponent,
   ],
   imports: [
     CommonModule,

@@ -29,6 +29,12 @@ import { LeavePolicyComponent } from "./company/leave-management/leave-policy/le
 import { GernalReportsComponent } from "./company/reports/gernal-reports/gernal-reports.component";
 import { PayrollListComponent } from './company/payroll/payroll-list/payroll-list.component';
 import { TaskDetailComponent } from './company/task/task-detail/task-detail.component';
+import { QuotationsComponent } from './company/employee/request/quotations/quotations.component';
+import { InvoiceComponent } from './company/employee/request/invoice/invoice.component';
+import { StatementComponent } from './company/employee/request/statement/statement.component';
+import path from 'path';
+import { CreditNoteComponent } from './company/employee/request/credit-note/credit-note.component';
+import { StockStatusComponent } from './company/employee/request/stock-status/stock-status.component';
 
 
 const routes: Routes = [
@@ -85,7 +91,13 @@ const routes: Routes = [
   { path: "gernal-report", component: GernalReportsComponent },
   {path:"payroll" , component: PayrollListComponent},
   {path:"salary-setting" , component: SalarySettingComponent},
-  {path:"task-deatil/:id/:task_id" , component:TaskDetailComponent}
+  {path:"task-deatil/:id/:task_id" , component:TaskDetailComponent},
+
+  {path:"quatation-request" , component:QuotationsComponent},
+  {path:"invoice-request" , component:InvoiceComponent},
+  {path:"statement-request" , component:StatementComponent},
+  {path:"credit-note-request" , component:CreditNoteComponent},
+  {path:"stock-status-request" , component:StockStatusComponent},
 ];
 
 @NgModule({
