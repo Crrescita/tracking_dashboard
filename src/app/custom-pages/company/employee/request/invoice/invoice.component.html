@@ -154,14 +154,14 @@
                     Title
                   </th>
 
-                  <!-- <th
+                   <th
                     class="sort cursor-pointer"
-                    (click)="onSort('department')"
+                    (click)="onSort('status')"
                   >
-                    Department
-                  </th> -->
-                  <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('priority')">
+                    Priority
                   </th>
 
                     <th class="sort cursor-pointer" (click)="onSort('created_at')">
@@ -250,6 +250,24 @@
                   <!-- <td class="category">
                     {{ data.department_name }}
                   </td> -->
+
+                      <td class="category">
+
+                      <span
+  class="badge text-capitalize"
+  [ngClass]="{
+    'bg-primary-subtle text-primary': data.status == 'requested',
+    'bg-info-subtle text-info': data.status == 'ready',
+    'bg-warning-subtle text-warning': data.status == 'modified',
+    'bg-success-subtle text-success': data.status == 'responded',
+    'bg-dark-subtle text-dark': data.status == 'closed',
+    'bg-danger-subtle text-danger': data.status == 'rejected'
+  }"
+>
+  {{ data.status }}
+</span>
+  
+                  </td>
 
                   <td class="discount">
                    <span
@@ -610,7 +628,7 @@
 <!--  -->
 <div class="custom-offcanvas" id="courseFilters">
   <div class="offcanvas-header border-bottom p-3">
-    <h5 class="offcanvas-title" id="courseFiltersLabel">Quatation Filters</h5>
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Invoice Filters</h5>
     <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
   </div>
   <div class="offcanvas-body">
@@ -671,7 +689,7 @@
         </div>
       </div>
 
-      <!-- <div class="col-lg-12">
+      <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Created Date</p>
 
@@ -690,7 +708,7 @@
         </div>
       </div>
 
-         <div class="col-lg-12">
+         <!-- <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Updated Date</p>
 
@@ -706,6 +724,48 @@
             dateFormat="d M, Y"
             (ngModelChange)="filterdata()"
           />
+        </div>
+      </div> -->
+
+         <!-- <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="requested">Requested</option>
+            <option value="ready">Ready</option>
+            <option value="modified">Modified</option>
+            <option value="responded">Responded</option>
+            <option value="closed">Closed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+
+        <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Priority
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedPriority"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
       </div> -->
 

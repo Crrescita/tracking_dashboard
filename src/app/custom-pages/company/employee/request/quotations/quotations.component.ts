@@ -30,6 +30,7 @@ export class QuotationsComponent {
 
   // filter
   selectedStatus: string = "";
+  selectedPriority:string = "";
   branch: any[] = [];
   selectedBranch: any[] = [];
   departments: any[] = [];
@@ -44,6 +45,7 @@ export class QuotationsComponent {
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
+    priorityCount: 0,
     empCount: 0,
     dateCount: 0,
     selectedDateRangeCount: 0,
@@ -59,6 +61,9 @@ export class QuotationsComponent {
     @ViewChild("showModalExport", { static: false }) showModalExport?: ModalDirective;
   @ViewChild("deleteRecordModal", { static: false })
   deleteRecordModal?: ModalDirective;
+
+    @ViewChild("statusModal", { static: false })
+  statusModal?: ModalDirective;
   deleteId: any;
 
     id: any | null = null;
@@ -110,6 +115,7 @@ export class QuotationsComponent {
         ? params["selectedEmp"].split(",")
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
+      this.selectedPriority = params["selectedPriority"] || null;
 
        if (params["selectedDateRange"]) {
         const dateRange = params["selectedDateRange"].split(",");
@@ -268,6 +274,12 @@ initializeForm() {
     this.deleteRecordModal?.show();
   }
 
+  statusid: any
+    statusModel(id: any) {
+    this.statusid = id;
+    this.statusModal?.show();
+  }
+
 
   quatationDataModal:any
     // edit
@@ -338,12 +350,29 @@ resetForm() {
     }
   }
 
+
+   updateStatus(statusid?: any) {
+    this.toggleSpinner(true);
+    // 
+
+    if (statusid) {
+           const data = { status: 'rejected' }
+
+      this.api.put("updateRequestStatus", statusid, data).subscribe(
+        (res: any) => this.handleResponse(res),
+        (error) => this.handleError(error)
+      );
+    }
+
+  }
+
   handleResponse(res: any) {
     this.toggleSpinner(false);
     if (res["status"] === true) {
-      this.toastService.success("Employee Data Delete Successfully!!");
+      this.toastService.success(res["message"]);
       this.getquatationData();
         this.showModal?.hide();
+        this.statusModal?.hide();
          this.formGroup.reset();
     
     } else {
@@ -392,6 +421,7 @@ resetForm() {
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
+    this.filterCounts.priorityCount = 0;
     this.filterCounts.empCount = 0;
     this.filterCounts.selectedDateRangeCount = 0;
     this.filterCounts.selectedDateRangeCountUpdate = 0;
@@ -450,9 +480,16 @@ resetForm() {
     // Filter by selected status
     if (this.selectedStatus) {
       filteredData = filteredData.filter(
-        (el: any) => el.checkin_status === this.selectedStatus
+        (el: any) => el.status === this.selectedStatus
       );
       this.filterCounts.statusCount = 1;
+    }
+
+    if (this.selectedPriority) {
+      filteredData = filteredData.filter(
+        (el: any) => el.priority == this.selectedPriority
+      );
+      this.filterCounts.priorityCount = 1;
     }
 
     
@@ -667,6 +704,7 @@ resetForm() {
         selectedDesignations: null,
         selectedEmp: null,
         selectedStatus: null,
+        selectedPriority: null,
         selectedDateRange: null,
         selectedDateRangeUpdate: null,
         page: 1, // Reset to first page
@@ -683,6 +721,7 @@ resetForm() {
       this.filterCounts.designationCount +
       this.filterCounts.departmentCount +
       this.filterCounts.statusCount +
+      this.filterCounts.priorityCount +
       this.filterCounts.empCount +
       this.filterCounts.selectedDateRangeCount + 
       this.filterCounts.selectedDateRangeCountUpdate

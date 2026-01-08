@@ -114,6 +114,7 @@ import { InvoiceComponent } from './company/employee/request/invoice/invoice.com
 import { StatementComponent } from './company/employee/request/statement/statement.component';
 import { CreditNoteComponent } from './company/employee/request/credit-note/credit-note.component';
 import { StockStatusComponent } from './company/employee/request/stock-status/stock-status.component';
+import { RequestDetailComponent } from './company/employee/request/request-detail/request-detail.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -170,6 +171,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     StatementComponent,
     CreditNoteComponent,
     StockStatusComponent,
+    RequestDetailComponent
   ],
   imports: [
     CommonModule,

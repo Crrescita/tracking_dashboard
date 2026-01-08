@@ -30,6 +30,7 @@ breadCrumbItems!: Array<{}>;
 
   // filter
   selectedStatus: string = "";
+  selectedPriority:string = "";
   branch: any[] = [];
   selectedBranch: any[] = [];
   departments: any[] = [];
@@ -44,6 +45,7 @@ breadCrumbItems!: Array<{}>;
     designationCount: 0,
     departmentCount: 0,
     statusCount: 0,
+    priorityCount: 0,
     empCount: 0,
     dateCount: 0,
     selectedDateRangeCount: 0,
@@ -93,7 +95,7 @@ breadCrumbItems!: Array<{}>;
       this.company_id = user.id;
     }
 
-    this.route.queryParams.subscribe((params) => {
+       this.route.queryParams.subscribe((params) => {
       this.currentPage = +params["page"] || 1;
       this.currentItemsPerPage = +params["itemsPerPage"] || 10;
       this.term = params["term"] || "";
@@ -110,6 +112,7 @@ breadCrumbItems!: Array<{}>;
         ? params["selectedEmp"].split(",")
         : [];
       this.selectedStatus = params["selectedStatus"] || null;
+      this.selectedPriority = params["selectedPriority"] || null;
 
        if (params["selectedDateRange"]) {
         const dateRange = params["selectedDateRange"].split(",");
@@ -383,7 +386,7 @@ resetForm() {
     this.updatePaginatedData();
   }
 
-  filterdata() {
+   filterdata() {
     let filteredData = this.quatationDataList;
 
     // Reset filter counts
@@ -392,6 +395,7 @@ resetForm() {
     this.filterCounts.designationCount = 0;
     this.filterCounts.departmentCount = 0;
     this.filterCounts.statusCount = 0;
+    this.filterCounts.priorityCount = 0;
     this.filterCounts.empCount = 0;
     this.filterCounts.selectedDateRangeCount = 0;
     this.filterCounts.selectedDateRangeCountUpdate = 0;
@@ -450,9 +454,16 @@ resetForm() {
     // Filter by selected status
     if (this.selectedStatus) {
       filteredData = filteredData.filter(
-        (el: any) => el.checkin_status === this.selectedStatus
+        (el: any) => el.status === this.selectedStatus
       );
       this.filterCounts.statusCount = 1;
+    }
+
+    if (this.selectedPriority) {
+      filteredData = filteredData.filter(
+        (el: any) => el.priority == this.selectedPriority
+      );
+      this.filterCounts.priorityCount = 1;
     }
 
     

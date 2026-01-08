@@ -146,22 +146,22 @@
                     Mobile
                   </th>
 
-                  <th class="sort cursor-pointer" (click)="onSort('email')">
+                  <!-- <th class="sort cursor-pointer" (click)="onSort('email')">
                     Email
-                  </th>
+                  </th> -->
 
                   <th class="sort cursor-pointer" (click)="onSort('title')">
                     Title
                   </th>
 
-                  <!-- <th
+                  <th
                     class="sort cursor-pointer"
-                    (click)="onSort('department')"
+                    (click)="onSort('status')"
                   >
-                    Department
-                  </th> -->
-                  <th class="sort cursor-pointer" (click)="onSort('status')">
                     Status
+                  </th>
+                  <th class="sort cursor-pointer" (click)="onSort('priority')">
+                    Priority
                   </th>
 
                     <th class="sort cursor-pointer" (click)="onSort('created_at')">
@@ -240,16 +240,30 @@
                     {{ data.mobile }}
                   </td>
 
-                  <td class="category">
+                  <!-- <td class="category">
                     {{ data.email }}
-                  </td>
+                  </td> -->
                   <td class="category">
                     {{ data.title }}
                   </td>
 
-                  <!-- <td class="category">
-                    {{ data.department_name }}
-                  </td> -->
+                  <td class="category">
+
+                      <span
+  class="badge text-capitalize"
+  [ngClass]="{
+    'bg-primary-subtle text-primary': data.status == 'requested',
+    'bg-info-subtle text-info': data.status == 'ready',
+    'bg-warning-subtle text-warning': data.status == 'modified',
+    'bg-success-subtle text-success': data.status == 'responded',
+    'bg-dark-subtle text-dark': data.status == 'closed',
+    'bg-danger-subtle text-danger': data.status == 'rejected'
+  }"
+>
+  {{ data.status }}
+</span>
+  
+                  </td>
 
                   <td class="discount">
                    <span
@@ -310,38 +324,34 @@
                     </div> -->
 
                     <ul class="d-flex gap-2 list-unstyled mb-0">
-                      <!-- <li>
+                      <li>
 
                         <a
                           data-bs-toggle="tooltip"
                           placement="top"
                           tooltip="View"
                           class="btn btn-subtle-primary btn-icon btn-sm remove-item-btn"
-                          routerLink="/employee-detail/{{ data.id }}"
+                          routerLink="/request-detail/{{ data.id }}"
                           [queryParams]="{ tab: 'personalDetails' }"
                           ><i class="ph-eye align-middle"></i>
                         </a>
-                      </li>-->
+                      </li>
                       <li> 
-                          <!-- routerLink="/edit-employee/{{ data.id }}"
-                          [queryParams]="{
-                            tab: 'personal-detail',
-
-                          }" -->
+                        
                         <a
                           data-bs-toggle="tooltip"
                           placement="top"
-                          tooltip="Edit"
-                          (click)="editList(data)"
+                          tooltip="Reject Request"
+                          (click)="statusModel(data.id)"
                         
-                       class="btn btn-subtle-primary btn-icon btn-sm remove-item-btn"
-                          ><i class="ph-eye align-middle"></i></a>
+                       class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
+                          ><i class="ri-close-circle-fill align-middle"></i></a>
                       </li>
                       <li>
                         <a
                           data-bs-toggle="tooltip"
                           placement="top"
-                          tooltip="Delete Cal."
+                          tooltip="Delete Request"
                           (click)="removeItem(data.id)"
                           class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
                           ><i class="ph-trash align-middle"></i
@@ -607,6 +617,58 @@
   </div>
 </div>
 
+
+<!-- status reject modal -->
+<div
+  id="statusModal"
+  class="modal fade zoomIn"
+  bsModal
+  #statusModal="bs-modal"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          id="deleteRecord-close"
+          (click)="statusModal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body p-md-5">
+        <div class="text-center">
+          <div class="text-danger">
+            <i class="ri-close-circle-fill display-4"></i>
+          </div>
+          <div class="mt-4">
+            <h3 class="mb-2">Are you sure ?</h3>
+            <p class="text-muted fs-lg mx-3 mb-0">
+              Are you sure you want to reject this request ?
+            </p>
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+          <button
+            type="button"
+            class="btn w-sm btn-light btn-hover"
+            (click)="statusModal.hide()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn w-sm btn-danger btn-hover"
+            id="delete-record"
+            (click)="updateStatus(statusid)"
+          >
+            Yes, reject It!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!--  -->
 <div class="custom-offcanvas" id="courseFilters">
   <div class="offcanvas-header border-bottom p-3">
@@ -671,7 +733,7 @@
         </div>
       </div>
 
-      <!-- <div class="col-lg-12">
+      <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Created Date</p>
 
@@ -690,7 +752,7 @@
         </div>
       </div>
 
-         <div class="col-lg-12">
+         <!-- <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Updated Date</p>
 
@@ -723,6 +785,48 @@
             placeholder="Select Branch"
           >
           </ng-select>
+        </div>
+      </div>
+
+         <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Status
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedStatus"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="requested">Requested</option>
+            <option value="ready">Ready</option>
+            <option value="modified">Modified</option>
+            <option value="responded">Responded</option>
+            <option value="closed">Closed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+
+        <div class="col-lg-12">
+        <div class="mb-3">
+          <p class="text-muted fw-medium text-uppercase mb-3">
+            Priority
+          </p>
+          <select
+            class="form-control"
+            [(ngModel)]="selectedPriority"
+            (change)="filterdata()"
+            [ngModelOptions]="{ standalone: true }"
+          >
+            <option value="">All</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
       </div>
 

@@ -1,0 +1,522 @@
+<!-- Start Breadcrumbs -->
+<app-breadcrumbs
+  title="Quatation Detail"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+<!-- End Breadcrumbs -->
+
+<div  class="d-flex justify-content-end mb-2 me-auto order-1 order-lg-2">
+    <!-- <a  class="btn btn-primary" ng-reflect-router-link="/edit-employee/127" href="/edit-employee/127"><i  class="bi bi-pencil-square align-baseline me-1"></i> Edit Profile</a> -->
+    <button  class="btn btn-secondary ms-2" routerLink="/quatation-request"><i  class="mdi mdi-keyboard-backspace align-baseline me-1"></i> Back </button>
+</div>
+<div class="row">
+      <div class="col-xxl-7">
+
+        <div class="card">
+            <div class="card-body">
+            
+                   <div class=" border-bottom border-dashed ">
+
+                    <div class="d-flex justify-content-between align-items-center">
+<div>
+      @if(requestDetail?.image){
+          <img
+            src="{{ requestDetail.image }}"
+            alt=""
+            class="avatar-lg rounded-circle p-1 img-thumbnail"
+          />
+          } @else {
+          <img
+            src="assets/images/users/avatar-1.jpg"
+            alt=""
+            id="user-img"
+            class="avatar-lg rounded-circle object-fit-cover border-0 img-thumbnail user-profile-image"
+          />
+          }
+          <div class="mt-3">
+            <h5>
+              {{ requestDetail?.name }}
+              <!-- <i
+                class="bi bi-patch-check-fill align-baseline text-info ms-1"
+              ></i> -->
+            </h5>
+            <p class="text-muted">{{ requestDetail?.designation_name }}</p>
+          </div>
+</div>
+<div>
+        <!-- <a
+            href="javascript:void(0);"
+            class="btn btn-light btn-icon"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Edit"
+        >
+            <i class="bi bi-pencil-fill"></i>
+        </a> -->
+
+           <table class="table table-borderless table-sm align-middle mb-0">
+              <tbody>
+              
+                <tr>
+                  <th class="ps-0" scope="row">Department</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.department_name }}
+                  </td>
+                </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Phone No</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.mobile }}
+                  </td>
+                </tr>
+              
+                <tr>
+                  <th class="ps-0" scope="row">Email</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.email }}
+                  </td>
+                </tr>
+
+                  <tr>
+                  <th class="ps-0" scope="row">Branch</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.branch_name }}
+                  </td>
+                </tr>
+              
+             
+             
+              </tbody>
+            </table>
+</div>
+                    </div>
+                
+        
+@if(requestDetail?.status != 'rejected' && requestDetail?.status != 'closed'){
+          <div class="d-flex gap-2 mt-4">
+                        <!-- <button type="button" class="btn btn-subtle-secondary custom-toggle w-50" >
+                            <span class="icon-on"><i class="bi bi-person-plus align-baseline me-1"></i> Follow</span>
+                            <span class="icon-off"><i class="bi bi-person-x align-baseline me-1"></i> Unfollow</span>
+                        </button> -->
+                        <button type="button"  (click)="statusModel(requestDetail?.id)" class="btn btn-danger text-truncate w-25"><i class="ri-close-circle-fill align-baseline me-1"></i> Reject Request</button>
+                    </div>
+                  }
+                  
+        </div>
+       
+          <div class="border-bottom border-dashed py-4">
+          <h5 class="card-title mb-3">Information</h5>
+
+        
+
+          <div class="table-responsive">
+            <table class="table table-borderless table-sm align-middle mb-0">
+              <tbody>
+                  <tr>
+                  <th class="ps-0" scope="row">Title</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.title }}
+                  </td>
+                </tr>
+                     <tr>
+                  <th class="ps-0" scope="row">Description</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.description }}
+                  </td>
+                   </tr>
+                <tr>
+                  <th class="ps-0" scope="row">Status</th>
+                  <td class="text-muted text-end">
+                      <span
+  class="badge text-capitalize"
+  [ngClass]="{
+    'bg-primary-subtle text-primary': requestDetail?.status == 'requested',
+    'bg-info-subtle text-info': requestDetail?.status == 'ready',
+    'bg-warning-subtle text-warning': requestDetail?.status == 'modified',
+    'bg-success-subtle text-success': requestDetail?.status == 'responded',
+    'bg-dark-subtle text-dark': requestDetail?.status == 'closed',
+    'bg-danger-subtle text-danger': requestDetail?.status == 'rejected'
+  }"
+>
+  {{ requestDetail?.status }}
+</span>
+               
+                  </td>
+                </tr>
+
+                  <tr>
+                  <th class="ps-0" scope="row">Priority</th>
+                  <td class="text-muted text-end">
+                    <span
+  class="badge text-capitalize"
+  [ngClass]="{
+    'bg-info-subtle text-info': requestDetail?.priority === 'low',
+    'bg-warning-subtle text-warning': requestDetail?.priority === 'medium',
+    'bg-danger-subtle text-danger': requestDetail?.priority === 'high'
+  }"
+>
+  {{ requestDetail?.priority }}
+</span>
+                  </td>
+                </tr>
+              
+                  <tr>
+                  <th class="ps-0" scope="row">Attachment</th>
+                  <td class="text-muted text-end">
+                    @if(requestDetail?.attachment_file){
+                      <a
+                        href="{{ requestDetail.attachment_file }}"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-primary"
+                      >
+                        View / Download attachment file
+                      </a>
+                      } @else {
+                      N/A
+                      }
+                   
+                  </td>
+                </tr>
+
+                   <tr>
+                  <th class="ps-0" scope="row">Follow up date</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.nextFollowup | date : "dd MMM, YYYY" }}
+                  </td>
+                </tr>
+             
+                <tr>
+                  <th class="ps-0" scope="row">Request at</th>
+                  <td class="text-muted text-end">
+                    {{ requestDetail?.created_at | date : "dd MMM, YYYY, hh:mm a" }}
+                  </td>
+                </tr>
+             
+              </tbody>
+            </table>
+          </div>
+        </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-xxl-5">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-4">Request Detail</h5>
+
+                  <form
+       (ngSubmit)="onSubmit()"
+        [formGroup]="formGroup"
+        class="tablelist-form"
+        novalidate
+        autocomplete="off"
+      >
+        <div class="modal-body p-4">
+          <div
+            id="alert-error-msg"
+            class="d-none alert alert-danger py-2"
+          ></div>
+
+          <div class="mb-3">
+            <label for="product-title-input" class="form-label"
+              >Admin Note <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              id="product-title-input"
+              formControlName="admin_note"
+              class="form-control"
+              placeholder="Enter Admin Note"
+            />
+            @if (f['admin_note'] && f['admin_note'].hasError('required') &&
+            f['admin_note'].touched) {
+            <div class="invalid-text">Admin note is required.</div>
+            } 
+          </div>
+
+          <div class="mb-3">
+
+            @if (employeeselectedImagePreview) {
+  <div class="mt-2">
+    <label class="form-label">Selected file</label>
+
+    <!-- image -->
+    @if (employeeselectedImage?.type.startsWith('image/')) {
+      <img
+        [src]="employeeselectedImagePreview"
+        class="img-fluid mt-2"
+        style="max-height: 200px"
+      />
+    }
+
+
+
+  
+  </div>
+}
+
+
+          <div>
+  <label for="fileInput" class="form-label">Upload quatation</label>
+
+  <input
+    type="file"
+    id="fileInput"
+    class="form-control"
+    formControlName="file"
+    (change)="employeeimageSelect($event)"
+  />
+
+  
+
+    @if (f['file'] && f['file'].hasError('required') &&
+            f['file'].touched) {
+            <div class="invalid-text">File is required.</div>
+            } 
+
+            @if (employeeuploadedImage && !employeeselectedImagePreview) {
+  <div class="mt-2">
+    <label class="form-label">Existing Quatation</label><br />
+
+    <a
+      [href]="employeeuploadedImage"
+      target="_blank"
+      class="btn btn-sm btn-outline-primary"
+    >
+      View / Download Quatation
+    </a>
+
+    
+  </div>
+}
+
+
+
+</div>
+
+          
+          </div>
+        </div>
+         <div class="modal-footer">
+          <div class="hstack gap-2 justify-content-end">
+          
+            <button type="submit" class="btn btn-primary" id="add-btn">
+              Add
+            </button>
+          </div>
+        </div>
+    
+      </form>
+               
+            </div>
+        </div>
+    </div>
+  
+
+</div>
+
+<div class="card">
+     <div class="card-body">
+  <div class="row">
+    <div class="col-lg-12">
+                <h5 class="card-title mb-4">Quatation History</h5>
+
+                   <!-- <div class="card-header d-lg-flex align-items-center">
+          <div class="flex-grow-1">
+            <h5 class="card-title mb-0">
+              Leave Record
+              <span class="badge bg-dark-subtle text-dark ms-1">{{
+                requestDetail?.history?.length
+              }}</span>
+              <span class="badge text-dark ms-1">
+                <div
+                  class="d-flex me-3 mt-1 justify-content-center align-items-center"
+                >
+                  <div class="text-muted text-center text-sm-start me-2">
+                    Items per page :
+                  </div>
+                  <div class="">
+                    <div class="input-group input-group-sm">
+                      <select
+                        id="itemsPerPage"
+                        class="form-control"
+                        [(ngModel)]="currentItemsPerPage"
+                        (change)="onItemsPerPageChange()"
+                      >
+                        <option
+                          *ngFor="let option of itemsPerPageOptions"
+                          [value]="option"
+                        >
+                          {{ option }}
+                        </option>
+                        <option [value]="requestDetail?.history?.length">
+                          Show All
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </span>
+            </h5>
+          </div>
+
+        
+        </div> -->
+
+      <div class="table-responsive">
+        <table class="table table-borderless align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Action Type</th>
+              <th scope="col">From - To</th>
+              <th scope="col">Admin Note</th>
+               <th scope="col">
+          Quatation File
+          </th>
+              <th scope="col">Action On</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of requestHistroyData; track $index) {
+            <tr>
+              <td>
+                {{ item.action_type }}
+              </td>
+              <td>
+                @if(item.from_status ){
+                  {{ item.from_status  }} -
+                {{ item.to_status  }}
+                  } @else {
+                 {{ item.to_status  }}
+                  }
+           
+              </td>
+              <td>
+                {{ item.admin_note }} 
+                
+              </td>
+                  <td>   @if(item?.response_file_url){
+                      <a
+                        href="{{ item.response_file_url }}"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-primary"
+                      >
+                       Quatation file
+                      </a>
+                      } @else {
+                      N/A
+                      }</td>
+              <td>{{ item.created_at | date : "dd MMM, YYYY, hh:mm a"}}</td>
+
+              <!-- <td>
+            <a href="javascript:void(0);" class="icon-link icon-link-hover"
+              >Logout <i class="bi bi-box-arrow-right"></i
+            ></a>
+          </td> -->
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+        <!--end table-responsive-->
+
+          <div class="noresult" style="display: none">
+            <div class="text-center py-4">
+              <div class="avatar-md mx-auto mb-4">
+                <div
+                  class="avatar-title bg-light text-primary rounded-circle fs-4xl"
+                >
+                  <i class="bi bi-search"></i>
+                </div>
+              </div>
+              <h5 class="mt-2">Sorry! No Result Found</h5>
+              <p class="text-muted mb-0">
+                We've searched
+                {{ this.requestHistroyDataList.length }} leavePolicy We did not
+                find any leavePolicy for you search.
+              </p>
+            </div>
+          </div>
+          <!-- end noresult -->
+
+         <div class="row align-items-center mt-4 pt-2" id="pagination-element">
+        <div class="col-sm">
+          <div class="text-muted text-center text-sm-start">
+            Showing
+            <span class="fw-semibold">{{ requestHistroyData?.length }}</span>
+            of
+            <span class="fw-semibold">{{ requestHistroyDataList?.length }}</span>
+            Results
+          </div>
+        </div>
+
+        <div class="col-sm-auto mt-3 mt-sm-0">
+          <pagination
+            class="pagination-wrap hstack gap-2 justify-content-center"
+            [totalItems]="requestHistroyDataList?.length"
+            [itemsPerPage]="this.itemsPerPage"
+            [maxSize]="5"
+            (pageChanged)="pageChanged($event)"
+          ></pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- status reject modal -->
+<div
+  id="statusModal"
+  class="modal fade zoomIn"
+  bsModal
+  #statusModal="bs-modal"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          id="deleteRecord-close"
+          (click)="statusModal.hide()"
+        ></button>
+      </div>
+      <div class="modal-body p-md-5">
+        <div class="text-center">
+          <div class="text-danger">
+            <i class="ri-close-circle-fill display-4"></i>
+          </div>
+          <div class="mt-4">
+            <h3 class="mb-2">Are you sure ?</h3>
+            <p class="text-muted fs-lg mx-3 mb-0">
+              Are you sure you want to reject this request ?
+            </p>
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+          <button
+            type="button"
+            class="btn w-sm btn-light btn-hover"
+            (click)="statusModal.hide()"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn w-sm btn-danger btn-hover"
+            id="delete-record"
+            (click)="updateStatus(statusid)"
+          >
+            Yes, reject It!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+   
