@@ -92,7 +92,7 @@
                     </div>
                 
         
-@if(requestDetail?.status != 'rejected' && requestDetail?.status != 'closed'){
+@if(requestDetail?.status != 'rejected' && requestDetail?.status != 'closed' && requestDetail?.status != 'ready'){
           <div class="d-flex gap-2 mt-4">
                         <!-- <button type="button" class="btn btn-subtle-secondary custom-toggle w-50" >
                             <span class="icon-on"><i class="bi bi-person-plus align-baseline me-1"></i> Follow</span>
@@ -163,9 +163,9 @@
                   <tr>
                   <th class="ps-0" scope="row">Attachment</th>
                   <td class="text-muted text-end">
-                    @if(requestDetail?.attachment_file){
+                    @if(requestDetail?.attachment_file_url){
                       <a
-                        href="{{ requestDetail.attachment_file }}"
+                        href="{{ requestDetail.attachment_file_url }}"
                         target="_blank"
                         class="btn btn-sm btn-outline-primary"
                       >

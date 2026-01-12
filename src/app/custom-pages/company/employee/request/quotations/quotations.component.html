@@ -336,6 +336,9 @@
                           ><i class="ph-eye align-middle"></i>
                         </a>
                       </li>
+
+@if(data?.status != 'rejected' && data?.status != 'closed' && data?.status != 'ready'){
+
                       <li> 
                         
                         <a
@@ -347,6 +350,7 @@
                        class="btn btn-subtle-danger btn-icon btn-sm remove-item-btn"
                           ><i class="ri-close-circle-fill align-middle"></i></a>
                       </li>
+              
                       <li>
                         <a
                           data-bs-toggle="tooltip"
@@ -357,6 +361,7 @@
                           ><i class="ph-trash align-middle"></i
                         ></a>
                       </li>
+                            }
                     </ul>
                   </td>
                 </tr>
