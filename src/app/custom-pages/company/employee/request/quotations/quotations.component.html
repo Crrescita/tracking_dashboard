@@ -177,7 +177,7 @@
               </thead>
               <tbody class="list form-check-all">
                 @for ( data of quatationData; track $index) {
-                <tr id="p_{{ data._id }}">
+                <tr id="p_{{ data._id }}" [ngClass]="{ 'table-primary': data.is_read == 'false' }">
                   <td>
                     <div class="form-check">
                       <input
