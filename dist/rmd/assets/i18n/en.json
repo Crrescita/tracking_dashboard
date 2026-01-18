@@ -130,7 +130,8 @@
       "INVOICE-REQUESTS":"Invoice Requests",
       "STATEMENT-REQUESTS":"Statement Requests",
       "CREDIT-NOTE-REQUESTS":"Credit Note Requests",
-      "STOCK-STATUS-REQUESTS":"Stock Status Requests"
+      "STOCK-STATUS-REQUESTS":"Stock Status Requests",
+      "VISIT-LOG":"Visit Log"
       }
     },
     "COMPONENTS": {

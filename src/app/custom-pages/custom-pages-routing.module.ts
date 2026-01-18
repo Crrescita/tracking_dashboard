@@ -36,6 +36,7 @@ import path from 'path';
 import { CreditNoteComponent } from './company/employee/request/credit-note/credit-note.component';
 import { StockStatusComponent } from './company/employee/request/stock-status/stock-status.component';
 import { RequestDetailComponent } from './company/employee/request/request-detail/request-detail.component';
+import { VisitlogComponent } from './company/visitlog/visitlog.component';
 
 
 const routes: Routes = [
@@ -100,7 +101,9 @@ const routes: Routes = [
   {path:"credit-note-request" , component:CreditNoteComponent},
   {path:"stock-status-request" , component:StockStatusComponent},
 
-  {path:"request-detail/:id" , component:RequestDetailComponent}
+  {path:"request-detail/:id" , component:RequestDetailComponent},
+
+  {path:"visit-log" , component:VisitlogComponent}
 ];
 
 @NgModule({

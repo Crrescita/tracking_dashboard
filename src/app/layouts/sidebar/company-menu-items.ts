@@ -154,11 +154,19 @@ export const COMPANY_MENU: MenuItem[] = [
     icon: " ri-notification-4-fill",
     parentId: 75,
   },
+  
   {
     id: 11,
     label: "MENUITEMS.COMPANY.LIST.PAYROLL",
     link: "/payroll",
     icon: " bx bx-rupee",
+    parentId: 75,
+  },
+   {
+    id: 11,
+    label: "MENUITEMS.COMPANY.LIST.VISIT-LOG",
+    link: "/visit-log",
+    icon: " mdi mdi-truck-minus",
     parentId: 75,
   },
 
@@ -206,6 +214,7 @@ export const COMPANY_MENU: MenuItem[] = [
      
     ],
   },
+  
 
   // More items...
 ];
