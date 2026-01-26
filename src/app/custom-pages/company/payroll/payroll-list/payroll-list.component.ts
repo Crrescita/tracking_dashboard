@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import * as ExcelJS from "exceljs";
 import { ApiService } from '../../../../core/services/api.service';
 import { SalaryInvoiceComponent } from '../../employee/salary/salary-invoice/salary-invoice.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-payroll-list',
@@ -73,12 +74,15 @@ export class PayrollListComponent {
   company_logo: any;
   emp_id: any;
   isModalOpen: boolean = false;
-  selectedEmployees: any[] = []; 
+  // selectedEmployees: any[] = []; 
+  selectedEmployeeIds: number[] = [];
+
 
   constructor(
     private api: ApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastService:ToastrService
   ) {
     this.bsConfig = {
       minMode: "month",
@@ -800,10 +804,19 @@ console.log(this.payrollData)
 
   //   this.filterdata();
   // }
-  togglebtn(event: any) {
-    this.showFinalizedPayroll = !this.showFinalizedPayroll;
-    this.filterdata();
-  }
+  // togglebtn(event: any) {
+  //   this.showFinalizedPayroll = !this.showFinalizedPayroll;
+  //   this.filterdata();
+  // }
+
+  togglebtn() {
+  this.showFinalizedPayroll = !this.showFinalizedPayroll;
+
+  this.selectedEmployeeIds = [];
+
+  this.filterdata();
+}
+
 
   // exportTableToExcel(): void {
   //   const workbook: XLSX.WorkBook = { SheetNames: [], Sheets: {} };
@@ -1105,13 +1118,28 @@ console.log(this.payrollData)
   }
 
 
-  toggleSelection(employee: any, event: any) {
-    if (event.target.checked) {
-      this.selectedEmployees.push(employee);
-    } else {
-      this.selectedEmployees = this.selectedEmployees.filter(emp => emp !== employee);
+  // toggleSelection(employee: any, event: any) {
+  //   if (event.target.checked) {
+  //     this.selectedEmployees.push(employee);
+  //   } else {
+  //     this.selectedEmployees = this.selectedEmployees.filter(emp => emp !== employee);
+  //   }
+  // }
+
+  toggleSelection(employee: any, event: Event) {
+  const checked = (event.target as HTMLInputElement).checked;
+
+  if (checked) {
+    if (!this.selectedEmployeeIds.includes(employee.emp_id)) {
+      this.selectedEmployeeIds.push(employee.emp_id);
     }
+  } else {
+    this.selectedEmployeeIds = this.selectedEmployeeIds.filter(
+      id => id !== employee.emp_id
+    );
   }
+}
+
   
   // onSubmitAll() {
   //   if (this.selectedEmployees.length === 0) {
@@ -1125,13 +1153,93 @@ console.log(this.payrollData)
   //   });
   // }
 
-  async onSubmitAll() {
-  if (this.selectedEmployees.length === 0) return;
+//   async onSubmitAll() {
+//   if (this.selectedEmployees.length === 0) return;
 
-  for (const employee of this.selectedEmployees) {
-    this.submitForEmployee(employee);
+//   for (const employee of this.selectedEmployees) {
+//     this.submitForEmployee(employee);
+//   }
+// }
+
+async onSubmitAll() {
+
+
+   if (this.selectedEmployeeIds.length === 0) {
+   this.toastService.error('Please select at least one employee');
+    return;
   }
+  const invalidEmployees: string[] = [];
+  const validEmployees: any[] = [];
+
+  const employeesToSubmit = this.payrollData.filter((emp: { emp_id: number; payroll_finalized: number; }) =>
+    this.selectedEmployeeIds.includes(emp.emp_id) &&
+    emp.payroll_finalized === 0
+  );
+
+  if (!employeesToSubmit.length) {
+    this.toastService.warning('Selected employees are already finalized.');
+    return;
+  }
+  for (const employee of employeesToSubmit) {
+    // 1️⃣ Already finalized
+    if (employee.payroll_finalized == 1) {
+      invalidEmployees.push(`${employee.name} (Already finalized)`);
+      continue;
+    }
+
+    const salaryData = employee.salaryInvoiceData;
+
+    // 2️⃣ Salary data missing
+    if (!salaryData) {
+      invalidEmployees.push(`${employee.name} (Salary not generated)`);
+      continue;
+    }
+
+    // 3️⃣ Paid days validation
+    if (!salaryData.paidDays || salaryData.paidDays <= 0) {
+      invalidEmployees.push(`${employee.name} (Invalid paid days)`);
+      continue;
+    }
+
+    // 4️⃣ Amount validation
+    if (!salaryData.totalamount || salaryData.totalamount <= 0) {
+      invalidEmployees.push(`${employee.name} (Invalid net pay)`);
+      continue;
+    }
+
+    // 5️⃣ Breakup validation
+    if (!salaryData.breakup?.length) {
+      invalidEmployees.push(`${employee.name} (Missing earnings breakup)`);
+      continue;
+    }
+
+    validEmployees.push(employee);
+  }
+
+  // 🚨 Show skipped employees
+  if (invalidEmployees.length) {
+    this.toastService.warning(
+      `Skipped ${invalidEmployees.length} employee(s):\n` +
+      invalidEmployees.join(', ')
+    );
+  }
+
+  // ❌ Nothing valid to submit
+  if (!validEmployees.length) {
+    this.toastService.error('No valid payroll records to submit');
+    return;
+  }
+
+  // ✅ Submit valid ones
+  for (const employee of validEmployees) {
+    await this.submitForEmployee(employee);
+  }
+this.selectedEmployeeIds = [];
+  this.toastService.success(
+    `Payroll submitted for ${validEmployees.length} employee(s)`
+  );
 }
+
 
 async submitForEmployee(employee: any) {
   if (!this.salaryInvoiceComponent) return;
