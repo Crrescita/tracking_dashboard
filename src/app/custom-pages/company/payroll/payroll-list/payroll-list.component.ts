@@ -664,7 +664,7 @@ export class PayrollListComponent {
     this.payrollData = cloneDeep(
       this.filteredAttendanceData.slice(newStartItem, newEndItem)
     );
-
+console.log(this.payrollData)
     // Update no result display
     this.updateNoResultDisplay();
 
@@ -1113,83 +1113,166 @@ export class PayrollListComponent {
     }
   }
   
-  onSubmitAll() {
-    if (this.selectedEmployees.length === 0) {
-      // this.toastService.error("Please select at least one employee.");
-      return;
-    }
-    // console.log(this.selectedEmployees)
-    this.selectedEmployees.forEach(employee => {
-      this.submitForEmployee(employee);
+  // onSubmitAll() {
+  //   if (this.selectedEmployees.length === 0) {
+  //     // this.toastService.error("Please select at least one employee.");
+  //     return;
+  //   }
+  //   console.log("Submitting for selected employees:",this.selectedEmployees);
+  //   // console.log(this.selectedEmployees)
+  //   this.selectedEmployees.forEach(employee => {
+  //     this.submitForEmployee(employee);
+  //   });
+  // }
+
+  async onSubmitAll() {
+  if (this.selectedEmployees.length === 0) return;
+
+  for (const employee of this.selectedEmployees) {
+    this.submitForEmployee(employee);
+  }
+}
+
+async submitForEmployee(employee: any) {
+  if (!this.salaryInvoiceComponent) return;
+
+  if (!employee.salaryInvoiceData) {
+    console.warn("No salaryInvoiceData for:", employee.emp_id);
+    return;
+  }
+
+  const child = this.salaryInvoiceComponent;
+  const data = employee.salaryInvoiceData;
+
+  /* ---------------- BASIC STATE ---------------- */
+  child.urlId = employee.emp_id;
+  child.presentDays = Number(data.paidDays || 0);
+  child.totalAmount = Number(data.totalamount || 0);
+
+  // formattedDate MUST be string (YYYY-MM)
+  child.formattedDate = data.invoiceOfMonth;
+
+  /* ---------------- FORM PATCH ---------------- */
+  child.formGroup.patchValue({
+    salary: Number(data.salary || 0),
+  });
+
+  /* ---------------- FORM ARRAYS ---------------- */
+  const breakupArray = child.formGroup.get("breakup") as FormArray;
+  const deductionsArray = child.formGroup.get("deductions") as FormArray;
+
+  breakupArray.clear();
+  deductionsArray.clear();
+
+  /* ----------- BREAKUP ----------- */
+  if (Array.isArray(data.breakup)) {
+    data.breakup.forEach((e: any) => {
+      breakupArray.push(
+        child.formBuilder.group({
+          name: e.name,
+          amount: Number(e.amount || 0),
+          calculationType: e.calculationType || "custom",
+          formula: e.formula || "",
+          nameReadonly: [true],
+        })
+      );
     });
   }
 
-
-
-submitForEmployee(employee: any) {
-  // console.log("Submitting for Employee:", employee);
-
-  if (this.salaryInvoiceComponent) {
-    // Ensure employee data exists before using it
-    if (!employee.salaryInvoiceData) {
-      console.warn("No salaryInvoiceData found for employee:", employee);
-      return;
-    }
-// console.log(employee.salaryInvoiceData)
-// console.log(employee.salaryInvoiceData.totalamount, employee.salaryInvoiceData.paidDays)
-    // Assign values
-    this.salaryInvoiceComponent.urlId = employee.emp_id;
-    this.salaryInvoiceComponent.presentDays = employee.salaryInvoiceData.paidDays || 0;
-    this.salaryInvoiceComponent.totalAmount = employee.salaryInvoiceData.totalamount || 0;
-    this.salaryInvoiceComponent.formattedDate = employee.salaryInvoiceData.invoiceOfMonth || new Date();
-
-
-      this.salaryInvoiceComponent.formGroup.patchValue({
-        salary: employee.salaryInvoiceData.salary || "",
-      });
-  
-      // Get FormArray references
-      const breakupArray = this.salaryInvoiceComponent.formGroup.get("breakup") as FormArray;
-      const deductionsArray = this.salaryInvoiceComponent.formGroup.get("deductions") as FormArray;
-  
-      // Clear previous data before adding new ones
-      breakupArray.clear();
-      deductionsArray.clear();
-  
-      // Populate `breakup`
-      if (Array.isArray(employee.salaryInvoiceData.breakup.value) && employee.salaryInvoiceData.breakup.value.length > 0) {
-        employee.salaryInvoiceData.breakup.value.forEach((earning: any) => {
-          breakupArray.push(this.salaryInvoiceComponent.formBuilder.group({
-            name: earning.name || '',
-            amount: earning.amount || 0,
-            calculationType: earning.calculationType || '',
-            formula: earning.formula || '',
-          }));
-        });
-      }
-  
-      // Populate `deductions`
-      if (Array.isArray(employee.salaryInvoiceData.deductions.value) && employee.salaryInvoiceData.deductions.value.length > 0) {
-        employee.salaryInvoiceData.deductions.value.forEach((deduction: any) => {
-          deductionsArray.push(this.salaryInvoiceComponent.formBuilder.group({
-            name: deduction.name || '',
-            amount: deduction.amount || 0,
-            calculationType: deduction.calculationType || '',
-            formula: deduction.formula || '',
-          }));
-        });
-      }
-
-    // **Ensure calculation is done before submission**
-    this.salaryInvoiceComponent.calculateTotalAmount();
-
-    // Log final data before submission
-    // console.log("Final Form Data for Employee:", this.salaryInvoiceComponent.createFormData());
-
-    // Call child's submit method
-    this.salaryInvoiceComponent.onSubmit();
+  /* ----------- DEDUCTIONS ----------- */
+  if (Array.isArray(data.deductions)) {
+    data.deductions.forEach((d: any) => {
+      deductionsArray.push(
+        child.formBuilder.group({
+          name: d.name,
+          amount: Number(d.amount || 0),
+          calculationType: d.calculationType || "custom",
+          formula: d.formula || "",
+          nameReadonly: [true],
+        })
+      );
+    });
   }
+
+  /* ---------------- FINAL CALC ---------------- */
+  child.calculateTotalAmount();
+
+  /* ---------------- SUBMIT ---------------- */
+  await new Promise<void>((resolve) => {
+    const sub = child.salaryInvoiceData.subscribe(() => {
+      sub.unsubscribe();
+      resolve();
+    });
+    child.onSubmit();
+  });
 }
+
+
+
+// submitForEmployee(employee: any) {
+//   // console.log("Submitting for Employee:", employee);
+// console.log(employee)
+//   if (this.salaryInvoiceComponent) {
+//     // Ensure employee data exists before using it
+//     if (!employee.salaryInvoiceData) {
+//       console.warn("No salaryInvoiceData found for employee:", employee);
+//       return;
+//     }
+// // console.log(employee.salaryInvoiceData)
+// // console.log(employee.salaryInvoiceData.totalamount, employee.salaryInvoiceData.paidDays)
+//     // Assign values
+//     this.salaryInvoiceComponent.urlId = employee.emp_id;
+//     this.salaryInvoiceComponent.presentDays = employee.salaryInvoiceData.paidDays || 0;
+//     this.salaryInvoiceComponent.totalAmount = employee.salaryInvoiceData.totalamount || 0;
+//     this.salaryInvoiceComponent.formattedDate = employee.salaryInvoiceData.invoiceOfMonth || new Date();
+
+
+//       this.salaryInvoiceComponent.formGroup.patchValue({
+//         salary: employee.salaryInvoiceData.salary || "",
+//       });
+  
+//       // Get FormArray references
+//       const breakupArray = this.salaryInvoiceComponent.formGroup.get("breakup") as FormArray;
+//       const deductionsArray = this.salaryInvoiceComponent.formGroup.get("deductions") as FormArray;
+  
+//       // Clear previous data before adding new ones
+//       breakupArray.clear();
+//       deductionsArray.clear();
+  
+//       // Populate `breakup`
+//       if (Array.isArray(employee.salaryInvoiceData.breakup.value) && employee.salaryInvoiceData.breakup.value.length > 0) {
+//         employee.salaryInvoiceData.breakup.value.forEach((earning: any) => {
+//           breakupArray.push(this.salaryInvoiceComponent.formBuilder.group({
+//             name: earning.name || '',
+//             amount: earning.amount || 0,
+//             calculationType: earning.calculationType || '',
+//             formula: earning.formula || '',
+//           }));
+//         });
+//       }
+  
+//       // Populate `deductions`
+//       if (Array.isArray(employee.salaryInvoiceData.deductions.value) && employee.salaryInvoiceData.deductions.value.length > 0) {
+//         employee.salaryInvoiceData.deductions.value.forEach((deduction: any) => {
+//           deductionsArray.push(this.salaryInvoiceComponent.formBuilder.group({
+//             name: deduction.name || '',
+//             amount: deduction.amount || 0,
+//             calculationType: deduction.calculationType || '',
+//             formula: deduction.formula || '',
+//           }));
+//         });
+//       }
+
+//     // **Ensure calculation is done before submission**
+//     this.salaryInvoiceComponent.calculateTotalAmount();
+
+//     // Log final data before submission
+//     // console.log("Final Form Data for Employee:", this.salaryInvoiceComponent.createFormData());
+
+//     // Call child's submit method
+//     this.salaryInvoiceComponent.onSubmit();
+//   }
+// }
 
 
 

@@ -117,13 +117,13 @@ export const COMPANY_MENU: MenuItem[] = [
     label: "MENUITEMS.COMPANY.LIST.LEAVE-MANAGEMENT",
     icon: " ri-file-user-line",
     subItems: [
-      {
-        id: 9,
-        label: "MENUITEMS.COMPANY.LIST.LEAVE-POLICY",
-        link: "/leave-policy",
-        parentId: 8,
-        icon: " ri-file-user-line",
-      },
+      // {
+      //   id: 9,
+      //   label: "MENUITEMS.COMPANY.LIST.LEAVE-POLICY",
+      //   link: "/leave-policy",
+      //   parentId: 8,
+      //   icon: " ri-file-user-line",
+      // },
       {
         id: 9,
         label: "MENUITEMS.COMPANY.LIST.LEAVE-TYPES",

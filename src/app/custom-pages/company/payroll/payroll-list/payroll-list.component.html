@@ -276,7 +276,7 @@
                   <div>
                     <button class="btn btn-primary me-1" (click)="onSubmitAll()">Create Payroll</button>
 
-                    <button
+                    <!-- <button
                       (click)="exportTableToExcel()"
                       type="button"
                       id="download-button"
@@ -284,7 +284,7 @@
                     >
                       <i class="ri-file-excel-2-fill align-bottom me-1"></i>
                       Download
-                    </button>
+                    </button> -->
                     <button
                       type="button"
                       class="btn btn-info me-1"
@@ -399,7 +399,7 @@
                       <div class="flex-grow-1 ms-2">
                         <h5 class="fs-md">
                           <a
-                            [routerLink]="['/employee-detail', data.id]"
+                            [routerLink]="['/employee-detail', data.emp_id]"
                             [queryParams]="{ tab: 'personalDetails' }"
                             class="text-dark"
                             >{{ data.name }}</a
@@ -413,11 +413,14 @@
                   </td>
                   <td class="discount">{{ data.mobile }}</td>
                   <td class="category"><i class="bx bx-rupee"></i>{{data.emp_salary? (data.emp_salary | number:'1.0-2'):0}}</td>
-                  <td class="category">@if(data.payroll_finalized === 1){
+                  <td class="category">
+                    @if(data.payroll_finalized === 1){
                     {{data.paid_days? data.paid_days:0 }} }
                     @else {
                         {{data.salaryInvoiceData?.paidDays ? data.salaryInvoiceData?.paidDays : 0}}
-                    }  </td>
+                    } 
+                    <!-- {{data.paid_days}} -->
+                   </td>
                   <td class="stock"><i class="bx bx-rupee"></i>
                     @if(data.payroll_finalized === 1){
                         {{ data.earning_amount ? (data.earning_amount | number:'1.0-2'):0}}
@@ -490,10 +493,20 @@
                               class="btn btn-subtle-info btn-icon btn-sm remove-item-btn"
                               ><i class="ri-article-fill"></i
                             ></a>
-<div class="d-none">
+<!-- <div class="d-none">
     <app-salary-invoice (salaryInvoiceData)="updatePayrollData($event)"    [salaryDetailData]="data.empSalaryData"  [urlId]="data.emp_id"></app-salary-invoice>
 
+</div> -->
+
+<div class="d-none">
+  <app-salary-invoice
+    [selectedDates]="selectedDate"
+    (salaryInvoiceData)="updatePayrollData($event)"
+    [salaryDetailData]="data.empSalaryData"
+    [urlId]="data.emp_id">
+  </app-salary-invoice>
 </div>
+
 
                           </li>
                       }
@@ -997,7 +1010,7 @@
 
 <div class="custom-offcanvas" id="courseFilters">
   <div class="offcanvas-header border-bottom p-3">
-    <h5 class="offcanvas-title" id="courseFiltersLabel">Attendance Filters</h5>
+    <h5 class="offcanvas-title" id="courseFiltersLabel">Filters</h5>
     <button type="button" class="btn-close" (click)="closeoffcanvas()"></button>
   </div>
   <div class="offcanvas-body">
@@ -1043,7 +1056,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-12">
+      <!-- <div class="col-lg-12">
         <div class="col-lg-12">
             <button
               type="button"
@@ -1056,7 +1069,7 @@
             </button>
           </div>
           
-      </div>
+      </div> -->
       <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">Employee Name</p>
@@ -1073,7 +1086,7 @@
           </ng-select>
         </div>
       </div>
-      <div class="col-lg-12">
+      <!-- <div class="col-lg-12">
         <div class="mb-3">
           <p class="text-muted fw-medium text-uppercase mb-3">
             Attendance Status
@@ -1125,7 +1138,7 @@
             <option value="Late">Late</option>
           </select>
         </div>
-      </div>
+      </div> -->
 
       <div class="col-lg-12">
         <div class="mb-3">

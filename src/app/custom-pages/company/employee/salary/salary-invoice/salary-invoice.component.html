@@ -8,7 +8,7 @@
               <ngx-simplebar class="chat-message-list chat-bookmark-list">
                 <ul class="list-unstyled chat-list">
                   <li>
-                    {{isModalOpen}}
+                    <!-- {{isModalOpen}} -->
                     <div *ngIf="!isModalOpen" class="d-flex align-items-center">
                       <div class="flex-grow-1 overflow-hidden">
                         <h5 class="mb-1">
@@ -20,9 +20,22 @@
                         </h5>
                       </div>
 
+  
+
                       <div class="flex-shrink-0 ms-3">
                         <div class="input-group">
-                          <input
+
+                                              <input
+  type="text"
+    id="datepicker"
+                            class="form-control"
+                            showWeekNumbers="false"
+                            bsDatepicker
+  [bsConfig]="bsConfig"
+  [(ngModel)]="selectedDate"
+  (bsValueChange)="onInternalDateChange($event)"
+/>
+                          <!-- <input
                             type="text"
                             id="datepicker"
                             class="form-control"
@@ -31,7 +44,7 @@
                             [bsConfig]="bsConfig"
                             [(ngModel)]="selectedDate"
                             (bsValueChange)="onDateChange($event)"
-                          />
+                          /> -->
                           <div class="input-group-append">
                             <label
                               for="datepicker"
@@ -1057,6 +1070,7 @@
                                     </button>
                                     }
                               }@else {
+                                
                                 <a  (click)="tooltipmodal.show()" class="btn btn-success">Print Payroll</a>
                               }
                                 

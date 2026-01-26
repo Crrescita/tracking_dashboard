@@ -32,6 +32,7 @@ export class SalaryInvoiceComponent {
   @Input()empData:any;
   @Input()empBackGroundData:any
   @Input()empBankDetail:any
+   @Input() selectedDates!: Date;
   @Output() salaryInvoiceData = new EventEmitter<any>();
   bsConfig?: Partial<BsDatepickerConfig>;
   selectedDate: Date = new Date();
@@ -108,12 +109,19 @@ export class SalaryInvoiceComponent {
   ngOnChanges(changes: SimpleChanges): void {
     // this.getOpenAdvances()
   
-    this.selectedDate = new Date();
+      if (changes['selectedDates']) {
+    const newDate = changes['selectedDates'].currentValue;
 
-    this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
+    if (newDate instanceof Date && !isNaN(newDate.getTime())) {
+      this.applyDate(newDate);
+    }
+  }
+    // this.selectedDate = new Date();
 
-      this.handleDateChange(newDate);
-    });
+    // this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
+
+    //   this.handleDateChange(newDate);
+    // });
     if (this.urlId) {
       this.initializeFormWithData()
       // this.getPresentDays()    
@@ -144,6 +152,11 @@ export class SalaryInvoiceComponent {
 
   ngOnInit(): void {
 
+
+     if (!this.selectedDates) {
+    const today = new Date();
+    this.applyDate(today);
+  }
     this.selectedDate = new Date();
 
     this.dateChangeSubject.pipe(debounceTime(300)).subscribe((newDate) => {
@@ -228,6 +241,23 @@ export class SalaryInvoiceComponent {
       );
   }
   
+private applyDate(date: Date): void {
+  this.selectedDate = date;
+  this.formattedDate = this.formatDate(date);
+    console.log("Date changed to:", this.selectedDate);
+
+  this.generateMonthDates(date);
+  this.getPresentDays();
+  this.getOpenAdvances();
+  this.getCheckInDetail();
+}
+
+onInternalDateChange(date: Date): void {
+  // Only act if parent is NOT controlling date
+  if (!this.selectedDates) {
+    this.applyDate(date);
+  }
+}
 
   
   // Helper function to format date as YYYY-MM-DD
@@ -320,6 +350,7 @@ export class SalaryInvoiceComponent {
   }
 
   onDateChange(newDate: Date): void {
+    console.log("Date changed to:", newDate);
     this.dateChangeSubject.next(newDate);
   }
 
@@ -1645,47 +1676,93 @@ clear(rowIndex: number, isDeduction: boolean = false): void {
   }
 
 
-  calculateTotalAmount(): void {
-    // Get breakup array and calculate the total from it
-    const breakup = this.formGroup.get('breakup') as FormArray; 
-     this.earningTotal = breakup.controls.reduce((total, control) => {
-      return total + (control.get('amount')?.value || 0);
-    }, 0);
+  // calculateTotalAmount(): void {
+  //   // Get breakup array and calculate the total from it
+  //   const breakup = this.formGroup.get('breakup') as FormArray; 
+  //    this.earningTotal = breakup.controls.reduce((total, control) => {
+  //     return total + (control.get('amount')?.value || 0);
+  //   }, 0);
   
-    // Get deductions array and calculate the total from it
-    const deductions = this.formGroup.get('deductions') as FormArray;
-     this.deductionsTotal = deductions.controls.reduce((total, control) => {
-      // if (control.get("name")?.value.toLowerCase() === 'esi') {
-      //   this.employeerEsiAmount = ( control.get("amount")?.value * 3.25) / 100;
-      //   console.log(this.employeerEsiAmount)
-      // }
-      // if (control.get("name")?.value.toLowerCase() === 'pf') {
-      //   this.employeerPfAmount = control.get("amount")?.value;
-      // }
-      return total + (control.get('amount')?.value || 0);
-    }, 0);
+  //   // Get deductions array and calculate the total from it
+  //   const deductions = this.formGroup.get('deductions') as FormArray;
+  //    this.deductionsTotal = deductions.controls.reduce((total, control) => {
+  //     // if (control.get("name")?.value.toLowerCase() === 'esi') {
+  //     //   this.employeerEsiAmount = ( control.get("amount")?.value * 3.25) / 100;
+  //     //   console.log(this.employeerEsiAmount)
+  //     // }
+  //     // if (control.get("name")?.value.toLowerCase() === 'pf') {
+  //     //   this.employeerPfAmount = control.get("amount")?.value;
+  //     // }
+  //     return total + (control.get('amount')?.value || 0);
+  //   }, 0);
 
-    this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
+  //   this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
 
    
-    this.totalAmount = Math.round( this.earningTotal - this.deductionsTotal);
+  //   this.totalAmount = Math.round( this.earningTotal - this.deductionsTotal);
 
-    const dataToEmit = {
-      emp_id: this.urlId,
-      invoiceOfMonth:this.formattedDate,
-      totalAdv: this.totalAdvBal,
-      paidDays:this.presentDays,
-      totalamount :this.totalAmount,
-      earnTotal:this.earningTotal,
-      deductionsTotal:this.deductionsTotal,
-      totalctc :this.totalctc ,
-      breakup:breakup,
-      deductions:deductions,
-      salary:this.f["salary"].value
-    }
+  //   const dataToEmit = {
+  //     emp_id: this.urlId,
+  //     invoiceOfMonth:this.formattedDate,
+  //     totalAdv: this.totalAdvBal,
+  //     paidDays:this.presentDays,
+  //     totalamount :this.totalAmount,
+  //     earnTotal:this.earningTotal,
+  //     deductionsTotal:this.deductionsTotal,
+  //     totalctc :this.totalctc ,
+  //     breakup:breakup,
+  //     deductions:deductions,
+  //     salary:this.f["salary"].value
+  //   }
 
-    this.salaryInvoiceData.emit(dataToEmit)
-  }
+  //   this.salaryInvoiceData.emit(dataToEmit)
+  // }
+
+
+
+  calculateTotalAmount(): void {
+  const breakup = this.formGroup.get('breakup') as FormArray;
+
+  this.earningTotal = breakup.controls.reduce((total, control) => {
+    return total + Number(control.get('amount')?.value || 0);
+  }, 0);
+
+  const deductions = this.formGroup.get('deductions') as FormArray;
+
+  this.deductionsTotal = deductions.controls.reduce((total, control) => {
+    return total + Number(control.get('amount')?.value || 0);
+  }, 0);
+
+  this.totalctc =
+    Number(this.earningTotal || 0) +
+    Number(this.employeerEsiAmount || 0) +
+    Number(this.employeerPfAmount || 0);
+
+  this.totalAmount = Math.round(
+    Number(this.earningTotal || 0) - Number(this.deductionsTotal || 0)
+  );
+
+  const dataToEmit = {
+    emp_id: this.urlId,
+    invoiceOfMonth: this.formattedDate,
+    totalAdv: Number(this.totalAdvBal || 0),
+    paidDays: Number(this.presentDays || 0),
+    totalamount: this.totalAmount,
+    earnTotal: this.earningTotal,
+    deductionsTotal: this.deductionsTotal,
+    totalctc: this.totalctc,
+
+    // ✅ emit VALUES, not FormArray refs
+    breakup: breakup.value,
+    deductions: deductions.value,
+
+    salary: Number(this.f['salary'].value || 0),
+  };
+
+  this.salaryInvoiceData.emit(dataToEmit);
+}
+
+  
 
   convertNumberToWords(num: any): string {
     if (num === null || num === undefined || isNaN(num)) {

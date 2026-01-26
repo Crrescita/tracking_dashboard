@@ -1242,37 +1242,70 @@ export class SalaryDetailComponent {
   deductionsTotal:any
   totalctc:any = 0
   // grossEarning:any
-  calculateTotalAmount(): void {
+  // calculateTotalAmount(): void {
    
-    const breakup = this.formGroup.get("breakup") as FormArray;
-    this.earningTotal = breakup.controls.reduce((total, control) => {
-      return total + (control.get("amount")?.value || 0);
-    }, 0);
+  //   const breakup = this.formGroup.get("breakup") as FormArray;
+  //   this.earningTotal = breakup.controls.reduce((total, control) => {
+  //     return total + (control.get("amount")?.value || 0);
+  //   }, 0);
 
-    const deductions = this.formGroup.get("deductions") as FormArray;
-    this.deductionsTotal = deductions.controls.reduce((total, control) => {
-      //   if (control.get("name")?.value.toLowerCase() === 'esi') {
-      //     this.employeerEsiAmount = Math.round(( control.get("amount")?.value * 3.25) / 100);
-      // }
-      // if (control.get("name")?.value.toLowerCase() === 'pf') {
-      //   this.employeerPfAmount = control.get("amount")?.value;
-      // }
-      return total + (control.get("amount")?.value || 0);
-    }, 0);
+  //   const deductions = this.formGroup.get("deductions") as FormArray;
+  //   this.deductionsTotal = deductions.controls.reduce((total, control) => {
+  //     //   if (control.get("name")?.value.toLowerCase() === 'esi') {
+  //     //     this.employeerEsiAmount = Math.round(( control.get("amount")?.value * 3.25) / 100);
+  //     // }
+  //     // if (control.get("name")?.value.toLowerCase() === 'pf') {
+  //     //   this.employeerPfAmount = control.get("amount")?.value;
+  //     // }
+  //     return total + (control.get("amount")?.value || 0);
+  //   }, 0);
 
-    this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
+  //   console.log(this.deductionsTotal)
 
-    this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
+  //   this.totalctc = this.earningTotal +this.employeerEsiAmount +this.employeerPfAmount
 
-    const data = {
-      earn: this.earningTotal,
-      deductionsTotal: this.deductionsTotal,
-      totalAmount: this.totalAmount,
-      netSalary: this.netSalary,
-    };
+  //   this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
 
-    this.salaryDataFetched.emit(data);
-  }
+  //   const data = {
+  //     earn: this.earningTotal,
+  //     deductionsTotal: this.deductionsTotal,
+  //     totalAmount: this.totalAmount,
+  //     netSalary: this.netSalary,
+  //   };
+
+  //   this.salaryDataFetched.emit(data);
+  // }
+
+  calculateTotalAmount(): void {
+  const breakup = this.formGroup.get("breakup") as FormArray;
+
+  this.earningTotal = breakup.controls.reduce((total, control) => {
+    return total + Number(control.get("amount")?.value || 0);
+  }, 0);
+
+  const deductions = this.formGroup.get("deductions") as FormArray;
+
+  this.deductionsTotal = deductions.controls.reduce((total, control) => {
+    return total + Number(control.get("amount")?.value || 0);
+  }, 0);
+
+  this.totalctc =
+    this.earningTotal +
+    Number(this.employeerEsiAmount || 0) +
+    Number(this.employeerPfAmount || 0);
+
+  this.totalAmount = Math.round(this.earningTotal - this.deductionsTotal);
+
+  const data = {
+    earn: this.earningTotal,
+    deductionsTotal: this.deductionsTotal,
+    totalAmount: this.totalAmount,
+    netSalary: this.netSalary,
+  };
+
+  this.salaryDataFetched.emit(data);
+}
+
 
 
 
