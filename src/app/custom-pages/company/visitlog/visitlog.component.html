@@ -141,14 +141,15 @@
                   <th class="sort cursor-pointer" (click)="onSort('name')">
                     Employee Name
                   </th>
+                     <th class="sort cursor-pointer" (click)="onSort('concerned_person')">
+                    Concerned Person
+                  </th>
 
                   <th class="sort cursor-pointer" (click)="onSort('business_name')">
                     Business name
                   </th>
 
-                  <!-- <th class="sort cursor-pointer" (click)="onSort('email')">
-                    Email
-                  </th> -->
+               
 
                   <th class="sort cursor-pointer" (click)="onSort('visit_date')">
                     Visit Date
@@ -234,6 +235,10 @@
                         </p>
                       </div>
                     </div>
+                  </td>
+
+                     <td class="category">
+                    {{ data.concerned_person }}
                   </td>
 
                   <td class="category">
@@ -559,6 +564,12 @@
                  <div class="table-responsive mt-3">
             <table class="table table-borderless table-sm align-middle mb-0">
               <tbody>
+                <tr>
+                  <th class="ps-0" scope="row">Concerned person</th>
+                  <td class="text-muted text-end">
+                    {{this.quatationDataModal?.concerned_person}}
+                  </td>
+                </tr>
                   <tr>
                   <th class="ps-0" scope="row">Business name</th>
                   <td class="text-muted text-end">
