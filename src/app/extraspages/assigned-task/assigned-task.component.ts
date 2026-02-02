@@ -47,6 +47,16 @@ export class AssignedTaskComponent {
       this.emp_id = params["emp_id"] ? Number(params["emp_id"]) : null;
       this.task_no = params["task_no"] ? params["task_no"] : null;
     });
+
+     this.route.queryParams.subscribe((queryParams) => {
+    if (queryParams['chat'] == 'true') {
+      const userChatShow = document.querySelector('.user-chat');
+      if (userChatShow) {
+        userChatShow.classList.add('user-chat-show');
+      }
+    }
+  });
+
   
     if (this.task_id) {
       this.getAssignedTask();
