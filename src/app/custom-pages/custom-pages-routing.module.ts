@@ -37,6 +37,7 @@ import { CreditNoteComponent } from './company/employee/request/credit-note/cred
 import { StockStatusComponent } from './company/employee/request/stock-status/stock-status.component';
 import { RequestDetailComponent } from './company/employee/request/request-detail/request-detail.component';
 import { VisitlogComponent } from './company/visitlog/visitlog.component';
+import { ReimbursementComponent } from './company/employee/reimbursement/reimbursement.component';
 
 
 const routes: Routes = [
@@ -103,7 +104,8 @@ const routes: Routes = [
 
   {path:"request-detail/:id" , component:RequestDetailComponent},
 
-  {path:"visit-log" , component:VisitlogComponent}
+  {path:"visit-log" , component:VisitlogComponent},
+  {path:"reimbursement" , component:ReimbursementComponent}
 ];
 
 @NgModule({

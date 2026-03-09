@@ -210,6 +210,13 @@ export const COMPANY_MENU: MenuItem[] = [
         parentId: 8,
         icon: " ri-file-user-line",
       },
+       {
+        id: 10,
+        label: "MENUITEMS.COMPANY.LIST.REIMBURSEMENT",
+        link: "/reimbursement",
+        parentId: 8,
+        icon: " ri-file-user-line",
+      },
 
      
     ],

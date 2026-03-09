@@ -124,7 +124,7 @@ export class LeaveRequestDeatilComponent implements OnInit {
 
   handleStatusResponse(res: any) {
     this.toggleSpinner(false);
-    if (res == "Approved") {
+    if (res == "Approve") {
       this.toastService.success("Leave Request Approved Successfully!!");
     } else {
       this.toastService.error("The leave request has been declined.");

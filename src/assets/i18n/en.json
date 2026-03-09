@@ -131,7 +131,8 @@
       "STATEMENT-REQUESTS":"Statement Requests",
       "CREDIT-NOTE-REQUESTS":"Credit Note Requests",
       "STOCK-STATUS-REQUESTS":"Stock Status Requests",
-      "VISIT-LOG":"Visit Log"
+      "VISIT-LOG":"Visit Log",
+      "REIMBURSEMENT":"Reimbursement"
       }
     },
     "COMPONENTS": {
