@@ -7,6 +7,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { cloneDeep } from "lodash";
 import { ApiService } from "src/app/core/services/api.service";
+import { co } from "@fullcalendar/core/internal-common";
 
 @Component({
   selector: 'app-reimbursement',
@@ -821,17 +822,19 @@ onSubmit() {
     this.toggleSpinner(true);
 
     this.api.put("updateReimbursementStatus", this.id, formData).subscribe(
-      (res: any) => this.handleStatusResponse(data),
+      (res: any) => this.handleStatusResponse(res),
       (error) => this.handleError(error)
     );
   }
 
     handleStatusResponse(res: any) {
+      console.log(res.message, "res")
     this.toggleSpinner(false);
     if (res.status == true) {
-      this.toastService.success("Approved Successfully!!");
+      this.toastService.success(res.message || "Reimbursement request updated successfully!!");
     } else {
-      this.toastService.error("The reimbursement request has been declined.");
+      console.log(res.message, "res")
+      this.toastService.error(res.message || "Failed to update reimbursement request.");
     }
     this.getquatationData();
       this.showModal?.hide();
