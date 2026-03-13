@@ -255,12 +255,15 @@
                    <span
   class="badge text-capitalize"
   [ngClass]="{
-    'bg-info-subtle text-info': data.priority === 'low',
-    'bg-warning-subtle text-warning': data.priority === 'medium',
-    'bg-danger-subtle text-danger': data.priority === 'high'
+    'bg-primary-subtle text-primary': data.status == 'requested',
+    'bg-info-subtle text-info': data.status == 'ready',
+    'bg-warning-subtle text-warning': data.status == 'modified',
+    'bg-success-subtle text-success': data.status == 'responded',
+    'bg-dark-subtle text-dark': data.status == 'closed',
+    'bg-danger-subtle text-danger': data.status == 'rejected'
   }"
 >
-  {{ data.priority }}
+  {{ data.status }}
 </span>
                   </td>
                   <td>
