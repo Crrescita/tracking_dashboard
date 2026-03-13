@@ -231,7 +231,7 @@ initializeForm() {
   getquatationData() {
     this.toggleSpinner(true);
     const url = `getRequests?type=quotation&company_id=${this.company_id}`;
-    this.api.getwithoutid(url).subscribe(
+    this.api.getwithoutcache(url).subscribe(
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {

@@ -228,7 +228,7 @@ initializeForm() {
   getquatationData() {
     this.toggleSpinner(true);
     const url = `getRequests?type=invoice&company_id=${this.company_id}`;
-    this.api.getwithoutid(url).subscribe(
+    this.api.getwithoutcache(url).subscribe(
       (res: any) => {
         this.toggleSpinner(false);
         if (res && res.status) {
@@ -344,7 +344,7 @@ resetForm() {
   handleResponse(res: any) {
     this.toggleSpinner(false);
     if (res["status"] === true) {
-      this.toastService.success("Employee Data Delete Successfully!!");
+       this.toastService.success(res["message"]);
       this.getquatationData();
         this.showModal?.hide();
          this.formGroup.reset();
