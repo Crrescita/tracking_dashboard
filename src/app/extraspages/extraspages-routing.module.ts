@@ -10,6 +10,7 @@ import { AssignedTaskComponent } from './assigned-task/assigned-task.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
 import { EmployeeThankyouComponent } from "./employee-thankyou/employee-thankyou.component";
+import { LeavePolicyComponent } from "./leave-policy/leave-policy.component";
 
 const routes: Routes = [
   {
@@ -43,7 +44,11 @@ const routes: Routes = [
   {
     path:"employee-thankyou",
     component: EmployeeThankyouComponent
-  }
+  },
+  {
+    path:"leave-policy",
+    component: LeavePolicyComponent
+  },
 ];
 
 @NgModule({
