@@ -16,6 +16,9 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 export class RequestDetailComponent {
       @ViewChild("statusModal", { static: false })
     statusModal?: ModalDirective;
+    @ViewChild("deleteRecordModal", { static: false })
+    deleteRecordModal?: ModalDirective;
+    deleteId: any;
 breadCrumbItems!: Array<{}>;
     submitted: boolean = false;
   spinnerStatus: boolean = false;
@@ -264,7 +267,32 @@ breadCrumbItems!: Array<{}>;
     this.requestHistroyData = this.requestHistroyDataList.slice(startItem, this.endItem);
   }
 
-  
+  removeItem(id: any) {
+    this.deleteId = id;
+    this.deleteRecordModal?.show();
+  }
 
+  deleteData(id?: any) {
+    this.toggleSpinner(true);
+    this.deleteRecordModal?.hide();
+
+    if (id) {
+      this.api.deleteWithId("deleteRequestResponse", id).subscribe(
+        (res: any) => {this.handleResponse(res) 
+           this.getRequestDetail();},
+        (error) => this.handleError(error)
+      );
+    }
+
+    // const idsToDelete = this.checkedValGet;
+    // if (idsToDelete && idsToDelete.length > 0) {
+    //   this.api
+    //     .post("deleteRequest-multiple", { ids: idsToDelete })
+    //     .subscribe(
+    //       (res: any) => this.handleResponse(res),
+    //       (error) => this.handleError(error)
+    //     );
+    // }
+  }
 }
 
