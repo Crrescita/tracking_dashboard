@@ -412,7 +412,7 @@
                   >Assigned To<span class="text-danger">*</span></label
                 >
 
-                <ng-select
+                <!-- <ng-select
                   [items]="employeeDataList"
                   [multiple]="true"
                   bindLabel="name"
@@ -424,7 +424,22 @@
                   <ng-template ng-optgroup-tmp let-item="item">
                     {{ item.department_name || "Unnamed group" }}
                   </ng-template>
-                </ng-select>
+                </ng-select> -->
+
+                <ng-select
+  [items]="employeeDataList"
+  [multiple]="true"
+  bindLabel="name"
+  bindValue="id"
+  groupBy="department_name"
+  formControlName="emp_id"
+  placeholder="Select Employee(s)"
+  [searchFn]="customSearchFn"
+>
+  <ng-template ng-optgroup-tmp let-item="item">
+    {{ item.department_name || "Unnamed group" }}
+  </ng-template>
+</ng-select>
                 @if (f['emp_id'] && f['emp_id'].hasError('required') &&
                 f['emp_id'].touched) {
                 <div class="invalid-text">

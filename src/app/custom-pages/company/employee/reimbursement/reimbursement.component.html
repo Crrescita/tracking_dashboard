@@ -640,29 +640,51 @@
                 </tr>
 
                     <tr>
-  <th class="ps-0" scope="row">Attachment</th>
-  <td class="text-muted text-end">
-    @if (quatationDataModal?.attachments?.length > 0) {
-      <div class="d-flex flex-column align-items-end gap-1">
-        @for (att of quatationDataModal.attachments; track att.id) {
-          <a
-            [href]="att"
-            target="_blank"
-            class="btn btn-sm btn-outline-primary"
-          >
-            View / Download
-          </a>
-        }
-      </div>
-    } @else {
-      N/A
-    }
-  </td>
-</tr>
-
-             
+  <!-- <th class="ps-0" scope="row">Attachments</th> -->       
               </tbody>
             </table>
+          </div>
+          <div class="table-responsive my-3">
+          <table class="table table-borderless table-sm align-middle mb-0">
+            <tbody>
+              <tr class="text-muted">
+                @if (quatationDataModal?.attachments?.length > 0) {
+                  <div class="table-responsive">
+                    <table class="table table-sm table-bordered align-middle mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th scope="col">Item</th>
+                          <th scope="col" class="text-end">Amount</th>
+                          <th scope="col" class="text-end">File</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (att of quatationDataModal.attachments; track att.id) {
+                          <tr>
+                            <td>{{ att.reimbursement_name }}</td>
+                            <td class="text-end">{{ att.amount | currency : "INR" }}</td>
+                            <td class="text-end">
+                              <a
+                                [href]="att.file_url || att.file_path"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-sm btn-outline-primary"
+                              >
+                                View / Download
+                              </a>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                } @else {
+                  N/A
+                }
+              
+            </tr>
+            </tbody>
+          </table>
           </div>
 @if(this.quatationDataModal?.status === 'pending'){
              <button
@@ -695,126 +717,6 @@
         </div>
      
       </div>
-
-      <!-- <div class="modal-body p-4">
-        <div class="mb-3">
-          <label for="product-title-input" class="form-label"
-              >Title</label
-            >
-            <p class="text-muted">{{this.quatationDataModal?.title}} </p>
-
-               <label for="product-title-input" class="form-label"
-              >Description</label
-            >
-            <p class="text-muted">{{this.quatationDataModal?.description}} </p>
-
-        </div>
-      </div> -->
-
-      <!-- <form
-       (ngSubmit)="onSubmit()"
-        [formGroup]="formGroup"
-        class="tablelist-form"
-        novalidate
-        autocomplete="off"
-      >
-        <div class="modal-body p-4">
-          <div
-            id="alert-error-msg"
-            class="d-none alert alert-danger py-2"
-          ></div>
-
-          <div class="mb-3">
-            <label for="product-title-input" class="form-label"
-              >Admin Note <span class="text-danger">*</span></label
-            >
-            <input
-              type="text"
-              id="product-title-input"
-              formControlName="admin_note"
-              class="form-control"
-              placeholder="Enter Admin Note"
-            />
-            @if (f['admin_note'] && f['admin_note'].hasError('required') &&
-            f['admin_note'].touched) {
-            <div class="invalid-text">Admin note is required.</div>
-            } 
-          </div>
-
-          <div class="mb-3">
-
-            @if (employeeselectedImagePreview) {
-  <div class="mt-2">
-    <label class="form-label">Selected file</label>
-    @if (employeeselectedImage?.type.startsWith('image/')) {
-      <img
-        [src]="employeeselectedImagePreview"
-        class="img-fluid mt-2"
-        style="max-height: 200px"
-      />
-    }
-
-
-
-  
-  </div>
-}
-
-
-          <div>
-  <label for="fileInput" class="form-label">Upload file</label>
-
-  <input
-    type="file"
-    id="fileInput"
-    class="form-control"
-    formControlName="file"
-    (change)="employeeimageSelect($event)"
-  />
-
-  
-
-    @if (f['file'] && f['file'].hasError('required') &&
-            f['file'].touched) {
-            <div class="invalid-text">File is required.</div>
-            } 
-
-            @if (employeeuploadedImage && !employeeselectedImagePreview) {
-  <div class="mt-2">
-    <label class="form-label">Existing file</label><br />
-
-    <a
-      [href]="employeeuploadedImage"
-      target="_blank"
-      class="btn btn-sm btn-outline-primary"
-    >
-      View / Download
-    </a>
-  </div>
-}
-
-
-
-</div>
-
-          
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="hstack gap-2 justify-content-end">
-            <button
-              type="button"
-              class="btn btn-ghost-danger"
-              (click)="showModal.hide()"
-            >
-              <i class="bi bi-x-lg align-baseline me-1"></i> Close
-            </button>
-            <button type="submit" class="btn btn-primary" id="add-btn">
-              Add
-            </button>
-          </div>
-        </div>
-      </form> -->
     </div>
   </div>
 </div>

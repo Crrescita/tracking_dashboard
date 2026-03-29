@@ -894,4 +894,14 @@ if (data.frequency) {
 
     this.getAssignedTask();
   }
+
+  customSearchFn(term: string, item: any) {
+    term = term.toLowerCase();
+  
+    return (
+      item.name?.toLowerCase().includes(term) ||
+      item.email?.toLowerCase().includes(term) ||
+      item.mobile?.toString().includes(term)
+    );
+  }
 }

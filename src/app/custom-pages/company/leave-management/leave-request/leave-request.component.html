@@ -97,13 +97,13 @@
               <h3 class="mb-0">
                 <span
                   class="counter-value"
-                  [countUp]="this.leaveCount?.totalPending"
-                  >{{ this.leaveCount?.totalPending }}</span
+                  [countUp]="this.leaveCount?.totalPending +leaveCount?.totalExpired"
+                  >{{ (leaveCount?.totalPending || 0) + (leaveCount?.totalExpired || 0) }}</span
                 >
               </h3>
             </div>
           </div>
-          <div class="col-lg col-sm-6 border-end-sm">
+          <!-- <div class="col-lg col-sm-6 border-end-sm">
             <div>
               <div class="d-flex align-items-center gap-2 mb-4">
                 <div class="avatar-xs flex-shrink-0">
@@ -125,7 +125,7 @@
                 >
               </h3>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -405,7 +405,7 @@
                     </button>
 
                     }@else if (data?.status == 'Expired'){
-                    <button
+                    <!-- <button
                       type="button"
                       class="btn btn-dark btn-label rounded-pill"
                     >
@@ -413,7 +413,23 @@
                         class="bx bx-calendar-minus label-icon align-middle rounded-pill fs-lg me-2"
                       ></i>
                       Expired
-                    </button>
+                    </button> -->
+
+                    <select
+                    class="form-control"
+                    data-choices
+                   
+                    (change)="setStatus(data, $event)"
+                    id="statuss"
+                  >
+                    <option value="">Select Status</option>
+                    <option
+                      *ngFor="let option of ['Pending', 'Approve', 'Reject']"
+                      [value]="option"
+                    >
+                      {{ option }}
+                    </option>
+                  </select>
 
                     } @else {
                     <button

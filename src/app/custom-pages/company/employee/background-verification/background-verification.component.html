@@ -266,15 +266,15 @@
             } -->
           </div>
 
-          @if (selectedImage) { @if (selectedImagePreview) {
+          @if (selectedImage) { 
+            @if (selectedImagePreview) {
           <img
             class="avatar-xxl border-0 img-thumbnail user-profile-image"
             [src]="selectedImagePreview"
             alt="Dropzone-Image"
           />
-          } }@else if (uploadedImage) {
-            <!--  -->
-
+          } }
+          @else if (uploadedImage) {
   <div class="position-relative">
     <img
       class="avatar-xxl border-0 img-thumbnail user-profile-image w-100 rounded"
@@ -291,20 +291,26 @@
     </button>
   </div>
 
-  <!-- <div class="text-center mt-2">
-    <strong class="d-block">Uploaded Document</strong>
-    <small class="text-muted">{{ selectedDocument }}</small>
-  </div> -->
-
-
-          <!-- <img
-            class="avatar-xxl border-0 img-thumbnail user-profile-image"
-            src="https://trackingapi.crrescita.com/images/backgroundVerificationEmp/documentFile2025-06-20T10-13-49.050Z-RUCHIPANCARD.jpg"
-            alt="Uploaded Thumbnail"
-          />
-<i (click)="downloadImage('https://trackingapi.crrescita.com/images/backgroundVerificationEmp/documentFile2025-06-20T10-13-49.050Z-RUCHIPANCARD.jpg', selectedDocument)" class="bi bi-download"></i> -->
-          <!-- <button >Download</button> -->
           }
+
+          @else if (backImage) {
+            <div class="position-relative">
+              <img
+                class="avatar-xxl border-0 img-thumbnail user-profile-image w-100 rounded"
+                [src]="backImage"
+                alt="Uploaded Thumbnail"
+              />
+          
+              <button
+                class="btn btn-light position-absolute top-0 end-0 m-2 p-1 shadow"
+                (click)="downloadImage(backImage, selectedDocument)"
+                title="Download"
+              >
+                <i class="bi bi-download fs-5 text-primary"></i>
+              </button>
+            </div>
+          
+                    }
         </div>
         <div class="modal-footer">
           <div class="hstack gap-2 justify-content-end">

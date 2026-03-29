@@ -114,15 +114,19 @@
               <tbody>
                   <tr>
                   <th class="ps-0" scope="row">Title</th>
-                  <td class="text-muted text-end">
+                  <td class="text-muted text-capitalize">
                     {{ requestDetail?.title }}
                   </td>
                 </tr>
                      <tr>
                   <th class="ps-0" scope="row">Description</th>
-                  <td class="text-muted text-end" [innerHTML]=" requestDetail?.description ">
+                  <!-- <td class="text-muted text-end" [innerHTML]=" requestDetail?.description ">
+                  </td> -->
+                    <td class="text-muted text-capitalize" style="white-space: pre-line;">
+                      {{ requestDetail?.description }}
+                    </td>
                  
-                  </td>
+                 
                    </tr>
                 <tr>
                   <th class="ps-0" scope="row">Status</th>

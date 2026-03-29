@@ -29,41 +29,51 @@ export class BackgroundVerificationComponent implements OnInit {
       name: "Aadhaar",
       field: "aadhaar",
       fileField: "aadhaar_file",
+      backfileField:"aadhaar_file_back",
       status: "Not Uploaded",
       documentNo: "",
       fileUrl: "",
+      backurl:"",
     },
     {
       name: "PAN",
       field: "pan",
       fileField: "pan_file",
+      backfileField:"pan_file_back",
       status: "Not Uploaded",
       documentNo: "",
       fileUrl: "",
+      backurl:"",
     },
     {
       name: "Driving License",
       field: "driving_license",
       fileField: "driving_license_file",
+      backfileField:"driving_license_file_back",
       status: "Not Uploaded",
       documentNo: "",
       fileUrl: "",
+      backurl:"",
     },
     {
       name: "Voter ID",
       field: "voter",
       fileField: "voter_file",
+      backfileField:"voter_file_back",
       status: "Not Uploaded",
       documentNo: "",
       fileUrl: "",
+      backurl:"",
     },
     {
       name: "UAN",
       field: "uan",
       fileField: "uan_file",
+      backfileField:"uan_file_back",
       status: "Not Uploaded",
       documentNo: "",
       fileUrl: "",
+      backurl:"",
     },
   ];
 
@@ -128,6 +138,7 @@ export class BackgroundVerificationComponent implements OnInit {
 
               doc.status = "Uploaded";
               doc.fileUrl = data[doc.fileField];
+              doc.backurl = data[doc.backfileField]
             }
           });
           // this.formGroup.patchValue({
@@ -215,14 +226,17 @@ export class BackgroundVerificationComponent implements OnInit {
     modalbtn.innerHTML = "Save"; // Indicate edit mode
   }
 
-
+  backImage:any
   identiyNumber:any;
   onView(documentName: any) {
+    console.log(documentName)
     this.selectedDocument = documentName.name;
 
     this.uploadedImage = documentName.fileUrl;
 
     this.identiyNumber = documentName.documentNo
+
+    this.backImage = documentName.backurl
 
     // Update validators to not require the file for editing
     // const documentValidators = this.getValidators(documentName.name);
