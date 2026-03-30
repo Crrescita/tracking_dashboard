@@ -86,6 +86,10 @@ export class BackgroundVerificationComponent implements OnInit {
   selectedImagePreview: any = null;
   uploadedImage: any = null;
 
+  selectedImageback: any = null;
+  selectedImagePreviewback: any = null;
+  uploadedImageback: any = null;
+
   submitted: boolean = false;
   spinnerStatus: boolean = false;
   saveButtonActive: boolean = true;
@@ -103,6 +107,7 @@ export class BackgroundVerificationComponent implements OnInit {
     this.formGroup = this.formBuilder.group({
       documentNo: ["", [Validators.required, Validators.maxLength(100)]],
       documentFile: [""],
+      documentFile2:[""]
     });
     
     const data = localStorage.getItem("currentUser");
@@ -173,6 +178,14 @@ export class BackgroundVerificationComponent implements OnInit {
     }
   }
 
+  imageSelectback(event: any) {
+    const selectedFileback = event.target.files[0];
+    if (selectedFileback) {
+      this.selectedImageback = selectedFileback;
+      this.selectedImagePreviewback = URL.createObjectURL(selectedFileback);
+    }
+  }
+
   onAdd(documentType: string): void {
     this.selectedDocument = documentType;
 
@@ -185,6 +198,10 @@ export class BackgroundVerificationComponent implements OnInit {
     );
     this.formGroup.setControl(
       "documentFile",
+      this.formBuilder.control("", documentValidators.file)
+    );
+    this.formGroup.setControl(
+      "documentFile2",
       this.formBuilder.control("", documentValidators.file)
     );
 
@@ -203,6 +220,8 @@ export class BackgroundVerificationComponent implements OnInit {
 
     this.uploadedImage = documentName.fileUrl;
 
+    this.uploadedImageback = documentName.backurl;
+
     // Update validators to not require the file for editing
     const documentValidators = this.getValidators(documentName.name);
     this.formGroup.setControl(
@@ -214,7 +233,7 @@ export class BackgroundVerificationComponent implements OnInit {
     );
 
     this.formGroup.setControl("documentFile", this.formBuilder.control(""));
-
+    this.formGroup.setControl("documentFile2", this.formBuilder.control(""));
     this.showModal?.show();
 
     // Update modal title and button text
@@ -233,6 +252,8 @@ export class BackgroundVerificationComponent implements OnInit {
     this.selectedDocument = documentName.name;
 
     this.uploadedImage = documentName.fileUrl;
+
+    this.uploadedImageback = documentName.backurl;
 
     this.identiyNumber = documentName.documentNo
 
@@ -269,6 +290,7 @@ export class BackgroundVerificationComponent implements OnInit {
         return {
           number: [Validators.required, Validators.pattern(/^\d{9,18}$/)],
           file: [Validators.required],
+          backfile:[Validators.required],
         };
       case "PAN":
         return {
@@ -277,26 +299,31 @@ export class BackgroundVerificationComponent implements OnInit {
             Validators.pattern(/^[A-Z]{5}\d{4}[A-Z]{1}$/i),  
           ],
           file: [Validators.required],
+          backfile:[],
         };
       case "Driving License":
         return {
           number: [Validators.required, Validators.pattern(/^[A-Z0-9]{15}$/)],
           file: [Validators.required],
+          backfile:[Validators.required],
         };
       case "Voter":
         return {
           number: [Validators.required, Validators.pattern(/^[A-Z]{3}\d{7}$/i)],
           file: [Validators.required],
+          backfile:[Validators.required],
         };
       case "UAN":
         return {
           number: [Validators.required, Validators.pattern(/^\d{12}$/)],
           file: [Validators.required],
+          backfile:[Validators.required],
         };
       default:
         return {
           number: [Validators.required],
           file: [Validators.required],
+          backfile:[Validators.required],
         };
     }
   }
@@ -312,7 +339,7 @@ export class BackgroundVerificationComponent implements OnInit {
         formData.append("documentType", this.selectedDocument);
         formData.append("documentNo", this.f["documentNo"].value);
         formData.append("documentFile", this.selectedImage);
-
+        formData.append("documentFile2", this.selectedImageback);
         this.api.post("backgroundVerification", formData).subscribe(
           (res: any) => this.handleResponse(res),
           (error) => this.handleError(error)
@@ -348,7 +375,10 @@ export class BackgroundVerificationComponent implements OnInit {
     this.formGroup.reset();
     this.selectedImage = null;
     this.selectedImagePreview = null;
+    this.selectedImageback = null;
+    this.selectedImagePreviewback = null;
     this.uploadedImage = null;
+    this.uploadedImageback = null;
     this.identiyNumber = null;
   }
 

@@ -408,6 +408,31 @@
 
             <div class="col-lg-12">
               <div class="mb-3">
+                <label for="cc-input" class="form-label">
+                  CC Emails
+                </label>
+              
+                <input
+                  type="text"
+                  id="cc-input"
+                  class="form-control"
+                  formControlName="cc"
+                  placeholder="Enter emails (comma separated)"
+                />
+              
+                <small class="text-muted">
+                  Example: manager&#64;gmail.com, hr&#64;gmail.com
+                </small>
+              
+                <!-- Validation -->
+                <div class="invalid-text" *ngIf="f['cc']?.touched && f['cc']?.errors?.['invalidEmails']">
+                  Please enter valid email addresses separated by commas
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="mb-3">
                 <label for="client-name-input" class="form-label"
                   >Assigned To<span class="text-danger">*</span></label
                 >

@@ -178,6 +178,42 @@
             alt="Uploaded Thumbnail"
           />
           }
+
+          <!-- back -->
+
+          <div class="mb-3">
+            <label for="formFile" class="form-label"
+              >Upload {{ selectedDocument }} back side File </label
+            >
+            <input
+              class="form-control"
+              type="file"
+              id="empimageback"
+              accept="image/*"
+              formControlName="documentFile2"
+              (change)="imageSelectback($event)"
+              #empimageback
+            />
+
+            @if (f['documentFile2'] && f['documentFile2'].hasError('required') &&
+            f['documentFile2'].touched) {
+            <div class="invalid-text">{{ selectedDocument }} is required.</div>
+            }
+          </div>
+
+          @if (selectedImageback) { @if (selectedImagePreviewback) {
+          <img
+            class="avatar-lg border-0 img-thumbnail user-profile-image"
+            [src]="selectedImagePreviewback"
+            alt="Dropzone-Image"
+          />
+          } }@else if (uploadedImageback) {
+          <img
+            class="avatar-lg border-0 img-thumbnail user-profile-image"
+            [src]="uploadedImageback"
+            alt="Uploaded Thumbnail"
+          />
+          }
         </div>
         <div class="modal-footer">
           <div class="hstack gap-2 justify-content-end">
@@ -277,7 +313,7 @@
           @else if (uploadedImage) {
   <div class="position-relative">
     <img
-      class="avatar-xxl border-0 img-thumbnail user-profile-image w-100 rounded"
+      class="avatar-xl border-0 img-thumbnail user-profile-image object-fit-contain w-100 rounded"
       [src]="uploadedImage"
       alt="Uploaded Thumbnail"
     />
@@ -296,7 +332,7 @@
           @if (backImage) {
             <div class="position-relative">
               <img
-                class="avatar-xxl border-0 img-thumbnail user-profile-image w-100 rounded"
+                class="avatar-xl  border-0 img-thumbnail user-profile-image  object-fit-contain w-100 rounded"
                 [src]="backImage"
                 alt="Uploaded Thumbnail"
               />
@@ -318,12 +354,13 @@
               type="button"
               class="btn btn-ghost-danger"
               (click)="showModal.hide()"
+              (click)="resetForm()"
             >
               <i class="bi bi-x-lg align-baseline me-1"></i> Close
             </button>
-            <button type="submit" class="btn btn-primary" id="add-btn">
+            <!-- <button type="submit" class="btn btn-primary" id="add-btn">
               Add
-            </button>
+            </button> -->
           </div>
         </div>
      

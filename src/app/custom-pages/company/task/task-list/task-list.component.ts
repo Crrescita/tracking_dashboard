@@ -105,6 +105,7 @@ export class TaskListComponent {
       {
         task_title: ["", [Validators.maxLength(45), Validators.required]],
         emp_id: ["", [Validators.required]],
+        cc: ["", [this.validateMultipleEmails.bind(this)]], 
         task_description: [""],
         start_date: ["", [Validators.required]],
         end_date: ["", [Validators.required]],
@@ -184,6 +185,18 @@ export class TaskListComponent {
     });
   }
 
+  validateMultipleEmails(control: any) {
+    if (!control.value) return null;
+  
+    const emails = control.value.split(',').map((e: string) => e.trim());
+  
+    const invalidEmails = emails.filter(
+      (email: string) =>
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    );
+  
+    return invalidEmails.length ? { invalidEmails: true } : null;
+  }
   getBranch() {
     this.toggleSpinner(true);
     this.api
@@ -346,6 +359,7 @@ export class TaskListComponent {
       emp_id: this.f["emp_id"].value.join(","),
       task_title: this.f["task_title"].value,
       task_description: this.f["task_description"].value,
+      cc: this.f["cc"].value,
       start_date: this.f["start_date"].value,
       end_date: this.f["end_date"].value,
       priority: this.f["priority"].value,
@@ -464,6 +478,7 @@ if (data.frequency) {
       task_title: data.task_title,
       emp_id: empIdArray,
       task_description: data.task_description,
+      cc:data.cc,
       start_date: data.start_date ? new Date(data.start_date) : null,
   end_date: data.end_date ? new Date(data.end_date) : null,
       priority: data.priority,
